@@ -1,67 +1,78 @@
-import { applySpouseAtStart, totalV, type SpouseType } from "@/lib/gameEconomy";
-
-const BUILDS = [
-  {
-    id: "velvet_rolodex",
-    name: "The Velvet Rolodex",
-    base: { eur: 16_000, competence: 30, visibility: 80, firmCapacity: 50 },
-  },
-  {
-    id: "summa_cum_basement",
-    name: "Summa Cum Basement",
-    base: { eur: 16_000, competence: 80, visibility: 30, firmCapacity: 50 },
-  },
-  {
-    id: "portfolio_pivot",
-    name: "The Portfolio Pivot",
-    base: { eur: 80_000, competence: 22, visibility: 24, firmCapacity: 50 },
-  },
-] as const;
+import Link from "next/link";
+import { GAME_TAGLINE, GAME_TITLE } from "@/lib/onboardingContent";
 
 export default function HomePage() {
   return (
-    <main>
-      <h1>Reputation Recovery Simulator</h1>
-      <p>
-        Placeholder shell. Connect Supabase env vars on Vercel, run the SQL migration,
-        then wire auth + onboarding.
-      </p>
-      <h2 style={{ marginTop: "2rem" }}>Build preview (equal Total_V before spouse)</h2>
-      <table cellPadding={8} style={{ borderCollapse: "collapse", width: "100%" }}>
-        <thead>
-          <tr style={{ textAlign: "left", borderBottom: "1px solid #ccc" }}>
-            <th>Build</th>
-            <th>EUR</th>
-            <th>Comp</th>
-            <th>Vis</th>
-            <th>Cap</th>
-            <th>Total_V</th>
-          </tr>
-        </thead>
-        <tbody>
-          {BUILDS.map((b) => {
-            const v = totalV(b.base);
-            return (
-              <tr key={b.id} style={{ borderBottom: "1px solid #eee" }}>
-                <td>{b.name}</td>
-                <td>{b.base.eur.toLocaleString("de-DE")}</td>
-                <td>{b.base.competence}</td>
-                <td>{b.base.visibility}</td>
-                <td>{b.base.firmCapacity}</td>
-                <td>{v.toFixed(3)}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <h2 style={{ marginTop: "2rem" }}>Example: rich spouse on Pivot</h2>
-      <pre style={{ background: "#f5f5f5", padding: 12, overflow: "auto" }}>
-        {JSON.stringify(
-          applySpouseAtStart(BUILDS[2].base, "rich" as SpouseType),
-          null,
-          2
-        )}
-      </pre>
-    </main>
+    <div className="shell">
+      <header style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+        <p
+          className="muted"
+          style={{
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
+            fontSize: "0.72rem",
+            marginBottom: "0.75rem",
+          }}
+        >
+          Simulation · PR · Questionable decisions
+        </p>
+        <h1
+          style={{
+            fontSize: "clamp(1.65rem, 5vw, 2.35rem)",
+            margin: "0 auto 1rem",
+            maxWidth: "22ch",
+          }}
+        >
+          {GAME_TITLE}
+        </h1>
+        <p
+          className="muted"
+          style={{
+            margin: "0 auto",
+            maxWidth: "36rem",
+            fontSize: "1.05rem",
+            lineHeight: 1.6,
+          }}
+        >
+          {GAME_TAGLINE}
+        </p>
+        <p className="muted" style={{ margin: "1rem auto 0", fontSize: "0.88rem" }}>
+          One save slot. Make it count.
+        </p>
+      </header>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.85rem",
+          maxWidth: "320px",
+          margin: "0 auto",
+          width: "100%",
+        }}
+      >
+        <button
+          type="button"
+          className="btn btn-secondary"
+          disabled
+          aria-disabled="true"
+          title="Coming soon"
+        >
+          Continue
+        </button>
+        <p className="muted" style={{ margin: "-0.35rem 0 0", fontSize: "0.8rem", textAlign: "center" }}>
+          Coming soon — loads your single saved run.
+        </p>
+        <Link href="/game/new" className="btn btn-primary" style={{ textDecoration: "none" }}>
+          New game
+        </Link>
+      </div>
+
+      <footer style={{ marginTop: "auto", paddingTop: "3rem", textAlign: "center" }}>
+        <p className="muted" style={{ fontSize: "0.8rem", margin: 0 }}>
+          Not financial advice. Not real PR. Definitely not your lawyer.
+        </p>
+      </footer>
+    </div>
   );
 }
