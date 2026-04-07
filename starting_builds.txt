@@ -109,7 +109,7 @@ USER JOURNEY (DRAFT — TRACK FOR ONBOARDING / IMPLEMENTATION)
   2. Play Game — player enters name + gender (2 options for now).
   3. Starting build — pick 1 of 3 (see builds above).
   4. Spouse — pick 1 of 3 types OR "no spouse."
-       • If a spouse is chosen: spouse gender (male / female / non-binary); spouse name TBD in UI.
+       • If a spouse is chosen: spouse name + spouse gender (male / female / non-binary).
        • If "no spouse": skip spouse identity; player gains firm capacity and
          keeps more capital free to reinvest (exact math TBD; see conversion doc).
   5. (Later) growth focus, pre-season, etc. — not defined in this file yet.
@@ -117,11 +117,12 @@ USER JOURNEY (DRAFT — TRACK FOR ONBOARDING / IMPLEMENTATION)
 ================================================================================
 SPOUSE OPTIONS (DRAFT)
 ================================================================================
-On this screen the player sees four choices: three spouse archetypes + no spouse.
-One-line blurbs are for the picker UI; numbers TBD when currencies are defined.
+On this screen the player sees four choices: three partner archetypes + solo.
+Display labels (UI): Your favorite editor · Speed-dial royalty · The benefactor · Table for one, LLC.
+Public UI shows vague boosts only (competence / visibility / income / capacity)—no exact numbers.
 
 --------------------------------------------------------------------------------
-SUPPORTIVE SPOUSE — mechanical bonus: COMPETENCE
+YOUR FAVORITE EDITOR (supportive) — mechanical bonus: COMPETENCE
 --------------------------------------------------------------------------------
 One-liner (UI)
   They proofread your life—and occasionally stop you from emailing while mad.
@@ -130,7 +131,7 @@ Mechanics (numbers tunable)
   • +25 competence at start **and** +25 competence at end of each season.
 
 --------------------------------------------------------------------------------
-INFLUENTIAL SPOUSE — mechanical bonus: VISIBILITY
+SPEED-DIAL ROYALTY (influential) — mechanical bonus: VISIBILITY
 --------------------------------------------------------------------------------
 One-liner (UI)
   They know someone who knows someone, and suddenly you’re on the list.
@@ -139,7 +140,7 @@ Mechanics (numbers tunable)
   • +25 visibility at start **and** +25 visibility at end of each season.
 
 --------------------------------------------------------------------------------
-RICH SPOUSE — mechanical bonus: WEALTH
+THE BENEFACTOR (rich) — mechanical bonus: WEALTH
 --------------------------------------------------------------------------------
 One-liner (UI)
   Date night sometimes feels like a soft round of funding with dessert.
@@ -148,7 +149,7 @@ Mechanics (numbers tunable)
   • +25,000 EUR at start **and** +25,000 EUR at end of each season.
 
 --------------------------------------------------------------------------------
-NO SPOUSE — mechanical bonus: FIRM CAPACITY (wild card)
+TABLE FOR ONE, LLC (no spouse) — mechanical bonus: FIRM CAPACITY (wild card)
 --------------------------------------------------------------------------------
 One-liner (UI)
   No merge conflicts on the calendar—and more cash stays in the firm piggy bank.

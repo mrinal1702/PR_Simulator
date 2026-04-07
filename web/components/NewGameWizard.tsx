@@ -22,6 +22,8 @@ export type NewGamePayload = {
   spouseType: SpouseType;
   /** Set when spouseType is not `none`; otherwise null. */
   spouseGender: GenderValue | null;
+  /** Set when spouseType is not `none`; otherwise null. */
+  spouseName: string | null;
   createdAt: string;
 };
 
@@ -38,6 +40,7 @@ export function NewGameWizard() {
 
   const [buildId, setBuildId] = useState<BuildId | null>(null);
   const [spouseType, setSpouseType] = useState<SpouseType | null>(null);
+  const [spouseName, setSpouseName] = useState("");
   const [spouseGender, setSpouseGender] = useState<GenderValue | "">("");
 
   const step1Valid = useMemo(
@@ -51,12 +54,12 @@ export function NewGameWizard() {
   const step3Valid = useMemo(() => {
     if (spouseType === null) return false;
     if (spouseType === "none") return true;
-    return spouseGender !== "";
-  }, [spouseType, spouseGender]);
+    return spouseName.trim().length > 0 && spouseGender !== "";
+  }, [spouseType, spouseName, spouseGender]);
 
   const persistAndFinish = useCallback(() => {
     if (!buildId || spouseType === null) return;
-    if (spouseType !== "none" && spouseGender === "") return;
+    if (spouseType !== "none" && (spouseName.trim() === "" || spouseGender === "")) return;
     const payload: NewGamePayload = {
       playerName: playerName.trim(),
       agencyName: agencyName.trim(),
@@ -64,6 +67,7 @@ export function NewGameWizard() {
       buildId,
       spouseType,
       spouseGender: spouseType === "none" ? null : (spouseGender as GenderValue),
+      spouseName: spouseType === "none" ? null : spouseName.trim(),
       createdAt: new Date().toISOString(),
     };
     try {
@@ -72,11 +76,14 @@ export function NewGameWizard() {
       /* ignore quota / private mode */
     }
     setStep(4);
-  }, [playerName, agencyName, gender, buildId, spouseType, spouseGender]);
+  }, [playerName, agencyName, gender, buildId, spouseType, spouseGender, spouseName]);
 
   const selectSpouseType = (t: SpouseType) => {
     setSpouseType(t);
-    if (t === "none") setSpouseGender("");
+    if (t === "none") {
+      setSpouseGender("");
+      setSpouseName("");
+    }
   };
 
   return (
@@ -212,7 +219,7 @@ export function NewGameWizard() {
         <section>
           <h2 style={{ marginTop: 0, fontSize: "1.25rem" }}>Partner in crime (or not)</h2>
           <p className="muted" style={{ marginTop: 0 }}>
-            Spouse bonuses stack on your origin story. No spouse means double starting firm capacity—no seasonal capacity drip.
+            Pick a partner archetype—or go it alone. Details stay between you and the spreadsheet we haven’t built yet.
           </p>
           <div className="card-grid cols-2" style={{ marginTop: "1.25rem" }}>
             {SPOUSE_OPTIONS.map((s) => (
@@ -224,26 +231,40 @@ export function NewGameWizard() {
               >
                 <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>{s.title}</h3>
                 <p style={{ margin: "0 0 0.5rem", fontSize: "0.9rem" }}>{s.blurb}</p>
-                <p className="muted" style={{ margin: 0, fontSize: "0.82rem" }}>{s.perk}</p>
+                <p className="muted" style={{ margin: 0, fontSize: "0.82rem", fontWeight: 600 }}>
+                  {s.boost}
+                </p>
               </button>
             ))}
           </div>
 
           {spouseType !== null && spouseType !== "none" && (
-            <fieldset
-              className="field"
-              style={{ border: "none", padding: 0, margin: "1.5rem 0 0" }}
-            >
-              <legend
-                style={{
-                  fontSize: "0.875rem",
-                  fontWeight: 600,
-                  color: "var(--text-muted)",
-                  marginBottom: "0.5rem",
-                }}
+            <>
+              <div className="field" style={{ marginTop: "1.5rem" }}>
+                <label htmlFor="spouse-name">Spouse name</label>
+                <input
+                  id="spouse-name"
+                  type="text"
+                  autoComplete="name"
+                  placeholder="Alex Morgan"
+                  value={spouseName}
+                  onChange={(e) => setSpouseName(e.target.value)}
+                />
+              </div>
+              <fieldset
+                className="field"
+                style={{ border: "none", padding: 0, margin: 0 }}
               >
-                Spouse gender
-              </legend>
+                <legend
+                  style={{
+                    fontSize: "0.875rem",
+                    fontWeight: 600,
+                    color: "var(--text-muted)",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Spouse gender
+                </legend>
               <div className="gender-row">
                 {GENDER_OPTIONS.map((g) => (
                   <label key={`spouse-${g.value}`}>
@@ -258,7 +279,8 @@ export function NewGameWizard() {
                   </label>
                 ))}
               </div>
-            </fieldset>
+              </fieldset>
+            </>
           )}
 
           <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.75rem", flexWrap: "wrap" }}>
@@ -295,11 +317,12 @@ export function NewGameWizard() {
               Spouse: {SPOUSE_OPTIONS.find((s) => s.type === spouseType)?.title ?? "—"}
               {spouseType !== null &&
                 spouseType !== "none" &&
+                spouseName.trim() &&
                 spouseGender &&
                 isGenderValue(spouseGender) && (
                   <>
                     {" "}
-                    · {GENDER_OPTIONS.find((g) => g.value === spouseGender)?.label}
+                    — {spouseName.trim()} · {GENDER_OPTIONS.find((g) => g.value === spouseGender)?.label}
                   </>
                 )}
             </li>

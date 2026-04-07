@@ -54,30 +54,31 @@ export const SPOUSE_OPTIONS: {
   type: SpouseType;
   title: string;
   blurb: string;
-  perk: string;
+  /** Vague UI hint only—no numbers (economy tuned elsewhere). */
+  boost: string;
 }[] = [
   {
     type: "supportive",
-    title: "Supportive spouse",
+    title: "Your favorite editor",
     blurb: "They proofread your life—and occasionally stop you from emailing while mad.",
-    perk: "+25 competence at start and each season end",
+    boost: "Competence boost",
   },
   {
     type: "influential",
-    title: "Influential spouse",
+    title: "Speed-dial royalty",
     blurb: "They know someone who knows someone, and suddenly you’re on the list.",
-    perk: "+25 visibility at start and each season end",
+    boost: "Visibility boost",
   },
   {
     type: "rich",
-    title: "Rich spouse",
+    title: "The benefactor",
     blurb: "Date night sometimes feels like a soft round of funding with dessert.",
-    perk: "+€25,000 at start and each season end",
+    boost: "Income boost",
   },
   {
     type: "none",
-    title: "No spouse",
+    title: "Table for one, LLC",
     blurb: "No merge conflicts on the calendar—and more cash stays in the firm piggy bank.",
-    perk: "100 firm capacity at start; no recurring capacity bonus",
+    boost: "Capacity boost",
   },
 ];
