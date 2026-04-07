@@ -66,6 +66,16 @@ Use your Git host; SSH URLs work too.
 
 ---
 
+## 3b. Git: Supabase vs Vercel (common confusion)
+
+- **Supabase “Account identities”** — how *you* log into Supabase (e.g. GitHub). Fine to leave as-is.
+- **Supabase “Connections” / Git integrations** — optional extras (e.g. preview branches, some integrations). **Not required** for a normal Next.js app that talks to Supabase via URL + anon key.
+- **Vercel “link a Git repo”** — this is the main workflow: connect **your GitHub/GitLab repo** to Vercel so pushes trigger deploys. That link is **between Vercel and Git**, not Supabase.
+
+You do **not** need to connect Supabase to Git for the app to work. You **do** connect your **code repo** to Vercel when Vercel asks during “New project.”
+
+---
+
 ## 4. What you still need to do
 
 - [ ] Run the SQL migration in Supabase.
