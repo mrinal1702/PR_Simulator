@@ -124,6 +124,13 @@ h3 {
   }
 }
 
+/* Long build bios: one column until wide screens, then three. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .build-cards.card-grid.cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
 .choice-card {
   text-align: left;
   padding: 1.15rem 1.25rem;

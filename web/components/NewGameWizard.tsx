@@ -164,7 +164,7 @@ export function NewGameWizard() {
           <p className="muted" style={{ marginTop: 0 }}>
             Pick how your agency began—each path has the same overall starting power, different flavors.
           </p>
-          <div className="card-grid cols-3" style={{ marginTop: "1.25rem" }}>
+          <div className="card-grid cols-3 build-cards" style={{ marginTop: "1.25rem" }}>
             {BUILDS.map((b) => (
               <button
                 key={b.id}
@@ -176,7 +176,16 @@ export function NewGameWizard() {
                 <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.85rem", fontStyle: "italic" }}>
                   {b.tagline}
                 </p>
-                <p style={{ margin: "0 0 0.65rem", fontSize: "0.88rem" }}>{b.bio}</p>
+                <p
+                  style={{
+                    margin: "0 0 0.65rem",
+                    fontSize: "0.875rem",
+                    lineHeight: 1.58,
+                    textAlign: "left",
+                  }}
+                >
+                  {b.bio}
+                </p>
                 <p className="muted" style={{ margin: 0, fontSize: "0.8rem" }}>
                   {b.statsSummary}
                 </p>
