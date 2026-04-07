@@ -167,7 +167,7 @@ create policy "season_grants_insert_own"
 -- build_definitions: readable by any authenticated user (reference data)
 alter table public.build_definitions enable row level security;
 
-create policy "build_definitions_select_authenticated"
+create policy "build_definitions_select_public"
   on public.build_definitions for select
-  to authenticated
+  to anon, authenticated
   using (true);
