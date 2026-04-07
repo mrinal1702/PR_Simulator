@@ -1,0 +1,46 @@
+================================================================================
+BUILD VALUE BUDGET — EQUAL TOTAL STARTING POWER (THREE BUILDS)
+================================================================================
+Definition (same as data/conversion_mechanics.txt):
+
+  Total_V = (EUR / 80,000) + (Competence / 80) + (Visibility / 80) + (Firm_capacity / 50)
+
+At calibration: 80,000 EUR ≙ 80 competence ≙ 80 visibility ≙ 50 firm capacity.
+
+TARGET FOR THE THREE STARTING BUILDS
+--------------------------------------------------------------------------------
+Anchor: **The Portfolio Pivot** (rich) — 80,000 EUR, 22 competence, 24 visibility,
+50 firm capacity.
+
+  Total_V = 1 + 22/80 + 24/80 + 50/50 = 1 + 0.275 + 0.3 + 1 = **2.575**
+
+To match **2.575** for the other two builds (same overall game value):
+
+  • **The Velvet Rolodex** — 16,000 EUR, **30** competence, **80** visibility, 50 capacity  
+      (was 24 comp; +6 comp so low-cash + high-vis build stays on budget)
+
+  • **Summa Cum Basement** — 16,000 EUR, 80 competence, **30** visibility, 50 capacity  
+      (was 26 vis; +4 vis was wrong direction — **30** visibility hits the budget)
+
+Check Rolodex: 0.2 + 30/80 + 80/80 + 1 = 0.2 + 0.375 + 1 + 1 = **2.575** ✓
+
+Check Basement: 0.2 + 1 + 30/80 + 1 = 0.2 + 1 + 0.375 + 1 = **2.575** ✓
+
+================================================================================
+SPOUSE MODIFIERS (SEPARATE FROM THE THREE-BUILD EQUALITY)
+================================================================================
+  • **Rich:** +25,000 EUR at start; +25,000 EUR at end of each season (tunable).
+  • **Supportive:** +25 competence at start; +25 competence at end of each season.
+  • **Influential:** +25 visibility at start; +25 visibility at end of each season.
+  • **No spouse:** firm capacity **100** at start (double baseline 50); **no**
+    recurring capacity grants at season end (capacity is front-loaded only).
+
+Influential mirrors the supportive/rich pattern; numbers subject to balance.
+
+**No spouse / Total_V:** Starting with 100 capacity yields a higher Total_V than
+50 if other stats are unchanged — intentional **wild card**: you trade seasonal
+spouse income for maximum upfront capacity (see design notes in currency_baseline).
+
+================================================================================
+END
+================================================================================

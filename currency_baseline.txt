@@ -1,0 +1,79 @@
+================================================================================
+REPUTATION RECOVERY SIMULATOR — CURRENCY & BASELINE NUMBERS (DRAFT)
+================================================================================
+Money: **EUR**. Competence, visibility, firm capacity: abstract scores (labels
+still carry flavor). Full cross-currency logic: **data/conversion_mechanics.txt**
+================================================================================
+
+TERMINOLOGY
+--------------------------------------------------------------------------------
+  • WEALTH (money)     — EUR; campaigns, hires, runway.
+  • COMPETENCE         — abstract 0–100; execution / convincingness.
+  • VISIBILITY         — abstract 0–100; footprint & opportunities.
+  • FIRM CAPACITY      — abstract 0–100; concurrent load / effort ceiling.
+                         Baseline **50** for the three builds; **no spouse** uses
+                         **100** at start (see spouse section).
+
+================================================================================
+ANNUAL SALARY RANGES (REALISTIC BANDS — GAME USES RANGES, NOT ONE FIXED NUMBER)
+================================================================================
+Tier                 Annual salary (EUR)        Notes
+--------------------------------------------------------------------------------
+Junior               16,000 – 30,000            Starting hires for low-cash builds
+Mid                  31,000 – 70,000            Portfolio Pivot can open with best mid
+Senior               71,000 – 100,000
+Executive            100,000+                   Later game
+
+Hiring at day one is **not** "pay full annual salary in cash upfront"; use
+retainers / first-month / game packages in implementation. The bands anchor
+who is allowed which tier at start.
+
+================================================================================
+STARTING WEALTH & HIRE ELIGIBILITY (DESIGN RULES)
+================================================================================
+  • **Velvet Rolodex** and **Summa Cum Basement:** **16,000 EUR** each.
+      → May hire **two junior employees** at game start (rule-first; exact cash
+        flow model TBD against salary ranges).
+
+  • **The Portfolio Pivot:** **80,000 EUR** (max starting money of any build).
+      → May hire **one mid-tier employee at the top of the mid band** (70k/year
+        class) — "best calibre" mid — not junior-limited at start.
+
+================================================================================
+ABSTRACT SCORES (0–100) — BASELINE BY BUILD (EQUAL TOTAL_V)
+================================================================================
+**Total_V** = EUR/80,000 + Comp/80 + Vis/80 + FirmCap/50 = **2.575** for all three.
+See **data/build_value_budget.txt**.
+
+                         EUR      COMPETENCE   VISIBILITY   FIRM CAPACITY
+                         -----    ----------   ----------   -------------
+Velvet Rolodex          16,000        30           80             50
+Summa Cum Basement      16,000        80           30             50
+Portfolio Pivot         80,000        22           24             50
+
+================================================================================
+BENCHMARK RATIO (FOR SYSTEMS / BALANCE)
+================================================================================
+**80,000 EUR ≙ 80 competence ≙ 80 visibility ≙ 50 firm capacity** at calibration.
+Details and formulas: **data/conversion_mechanics.txt**.
+
+================================================================================
+TIER LABELS (FUNNY) — SHOW IN UI NEXT TO NUMBERS
+================================================================================
+(Unchanged intent—see earlier bands in repo history; numbers above drive tier.)
+
+================================================================================
+SPOUSES (START + SEASON-END GRANTS)
+================================================================================
+  • **Rich:** +25,000 EUR at start; +25,000 EUR at end of each season (tunable).
+  • **Supportive:** +25 competence at start; +25 competence at end of each season.
+  • **Influential:** +25 visibility at start; +25 visibility at end of each season.
+  • **No spouse:** **100** firm capacity at start (no recurring capacity income).
+    Other spouse paths keep **50** firm capacity unless design changes.
+
+Capacity does not accrue per season except the **no spouse** rule above
+(front-loaded only).
+
+================================================================================
+END
+================================================================================

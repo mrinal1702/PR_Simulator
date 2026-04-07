@@ -1,0 +1,78 @@
+================================================================================
+REPUTATION RECOVERY SIMULATOR — CONVERSION MECHANICS (BACKEND / DESIGN REFERENCE)
+================================================================================
+Currency: EUR for money. Competence, visibility, and firm capacity are abstract
+scores on 0–100 (unless noted). This file defines how "worth" compares across
+axes so systems can trade / reward / price consistently.
+
+================================================================================
+PREMISE: EQUAL STARTING POWER AT THE BENCHMARK
+================================================================================
+Each primary axis has a **benchmark maximum** used for calibration—not every
+build starts at these numbers, but **when two stats sit at their benchmark on
+the same run, they are intended to represent equal in-game value** relative to
+each other.
+
+BENCHMARK TABLE (calibration anchors)
+--------------------------------------------------------------------------------
+Axis                 Symbol   Benchmark value   Notes
+--------------------------------------------------------------------------------
+Money (EUR)          M        80,000            Max starting cash (Portfolio Pivot)
+Competence           C        80                  High build on that axis (Summa Cum Basement)
+Visibility           V        80                  High build on that axis (Velvet Rolodex)
+Firm capacity        F        50                  Same for all starting builds (no spouse in baseline)
+
+Let V = one abstract "benchmark unit" of agency power. By design:
+    80,000 EUR  =  V
+    80 competence = V
+    80 visibility = V
+    50 firm capacity = V
+
+So at benchmark, **money : competence : visibility : capacity** in value terms
+follows **80,000 : 80 : 80 : 50** (1,000 EUR per comp/vis point at the line).
+
+================================================================================
+LINEAR CONVERSION FACTORS (BENCHMARK LINE)
+================================================================================
+Use these when you need "how many EUR is one point of X?" or to compare buffs.
+
+Per 1 point:
+  • Competence point   =  V/80   =  80,000/80 EUR  =  1,000 EUR equivalent
+  • Visibility point   =  V/80   =  1,000 EUR equivalent
+  • Firm capacity point =  V/50   =  80,000/50 EUR =  1,600 EUR equivalent
+
+Per 1 EUR (inverse):
+  • 1 EUR  =  80/80,000  competence-equivalent  =  0.001  "comp points"
+  • 1 EUR  =  80/80,000  visibility-equivalent  =  0.001  "vis points"
+  • 1 EUR  =  50/80,000  capacity-equivalent    =  0.000625  "cap points"
+
+Cross-stat (same total value V):
+  • 1 competence point  ≡  (50/80) capacity points  =  0.625 firm capacity points
+  • 1 visibility point  ≡  0.625 firm capacity points (same weight as competence)
+  • 1 firm capacity point  ≡  (80/50) competence points  =  1.6 competence points
+    (Capacity points are “rarer” per unit of V: fewer points cover the same value.)
+
+Competence vs visibility at benchmark: **1 : 1** (both use 80 for V).
+
+================================================================================
+HOW TO USE IN CODE / BALANCE
+================================================================================
+  • Treat buffs as **additive on the score** first; if you must convert a reward
+    to another currency for UI or a unified "power budget," multiply by the
+    factors above **relative to benchmark**—not as literal cash grants unless
+    the feature is literally cash.
+  • Starting builds are **not** all at benchmark on every axis; only the
+    calibration says what **one point means** when comparing systems.
+  • Spouse modifiers: tune using the same ratios so a +6 competence feels
+    comparable to +X EUR or +Y capacity (see spreadsheet / balance pass).
+
+================================================================================
+NOT IN SCOPE YET
+================================================================================
+  • Non-linear curves (diminishing returns) — add later on top of baseline.
+  • Campaign spend and reach formulas — separate doc when defined.
+  • Executive-tier employees (100k+ annual range) — late game.
+
+================================================================================
+END
+================================================================================

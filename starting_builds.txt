@@ -1,0 +1,168 @@
+================================================================================
+REPUTATION RECOVERY SIMULATOR — STARTING BUILDS (DESIGN DRAFT)
+================================================================================
+Starting numbers (EUR + scores) match **currency_baseline.txt**,
+**data/conversion_mechanics.txt**, and **data/build_value_budget.txt** (three
+builds share the same **Total_V**). Firm capacity **50** for those builds;
+**no spouse** starts at **100** firm capacity (see spouse section).
+================================================================================
+QUICK STAT TABLE (START OF GAME — BEFORE SPOUSE)
+================================================================================
+Build                    Starting EUR   Comp   Vis   Firm cap   Opening hire rule
+-----------------------  -------------  -----  ----  ---------  ---------------------------------
+The Velvet Rolodex         16,000        30     80      50       Two junior employees
+Summa Cum Basement         16,000        80     30      50       Two junior employees
+The Portfolio Pivot        80,000        22     24      50       One top mid-tier (up to 70k band)
+
+================================================================================
+
+BUILD 1 — QUIRKY NAME: "The Velvet Rolodex"
+--------------------------------------------------------------------------------
+Theme: Social butterfly. You know influential people, parties, gossip, friend
+circles. You move through rooms better than through spreadsheets.
+
+STARTING STATS (TIER — numbers later)
+  • Wealth:        LOW
+  • Competence:    LOW
+  • Visibility:    HIGH
+
+SHORT TAGLINE (for UI later)
+  Famous faces save your DMs. Spreadsheets do not.
+
+SECOND-PERSON BIO (player-facing)
+  You basically live in the overlap between "plus-one" and "plus-ten." Celeb
+  circles, launch parties, group chats that could move markets if anyone took
+  screenshots—you know who to bump into, who owes a favor, and which rumor
+  is fashion versus fact. School was… a phase. You are not pretending to be
+  a policy wonk; you are naturally good at selling the dream, and your dad
+  (and a few friends who should know better) tossed seed money at your firm
+  because you are very convincing before the receipts arrive. Execution?
+  That is a tomorrow problem. Today you have people knowledge, charm, and a
+  phone that never stops buzzing.
+
+--------------------------------------------------------------------------------
+
+BUILD 2 — QUIRKY NAME: "Summa Cum Basement"
+--------------------------------------------------------------------------------
+Theme: Top-of-class PR brain, zero runway, zero network. Book-smart, basement-
+operational.
+
+STARTING STATS (TIER — numbers later)
+  • Wealth:        LOW
+  • Competence:    HIGH
+  • Visibility:    LOW
+
+SHORT TAGLINE (for UI later)
+  You wrote the syllabus. You did not write the guest list.
+
+SECOND-PERSON BIO (player-facing)
+  You graduated like it was a competitive sport, then started a firm the way
+  other people start a side project—except yours has footnotes. You can
+  deconstruct a narrative arc before breakfast, but your Rolodex is mostly
+  PDFs and one cousin who works in compliance. You are operating out of your
+  parents’ basement (you call it "headquarters"; the echo agrees). Money is
+  thin; contacts are thinner—just enough here and there to prove you are not
+  imaginary. You are very good at the work and slightly haunted by how little
+  of the world has met you yet.
+
+--------------------------------------------------------------------------------
+
+BUILD 3 — QUIRKY NAME: "The Portfolio Pivot"
+--------------------------------------------------------------------------------
+Theme: Millionaire operator branching into PR. Cash and hires; instincts still
+on training wheels.
+
+STARTING STATS (TIER — numbers later)
+  • Wealth:        HIGH
+  • Competence:    LOW
+  • Visibility:    LOW
+
+SHORT TAGLINE (for UI later)
+  You can buy reach. You are still buying vocabulary.
+
+SECOND-PERSON BIO (player-facing)
+  You already own enough businesses that your accountant has an accountant.
+  Reputation management is the new toy—because diversification is a lifestyle,
+  and you get bored easily. You do not know PR the way you know EBITDA, but
+  you know one or two genuinely influential people, and you know how to hire
+  people who claim they do. Your plan is simple: pay for reach, delegate the
+  rest, and try not to confuse "headline" with "strategy" more than twice a
+  quarter. Confidence is an asset. Denial is… also present.
+
+================================================================================
+NOTES FOR LATER (MATH / BALANCE — NOT FINAL)
+================================================================================
+  • Align all three builds to the same "power budget" or economy band once
+    baseline numbers for wealth / competence / visibility are set.
+  • Social butterfly: high visibility should pull better client flow / scale;
+    low competence and low wealth cap execution and spend.
+  • Graduate: high competence drives convincingness / stability levers; low
+    visibility and low wealth gate opportunities until the player grows reach
+    or network.
+  • Millionaire: high wealth drives reach strongly; low competence and low
+    visibility keep the fantasy honest (money is not free mastery or fame).
+
+================================================================================
+USER JOURNEY (DRAFT — TRACK FOR ONBOARDING / IMPLEMENTATION)
+================================================================================
+  1. Play / landing — short site + game blurb (design later).
+  2. Play Game — player enters name + gender (2 options for now).
+  3. Starting build — pick 1 of 3 (see builds above).
+  4. Spouse — pick 1 of 3 types OR "no spouse."
+       • If a spouse is chosen: enter spouse name + spouse gender (2 options).
+       • If "no spouse": skip spouse identity; player gains firm capacity and
+         keeps more capital free to reinvest (exact math TBD; see conversion doc).
+  5. (Later) growth focus, pre-season, etc. — not defined in this file yet.
+
+================================================================================
+SPOUSE OPTIONS (DRAFT)
+================================================================================
+On this screen the player sees four choices: three spouse archetypes + no spouse.
+One-line blurbs are for the picker UI; numbers TBD when currencies are defined.
+
+--------------------------------------------------------------------------------
+SUPPORTIVE SPOUSE — mechanical bonus: COMPETENCE
+--------------------------------------------------------------------------------
+One-liner (UI)
+  They proofread your life—and occasionally stop you from emailing while mad.
+
+Mechanics (numbers tunable)
+  • +25 competence at start **and** +25 competence at end of each season.
+
+--------------------------------------------------------------------------------
+INFLUENTIAL SPOUSE — mechanical bonus: VISIBILITY
+--------------------------------------------------------------------------------
+One-liner (UI)
+  They know someone who knows someone, and suddenly you’re on the list.
+
+Mechanics (numbers tunable)
+  • +25 visibility at start **and** +25 visibility at end of each season.
+
+--------------------------------------------------------------------------------
+RICH SPOUSE — mechanical bonus: WEALTH
+--------------------------------------------------------------------------------
+One-liner (UI)
+  Date night sometimes feels like a soft round of funding with dessert.
+
+Mechanics (numbers tunable)
+  • +25,000 EUR at start **and** +25,000 EUR at end of each season.
+
+--------------------------------------------------------------------------------
+NO SPOUSE — mechanical bonus: FIRM CAPACITY (wild card)
+--------------------------------------------------------------------------------
+One-liner (UI)
+  No merge conflicts on the calendar—and more cash stays in the firm piggy bank.
+
+Mechanics
+  • Firm capacity **100** at start (double the normal 50). **No** recurring
+    capacity grants at season end—capacity is **only** set at start.
+  • Other spouse types keep **50** starting firm capacity unless you change
+    rules later.
+
+Notes (design)
+  • Three builds are **equal Total_V** before spouse; spouse choice then
+    skews power (rich cash / supportive comp / influential vis / no-spouse cap).
+
+================================================================================
+END OF DRAFT
+================================================================================
