@@ -20,6 +20,8 @@ export type NewGamePayload = {
   gender: GenderValue;
   buildId: BuildId;
   spouseType: SpouseType;
+  /** Set when spouseType is not `none`; otherwise null. */
+  spouseGender: GenderValue | null;
   createdAt: string;
 };
 
@@ -36,6 +38,7 @@ export function NewGameWizard() {
 
   const [buildId, setBuildId] = useState<BuildId | null>(null);
   const [spouseType, setSpouseType] = useState<SpouseType | null>(null);
+  const [spouseGender, setSpouseGender] = useState<GenderValue | "">("");
 
   const step1Valid = useMemo(
     () =>
@@ -45,14 +48,22 @@ export function NewGameWizard() {
     [playerName, agencyName, gender]
   );
 
+  const step3Valid = useMemo(() => {
+    if (spouseType === null) return false;
+    if (spouseType === "none") return true;
+    return spouseGender !== "";
+  }, [spouseType, spouseGender]);
+
   const persistAndFinish = useCallback(() => {
     if (!buildId || spouseType === null) return;
+    if (spouseType !== "none" && spouseGender === "") return;
     const payload: NewGamePayload = {
       playerName: playerName.trim(),
       agencyName: agencyName.trim(),
       gender: gender as GenderValue,
       buildId,
       spouseType,
+      spouseGender: spouseType === "none" ? null : (spouseGender as GenderValue),
       createdAt: new Date().toISOString(),
     };
     try {
@@ -61,7 +72,12 @@ export function NewGameWizard() {
       /* ignore quota / private mode */
     }
     setStep(4);
-  }, [playerName, agencyName, gender, buildId, spouseType]);
+  }, [playerName, agencyName, gender, buildId, spouseType, spouseGender]);
+
+  const selectSpouseType = (t: SpouseType) => {
+    setSpouseType(t);
+    if (t === "none") setSpouseGender("");
+  };
 
   return (
     <div className="shell shell-wide">
@@ -195,7 +211,7 @@ export function NewGameWizard() {
                 key={s.type}
                 type="button"
                 className={`choice-card${spouseType === s.type ? " selected" : ""}`}
-                onClick={() => setSpouseType(s.type)}
+                onClick={() => selectSpouseType(s.type)}
               >
                 <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>{s.title}</h3>
                 <p style={{ margin: "0 0 0.5rem", fontSize: "0.9rem" }}>{s.blurb}</p>
@@ -203,6 +219,39 @@ export function NewGameWizard() {
               </button>
             ))}
           </div>
+
+          {spouseType !== null && spouseType !== "none" && (
+            <fieldset
+              className="field"
+              style={{ border: "none", padding: 0, margin: "1.5rem 0 0" }}
+            >
+              <legend
+                style={{
+                  fontSize: "0.875rem",
+                  fontWeight: 600,
+                  color: "var(--text-muted)",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                Spouse gender
+              </legend>
+              <div className="gender-row">
+                {GENDER_OPTIONS.map((g) => (
+                  <label key={`spouse-${g.value}`}>
+                    <input
+                      type="radio"
+                      name="spouse-gender"
+                      value={g.value}
+                      checked={spouseGender === g.value}
+                      onChange={() => setSpouseGender(g.value)}
+                    />
+                    {g.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
+
           <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.75rem", flexWrap: "wrap" }}>
             <button type="button" className="btn btn-secondary" onClick={() => setStep(2)}>
               Back
@@ -210,7 +259,7 @@ export function NewGameWizard() {
             <button
               type="button"
               className="btn btn-primary"
-              disabled={spouseType === null}
+              disabled={!step3Valid}
               onClick={persistAndFinish}
             >
               Start agency
@@ -235,6 +284,15 @@ export function NewGameWizard() {
             <li>Origin: {BUILDS.find((b) => b.id === buildId)?.name}</li>
             <li>
               Spouse: {SPOUSE_OPTIONS.find((s) => s.type === spouseType)?.title ?? "—"}
+              {spouseType !== null &&
+                spouseType !== "none" &&
+                spouseGender &&
+                isGenderValue(spouseGender) && (
+                  <>
+                    {" "}
+                    · {GENDER_OPTIONS.find((g) => g.value === spouseGender)?.label}
+                  </>
+                )}
             </li>
           </ul>
           <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.5rem", flexWrap: "wrap" }}>

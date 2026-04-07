@@ -109,7 +109,7 @@ USER JOURNEY (DRAFT — TRACK FOR ONBOARDING / IMPLEMENTATION)
   2. Play Game — player enters name + gender (2 options for now).
   3. Starting build — pick 1 of 3 (see builds above).
   4. Spouse — pick 1 of 3 types OR "no spouse."
-       • If a spouse is chosen: enter spouse name + spouse gender (2 options).
+       • If a spouse is chosen: spouse gender (male / female / non-binary); spouse name TBD in UI.
        • If "no spouse": skip spouse identity; player gains firm capacity and
          keeps more capital free to reinvest (exact math TBD; see conversion doc).
   5. (Later) growth focus, pre-season, etc. — not defined in this file yet.
