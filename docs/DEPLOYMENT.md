@@ -22,15 +22,80 @@ If you need anonymous play before auth, add separate policies later (not in this
 
 ---
 
-## 2. Vercel
+## 2. Push the project to GitHub (do this before Vercel)
 
-1. Push this repo to GitHub/GitLab/Bitbucket (see **Git** below).
-2. Import the repo in [Vercel](https://vercel.com).
-3. Set **Root Directory** to `web` (important).
-4. Set **Environment Variables** (Production + Preview):
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-5. Deploy. The placeholder page at `/` should build and show the build table.
+Vercel’s **Import Git Repository** needs your code on GitHub (or GitLab/Bitbucket). Your machine already has a local repo with commits; you only need a **remote** and a **push**.
+
+### 2a. Create an empty repo on GitHub
+
+1. Open [https://github.com/new](https://github.com/new).
+2. **Repository name:** e.g. `PR_Simulator` or `Disaster_Agency_Simulator` (your choice).
+3. Choose **Public** or **Private**.
+4. **Do not** check “Add a README”, “Add .gitignore”, or “Choose a license” (keeps the first push simple).
+5. Click **Create repository**.
+
+GitHub will show commands; use the steps below instead so paths match your PC.
+
+### 2b. Connect and push (Windows, PowerShell)
+
+In a terminal, from your project root (folder that contains `web/` and `supabase/`):
+
+```powershell
+cd c:\Users\trive\PR_Simulator
+git remote add origin https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME.git
+git push -u origin main
+```
+
+- Replace `YOUR_GITHUB_USERNAME` and `YOUR_REPO_NAME` with the real values from the GitHub repo URL.
+- If Git asks you to log in, use a **Personal Access Token** (GitHub → Settings → Developer settings → Personal access tokens) as the password when using HTTPS, or set up **SSH** and use the `git@github.com:...` URL instead of `https://...`.
+
+If you see **“remote origin already exists”**, run:
+
+```powershell
+git remote set-url origin https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME.git
+git push -u origin main
+```
+
+After this, your code is on GitHub and you can import it in Vercel.
+
+---
+
+## 3. Vercel: New project — what to click
+
+### Import vs Skip
+
+- **Import Git Repository** — **Use this.** Connects Vercel to GitHub so every push to `main` can trigger a new deployment. This is what you want.
+- **Skip** — Deploys without linking Git (manual uploads or CLI). **Avoid for now**; you lose automatic deploys from pushes.
+
+### Step-by-step in the Vercel dashboard
+
+1. Log in at [https://vercel.com](https://vercel.com) (use **Continue with GitHub** if your code is on GitHub so Vercel can see your repos).
+2. Click **Add New…** → **Project** (or **New Project**).
+3. On **Import Git Repository**, find **your GitHub account** in the list. If the repo is missing, click **Adjust GitHub App Permissions** / **Configure GitHub App** and grant access to **all repos** or **only selected** repos, then pick your new repo.
+4. Click **Import** next to `PR_Simulator` (or whatever you named it).
+
+### Configure the project (critical)
+
+On the **Configure Project** screen:
+
+1. **Framework Preset:** should auto-detect **Next.js**. If not, choose Next.js.
+2. **Root Directory** — click **Edit**, set it to **`web`**, then **Continue**.  
+   The Next.js app lives in `web/`; if you leave root as `.`, the build will fail.
+3. **Build and Output Settings** — defaults are usually fine (`npm run build` / Next default output).
+4. **Environment Variables** — add (for **Production** and **Preview** — use “Select all” or add each twice if needed):
+   - `NEXT_PUBLIC_SUPABASE_URL` = your Supabase Project URL  
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = your Supabase anon public key  
+
+   (Copy from Supabase → **Project Settings → API**.)
+
+5. Click **Deploy**.
+
+First deploy may take 1–2 minutes. When it’s green, open the **Visit** URL — you should see the placeholder page.
+
+### After deploy
+
+- Every `git push` to `main` will create a new deployment (unless you change settings).
+- Redeploy from **Deployments** tab if you only changed env vars in Vercel.
 
 ### Local preview
 
@@ -41,28 +106,6 @@ copy .env.local.example .env.local
 npm install
 npm run dev
 ```
-
----
-
-## 3. Git (first push)
-
-This folder may not be a git repo yet. From the repo root:
-
-```bash
-git init
-git add .
-git commit -m "Initial PR Simulator design, Supabase schema, Next.js shell"
-```
-
-Create an empty repository on GitHub (no README), then:
-
-```bash
-git remote add origin https://github.com/YOUR_USER/YOUR_REPO.git
-git branch -M main
-git push -u origin main
-```
-
-Use your Git host; SSH URLs work too.
 
 ---
 
