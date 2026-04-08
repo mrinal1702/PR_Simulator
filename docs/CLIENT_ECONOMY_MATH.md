@@ -48,3 +48,19 @@ Weights come from `typeSkewWeights` → `typeSkewProbabilities`, **branching by 
 ## Tuning
 
 Constants live at the top of `clientEconomyMath.ts`.
+
+---
+
+## In-season engagement (EUR and capacity)
+
+Implemented in `web/lib/seasonClientLoop.ts` (with client construction in `buildSeasonClients` and UI in `SeasonClientCaseScreen`).
+
+1. **Queue**: From the season hub, **Roll season clients** fills `clientsQueue` for that season. Clients are processed **in order**; the case screen always shows the client at `currentClientIndex`.
+
+2. **Start of case (automatic)**: When the player opens the client case route, the game **credits** the client’s **Season 1 tranche** (`budgetSeason1`, from `splitBudgetBySeason`) to **agency EUR** and records a run with `solutionId: "pending"`. There is no separate accept/decline step before this.
+
+3. **Priced solutions**: Four archetypes (`solution_1` … `solution_4`) have EUR and capacity costs **derived from** `budgetSeason1`, client kind scaling, and fixed share rules — see `buildSolutionOptionsForClient`. Creative **names and briefs** are merged from the scenario record when present (`mergeScenarioSolutionCopy` / `buildSolutionOptionsForClientWithScenario`).
+
+4. **Do nothing / decline client**: Choosing the reject option **subtracts** `budgetSeason1` from EUR (same amount that was credited), so **net cash is unchanged** vs before opening that client’s case. No capacity is spent.
+
+5. **Execute a campaign**: Subtracts the option’s `costBudget` and `costCapacity`; computes spread / effectiveness / satisfaction via `resolveClientOutcome`.

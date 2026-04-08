@@ -4,9 +4,9 @@ Use this file as the fastest context for a fresh agent.
 
 ## Product state
 
-- Deployed web app with onboarding, pre-season flow, and early season hub.
+- Deployed web app with onboarding, pre-season flow, **season hub**, and a **dedicated in-season client case** screen.
 - Single local save slot is active (`dma-save-slot`) with Continue routing.
-- Seasons are planned through season 7; season gameplay proper is still a placeholder, but season entry flow is now active.
+- Seasons are planned through season 7; **Season 1–style client queue** (roll → sequential cases → solutions) is implemented; deeper multi-season / round-2 campaign logic can build on `seasonLoopBySeason`.
 
 ## Implemented flow
 
@@ -56,11 +56,18 @@ Use this file as the fastest context for a fresh agent.
      - themed modal shows flavor lines + transparent numeric gains
    - Budget safety:
      - blocks unaffordable options and any action that would make EUR negative
-5. Season screen (`/game/season/[season]`)
-   - Shows agency stats and employees panels
-   - Hides Talent Bazaar (pre-season-only)
-   - Provides `Invite client` action button (placeholder)
-6. Placeholder route remains:
+5. Season hub (`/game/season/[season]`)
+   - Component: `SeasonHubScreen` (also exported as `SeasonScreen` from `web/components/SeasonScreen.tsx` for a stable import path).
+   - Agency stats, employees, save (same patterns as pre-season).
+   - No Talent Bazaar (pre-season only).
+   - **`Roll season clients`**: deterministic queue for that season (`plannedClientCount`, `clientsQueue`, `runs`, `currentClientIndex`) stored under `save.seasonLoopBySeason[season]`.
+   - **`Open current client case`**: navigates to `/game/season/[season]/client` when there is a current client and the queue is not finished.
+6. Client case (`/game/season/[season]/client`)
+   - Component: `SeasonClientCaseScreen`.
+   - **No upfront accept/decline.** Opening the page **starts the engagement**: Season 1 tranche (`budgetSeason1`) is **credited** to EUR and a run is recorded with `solutionId: "pending"` (see `seasonClientLoop.ts`).
+   - Player picks one of **four priced solution archetypes** (creative titles/briefs merged from `data/scenario_database.json` via `pickScenarioForClient` + archetype ids 1–4) or **`Do nothing / decline client`**, which **refunds** the Season 1 tranche (net **zero** cash change vs before that client) and advances the queue.
+   - Executing a priced solution subtracts that option’s EUR and capacity; outcome spread/effectiveness/satisfaction from `resolveClientOutcome`.
+7. Placeholder route remains:
    - `/game/postseason/[season]`
 
 ## Save model (single slot)
@@ -75,6 +82,7 @@ Persisted fields:
 - derived: `reputation`
 - baseline snapshot: `initialResources`, `initialReputation`
 - hiring state: `hiresBySeason`, `employees[]`
+- **in-season client loop**: `seasonLoopBySeason` — optional map keyed by season string → `SeasonLoopState` (`plannedClientCount`, `currentClientIndex`, `clientsQueue`, `runs`, `lastOutcome`). See `web/lib/seasonClientLoop.ts`.
 - metadata: `createdAt`
 
 Storage helpers: `web/lib/saveGameStorage.ts`
@@ -89,7 +97,9 @@ Notes:
 
 ## Economy (current constants)
 
-Primary location: `web/lib/gameEconomy.ts`
+Primary location: `web/lib/gameEconomy.ts` (starting builds, spouse modifiers, Total_V benchmark).
+
+**Client-facing in-season pricing and queue** (authoritative for client math): `web/lib/clientEconomyMath.ts`, `web/lib/seasonClientLoop.ts`. Human-readable summary: `docs/CLIENT_ECONOMY_MATH.md`.
 
 - Build IDs: `velvet_rolodex`, `summa_cum_basement`, `portfolio_pivot`
 - Spouse IDs: `supportive`, `influential`, `rich`, `none`
@@ -143,9 +153,23 @@ UI behavior:
 - `web/components/HomeMenu.tsx`: Continue/New game entry buttons
 - `web/components/PreSeasonScreen.tsx`: pre-season hub (focus, employees, breakdowns, season-start confirmation)
 - `web/components/HiringScreen.tsx`: dedicated hiring flow and hire outcome modal
-- `web/components/SeasonScreen.tsx`: early in-season hub
+- `web/components/SeasonHubScreen.tsx`: season hub (roll queue, link to client case)
+- `web/components/SeasonClientCaseScreen.tsx`: dedicated client scenario + solution choices
+- `web/components/SeasonScreen.tsx`: re-exports `SeasonHubScreen` as `SeasonScreen`
+- `web/lib/seasonClientLoop.ts`, `web/lib/scenarios.ts`: client queue, solution costs, scenario pick
+- `data/scenario_database.json`: creative scenario pool (typed by client kind + budget tier)
 - `web/lib/hiring.ts`: candidate generation, band logic, productivity/capacity mapping, campaign manager split
 - `web/lib/budgetGuard.ts`: non-negative EUR guard helpers
+
+## Manual verification (season client flow)
+
+Useful checks before wider QA:
+
+1. From season hub, **Roll season clients** once; note **Planned client count** and **Current N / N**.
+2. **Open current client case** — on load, **EUR** should increase by this client’s **Season 1** amount (shown on the case screen).
+3. **Do nothing / decline client** — EUR should return to the value **before** step 2 (net zero for that client).
+4. Accept a **priced solution** (if affordable) — EUR and capacity drop by the card’s costs; hub advances to the next client index after returning to the hub or opening the case again.
+5. Repeat until the queue is finished; **Roll** should be disabled for that season once the queue exists (already rolled).
 
 ## Supabase status
 
@@ -155,16 +179,16 @@ UI behavior:
 
 ## Safe next tasks for another agent
 
-1. Implement `Invite client` flow and first in-season client interaction loop.
-2. Extend stat breakdown ledger to include client-driven deltas/events (keep zero-line suppression behavior).
-3. Add intern expiry after one season transition.
-4. Persist run state to Supabase (while keeping local fallback).
-5. Add automated tests for:
+1. Extend client loop: Season 2 follow-up spend, reputation deltas, ledger lines in stat breakdowns (keep zero-line suppression).
+2. Add intern expiry after one season transition.
+3. Persist run state to Supabase (while keeping local fallback).
+4. Add automated tests for:
    - save/load/continue path
    - non-negative budget guard behavior
-   - deterministic candidate pool stability
+   - deterministic candidate pool stability (hiring + client kind / budget rolls)
    - unique candidate name/description set guarantees
    - metric band selection
    - spouse modifier invariants
-   - pre-season->season transition warning and phase routing.
+   - pre-season → season transition warning and phase routing
+   - **season client queue**: roll idempotency, sequential index, `pending` → solution transition, “do nothing” refund equals credited `budgetSeason1`
 

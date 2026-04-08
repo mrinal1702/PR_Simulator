@@ -2,6 +2,8 @@
 
 This document defines how scenario writing should work for PR Simulator.
 
+**Data pipeline**: Author scenarios in `data/scenario_database.json`. At runtime, `web/lib/scenarios.ts` (`pickScenarioForClient`) picks a record that matches **client type** and **budget tier band**, deterministically from a seed. **EUR amounts are never authored in JSON** — budgets come from `clientEconomyMath` + `splitBudgetBySeason`; solution **prices** come from `seasonClientLoop` archetype shares. Only **copy** (title, problem, solution names/briefs) is scenario-driven.
+
 ## Purpose
 
 - Create memorable, replayable client scenarios for a PR/reputation management game.
