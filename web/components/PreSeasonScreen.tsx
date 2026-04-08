@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import { getMetricBand, metricPercent } from "@/lib/metricScales";
 
 const SAVE_KEY = "dma-save-slot";
 
@@ -20,6 +21,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
     }
   });
   const [notice, setNotice] = useState<string>("");
+  const [showStats, setShowStats] = useState(false);
 
   const title = useMemo(() => `Pre-season ${season}`, [season]);
 
@@ -76,6 +78,43 @@ export function PreSeasonScreen({ season }: { season: number }) {
       </header>
 
       <section>
+        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
+          <button type="button" className="btn btn-secondary" onClick={() => setShowStats((v) => !v)}>
+            {showStats ? "Hide agency stats" : "Agency stats"}
+          </button>
+        </div>
+
+        {showStats ? (
+          <div className="agency-stats-panel">
+            <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Agency snapshot</h3>
+            <p className="muted" style={{ marginTop: 0 }}>
+              Cash: EUR {save.resources.eur.toLocaleString("en-GB")}
+            </p>
+
+            <MetricRow
+              label="Reputation"
+              value={save.reputation ?? 5}
+              bandLabel={getMetricBand("reputation", save.reputation ?? 5).label}
+              color={getMetricBand("reputation", save.reputation ?? 5).color}
+              percent={metricPercent("reputation", save.reputation ?? 5)}
+            />
+            <MetricRow
+              label="Visibility"
+              value={save.resources.visibility}
+              bandLabel={getMetricBand("visibility", save.resources.visibility).label}
+              color={getMetricBand("visibility", save.resources.visibility).color}
+              percent={metricPercent("visibility", save.resources.visibility)}
+            />
+            <MetricRow
+              label="Competence"
+              value={save.resources.competence}
+              bandLabel={getMetricBand("competence", save.resources.competence).label}
+              color={getMetricBand("competence", save.resources.competence).color}
+              percent={metricPercent("competence", save.resources.competence)}
+            />
+          </div>
+        ) : null}
+
         <div className="card-grid cols-2" style={{ marginTop: "1rem" }}>
           <button
             type="button"
@@ -107,6 +146,34 @@ export function PreSeasonScreen({ season }: { season: number }) {
           </p>
         </div>
       </section>
+    </div>
+  );
+}
+
+function MetricRow({
+  label,
+  value,
+  bandLabel,
+  color,
+  percent,
+}: {
+  label: string;
+  value: number;
+  bandLabel: string;
+  color: string;
+  percent: number;
+}) {
+  return (
+    <div className="metric-row">
+      <div className="metric-row-top">
+        <strong>{label}</strong>
+        <span className="muted">
+          {value} · {bandLabel}
+        </span>
+      </div>
+      <div className="metric-track" role="presentation">
+        <div className="metric-fill" style={{ width: `${percent}%`, background: color }} />
+      </div>
     </div>
   );
 }

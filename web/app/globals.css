@@ -225,3 +225,38 @@ h3 {
 .step-dots span.active {
   background: var(--accent);
 }
+
+.agency-stats-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 1rem 1rem 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.metric-row {
+  margin-bottom: 0.8rem;
+}
+
+.metric-row-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.92rem;
+}
+
+.metric-track {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ef4444 0%, #eab308 50%, #22c55e 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-fill {
+  height: 100%;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
+}
