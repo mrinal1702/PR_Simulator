@@ -5,6 +5,7 @@ import {
   type ClientKind,
 } from "@/lib/clientEconomyMath";
 import { pickScenarioForClient } from "@/lib/scenarios";
+import { computeSeason1SolutionMetrics } from "@/lib/solutionOutcomeMath";
 
 export type { ClientKind };
 export type ClientPreferenceMotive = "spread_first" | "effectiveness_first" | "balanced";
@@ -28,6 +29,11 @@ export type SeasonClient = {
   scenarioSolutions: ScenarioSolutionLine[];
   hiddenDiscipline: number;
   hiddenPreferenceMotive: ClientPreferenceMotive;
+  /**
+   * Weight on reach (message spread) in satisfaction; effectiveness weight is `1 − this`.
+   * Set at roll time: {@link baseReachWeightForMotive} for motive, plus deterministic jitter.
+   */
+  satisfactionReachWeight?: number;
 };
 
 /** `pending` = accepted, waiting for solution choice (not shown as a player-facing option). */
@@ -47,6 +53,32 @@ export type SolutionArchetype =
   | "best"
   | "reject";
 
+export type ArchetypeBasePct = {
+  /** Reach (message spread), 0–100. */
+  reach: number;
+  /** Effectiveness (convincing execution), 0–100. */
+  effectiveness: number;
+};
+
+/**
+ * Pre-variance base profile per archetype (0–100% each).
+ * Final scores use 40% this + 60% variance (`computeSeason1SolutionMetrics`).
+ * Uniform random archetype → E[reach] = E[effectiveness] = 50 before variance.
+ *
+ * | Archetype           | Role                          |
+ * |---------------------|-------------------------------|
+ * | minimal             | minimum reach & effectiveness |
+ * | high_reach          | high reach, low effectiveness |
+ * | high_effectiveness  | low reach, high effectiveness |
+ * | best                | maximum reach & effectiveness |
+ */
+export const SOLUTION_ARCHETYPE_BASE_PCT: Record<Exclude<SolutionArchetype, "reject">, ArchetypeBasePct> = {
+  minimal: { reach: 25, effectiveness: 25 },
+  high_reach: { reach: 70, effectiveness: 30 },
+  high_effectiveness: { reach: 30, effectiveness: 70 },
+  best: { reach: 75, effectiveness: 75 },
+};
+
 export type SolutionOption = {
   id: SolutionId;
   archetype: SolutionArchetype;
@@ -65,6 +97,21 @@ export type ClientOutcome = {
   satisfaction: number;
 };
 
+/** Post-season 1+ boost step applied to a resolved campaign (per client). */
+export type PostSeasonRunRecord = {
+  choice: "reach" | "effectiveness" | "none";
+  /** Integer percentage points added (1–5), 0 if none. */
+  boostPointsApplied: number;
+  /** Final reach % (0–100) after boost. */
+  reachPercent: number;
+  /** Final effectiveness % (0–100) after boost. */
+  effectivenessPercent: number;
+  /** Reputation change from this resolution (half-arc rules when arc completeness is 50%). */
+  reputationDelta: number;
+  /** Firm visibility gained from client satisfaction for this resolution. */
+  visibilityGain: number;
+};
+
 export type SeasonClientRun = {
   clientId: string;
   accepted: boolean;
@@ -74,6 +121,8 @@ export type SeasonClientRun = {
   costBudget?: number;
   costCapacity?: number;
   solutionTitle?: string;
+  /** Filled after the player completes this scenario in the post-season results flow. */
+  postSeason?: PostSeasonRunRecord;
 };
 
 export type SeasonLoopState = {
@@ -99,7 +148,9 @@ type ExecutableSolutionDef = {
   archetype: Exclude<SolutionArchetype, "reject">;
   title: string;
   description: string;
+  /** Message spread base (0–100); mirrors {@link SOLUTION_ARCHETYPE_BASE_PCT}[archetype].reach. */
   baseSpread: number;
+  /** Effectiveness base (0–100); mirrors {@link SOLUTION_ARCHETYPE_BASE_PCT}[archetype].effectiveness. */
   baseEffectiveness: number;
   /** Share of Season 1 budget tranche (round 1 execution). */
   budgetSeason1Share: number;
@@ -113,8 +164,8 @@ const EXECUTABLE_SOLUTION_DEFS: ExecutableSolutionDef[] = [
     archetype: "minimal",
     title: "Low-footprint response",
     description: "Lean response with minimal spend.",
-    baseSpread: 30,
-    baseEffectiveness: 30,
+    baseSpread: SOLUTION_ARCHETYPE_BASE_PCT.minimal.reach,
+    baseEffectiveness: SOLUTION_ARCHETYPE_BASE_PCT.minimal.effectiveness,
     budgetSeason1Share: 0.1,
     baseCapacity: 30,
   },
@@ -123,8 +174,8 @@ const EXECUTABLE_SOLUTION_DEFS: ExecutableSolutionDef[] = [
     archetype: "high_effectiveness",
     title: "Precision response",
     description: "Capacity-heavy execution for stronger message quality.",
-    baseSpread: 32,
-    baseEffectiveness: 68,
+    baseSpread: SOLUTION_ARCHETYPE_BASE_PCT.high_effectiveness.reach,
+    baseEffectiveness: SOLUTION_ARCHETYPE_BASE_PCT.high_effectiveness.effectiveness,
     budgetSeason1Share: 0.3,
     baseCapacity: 45,
   },
@@ -133,8 +184,8 @@ const EXECUTABLE_SOLUTION_DEFS: ExecutableSolutionDef[] = [
     archetype: "high_reach",
     title: "Amplified push",
     description: "Budget-heavy push to maximize message spread.",
-    baseSpread: 70,
-    baseEffectiveness: 35,
+    baseSpread: SOLUTION_ARCHETYPE_BASE_PCT.high_reach.reach,
+    baseEffectiveness: SOLUTION_ARCHETYPE_BASE_PCT.high_reach.effectiveness,
     budgetSeason1Share: 0.4,
     baseCapacity: 35,
   },
@@ -143,8 +194,8 @@ const EXECUTABLE_SOLUTION_DEFS: ExecutableSolutionDef[] = [
     archetype: "best",
     title: "Full-spectrum campaign",
     description: "High budget and high capacity for broad and strong execution.",
-    baseSpread: 76,
-    baseEffectiveness: 76,
+    baseSpread: SOLUTION_ARCHETYPE_BASE_PCT.best.reach,
+    baseEffectiveness: SOLUTION_ARCHETYPE_BASE_PCT.best.effectiveness,
     budgetSeason1Share: 0.5,
     baseCapacity: 50,
   },
@@ -211,6 +262,44 @@ export function buildSolutionOptionsForClientWithScenario(client: SeasonClient):
   return mergeScenarioSolutionCopy(client, buildSolutionOptionsForClient(client));
 }
 
+/** Motive-only baseline reach weights (before per-client jitter). */
+export function baseReachWeightForMotive(motive: ClientPreferenceMotive): number {
+  if (motive === "spread_first") return 0.72;
+  if (motive === "effectiveness_first") return 0.3;
+  return 0.5;
+}
+
+/** Max absolute deviation from the motive base (e.g. 0.72 → 0.64…0.80 when 0.08). */
+const SATISFACTION_REACH_WEIGHT_JITTER = 0.08;
+const SATISFACTION_REACH_WEIGHT_MIN = 0.12;
+const SATISFACTION_REACH_WEIGHT_MAX = 0.88;
+
+function rollSatisfactionReachWeight(baseReach: number, salt: string): number {
+  const n = hashNumber(salt);
+  const t = (n % 10001) / 10000;
+  const jitter = (t * 2 - 1) * SATISFACTION_REACH_WEIGHT_JITTER;
+  const w = baseReach + jitter;
+  return Math.max(SATISFACTION_REACH_WEIGHT_MIN, Math.min(SATISFACTION_REACH_WEIGHT_MAX, w));
+}
+
+/** Reach weight used in satisfaction; falls back to motive baseline if missing (older saves). */
+export function getSatisfactionReachWeight(client: SeasonClient): number {
+  const w = client.satisfactionReachWeight;
+  if (w != null && Number.isFinite(w)) {
+    return Math.max(0, Math.min(1, w));
+  }
+  return baseReachWeightForMotive(client.hiddenPreferenceMotive);
+}
+
+export function computeSatisfactionFromWeights(
+  spread: number,
+  effectiveness: number,
+  reachWeight: number
+): number {
+  const rw = Math.max(0, Math.min(1, reachWeight));
+  return Math.round(spread * rw + effectiveness * (1 - rw));
+}
+
 export function buildSeasonClients(
   seedBase: string,
   season: number,
@@ -238,6 +327,8 @@ export function buildSeasonClients(
     const split = splitBudgetBySeason(total);
     const scenario = pickScenarioForClient(kind, tier, `${kindSeed}|scn|${tier}`, exclude);
     exclude.add(scenario.scenario_id);
+    const baseReach = baseReachWeightForMotive(motive);
+    const satisfactionReachWeight = rollSatisfactionReachWeight(baseReach, `${seedBase}-satw-${season}-${i}`);
     clients.push({
       id: `s${season}-c${i + 1}`,
       displayName: scenario.client_name ?? scenario.client_subtype,
@@ -256,6 +347,7 @@ export function buildSeasonClients(
       hiddenDiscipline:
         kind === "corporate" ? 45 + (h % 41) : kind === "small_business" ? 38 + (h % 45) : 30 + (h % 56),
       hiddenPreferenceMotive: motive,
+      satisfactionReachWeight,
     });
   }
 
@@ -284,29 +376,24 @@ export function resolveClientOutcome(args: {
   visibility: number;
   competence: number;
   discipline: number;
-  motive: ClientPreferenceMotive;
+  /** Weight on reach in satisfaction (0–1); effectiveness uses `1 − this`. Set at client creation with jitter around motive baseline. */
+  satisfactionReachWeight: number;
 }): ClientOutcome {
-  const n = hashNumber(args.seed);
-  const variance = (offset: number, amp: number) => ((n + offset) % (amp * 2 + 1)) - amp;
-  const disciplineSwing = (args.discipline - 50) * 0.35;
+  const { reach: messageSpread, effectiveness: messageEffectiveness } = computeSeason1SolutionMetrics({
+    baseReach: args.solution.baseSpread,
+    baseEffectiveness: args.solution.baseEffectiveness,
+    visibility: args.visibility,
+    competence: args.competence,
+    discipline: args.discipline,
+    seed: args.seed,
+  });
 
-  const messageSpread = Math.max(
-    0,
-    Math.round(args.solution.baseSpread + args.visibility * 0.18 + args.competence * 0.08 + disciplineSwing + variance(7, 10))
+  const satisfaction = computeSatisfactionFromWeights(
+    messageSpread,
+    messageEffectiveness,
+    args.satisfactionReachWeight
   );
-  const messageEffectiveness = Math.max(
-    0,
-    Math.round(args.solution.baseEffectiveness + args.competence * 0.22 + disciplineSwing + variance(13, 9))
-  );
-
-  const satisfaction = computeSatisfaction(messageSpread, messageEffectiveness, args.motive);
   return { messageSpread, messageEffectiveness, satisfaction };
-}
-
-function computeSatisfaction(spread: number, effectiveness: number, motive: ClientPreferenceMotive): number {
-  if (motive === "spread_first") return Math.round(spread * 0.72 + effectiveness * 0.28);
-  if (motive === "effectiveness_first") return Math.round(spread * 0.3 + effectiveness * 0.7);
-  return Math.round(spread * 0.5 + effectiveness * 0.5);
 }
 
 function hashNumber(value: string): number {

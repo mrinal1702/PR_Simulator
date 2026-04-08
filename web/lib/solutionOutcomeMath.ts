@@ -1,0 +1,145 @@
+/**
+ * Season 1 campaign outcome scores (reach + effectiveness), 0–100 each.
+ *
+ * Architecture (later hooks, not implemented here):
+ * - These are the **Season 1 main** solution metrics.
+ * - Optional **small** boost after Season 1 post-season.
+ * - Optional **larger** boost in Season 2 main.
+ * - Final values then feed **client satisfaction** and **reputation** deltas.
+ *
+ * Normalization knots are aligned with `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md`
+ * (empirical Q1/median/Q3, ~80 benchmark, stacked pre-season ceilings).
+ */
+
+const BASE_WEIGHT = 0.4;
+const VARIANCE_WEIGHT = 0.6;
+
+/** Reach variance: 60% visibility + 35% competence + 5% random */
+const REACH_W_VIS = 0.6;
+const REACH_W_COMP = 0.35;
+const REACH_W_RAND = 0.05;
+
+/** Effectiveness variance: 70% competence + 25% discipline + 5% random */
+const EFF_W_COMP = 0.7;
+const EFF_W_DISC = 0.25;
+const EFF_W_RAND = 0.05;
+
+/**
+ * Map raw visibility → 0–100 “agency strength” for reach variance.
+ * Knots: empirical Q1/median/Q3, benchmark ~80, stacked ceiling ~127, soft cap toward design max.
+ */
+const VISIBILITY_SCORE_KNOTS: [number, number][] = [
+  [0, 3],
+  [40, 22],
+  [61.5, 48],
+  [80, 62],
+  [93, 72],
+  [127, 88],
+  [300, 96],
+  [1000, 100],
+];
+
+/**
+ * Map raw competence → 0–100 for both reach (secondary) and effectiveness (primary) variance.
+ */
+const COMPETENCE_SCORE_KNOTS: [number, number][] = [
+  [0, 3],
+  [38.8, 22],
+  [54, 48],
+  [80, 62],
+  [90, 71],
+  [124, 87],
+  [300, 96],
+  [1000, 100],
+];
+
+/**
+ * Client discipline (typically ~30–85) → 0–100 for effectiveness variance.
+ * Higher discipline = better execution contribution.
+ */
+const DISCIPLINE_SCORE_KNOTS: [number, number][] = [
+  [0, 5],
+  [25, 12],
+  [30, 20],
+  [50, 50],
+  [85, 90],
+  [100, 96],
+];
+
+function piecewiseLinear(knots: [number, number][], x: number): number {
+  if (knots.length < 2) return knots[0]?.[1] ?? 0;
+  if (x <= knots[0]![0]) return knots[0]![1];
+  if (x >= knots[knots.length - 1]![0]) return knots[knots.length - 1]![1];
+  for (let i = 0; i < knots.length - 1; i += 1) {
+    const [x0, y0] = knots[i]!;
+    const [x1, y1] = knots[i + 1]!;
+    if (x >= x0 && x <= x1) {
+      const t = (x - x0) / (x1 - x0);
+      return y0 + t * (y1 - y0);
+    }
+  }
+  return knots[knots.length - 1]![1];
+}
+
+function hashToUnit(seed: string): number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i += 1) {
+    h = (h << 5) - h + seed.charCodeAt(i);
+    h |= 0;
+  }
+  const u = (Math.abs(h) % 10001) / 10000;
+  return u;
+}
+
+/** Deterministic 0–100 roll for the 5% noise slots. */
+function randomScore0to100(seed: string, salt: string): number {
+  return Math.round(hashToUnit(`${seed}\0${salt}`) * 100);
+}
+
+export function visibilityScoreForVariance(visibility: number): number {
+  return piecewiseLinear(VISIBILITY_SCORE_KNOTS, Math.max(0, visibility));
+}
+
+export function competenceScoreForVariance(competence: number): number {
+  return piecewiseLinear(COMPETENCE_SCORE_KNOTS, Math.max(0, competence));
+}
+
+export function disciplineScoreForVariance(discipline: number): number {
+  return piecewiseLinear(DISCIPLINE_SCORE_KNOTS, Math.max(0, discipline));
+}
+
+/**
+ * Season 1 solution metrics: 40% archetype base + 60% weighted variance layer
+ * (variance can pull outcomes above or below the base).
+ */
+export function computeSeason1SolutionMetrics(input: {
+  baseReach: number;
+  baseEffectiveness: number;
+  visibility: number;
+  competence: number;
+  discipline: number;
+  seed: string;
+}): { reach: number; effectiveness: number } {
+  const vVis = visibilityScoreForVariance(input.visibility);
+  const vComp = competenceScoreForVariance(input.competence);
+  const vDisc = disciplineScoreForVariance(input.discipline);
+  const rReach = randomScore0to100(input.seed, "reach-noise");
+  const rEff = randomScore0to100(input.seed, "eff-noise");
+
+  const reachVariance =
+    REACH_W_VIS * vVis + REACH_W_COMP * vComp + REACH_W_RAND * rReach;
+  const effectivenessVariance =
+    EFF_W_COMP * vComp + EFF_W_DISC * vDisc + EFF_W_RAND * rEff;
+
+  const reach = Math.round(
+    BASE_WEIGHT * input.baseReach + VARIANCE_WEIGHT * reachVariance
+  );
+  const effectiveness = Math.round(
+    BASE_WEIGHT * input.baseEffectiveness + VARIANCE_WEIGHT * effectivenessVariance
+  );
+
+  return {
+    reach: Math.max(0, Math.min(100, reach)),
+    effectiveness: Math.max(0, Math.min(100, effectiveness)),
+  };
+}

@@ -1,5 +1,6 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import type { BuildStats } from "@/lib/gameEconomy";
+import { collectPostSeasonLedger } from "@/lib/postSeasonResults";
 
 export type BreakdownMetric = "eur" | "visibility" | "competence" | "firmCapacity" | "reputation";
 
@@ -79,6 +80,7 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
   const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
   const employeeCost = employees.reduce((s, e) => s + e.salary, 0);
   const s1 = computeSeason1Ledger(save);
+  const postSeason = collectPostSeasonLedger(save);
 
   const linesByMetric: Record<BreakdownMetric, Array<{ label: string; value: number }>> = {
     eur: [
@@ -109,6 +111,33 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
     linesByMetric.firmCapacity.push({ label: "Season 1 campaign capacity used", value: -s1.capacityUsed });
   }
 
+  for (const e of postSeason) {
+    if (e.reputationDelta !== 0) {
+      linesByMetric.reputation.push({
+        label: `Post-season (Season ${e.seasonKey}) — ${e.scenarioTitle}`,
+        value: e.reputationDelta,
+      });
+    }
+    if (e.visibilityGain !== 0) {
+      linesByMetric.visibility.push({
+        label: `Post-season (Season ${e.seasonKey}) — ${e.scenarioTitle}`,
+        value: e.visibilityGain,
+      });
+    }
+    if (e.eurSpentOnReachBoost !== 0) {
+      linesByMetric.eur.push({
+        label: `Post-season reach boost — ${e.scenarioTitle}`,
+        value: -e.eurSpentOnReachBoost,
+      });
+    }
+    if (e.capacitySpentOnEffectivenessBoost !== 0) {
+      linesByMetric.firmCapacity.push({
+        label: `Post-season effectiveness boost — ${e.scenarioTitle}`,
+        value: -e.capacitySpentOnEffectivenessBoost,
+      });
+    }
+  }
+
   return linesByMetric[metric].filter((l, idx) => idx === 0 || l.value !== 0);
 }
 
@@ -121,11 +150,15 @@ function estimateBaseResources(save: NewGamePayload): BuildStats {
   const focusComp = (save.preseasonFocusCounts?.strategy_workshop ?? 0) * 10;
   const focusVis = (save.preseasonFocusCounts?.network ?? 0) * 10;
   const s1 = computeSeason1Ledger(save);
+  const postSeason = collectPostSeasonLedger(save);
+  const postVisSum = postSeason.reduce((s, e) => s + e.visibilityGain, 0);
+  const postEurSum = postSeason.reduce((s, e) => s + e.eurSpentOnReachBoost, 0);
+  const postCapSum = postSeason.reduce((s, e) => s + e.capacitySpentOnEffectivenessBoost, 0);
   return {
-    eur: save.resources.eur + employeeCost - s1.eurNet,
-    visibility: save.resources.visibility - focusVis - employeeVis,
+    eur: save.resources.eur + employeeCost - s1.eurNet + postEurSum,
+    visibility: save.resources.visibility - focusVis - employeeVis - postVisSum,
     competence: save.resources.competence - focusComp - employeeComp,
-    firmCapacity: save.resources.firmCapacity - employeeCap + s1.capacityUsed,
+    firmCapacity: save.resources.firmCapacity - employeeCap + s1.capacityUsed + postCapSum,
   };
 }
 

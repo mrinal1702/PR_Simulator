@@ -8,6 +8,7 @@ import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import {
   buildSolutionOptionsForClientWithScenario,
   canAffordSolution,
+  getSatisfactionReachWeight,
   resolveClientOutcome,
   type SolutionOption,
 } from "@/lib/seasonClientLoop";
@@ -102,7 +103,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       visibility: save.resources.visibility,
       competence: save.resources.competence,
       discipline: currentClient.hiddenDiscipline,
-      motive: currentClient.hiddenPreferenceMotive,
+      satisfactionReachWeight: getSatisfactionReachWeight(currentClient),
     });
 
     const eurAfter = save.resources.eur + currentClient.budgetSeason1 - solution.costBudget;
