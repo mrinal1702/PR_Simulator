@@ -1,8 +1,24 @@
 import type { ClientKind } from "@/lib/clientEconomyMath";
 
-import scenarioDatabase from "../../data/scenario_database.json";
+import scenarioMeta from "../../data/scenario_database.json";
+import scenariosCorporate from "../../data/scenarios_corporate.json";
+import scenariosIndividual from "../../data/scenarios_individual.json";
+import scenariosSmallCompany from "../../data/scenarios_small_company.json";
 
-export type ScenarioRecord = (typeof scenarioDatabase.scenarios)[number];
+/** Merged pool; author new rows in the per–client-type JSON files under `data/`. */
+const scenarioDatabase = {
+  ...scenarioMeta,
+  scenarios: [
+    ...scenariosIndividual.scenarios,
+    ...scenariosSmallCompany.scenarios,
+    ...scenariosCorporate.scenarios,
+  ],
+};
+
+/** JSON rows may add fields over time; `client_name` is authored in split scenario files but must stay optional for typing. */
+export type ScenarioRecord = (typeof scenarioDatabase.scenarios)[number] & {
+  client_name?: string;
+};
 
 function mapClientKindToDbType(kind: ClientKind): string {
   if (kind === "individual") return "Individual";
