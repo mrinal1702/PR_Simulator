@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { GAME_TAGLINE, GAME_TITLE } from "@/lib/onboardingContent";
+import { HomeMenu } from "@/components/HomeMenu";
 
 export default function HomePage() {
   return (
@@ -41,32 +41,7 @@ export default function HomePage() {
         </p>
       </header>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.85rem",
-          maxWidth: "320px",
-          margin: "0 auto",
-          width: "100%",
-        }}
-      >
-        <button
-          type="button"
-          className="btn btn-secondary"
-          disabled
-          aria-disabled="true"
-          title="Coming soon"
-        >
-          Continue
-        </button>
-        <p className="muted" style={{ margin: "-0.35rem 0 0", fontSize: "0.8rem", textAlign: "center" }}>
-          Coming soon — loads your single saved run.
-        </p>
-        <Link href="/game/new" className="btn btn-primary" style={{ textDecoration: "none" }}>
-          New game
-        </Link>
-      </div>
+      <HomeMenu />
 
       <footer style={{ marginTop: "auto", paddingTop: "3rem", textAlign: "center" }}>
         <p className="muted" style={{ fontSize: "0.8rem", margin: 0 }}>

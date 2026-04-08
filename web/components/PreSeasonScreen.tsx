@@ -5,21 +5,12 @@ import { useMemo, useState } from "react";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
-
-const SAVE_KEY = "dma-save-slot";
+import { persistSave, loadSave } from "@/lib/saveGameStorage";
 
 type Focus = "strategy_workshop" | "network";
 
 export function PreSeasonScreen({ season }: { season: number }) {
-  const [save, setSave] = useState<NewGamePayload | null>(() => {
-    try {
-      const raw = sessionStorage.getItem(SAVE_KEY);
-      if (!raw) return null;
-      return JSON.parse(raw) as NewGamePayload;
-    } catch {
-      return null;
-    }
-  });
+  const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [notice, setNotice] = useState<string>("");
   const [showStats, setShowStats] = useState(false);
 
@@ -38,16 +29,18 @@ export function PreSeasonScreen({ season }: { season: number }) {
           : { ...save.resources, visibility: save.resources.visibility + 10 },
     };
     setSave(updated);
-    try {
-      sessionStorage.setItem(SAVE_KEY, JSON.stringify(updated));
-    } catch {
-      // ignore local storage failures
-    }
+    persistSave(updated);
     setNotice(
       focus === "strategy_workshop"
         ? "Strategy workshop complete: +10 competence."
         : "Network complete: +10 visibility."
     );
+  };
+
+  const saveNow = () => {
+    if (!save) return;
+    const ok = persistSave(save);
+    setNotice(ok ? "Progress saved." : "Could not save right now.");
   };
 
   if (!save) {
@@ -81,6 +74,9 @@ export function PreSeasonScreen({ season }: { season: number }) {
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
           <button type="button" className="btn btn-secondary" onClick={() => setShowStats((v) => !v)}>
             {showStats ? "Hide agency stats" : "Agency stats"}
+          </button>
+          <button type="button" className="btn btn-secondary" onClick={saveNow}>
+            Save
           </button>
         </div>
 
@@ -173,6 +169,7 @@ function MetricRow({
       </div>
       <div className="metric-track" role="presentation">
         <div className="metric-fill" style={{ width: `${percent}%`, background: color }} />
+        <div className="metric-marker" style={{ left: `${percent}%` }} aria-hidden />
       </div>
     </div>
   );

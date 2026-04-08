@@ -17,8 +17,7 @@ import {
   type BuildStats,
   type SpouseType,
 } from "@/lib/gameEconomy";
-
-const SAVE_KEY = "dma-save-slot";
+import { persistSave } from "@/lib/saveGameStorage";
 
 export type NewGamePayload = {
   playerName: string;
@@ -89,11 +88,7 @@ export function NewGameWizard() {
       resources,
       createdAt: new Date().toISOString(),
     };
-    try {
-      sessionStorage.setItem(SAVE_KEY, JSON.stringify(payload));
-    } catch {
-      /* ignore quota / private mode */
-    }
+    persistSave(payload);
     setStep(4);
   }, [playerName, agencyName, gender, buildId, spouseType, spouseGender, spouseName]);
 
