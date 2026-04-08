@@ -10,6 +10,7 @@ import {
   getHireCapForSeason,
   getSalaryBands,
   roleLabel,
+  splitBalancedSkill,
   type Candidate,
   type HiringRole,
   type HiringTier,
@@ -111,8 +112,9 @@ export function HiringScreen({ season }: { season: number }) {
     } else if (candidate.role === "sales_representative") {
       visibilityGain = skill;
     } else {
-      competenceGain = Math.round(skill / 2);
-      visibilityGain = skill - competenceGain;
+      const split = splitBalancedSkill(skill, `${candidate.id}|${seasonKey}`);
+      competenceGain = split.competence;
+      visibilityGain = split.visibility;
     }
 
     const updated: NewGamePayload = {

@@ -52,7 +52,7 @@ const TIER_BANDS: Record<
   senior: { minSalary: 65_000, maxSalary: 89_000, anchors: [65, 70, 75, 80, 85], minSkill: 50, maxSkill: 80 },
 };
 
-const JUNIOR_BAND_SKILL_WINDOWS: Record<number, { min: number; max: number }> = {
+const JUNIOR_BAND_SKILL_RANGES: Record<number, { min: number; max: number }> = {
   1: { min: 10, max: 14 },
   2: { min: 11, max: 15 },
   3: { min: 12, max: 17 },
@@ -135,6 +135,21 @@ export function capacityGainFromProductivity(productivityPct: number): number {
   return Math.round(10 + (clamped / 100) * 15);
 }
 
+export function splitBalancedSkill(
+  totalSkill: number,
+  seed: string
+): { competence: number; visibility: number } {
+  const total = Math.max(0, Math.round(totalSkill));
+  if (total === 0) return { competence: 0, visibility: 0 };
+  const baseCompetence = Math.floor(total / 2);
+  // Small randomized tilt: -2..+2, clamped so both channels stay >= 0.
+  const rawTilt = Math.floor(rand01(`${seed}|split`) * 5) - 2;
+  const minComp = Math.max(0, total - 20);
+  const maxComp = Math.min(total, 20);
+  const competence = Math.max(minComp, Math.min(maxComp, baseCompetence + rawTilt));
+  return { competence, visibility: total - competence };
+}
+
 function resolveSkill(args: {
   seed: string;
   tier: HiringTier;
@@ -162,8 +177,8 @@ function resolveSkill(args: {
   const finalSkill = base * (0.92 + attract * 0.14 + variance);
   const rounded = Math.round(finalSkill);
   if (args.tier === "junior") {
-    const win = JUNIOR_BAND_SKILL_WINDOWS[bandIndex] ?? JUNIOR_BAND_SKILL_WINDOWS[1];
-    return Math.max(win.min, Math.min(win.max, rounded));
+    const bandRange = JUNIOR_BAND_SKILL_RANGES[bandIndex] ?? JUNIOR_BAND_SKILL_RANGES[1];
+    return Math.max(bandRange.min, Math.min(bandRange.max, rounded));
   }
   return Math.max(cfg.minSkill, Math.min(cfg.maxSkill, rounded));
 }
