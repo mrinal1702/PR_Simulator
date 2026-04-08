@@ -42,6 +42,7 @@ export type NewGamePayload = {
   /** Derived metric; not directly tied to spouse or spend at start. */
   reputation: number;
   resources: BuildStats;
+  hiresBySeason?: Partial<Record<string, number>>;
   createdAt: string;
 };
 
@@ -98,6 +99,7 @@ export function NewGameWizard() {
       },
       reputation: STARTING_REPUTATION,
       resources,
+      hiresBySeason: {},
       createdAt: new Date().toISOString(),
     };
     persistSave(payload);
