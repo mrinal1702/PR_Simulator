@@ -273,3 +273,46 @@ h3 {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
   z-index: 2;
 }
+
+.game-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 12, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.game-modal {
+  width: min(560px, 100%);
+  background: linear-gradient(160deg, #1b2531 0%, #141c26 100%);
+  border: 1px solid rgba(240, 180, 41, 0.45);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(240, 180, 41, 0.2) inset;
+  padding: 1rem 1.1rem 1rem;
+}
+
+.game-modal-kicker {
+  margin: 0 0 0.35rem;
+  color: var(--accent);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.game-modal-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.game-modal-stats span {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 999px;
+  padding: 0.32rem 0.58rem;
+  font-size: 0.86rem;
+}

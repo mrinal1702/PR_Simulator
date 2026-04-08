@@ -17,6 +17,16 @@ import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { canAfford, spendEurOrNull } from "@/lib/budgetGuard";
 
 type EmploymentMode = "intern" | "full_time";
+type HireReport = {
+  title: string;
+  productivityLine: string;
+  skillLine: string;
+  productivity: number;
+  skill: number;
+  capGain: number;
+  competenceGain: number;
+  visibilityGain: number;
+};
 
 export function HiringScreen({ season }: { season: number }) {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
@@ -27,6 +37,7 @@ export function HiringScreen({ season }: { season: number }) {
   const [salary, setSalary] = useState<number>(15_000);
   const [stage, setStage] = useState<"home" | "results">("home");
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [hireReport, setHireReport] = useState<HireReport | null>(null);
 
   if (!save) {
     return (
@@ -142,9 +153,16 @@ export function HiringScreen({ season }: { season: number }) {
         ? "Strong value pickup for this band, strategy team approves."
         : "Elite value hit: this salary band just overdelivered hard.";
 
-    window.alert(
-      `${prodLine}\n${skillLine}\n\nProductivity: ${productivity}%\nSkill: +${skill}\nCapacity gain: +${capGain}\nCompetence gain: +${competenceGain}\nVisibility gain: +${visibilityGain}`
-    );
+    setHireReport({
+      title: `${candidate.name} joined the agency`,
+      productivityLine: prodLine,
+      skillLine,
+      productivity,
+      skill,
+      capGain,
+      competenceGain,
+      visibilityGain,
+    });
 
     setStage("home");
     setMode("intern");
@@ -299,6 +317,28 @@ export function HiringScreen({ season }: { season: number }) {
         </section>
       )}
     </div>
+    {hireReport ? (
+      <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-label="Hiring result">
+        <div className="game-modal">
+          <p className="game-modal-kicker">Hiring report</p>
+          <h2 style={{ marginTop: 0 }}>{hireReport.title}</h2>
+          <p style={{ marginBottom: "0.4rem" }}>{hireReport.productivityLine}</p>
+          <p style={{ marginTop: 0 }}>{hireReport.skillLine}</p>
+          <div className="game-modal-stats">
+            <span>Productivity: {hireReport.productivity}%</span>
+            <span>Skill: +{hireReport.skill}</span>
+            <span>Capacity: +{hireReport.capGain}</span>
+            <span>Competence: +{hireReport.competenceGain}</span>
+            <span>Visibility: +{hireReport.visibilityGain}</span>
+          </div>
+          <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end" }}>
+            <button type="button" className="btn btn-primary" onClick={() => setHireReport(null)}>
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    ) : null}
   );
 }
 
