@@ -2,6 +2,10 @@
 
 Use this file as the fastest context for a fresh agent.
 
+## Design locked (not yet fully implemented)
+
+- **Payroll, layoffs, spouse timing, progression gates, Fire button, same-pre-season hire protection:** see `docs/PAYROLL_AND_LAYOFF_RULES.md`. Pre-season 2 checkpoint UI is **not** deployed yet; rules are documented for the next build.
+
 ## Product state
 
 - Deployed web app with onboarding, pre-season flow, **season hub**, **in-season client cases**, **home dashboard** (phase + case log), and **post-season milestone** route after completing the client queue.

@@ -147,3 +147,5 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 - Metric bands/labels are data-driven in `web/lib/metricScales.ts`.
 
 For agent handoff, economy notes, and scenario authoring, see `docs/AGENT_HANDOFF.md`, `docs/CLIENT_ECONOMY_MATH.md`, and `docs/SCENARIO_CREATIVE_GUIDELINES.md`.
+
+**Upcoming (design doc, not yet in UI):** payroll coverage, layoffs, and progression gates — `docs/PAYROLL_AND_LAYOFF_RULES.md`.
