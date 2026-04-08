@@ -174,6 +174,7 @@ export function HiringScreen({ season }: { season: number }) {
   };
 
   return (
+    <>
     <div className="shell shell-wide">
       <header style={{ marginBottom: "1.2rem" }}>
         <p className="muted" style={{ margin: "0 0 0.25rem" }}>
@@ -340,6 +341,7 @@ export function HiringScreen({ season }: { season: number }) {
         </div>
       </div>
     ) : null}
+    </>
   );
 }
 
