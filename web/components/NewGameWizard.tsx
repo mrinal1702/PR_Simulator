@@ -224,10 +224,10 @@ export function NewGameWizard() {
           <div className="card-grid cols-2" style={{ marginTop: "1.25rem" }}>
             {SPOUSE_OPTIONS.map((s) => (
               <button
-                key={s.type}
+                key={s.id}
                 type="button"
-                className={`choice-card${spouseType === s.type ? " selected" : ""}`}
-                onClick={() => selectSpouseType(s.type)}
+                className={`choice-card${spouseType === s.id ? " selected" : ""}`}
+                onClick={() => selectSpouseType(s.id)}
               >
                 <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>{s.title}</h3>
                 <p style={{ margin: "0 0 0.5rem", fontSize: "0.9rem" }}>{s.blurb}</p>
@@ -314,7 +314,7 @@ export function NewGameWizard() {
             </li>
             <li>Origin: {BUILDS.find((b) => b.id === buildId)?.name}</li>
             <li>
-              Spouse: {SPOUSE_OPTIONS.find((s) => s.type === spouseType)?.title ?? "—"}
+              Spouse: {SPOUSE_OPTIONS.find((s) => s.id === spouseType)?.title ?? "—"}
               {spouseType !== null &&
                 spouseType !== "none" &&
                 spouseName.trim() &&

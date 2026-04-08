@@ -1,8 +1,8 @@
 /** Copy and IDs for onboarding UI. IDs match DB / gameEconomy. */
 
-import type { SpouseType } from "@/lib/gameEconomy";
+import type { BuildId, SpouseType } from "@/lib/gameEconomy";
 
-export type { SpouseType };
+export type { BuildId, SpouseType };
 
 export const GAME_TITLE = "Disaster Management Agency Simulator" as const;
 
@@ -17,8 +17,6 @@ export const GENDER_OPTIONS = [
 ] as const;
 
 export type GenderValue = (typeof GENDER_OPTIONS)[number]["value"];
-
-export type BuildId = "velvet_rolodex" | "summa_cum_basement" | "portfolio_pivot";
 
 export const BUILDS: {
   id: BuildId;
@@ -51,32 +49,32 @@ export const BUILDS: {
 ];
 
 export const SPOUSE_OPTIONS: {
-  type: SpouseType;
+  id: SpouseType;
   title: string;
   blurb: string;
   /** Vague UI hint only—no numbers (economy tuned elsewhere). */
   boost: string;
 }[] = [
   {
-    type: "supportive",
+    id: "supportive",
     title: "Your favorite editor",
     blurb: "They proofread your life—and occasionally stop you from emailing while mad.",
     boost: "Competence boost",
   },
   {
-    type: "influential",
+    id: "influential",
     title: "Speed-dial royalty",
     blurb: "They know someone who knows someone, and suddenly you’re on the list.",
     boost: "Visibility boost",
   },
   {
-    type: "rich",
+    id: "rich",
     title: "The benefactor",
     blurb: "Date night sometimes feels like a soft round of funding with dessert.",
     boost: "Income boost",
   },
   {
-    type: "none",
+    id: "none",
     title: "Table for one, LLC",
     blurb: "No merge conflicts on the calendar—and more cash stays in the firm piggy bank.",
     boost: "Capacity boost",
