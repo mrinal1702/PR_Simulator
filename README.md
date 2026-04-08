@@ -130,7 +130,7 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 
 ## Current implementation snapshot
 
-- Implemented UI loop so far: `Home → New Game → Pre-season → Season hub → (optional) Client case screen`.
+- Implemented UI loop so far: `Home → New Game → Pre-season → Season hub → (optional) Client case screen`. **Home** (with a save) shows **phase** (e.g. Season 1 · In season), **agency stats / employees / breakdowns** (including Season 1 client lines in EUR and capacity ledgers), and **Case log — Season 1** for completed cases (decision, spend, money retained).
 - `Continue` is enabled and routes to saved `preseason/season/postseason` path.
 - Save system is single-slot local (`localStorage` + `sessionStorage`) via `dma-save-slot`.
 - Pre-season has one-time activity focus (`Strategy workshop` or `Network`) and an `Agency stats` panel.

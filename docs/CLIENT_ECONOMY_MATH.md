@@ -57,10 +57,10 @@ Implemented in `web/lib/seasonClientLoop.ts` (with client construction in `build
 
 1. **Queue**: From the season hub, **Roll season clients** fills `clientsQueue` for that season. Clients are processed **in order**; the case screen always shows the client at `currentClientIndex`.
 
-2. **Start of case (automatic)**: When the player opens the client case route, the game **credits** the client’s **Season 1 tranche** (`budgetSeason1`, from `splitBudgetBySeason`) to **agency EUR** and records a run with `solutionId: "pending"`. There is no separate accept/decline step before this.
+2. **Season 1 liquid (cash)**: The client’s **Season 1 tranche** is **not** credited when the case opens. It only enters play when the player **runs a priced campaign**: agency EUR changes by **`+budgetSeason1 − costBudget`** in one step, and capacity decreases by **`costCapacity`**. Affordability uses **your cash + their Season 1 tranche** against the solution’s EUR spend.
 
 3. **Priced solutions**: Four archetypes (`solution_1` … `solution_4`) have EUR and capacity costs **derived from** `budgetSeason1`, client kind scaling, and fixed share rules — see `buildSolutionOptionsForClient`. Creative **names and briefs** are merged from the scenario record when present (`mergeScenarioSolutionCopy` / `buildSolutionOptionsForClientWithScenario`).
 
-4. **Do nothing / decline client**: Choosing the reject option **subtracts** `budgetSeason1` from EUR (same amount that was credited), so **net cash is unchanged** vs before opening that client’s case. No capacity is spent.
+4. **Season 1 — Reject client**: The reject option means the client **does not** commit Season 1 liquid to you; **no** EUR or capacity change. (Later seasons may allow a different “do nothing” where arcs carry over.)
 
-5. **Execute a campaign**: Subtracts the option’s `costBudget` and `costCapacity`; computes spread / effectiveness / satisfaction via `resolveClientOutcome`.
+5. **Execute a campaign**: Applies the net EUR and capacity change above; computes spread / effectiveness / satisfaction via `resolveClientOutcome`. **Money retained** for the case log is **`budgetSeason1 − costBudget`** (Season 1 liquid after spend).

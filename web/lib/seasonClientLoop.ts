@@ -70,6 +70,10 @@ export type SeasonClientRun = {
   accepted: boolean;
   solutionId: SolutionId;
   outcome?: ClientOutcome;
+  /** Priced solution execution (for history / ledger). */
+  costBudget?: number;
+  costCapacity?: number;
+  solutionTitle?: string;
 };
 
 export type SeasonLoopState = {
@@ -236,7 +240,7 @@ export function buildSeasonClients(
     exclude.add(scenario.scenario_id);
     clients.push({
       id: `s${season}-c${i + 1}`,
-      displayName: scenario.client_subtype,
+      displayName: scenario.client_name ?? scenario.client_subtype,
       clientKind: kind,
       problem: scenario.problem_summary,
       budgetTotal: total,

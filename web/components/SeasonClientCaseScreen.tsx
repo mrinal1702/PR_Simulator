@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
@@ -13,7 +13,8 @@ import {
 } from "@/lib/seasonClientLoop";
 
 /**
- * Client case: opening the screen starts the engagement; player picks a campaign or passes.
+ * Season 1: no client liquid is credited until a campaign runs. "Do nothing" rejects the client (no money).
+ * Later seasons may treat "do nothing" differently when arcs carry over.
  */
 export function SeasonClientCaseScreen({ season }: { season: number }) {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
@@ -22,49 +23,28 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
   const seasonKey = String(season);
   const loop = save?.seasonLoopBySeason?.[seasonKey];
   const currentClient = loop?.clientsQueue[loop.currentClientIndex] ?? null;
-  const acceptedRun = currentClient
-    ? loop?.runs.find((r) => r.clientId === currentClient.id && r.accepted)
+  const runForCurrentClient = currentClient
+    ? loop?.runs.find((r) => r.clientId === currentClient.id)
     : undefined;
-  const isAwaitingSolution = Boolean(
-    currentClient && acceptedRun && acceptedRun.solutionId === "pending"
-  );
+  const awaitingChoice = Boolean(currentClient && !runForCurrentClient);
 
-  const solutionOptions = useMemo(
-    () => (currentClient ? buildSolutionOptionsForClientWithScenario(currentClient) : []),
-    [currentClient]
-  );
-
-  /** Mandatory engagement: credit Season 1 tranche when this case is opened (no separate accept/decline step). */
-  useEffect(() => {
-    if (!currentClient) return;
-    const prev = loadSave();
-    if (!prev) return;
-    const loopNow = prev.seasonLoopBySeason?.[seasonKey];
-    if (!loopNow) return;
-    if (loopNow.runs.some((r) => r.clientId === currentClient.id)) return;
-
-    const updated: NewGamePayload = {
-      ...prev,
-      seasonNumber: season,
-      phase: "season",
-      resources: {
-        ...prev.resources,
-        eur: prev.resources.eur + currentClient.budgetSeason1,
-      },
-      seasonLoopBySeason: {
-        ...(prev.seasonLoopBySeason ?? {}),
-        [seasonKey]: {
-          ...loopNow,
-          runs: [
-            ...loopNow.runs,
-            { clientId: currentClient.id, accepted: true, solutionId: "pending" as const },
-          ],
-        },
-      },
-    };
-    persistSave(updated);
-    setSave(updated);
-  }, [season, seasonKey, currentClient?.id]);
+  const solutionOptions = useMemo(() => {
+    if (!currentClient) return [];
+    const opts = buildSolutionOptionsForClientWithScenario(currentClient);
+    if (season === 1) {
+      return opts.map((o) =>
+        o.isRejectOption
+          ? {
+              ...o,
+              title: "Reject client",
+              description:
+                "Pass on this client — they won't commit Season 1 liquid to your agency, and you won't run a campaign for them.",
+            }
+          : o
+      );
+    }
+    return opts;
+  }, [currentClient, season]);
 
   if (!save) {
     return (
@@ -79,20 +59,6 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       </div>
     );
   }
-
-  const updateLoop = (nextLoop: NonNullable<NewGamePayload["seasonLoopBySeason"]>[string]) => {
-    const updated: NewGamePayload = {
-      ...save,
-      seasonNumber: season,
-      phase: "season",
-      seasonLoopBySeason: {
-        ...(save.seasonLoopBySeason ?? {}),
-        [seasonKey]: nextLoop,
-      },
-    };
-    setSave(updated);
-    persistSave(updated);
-  };
 
   const advanceToNextClient = (nextRuns: NonNullable<typeof loop>["runs"], nextSave?: NewGamePayload) => {
     if (!save || !loop) return;
@@ -115,30 +81,21 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
   };
 
   const chooseSolution = (solution: SolutionOption) => {
-    if (!save || !loop || !currentClient || !acceptedRun || acceptedRun.solutionId !== "pending") return;
+    if (!save || !loop || !currentClient || runForCurrentClient) return;
+
     if (solution.isRejectOption) {
-      const updated: NewGamePayload = {
-        ...save,
-        resources: {
-          ...save.resources,
-          eur: Math.max(0, save.resources.eur - currentClient.budgetSeason1),
-        },
-        seasonLoopBySeason: {
-          ...(save.seasonLoopBySeason ?? {}),
-          [seasonKey]: {
-            ...loop,
-            runs: loop.runs.map((r) =>
-              r.clientId === currentClient.id ? { ...r, solutionId: solution.id } : r
-            ),
-          },
-        },
-      };
-      const nextRuns = updated.seasonLoopBySeason?.[seasonKey]?.runs ?? loop.runs;
-      advanceToNextClient(nextRuns, updated);
-      setNotice("Passed on this client. Next one when you return to the hub.");
+      const nextRuns = [
+        ...loop.runs,
+        { clientId: currentClient.id, accepted: false as const, solutionId: "reject" as const },
+      ];
+      advanceToNextClient(nextRuns);
+      setNotice(season === 1 ? "Client rejected — no Season 1 funds from them." : "Passed on this client.");
       return;
     }
-    if (!canAffordSolution(solution, save.resources.eur, save.resources.firmCapacity)) return;
+
+    const liquidForCheck = save.resources.eur + currentClient.budgetSeason1;
+    if (!canAffordSolution(solution, liquidForCheck, save.resources.firmCapacity)) return;
+
     const outcome = resolveClientOutcome({
       seed: `${save.createdAt}-${seasonKey}-${currentClient.id}-${solution.id}`,
       solution,
@@ -147,11 +104,13 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       discipline: currentClient.hiddenDiscipline,
       motive: currentClient.hiddenPreferenceMotive,
     });
+
+    const eurAfter = save.resources.eur + currentClient.budgetSeason1 - solution.costBudget;
     const updated: NewGamePayload = {
       ...save,
       resources: {
         ...save.resources,
-        eur: Math.max(0, save.resources.eur - solution.costBudget),
+        eur: Math.max(0, eurAfter),
         firmCapacity: Math.max(0, save.resources.firmCapacity - solution.costCapacity),
       },
       seasonLoopBySeason: {
@@ -159,15 +118,24 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         [seasonKey]: {
           ...loop,
           lastOutcome: outcome,
-          runs: loop.runs.map((r) =>
-            r.clientId === currentClient.id ? { ...r, solutionId: solution.id, outcome } : r
-          ),
+          runs: [
+            ...loop.runs,
+            {
+              clientId: currentClient.id,
+              accepted: true as const,
+              solutionId: solution.id,
+              outcome,
+              costBudget: solution.costBudget,
+              costCapacity: solution.costCapacity,
+              solutionTitle: solution.title,
+            },
+          ],
         },
       },
     };
     const nextRuns = updated.seasonLoopBySeason?.[seasonKey]?.runs ?? loop.runs;
     advanceToNextClient(nextRuns, updated);
-    setNotice("Solution executed.");
+    setNotice("Campaign executed.");
   };
 
   if (!loop) {
@@ -204,6 +172,8 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
     return null;
   }
 
+  const liquidForAfford = save.resources.eur + currentClient.budgetSeason1;
+
   return (
     <div className="shell shell-wide">
       <header style={{ marginBottom: "1.5rem" }}>
@@ -237,26 +207,29 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
             {currentClient.budgetSeason1.toLocaleString("en-GB")} · Season 2 (follow-up): EUR{" "}
             {currentClient.budgetSeason2.toLocaleString("en-GB")}
           </p>
-          {isAwaitingSolution ? (
+          {awaitingChoice ? (
             <p className="muted" style={{ marginTop: "0.65rem", marginBottom: 0 }}>
-              Pick a campaign below, or choose &quot;Do nothing&quot; to pass on this client.
-            </p>
-          ) : !acceptedRun ? (
-            <p className="muted" style={{ marginTop: "0.65rem", marginBottom: 0 }}>
-              Starting engagement…
+              {season === 1 ? (
+                <>
+                  Season 1 liquid is only yours if you run a campaign — your cash plus their Season 1 tranche must cover the
+                  spend. Rejecting means they don&apos;t commit funds to you.
+                </>
+              ) : (
+                <>Pick a campaign below, or choose &quot;Do nothing&quot; if allowed for this arc.</>
+              )}
             </p>
           ) : null}
 
-          {isAwaitingSolution ? (
+          {awaitingChoice ? (
             <div style={{ marginTop: "0.9rem" }}>
               <h4 style={{ marginTop: 0, marginBottom: "0.5rem" }}>Choose a solution</h4>
               <div style={{ display: "grid", gap: "0.55rem" }}>
                 {solutionOptions.map((option) => {
-                  const affordable = canAffordSolution(option, save.resources.eur, save.resources.firmCapacity);
+                  const affordable = canAffordSolution(option, liquidForAfford, save.resources.firmCapacity);
                   const forceRejectOnly =
                     !option.isRejectOption &&
                     solutionOptions.filter((s) => !s.isRejectOption).every(
-                      (s) => !canAffordSolution(s, save.resources.eur, save.resources.firmCapacity)
+                      (s) => !canAffordSolution(s, liquidForAfford, save.resources.firmCapacity)
                     );
                   return (
                     <button
@@ -273,7 +246,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
                       </p>
                       {!option.isRejectOption ? (
                         <p className="muted" style={{ margin: "0.2rem 0 0" }}>
-                          {`Requires: EUR ${option.costBudget.toLocaleString("en-GB")} · Capacity ${option.costCapacity}`}
+                          {`Spend: EUR ${option.costBudget.toLocaleString("en-GB")} (from your cash + their Season 1 tranche) · Capacity ${option.costCapacity}`}
                           {!affordable ? " · Not enough resources" : ""}
                         </p>
                       ) : null}

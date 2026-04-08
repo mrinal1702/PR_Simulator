@@ -7,10 +7,9 @@ import { GAME_TITLE } from "@/lib/onboardingContent";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { persistSave, loadSave } from "@/lib/saveGameStorage";
-import type { BuildStats } from "@/lib/gameEconomy";
+import { buildMetricBreakdown, formatSigned, type BreakdownMetric } from "@/lib/metricBreakdown";
 
 type Focus = "strategy_workshop" | "network";
-type BreakdownMetric = "eur" | "visibility" | "competence" | "firmCapacity" | "reputation";
 
 export function PreSeasonScreen({ season }: { season: number }) {
   const router = useRouter();
@@ -351,66 +350,5 @@ function BreakdownModal({
       </div>
     </div>
   );
-}
-
-function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePayload): Array<{ label: string; value: number }> {
-  const employees = save.employees ?? [];
-  const baseResources: BuildStats = save.initialResources ?? estimateBaseResources(save);
-  const baseReputation = save.initialReputation ?? 5;
-  const focusComp = (save.preseasonFocusCounts?.strategy_workshop ?? 0) * 10;
-  const focusVis = (save.preseasonFocusCounts?.network ?? 0) * 10;
-  const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
-  const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
-  const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
-  const employeeCost = employees.reduce((s, e) => s + e.salary, 0);
-
-  const linesByMetric: Record<BreakdownMetric, Array<{ label: string; value: number }>> = {
-    eur: [
-      { label: "Pre-Season Start", value: baseResources.eur },
-      { label: "Employees", value: -employeeCost },
-    ],
-    visibility: [
-      { label: "Pre-Season Start", value: baseResources.visibility },
-      { label: "Pre-Season Focus", value: focusVis },
-      { label: "Employees", value: employeeVis },
-    ],
-    competence: [
-      { label: "Pre-Season Start", value: baseResources.competence },
-      { label: "Pre-Season Focus", value: focusComp },
-      { label: "Employees", value: employeeComp },
-    ],
-    firmCapacity: [
-      { label: "Pre-Season Start", value: baseResources.firmCapacity },
-      { label: "Employees", value: employeeCap },
-    ],
-    reputation: [{ label: "Pre-Season Start", value: baseReputation }],
-  };
-
-  return linesByMetric[metric].filter((l, idx) => idx === 0 || l.value !== 0);
-}
-
-function estimateBaseResources(save: NewGamePayload): BuildStats {
-  const employees = save.employees ?? [];
-  const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
-  const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
-  const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
-  const employeeCost = employees.reduce((s, e) => s + e.salary, 0);
-  const focusComp = (save.preseasonFocusCounts?.strategy_workshop ?? 0) * 10;
-  const focusVis = (save.preseasonFocusCounts?.network ?? 0) * 10;
-  return {
-    eur: save.resources.eur + employeeCost,
-    visibility: save.resources.visibility - focusVis - employeeVis,
-    competence: save.resources.competence - focusComp - employeeComp,
-    firmCapacity: save.resources.firmCapacity - employeeCap,
-  };
-}
-
-function formatSigned(metric: BreakdownMetric, value: number): string {
-  if (metric === "eur") {
-    const sign = value > 0 ? "+" : "";
-    return `${sign}EUR ${value.toLocaleString("en-GB")}`;
-  }
-  const sign = value > 0 ? "+" : "";
-  return `${sign}${value}`;
 }
 

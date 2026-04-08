@@ -1,4 +1,5 @@
 import { GAME_TAGLINE, GAME_TITLE } from "@/lib/onboardingContent";
+import { HomeDashboard } from "@/components/HomeDashboard";
 import { HomeMenu } from "@/components/HomeMenu";
 
 export default function HomePage() {
@@ -41,6 +42,7 @@ export default function HomePage() {
         </p>
       </header>
 
+      <HomeDashboard />
       <HomeMenu />
 
       <footer style={{ marginTop: "auto", paddingTop: "3rem", textAlign: "center" }}>
