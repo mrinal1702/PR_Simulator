@@ -271,12 +271,12 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
                       <p className="muted" style={{ margin: 0 }}>
                         {option.description}
                       </p>
-                      <p className="muted" style={{ margin: "0.2rem 0 0" }}>
-                        {option.isRejectOption
-                          ? "No campaign for this client."
-                          : `Requires: EUR ${option.costBudget.toLocaleString("en-GB")} · Capacity ${option.costCapacity}`}
-                        {!option.isRejectOption && !affordable ? " · Not enough resources" : ""}
-                      </p>
+                      {!option.isRejectOption ? (
+                        <p className="muted" style={{ margin: "0.2rem 0 0" }}>
+                          {`Requires: EUR ${option.costBudget.toLocaleString("en-GB")} · Capacity ${option.costCapacity}`}
+                          {!affordable ? " · Not enough resources" : ""}
+                        </p>
+                      ) : null}
                     </button>
                   );
                 })}
