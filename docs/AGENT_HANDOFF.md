@@ -67,7 +67,7 @@ Use this file as the fastest context for a fresh agent.
 6. Client case (`/game/season/[season]/client`)
    - Component: `SeasonClientCaseScreen`.
    - **Season 1 economy**: Season 1 liquid is **not** credited on page load. **Reject client** = no EUR/capacity change. **Execute a campaign** applies `+budgetSeason1 − costBudget` to EUR and subtracts capacity in one step; run records optional `costBudget`, `costCapacity`, `solutionTitle` for ledger/history.
-   - Four priced archetypes + reject; creative copy from `data/scenario_database.json` via `pickScenarioForClient` (unique `scenario_id` per playthrough via `usedScenarioIds`).
+   - Four priced archetypes + reject; creative copy from merged `web/data/scenarios_*.json` via `pickScenarioForClient` (unique `scenario_id` per playthrough via `usedScenarioIds`).
 7. Post-season (`/game/postseason/[season]`)
    - Milestone / placeholder after season work; `Continue` routes here when `phase === "postseason"` (`getContinuePath` in `saveGameStorage.ts`).
 
@@ -161,7 +161,7 @@ UI behavior:
 - `web/components/SeasonClientCaseScreen.tsx`: dedicated client scenario + solution choices
 - `web/components/SeasonScreen.tsx`: re-exports `SeasonHubScreen` as `SeasonScreen`
 - `web/lib/seasonClientLoop.ts`, `web/lib/scenarios.ts`: client queue, solution costs, scenario pick
-- `data/scenario_database.json`: creative scenario pool (typed by client kind + budget tier)
+- `web/data/scenarios_individual.json`, `scenarios_small_company.json`, `scenarios_corporate.json`, `scenario_database.json`: creative scenario pool; merged in `scenarios.ts`
 - `web/lib/hiring.ts`: candidate generation, band logic, productivity/capacity mapping, campaign manager split
 - `web/lib/budgetGuard.ts`: non-negative EUR guard helpers
 

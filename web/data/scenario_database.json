@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "description": "PR Simulator scenario pool metadata (this file lives in web/data/). Creative rows live in scenarios_individual.json, scenarios_small_company.json, and scenarios_corporate.json alongside this file. Runtime merges them in web/lib/scenarios.ts.",
+  "glossary": {
+    "solution_options": "The four solutions entries (solution_archetype_id 1–4): strategic PR options the player chooses during Season 1 and Season 2.",
+    "resolution_grid": "The arc_resolution object: nine final outcomes (3 visibility bands × 3 effectiveness levels: poor, good, convincing). Used for the ending after Season 2. Not the same as the four solution options."
+  }
+}

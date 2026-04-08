@@ -135,5 +135,6 @@ You do **not** need to connect Supabase to Git for the app to work. You **do** c
 |------|---------|
 | `supabase/migrations/20260407120000_initial_schema.sql` | Schema + seed builds + RLS |
 | `web/lib/gameEconomy.ts` | Spouse math + `totalV()` |
-| `data/build_value_budget.txt` | Equal-build Total_V explanation |
+| `data/build_value_budget.txt` | Equal-build Total_V explanation (repo root; design reference) |
+| `web/data/scenarios_*.json`, `web/data/scenario_database.json` | Scenario content imported by Next.js (must live under `web/` when Vercel root is `web`) |
 | `web/.env.local.example` | Env template for Vercel |

@@ -1,0 +1,904 @@
+{
+  "client_type": "Individual",
+  "description": "Scenarios for Individual clients. Append new scenario objects to the scenarios array.",
+  "scenarios": [
+    {
+      "scenario_id": "ind-very-low-motivation-monday-meltdown",
+      "client_name": "Greg",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Neighborhood Life Coach",
+      "scenario_title": "Motivation Monday Meltdown",
+      "problem_summary": "Greg, a relentlessly upbeat neighborhood life coach who films pep talks from his car and kitchen, practically begged you to take his case after a community livestream caught him screaming at a parking meter and calling it an 'energy vampire.' Clips are everywhere, tagged with lines like 'Manifesting a refund,' and followers are openly mocking the calm brand he built on breathwork and gratitude. He insists he is usually peaceful, swears the meter ate his last quarter, and says he cannot face his next Monday post unless someone helps him fix this.",
+      "flavor_tone_note": "Small-town internet fame, maximum meme potential; Greg means well and panics loudly.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Meter Misunderstanding Memo",
+          "solution_brief": "Have Greg post a brief apology and move on before the clip gets a sequel."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Calm Coach Mini-Series",
+          "solution_brief": "A focused content run: practical emotional control, no theatrics, rebuild trust with core followers."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Parking Lot Peace Challenge",
+          "solution_brief": "Turn the moment into a playful hashtag challenge to flood feeds with visibility, even if credibility recovers slowly."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Full Zen Reintroduction",
+          "solution_brief": "Full image reset: new messaging, coached appearances, and a polished local comeback."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Buzz fades; trust stays thin.",
+        "low_visibility_high_effectiveness": "Niche drama; core fans defend him.",
+        "high_visibility_low_effectiveness": "Meme spreads; he is the clip.",
+        "high_visibility_high_effectiveness": "Wide reach; redemption lands."
+      },
+      "arc_1_benchmark_variants": {
+        "low_visibility_low_effectiveness": [
+          "Local joke lingers; Greg's posts get polite pity-likes."
+        ],
+        "low_visibility_high_effectiveness": [
+          "Small audience only; they buy the reset anyway."
+        ],
+        "high_visibility_low_effectiveness": [
+          "Clip escapes the neighborhood; Greg becomes a punchline."
+        ],
+        "high_visibility_high_effectiveness": [
+          "Scandal goes wide; response goes wider."
+        ]
+      },
+      "arc_2": {
+        "options": [
+          "Quiet Curbside Note",
+          "Disciplined Recovery Drill",
+          "Meter Meme World Tour",
+          "Reputation Rebuild Bootcamp",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Greg swears he will follow the script, but at 1 a.m. he replies to @ParkingMeterFan42 with a six-paragraph essay about 'your energy'; almost nobody sees it, and the few who do turn it into a private screenshot anthology. He texts you 'Was that too authentic?' with seven sun emojis.",
+        "low_visibility_high_effectiveness": "Attention stays modest, and Greg actually sticks to the plan: no late replies, no manifesting hashtags, and his core followers start sounding protective of him again. He records a thank-you voice note so earnest you almost feel guilty billing him.",
+        "high_visibility_low_effectiveness": "During a polished comeback live, Greg accidentally screen-shares his notes file titled THINGS_I_PRETEND_NOT_TO_HATE_FINAL; the clip goes wide, and the sincere apology arc never catches up. He sends a rambling voice memo blaming OBS, Mercury, and the meter's 'aura.'",
+        "high_visibility_high_effectiveness": "Greg stays disciplined on-camera, lands one self-aware joke about meters, and broad audiences treat the meltdown as his awkward origin story instead of his whole character. He starts every check-in call with 'I did not yell at infrastructure today,' which is progress."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal stays local but never quite heals; Greg keeps filming through a fixed smile viewers do not trust. He still DMs you asking if the meter saga is 'legally over.'",
+          "good": "Only a modest audience ever cared, and enough of them forgive him that he can post without hiding in his car. He actually uses your talking points and sounds like himself again.",
+          "convincing": "In a small corner of the internet he becomes the coach who snapped at a meter and then grew up—human, funny, oddly trustworthy. He mails you a gift card with METER-FREE ZONE Sharpied on the sleeve."
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on local meme pages; every new post gets scanned for hypocrisy. Greg refreshes his analytics tab like a nervous tic.",
+          "good": "People remember the scream, but they also remember he apologized without a filter. Greg asks fewer frantic questions and stops opening every video with a whispered 'peace.'",
+          "convincing": "He earns owned-it status; the meter becomes a mascot for resetting in public. He jokes about it once, then gets back to work, and you can hear the relief in his voice."
+        },
+        "high": {
+          "poor": "The internet immortalizes him as Energy Vampire Guy; every caption reads like accidental comedy. Greg tries a meditation voice and sounds like he is being held hostage.",
+          "good": "He is famous for the wrong reason, but sponsors tighten clauses instead of fleeing—mostly. Greg signs without reading because he 'trusts the process,' and you add a sticky note to his monitor.",
+          "convincing": "He turns a parking tantrum into a credible brand: accountability, community workshops, and a running gag that finally feels earned. Greg volunteers at a school and sends a nervous selfie from the parking lot."
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-wind-beneath-the-om",
+      "client_name": "Emma",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Micro Yoga / Wellness Influencer",
+      "scenario_title": "Wind Beneath the Om",
+      "problem_summary": "Emma, a serenely intense micro influencer who built her brand on sunrise flows, sponsored mats, and the phrase 'deep belly breathing,' begged you to take the call after a sponsored stream picked up a loud, ill-timed noise right as she cued everyone to 'release what no longer serves you.' The chat lost its mind, remix accounts turned it into a soundboard, and the sponsor is asking for distance while Emma insists she can still be the face of grace under pressure—she just needs you to help her survive the weekend without becoming a punchline forever.",
+      "flavor_tone_note": "Sponsored zen meets acoustic chaos; Emma believes in the brand more than the acoustics.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Soft Studio Statement",
+          "solution_brief": "Short, dignified clarification, tight comments, let the clip age out without feeding the circus."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Breathwork Integrity Week",
+          "solution_brief": "Real technique, no stunts, rebuild trust with core followers who actually show up on the mat."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Unexpected Release Challenge",
+          "solution_brief": "Lean into the joke with loud, playful, high-reach content before the narrative turns mean."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Full Practice Relaunch",
+          "solution_brief": "Full repositioning: new production rules, sponsor-facing cleanup, coached appearances, polished comeback."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The remix dies in a small corner of the internet; Emma still gets side-eye in DMs and the sponsor stays cold.",
+        "low_visibility_high_effectiveness": "Barely anyone outside her regulars saw it; her core students accept the reset and she keeps teaching without hiding.",
+        "high_visibility_low_effectiveness": "The soundbite spreads wide; Emma becomes 'the release clip,' not the instructor.",
+        "high_visibility_high_effectiveness": "The moment goes big, but the response lands: people quote the joke once, then buy her calmer follow-up."
+      },
+      "arc_2": {
+        "options": [
+          "Mat-Edge Memo",
+          "Studio Discipline Protocol",
+          "Om My God Remix Tour",
+          "Sponsor-Safe Glow-Up",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Emma swears she will stay off live for a week, then goes live at 5:47 a.m. 'for accountability,' mutes the wrong track, and whispers 'that was the wind' while a houseplant visibly shakes. Three people watch; all three screenshot.",
+        "low_visibility_high_effectiveness": "Reach stays small, but Emma actually follows the boring plan: pre-recorded flows, no spontaneous breathing cues, and her regulars start joking with her instead of at her. She sends you a voice note calling silence 'a practice,' and for once you believe her.",
+        "high_visibility_low_effectiveness": "During a 'dignified apology' stream, Emma tries to play a calming bell sound and accidentally queues her own remix; chat sets a world record for skull emojis. The sponsor's lawyer uses the phrase 'brand adjacency concerns' in an email subject line.",
+        "high_visibility_high_effectiveness": "The clip goes wide, but Emma leans into one self-aware joke, kills the bit, and pivots to unglamorous technical yoga for a week. Strangers still recognize the sound, but they admit she recovered like an adult. She ends check-ins with 'no live bells without a producer,' which is the most professional she has ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves her comment section; Emma keeps posting 'peace' with the energy of someone holding a door shut. Her algorithm seems to show the clip only to people who subscribed for blooper comps, and she texts you asking if you can 'negotiate with the For You page.'",
+          "good": "Only a modest audience ever cared, and enough of them forgive her that she can teach without pretending the room is silent. She switches to pre-recorded flows and stops narrating her own holiness.",
+          "convincing": "In a small corner of the internet she becomes the instructor who had a human body once and admitted it—funny, grounded, oddly trustworthy. She sends you a photo of a new rug with a note that says 'non-slip, non-judgmental.'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on local wellness meme pages; every new post gets scanned for hypocrisy and wind puns. Emma refreshes her analytics like she's checking weather, and blames the mic so often the mic should invoice her.",
+          "good": "People remember the noise, but they also remember she apologized without turning into a motivational poster. She asks fewer frantic questions and finally hires someone else to press 'go live.'",
+          "convincing": "She earns owned-it status; the moment becomes a mascot for 'resetting with dignity.' She jokes about it once, then gets back to teaching, and you can hear the relief in her voice—plus fewer wind metaphors."
+        },
+        "high": {
+          "poor": "The internet immortalizes her as a global soundboard drop; every wellness caption reads like accidental comedy. Emma tries ASMR breathing and sounds like a kettle nobody asked for; she asks if she should rebrand as 'Sound Healing (Ironic).'",
+          "good": "She is famous for the wrong audio, but sponsors tighten clauses instead of fleeing—mostly. Emma signs without reading because she 'trusts the journey,' and you add a sticky note to her ring light: producer required.",
+          "convincing": "She turns acoustic chaos into a credible second act: technical classes, real disclaimers, and a running joke that finally feels earned. Emma volunteers at a community center and sends a selfie from the studio with the caption 'mic tested, ego tested.'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-diamond-hands-cardboard-coin",
+      "client_name": "Jake",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Bedroom Finance-Bro Style Creator",
+      "scenario_title": "Diamond Hands, Cardboard Coin",
+      "problem_summary": "Jake, a chronically confident bedroom creator who built his brand on neon charts and catchphrases like 'this is not financial advice (but it is),' begged you to intervene after he hyped a hype-stream token that turned out to be a rug-pull. Wallets drained, receipts surfaced, and chat is painting him as paid shill energy. He swears he believed the project, says he lost money too, and admits his legal situation is 'vibes-based'—he just needs you to keep him from becoming the face of fake finance while he figures out how to apologize without sounding like a spreadsheet.",
+      "flavor_tone_note": "Micro-influencer finance cosplay meets real consequences; Jake talks fast and panics faster.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Pinned Risk Disclaimer",
+          "solution_brief": "Brief correction, stop promoting, de-escalate: no new picks, no hype, let the heat drop."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Audience-First Audit Stream",
+          "solution_brief": "Walk through what went wrong with receipts, no fresh picks, rebuild trust with core viewers who stayed."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Meme Bankruptcy Tour",
+          "solution_brief": "Self-roast and high-reach visibility plays; substance lags but attention stays high."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Credibility Rebuild & Standards Lock",
+          "solution_brief": "New disclosure rules, edited backlog positioning, structured comeback and clearer channel standards."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Drama stays in his replies; nobody new trusts the charts.",
+        "low_visibility_high_effectiveness": "Small circle; some respect returns with transparency.",
+        "high_visibility_low_effectiveness": "Clip spreads; he is the face of trust-me-bro finance.",
+        "high_visibility_high_effectiveness": "Huge attention; accountability arc lands for some viewers."
+      },
+      "arc_2": {
+        "options": [
+          "Dry Disclosure Note",
+          "Receipt Discipline Sprint",
+          "Rugpull Roast Roadshow",
+          "Channel Standards Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Jake promises 'no more picks,' then posts a chart with the caption 'just observing' and a wink emoji. Twelve people see it; two of them are his ex-roommates and they start a group chat called 'Observing Jake.'",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Jake actually follows the boring plan: pinned disclosures, no affiliate links, and a dry walkthrough of receipts. He sends you a voice memo that says 'I am not built for humility' and then does it anyway.",
+        "high_visibility_low_effectiveness": "During a 'transparency stream,' Jake accidentally shares a tab titled PROMO_EMAILS_OLD and a second tab titled PROMO_EMAILS_OLDER. Chat prints screenshots before he can alt-tab; he blames the browser for 'being emotional.'",
+        "high_visibility_high_effectiveness": "The pile-on is huge, but Jake sticks to one script: what he knew, what he did not, what he will never do again. Strangers still mock him, but a few commenters write 'okay that was actually adult.' He ends every call with 'no new tickers until you say so,' which is the closest he has ever come to therapy."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves his comment section; Jake keeps posting 'lessons learned' over screenshots that still have a rocket emoji in the corner. He asks if you can 'SEO' the word rug-pull off his name, and you pretend you did not hear it.",
+          "good": "Only a modest audience ever cared, and enough of them accept a boring apology that he can post without hiding in his closet. He deletes the word 'alpha' from his profile and replaces it with 'accountable,' which is a start.",
+          "convincing": "In a small corner of the internet he becomes the creator who got scammed and said so—loud, specific, and weirdly trustworthy. He mails you a mug that says 'NOT ADVICE (FOR REAL)' in Comic Sans."
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on finance meme pages; every new post gets scanned for hypocrisy and rocket emojis. Jake refreshes his wallet balance like it is a horoscope and calls you 'chief' in a way that makes you tired.",
+          "good": "People remember the hype, but they also remember he showed receipts and stopped promising miracles. He asks fewer frantic questions and finally hires someone else to edit his thumbnails.",
+          "convincing": "He earns a 'cautionary tale' reputation that actually helps; viewers treat him like a warning label with a face. He jokes about the rug once, then gets back to boring basics, and you can hear the relief in his voice—plus fewer laser pointers."
+        },
+        "high": {
+          "poor": "The internet immortalizes him as a global meme for 'trust me bro' finance; every chart reads like accidental comedy. Jake tries a serious blazer stream and accidentally leaves a sticker on his laptop that says 'WAGMI (lol).' He asks if he should pivot to 'compliance ASMR.'",
+          "good": "He is famous for the wrong chart, but platforms tighten his disclosures instead of banning him—mostly. Jake signs without reading because he 'trusts the process,' and you add a sticky note to his monitor: read first, rocket later.",
+          "convincing": "He turns a scam shout-out into a credible second act: education-only content, no picks, and a running joke that finally feels earned. Jake volunteers for a financial literacy workshop and sends a selfie from the parking lot with the caption 'no tickers, only trauma.'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-mensa-energy-wifi-password-energy",
+      "client_name": "Nathan",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Trivia / Debate Micro-Influencer",
+      "scenario_title": "Mensa Energy, Wi-Fi Password Energy",
+      "problem_summary": "Nathan, an insufferably witty trivia creator who built his brand on 'debate me' thumbnails and a pinned IQ score that looked impressively astronomical, begged you to take his case after someone traced the number to a free online quiz that also offered 'Which bread are you?' Followers are roasting him with loaf memes, quote-tweeting him with bakery puns, and asking if his IQ is measured in croutons. He insists he is still sharp, says he 'did not read the fine print,' and admits he cannot sleep until you help him stop being the internet's favorite sourdough punchline.",
+      "flavor_tone_note": "Micro-celebrity brain cosplay meets screenshot forensics; Nathan talks like a podcast and sweats like a freshman.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Humble Footnote Post",
+          "solution_brief": "Quick correction, retire the score from the bio, de-escalate without a second spectacle."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Skills-Over-Scores Series",
+          "solution_brief": "Rebuild with puzzles, citations, and good-faith debates—credibility through proof, not numbers."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Bread Identity Spectacular",
+          "solution_brief": "Lean into the loaf jokes for high reach; meme visibility before the mockery turns cruel."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Persona Rebuild & Credibility Rules",
+          "solution_brief": "Full repositioning: curiosity-first brand, standards for claims, controlled appearances, polished comeback."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The joke dies in a niche corner; Nathan still looks silly in his own replies.",
+        "low_visibility_high_effectiveness": "Tiny audience; they accept the walk-back.",
+        "high_visibility_low_effectiveness": "Loaf memes everywhere; IQ becomes the punchline.",
+        "high_visibility_high_effectiveness": "Viral roast flips into a charming self-own plus smarter content."
+      },
+      "arc_2": {
+        "options": [
+          "Footnote-Only FAQ",
+          "Puzzle Discipline Month",
+          "Bakery Meme Spectacular",
+          "Intellectual Humility Rebrand",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Nathan promises to drop the score, then posts a screenshot of a different quiz with a higher number and the caption 'sanity check.' Four people see it; all four are his cousins and they start a family thread titled 'We need to talk about Nathan.'",
+        "low_visibility_high_effectiveness": "Reach stays small, but Nathan actually follows the boring plan: no IQ talk, daily puzzles with sources, and a pinned note that says 'I was wrong loudly.' He sends you a voice memo admitting he liked being the smartest person in the room and hated that the room was his bedroom.",
+        "high_visibility_low_effectiveness": "During a 'rigorous Q&A,' Nathan tries to share a PDF of an official test and accidentally uploads a grocery list with 'bread (IMPORTANT)' circled. The clip goes wide; he blames cloud sync for 'weaponizing carbs.'",
+        "high_visibility_high_effectiveness": "The pile-on is huge, but Nathan sticks to one message: he flexed a silly number, he is sorry, here is what he will prove instead. Strangers still post toast emojis, but a few commenters write 'okay that was actually grown-up.' He ends check-ins with 'no IQ posts without your approval,' which is the first time he has let anyone edit his ego."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves his bio-adjacent aura; Nathan keeps posting 'epistemics' while his banner still looks like a motivational poster for a gifted kid who peaked at fourteen. He asks if you can get him verified as 'satire,' and you stare at the ceiling.",
+          "good": "Only a modest audience ever cared, and enough of them forgive him that he can post puzzles without pretending he is a statistic. He deletes the IQ pin and replaces it with 'source-first,' which is cringe but sincere.",
+          "convincing": "In a small corner of the internet he becomes the guy who got caught cosplaying genius and chose curiosity instead—still annoying, but honest. He mails you a loaf of bread with a note that says 'proof of humility (carbs included).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on debate meme pages; every new post gets scanned for hypocrisy and flour puns. Nathan refreshes his mentions like it is a scoreboard and argues with a bot that only replies with baguette emojis.",
+          "good": "People remember the flex, but they also remember he stopped doubling down and started showing work. He asks fewer frantic questions and finally admits his best skill is reading Wikipedia fast.",
+          "convincing": "He earns a 'reformed reply guy' reputation that actually helps; viewers treat him like a cautionary tale who learned footnotes. He jokes about the quiz once, then gets back to sourced debates, and you can hear the relief in his voice—plus fewer thesaurus words."
+        },
+        "high": {
+          "poor": "The internet immortalizes him as a global meme for fake IQ energy; every caption reads like accidental comedy. Nathan tries a serious lecture stream and mispronounces 'epistemology' three different ways; he asks if he should pivot to 'BreadTube (literal).'",
+          "good": "He is famous for the wrong number, but platforms let him stay if he keeps disclaimers tight—mostly. Nathan signs new content rules without reading because he 'trusts the discourse,' and you add a sticky note to his monitor: read first, flex later.",
+          "convincing": "He turns a cringe score into a credible second act: education content, citations, and a running joke that finally feels earned. Nathan volunteers to host a high school debate night and sends a selfie from the parking lot with the caption 'IQ: TBD, parking: confirmed.'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-low-sponsored-by-silence",
+      "client_name": "Mila",
+      "client_type": "Individual",
+      "budget_tier": "Low",
+      "client_subtype": "Part-time Local Food Vlogger",
+      "scenario_title": "Sponsored by Silence",
+      "problem_summary": "Mila, a relentlessly enthusiastic part-time food vlogger who built her brand on cozy noodle slurps and 'hidden gem' energy, begged you to take her case after she posted a glowing review of a tiny noodle spot and the owner commented that they have never met her. Viewers are screenshotting the exchange, accusing her of inventing restaurant visits from stock photos and old trips, and her DMs are a mix of outrage and pity. She insists she did visit once, swears the owner might not recognize her on camera, and says she cannot film another bite until you help her stop looking like she reviews food from a parallel dimension.",
+      "flavor_tone_note": "Small creator, very public trust wobble; Mila means well and oversells sincerity like a spice blend.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Pinned Clarification",
+          "solution_brief": "Short apology and correction, pin the facts, then low profile until the cycle cools—no extra drama."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Receipt-and-Reset Week",
+          "solution_brief": "Verifiable, unsponsored neighborhood reviews: dates, receipts, on-camera arrivals—rebuild trust with proof."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Noodle Truth Tour",
+          "solution_brief": "Playful city-wide tasting content and high visibility to retake the narrative before mockery hardens."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Credibility Reboot Season",
+          "solution_brief": "Full image reset: transparency rules, filmed check-ins, disclosure standards, coordinated standards relaunch."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Buzz stays local; viewers still doubt every review.",
+        "low_visibility_high_effectiveness": "Small drama; proof-heavy content wins believers back.",
+        "high_visibility_low_effectiveness": "Fake-visit narrative spreads; credibility tanks.",
+        "high_visibility_high_effectiveness": "Callout goes wide; transparent recovery lands."
+      },
+      "arc_2": {
+        "options": [
+          "Pinned Receipt Note",
+          "Verified Review Discipline",
+          "Noodle Noise Campaign",
+          "Credibility Systems Reset",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Mila promises stricter standards, then uploads a 'day in my life' where the restaurant sign in the background is mirrored and the letters spell nonsense; twelve locals notice, and three start a Discord called Mila Lore.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Mila actually follows the boring plan: dated receipts, filmed walk-ins, and a pinned disclosure chart that would bore a lawyer—in a good way. She sends you a voice memo admitting she once filmed b-roll at home and called it 'vibe continuity.'",
+        "high_visibility_low_effectiveness": "During a dramatic comeback reel, Mila accidentally leaves a stock watermark visible in a noodle close-up; the internet treats it as a confession. She tries to call it 'editorial collage' and accidentally invents a new insult for herself.",
+        "high_visibility_high_effectiveness": "The pile-on is huge, but Mila posts one honest timeline, kills the mystery-gem fantasy, and pivots to boring proof-of-visit content for two weeks. Strangers still meme her, but a few commenters write 'okay she showed the receipt.' She ends check-ins with 'no reviews without a door shot,' which is the most professional she has ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves her comment section; Mila keeps posting 'real meals, real life' over footage that still looks suspiciously tidy. She asks if you can make 'visited' mean 'visited spiritually,' and you stare at your shoes.",
+          "good": "Only a modest audience ever cared, and enough of them forgive her that she can post without pretending every bowl was destiny. She replaces mystery with maps—even if the lighting is still influencer-soft.",
+          "convincing": "In a small corner of the internet she becomes the vlogger who got caught exaggerating and then chose receipts—cringe, honest, oddly trustworthy. She mails you a takeout menu with a sticky note that says 'proof of life (carbs included).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on local food meme pages; every new post gets scanned for hypocrisy and chopstick continuity errors. Mila refreshes her mentions like a heartbeat monitor and blames 'lighting' so often lighting should invoice her.",
+          "good": "People remember the owner comment, but they also remember she started showing door shots and timestamps. She asks fewer frantic questions and finally stops calling every place 'underrated' before she swallows.",
+          "convincing": "She earns 'reformed reviewer' status; the callout becomes a mascot for proof-first food content. She jokes about the silence once, then gets back to eating, and you can hear the relief in her voice—plus fewer words like 'authentic' without a receipt."
+        },
+        "high": {
+          "poor": "The internet immortalizes Mila as a global meme for fake bites; every food caption reads like accidental comedy. She tries a sincere apology and accidentally tags the wrong restaurant; she asks if she should rebrand as 'Sponsored by Confusion (Official).'",
+          "good": "She is famous for the wrong noodle, but platforms only tighten disclosure rules instead of demonetizing—mostly. Mila signs new content standards without reading because she 'trusts the journey,' and you add a sticky note to her ring light: door first, slurp later.",
+          "convincing": "She turns a cursed comment thread into a credible second act: disclosure-first reviews, filmed arrivals, and a running joke that finally feels earned. Mila hosts a live walk-in where she orders in frame and sends a selfie from the sidewalk with the caption 'met the owner (confirmed), met the carbs (also confirmed).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-5am-guru-wakes-at-noon",
+      "client_name": "Leo",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Hyper-local Productivity Streamer",
+      "scenario_title": "The 5AM Guru Wakes at Noon",
+      "problem_summary": "Leo, a hyper-scheduled micro streamer who built his brand on 5AM discipline, ice-water face splashes, and thumbnails that look like a sunrise stock photo, begged you to take his case after he accidentally went live at 12:17 p.m. still wrapped in a burrito blanket, whispering that this was a 'strategic sunrise.' Clips are circulating as Noon Ascension, sponsors are side-eyeing the calendar, and his comment section is doing timezone math in public. He swears he is usually awake before dawn, blames a scheduling glitch and also 'the moon,' and says he cannot post another routine video until his brand stops sounding like a parody of itself.",
+      "flavor_tone_note": "Tiny creator, gigantic meme velocity; Leo means well and schedules panic like a meeting.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Technical Alarm Issue",
+          "solution_brief": "Short statement: scheduling glitch, no drama, return to normal posts fast—no second spectacle."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Human, Not Hardware",
+          "solution_brief": "Realistic routine content, honest wake times, and consistent accountability for core followers—no fake dawn."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Noon Enlightenment Challenge",
+          "solution_brief": "Lean into the meme with playful high-visibility content that dominates timelines before the joke turns cruel."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Monk Mode 2.0",
+          "solution_brief": "Full image rework: new positioning, coached appearances, producer-approved lives, polished comeback arc."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The clip stays niche; Leo still looks unserious.",
+        "low_visibility_high_effectiveness": "Small audience; realistic routine pivot wins fans back.",
+        "high_visibility_low_effectiveness": "Noon Ascension trends; discipline brand cracks.",
+        "high_visibility_high_effectiveness": "The stumble goes viral; reset lands charming."
+      },
+      "arc_2": {
+        "options": [
+          "Dawn Patrol Memo",
+          "Routine Discipline Protocol",
+          "Noon Ascension Media Tour",
+          "Sustainable Guru Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Leo promises 'no more spontaneous lives,' then schedules a 5:01 a.m. stream that starts at 5:47 with a title that still says 'DAY ONE.' Fourteen people watch; four are bots, and the bots still judge him.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Leo actually follows the boring plan: posted wake times, pre-recorded routines, and a pinned note that says 'I am not a solar panel.' He sends you a voice memo admitting he liked being the main character of discipline more than doing discipline.",
+        "high_visibility_low_effectiveness": "During a polished comeback live, Leo tries to wake up on camera and immediately yawns into a hot mic while the chat counts down from noon; Noon Ascension trends for round two with a new soundboard. He blames daylight saving time for 'betraying the brand.'",
+        "high_visibility_high_effectiveness": "The pile-on is huge, but Leo sticks to one self-aware joke, kills the fake-dawn fantasy, and pivots to ugly-real productivity for a week. Strangers still post sun emojis, but core fans start defending him. He ends check-ins with 'no lives before coffee,' which is the most honest schedule he has ever published."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves his comment section; Leo keeps posting 'rise and grind' over footage that still looks like a hostage video. He asks if you can make the word morning mean 'morning-coded,' and you consider blocking your own calendar.",
+          "good": "Only a modest audience ever cared, and enough of them forgive him that he can post without pretending he was born at dawn. He replaces 5AM thumbnails with a clock that matches reality—even if the lighting is still bad.",
+          "convincing": "In a small corner of the internet he becomes the productivity guy who lied about time once and then chose honesty—still cringe, oddly trustworthy. He mails you a mug that says 'NOT A SUNRISE (CONFIRMED).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on productivity meme pages; every new post gets scanned for hypocrisy and alarm-clock puns. Leo refreshes his analytics like a heartbeat monitor and blames 'circadian drift' so often the word should file a restraining order.",
+          "good": "People remember the burrito blanket, but they also remember he stopped cosplaying dawn. He asks fewer frantic questions and finally hires someone else to press 'go live.'",
+          "convincing": "He earns 'reformed routine guy' status; Noon Ascension becomes a mascot for resetting in public. He jokes about the blanket once, then gets back to work, and you can hear the relief in his voice—plus fewer words like 'optimize' without a timestamp."
+        },
+        "high": {
+          "poor": "The internet immortalizes Leo as a global meme for fake discipline; every caption reads like accidental comedy. He tries a serious morning routine and the camera catches a phone alarm labeled 'pretend you woke up'; he asks if he should pivot to 'Noon Productivity (Canon).'",
+          "good": "He is famous for the wrong sunrise, but sponsors only tighten scheduling clauses instead of fleeing—mostly. Leo signs new content rules without reading because he 'trusts the process,' and you add a sticky note to his ring light: clock first, caption later.",
+          "convincing": "He turns a cursed live into a credible second act: honest wake times, real routines, and a running joke that finally feels earned. Leo hosts a stream titled 'I woke up when I woke up' and sends a selfie from his kitchen with the caption 'burrito retired (RIP).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-do-not-disturb-please-applaud",
+      "client_name": "Iris",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Local Mindfulness Podcaster",
+      "scenario_title": "Do Not Disturb, Please Applaud",
+      "problem_summary": "Iris, a serenely intense micro mindfulness host who built her brand on whispered ASMR, linen textures, and a pinned promise of unscripted silence, begged you to take her case after she uploaded a silent retreat vlog where reflections in her sunglasses showed her roommate Jules holding cue cards for dramatic pauses—including one that just said BREATHE (BIGGER). Listeners are calling it guided improvisation, Patreon comments are doing close reads on frame-by-frame shame, and someone turned the clip into a soundboard. Iris insists she was still 'feeling authentic,' swears Jules was only there for 'light prompting,' and says she cannot record another episode until she stops sounding like a wellness play.",
+      "flavor_tone_note": "Calm branding, chaotic behind-the-scenes energy; Iris means well and performs peace like it is opening night.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Captioned Clarifier",
+          "solution_brief": "Short explanation, pin the facts, low profile until the cycle cools—no extra theater."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Unedited Calm Sessions",
+          "solution_brief": "Raw recordings, real silence, consistent audience check-ins—no cue cards, no staged breaths."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Silence Challenge Spectacle",
+          "solution_brief": "Playful high-visibility challenge content to retake the narrative before mockery hardens."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Authenticity Retreat Relaunch",
+          "solution_brief": "Full reset: transparent production standards, coached appearances, polished comeback messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Cue-card joke stays niche; Iris still feels performative.",
+        "low_visibility_high_effectiveness": "Small audience; unedited eps rebuild trust.",
+        "high_visibility_low_effectiveness": "Guided improv memes; authenticity flatlines.",
+        "high_visibility_high_effectiveness": "Clip goes wide; transparent reset lands."
+      },
+      "arc_2": {
+        "options": [
+          "Retreat Clarification Note",
+          "Unscripted Calm Discipline",
+          "Meditation Meme Broadcast",
+          "Authenticity Studio Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Iris promises 'fully unscripted silence,' then uploads a thumbnail where Jules's fingers are visible in the corner holding a card that says CLAP NOW. Nineteen listeners notice; six start a Discord called Iris Lore.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Iris actually follows the boring plan: one camera, no sunglasses, no roommates in frame, and a pinned note that says 'if you hear breath coaching, it is wind.' She sends you a voice memo admitting she liked sounding enlightened more than being still.",
+        "high_visibility_low_effectiveness": "During a polished apology live, Iris tries to demonstrate 'pure presence' and accidentally shares her second monitor with a Google Doc titled PAUSES_THAT_SLAP; the doc is also open to a tab labeled 'sponsors.' The clip goes wide; Jules becomes a folk hero by accident.",
+        "high_visibility_high_effectiveness": "The roast is huge, but Iris posts one honest joke, kills the silent retreat fantasy, and pivots to boring, verifiable practice content for two weeks. Strangers still meme the cue cards, but listeners start defending her. She ends check-ins with 'no uploads until Jules leaves the room,' which is the most professional she has ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves her reviews; Iris keeps posting 'stillness' over audio that still sounds like a performance. She asks if you can make 'unscripted' mean 'unscripted vibes,' and you consider a silent retreat of your own.",
+          "good": "Only a modest audience ever cared, and enough of them forgive her that she can post without pretending silence is a screenplay. She replaces whisper theatrics with a timer—cringe, but honest.",
+          "convincing": "In a small corner of the internet she becomes the host who got caught staging peace and then chose real quiet—awkward, human, oddly trustworthy. She mails you a sleep mask with a note that says 'no cue cards (verified).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on wellness meme pages; every new post gets scanned for hypocrisy and breath puns. Iris refreshes her Patreon like a heartbeat monitor, and Jules blames 'lighting' so often lighting should invoice her.",
+          "good": "People remember the cue cards, but they also remember she stopped hiding production and started showing the room. She asks fewer frantic questions and finally records without reflective surfaces.",
+          "convincing": "She earns 'reformed calm' status; the sunglasses clip becomes a mascot for honesty over aesthetics. Iris jokes about the cards once, then gets back to practice, and you can hear the relief in her voice—plus fewer words like 'authentic' without a disclaimer."
+        },
+        "high": {
+          "poor": "The internet immortalizes Iris as a global meme for fake zen; every mindfulness caption reads like accidental comedy. She tries a sincere apology and accidentally leaves a ring light visible in a 'nature' shot; she asks if she should rebrand as 'Silence (Director's Cut).'",
+          "good": "She is famous for the wrong pause, but platforms only tighten disclosure rules instead of demonetizing—mostly. Iris signs new podcast standards without reading because she 'trusts the journey,' and you add a sticky note to her mic: script first, whisper later.",
+          "convincing": "She turns a cursed vlog into a credible second act: transparent production, no cue cards, and a running joke that finally feels earned. Iris hosts a live session titled 'Quiet, Actually' and sends a selfie from a plain room with the caption 'Jules off-camera (approved).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-vintage-haul-fresh-receipt",
+      "client_name": "Zoe",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Neighborhood Thrift-Fashion Creator",
+      "scenario_title": "Vintage Haul, Fresh Receipt",
+      "problem_summary": "Zoe, a chronically online neighborhood thrift creator who built her brand on 'rescued from history' hauls and soft-lit rack shots, begged you to take her case after she accidentally left a same-day fast-fashion receipt in-frame on a story about a 'time-travel blazer.' Comments are joking that history started this morning, stitch accounts are doing forensic zooms on price tags, and someone made a bingo card where every square is 'vintage-coded.' Zoe insists the receipt was for socks, swears the blazer was still thrifted, and says she cannot film another outfit post until she stops looking like she invented time travel at the mall.",
+      "flavor_tone_note": "Style persona meets timestamped contradiction; Zoe means well and shops fast when the algorithm whispers.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Style Note Correction",
+          "solution_brief": "Brief sourcing clarification, pin the facts, de-escalate—no new claims until receipts match the fit."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Verified Thrift Diary",
+          "solution_brief": "Consistent verifiable sourcing: dates, shop names, rack photos—rebuild trust with core followers."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Closet Confession Tour",
+          "solution_brief": "Loud humorous reveal content to retake attention through reach—meme velocity first."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Wardrobe Ethics Reboot",
+          "solution_brief": "Full credibility overhaul: transparent standards, disclosure rules, coordinated relaunch messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Receipt drama stays local; followers still doubt.",
+        "low_visibility_high_effectiveness": "Contained; verified sourcing repairs trust.",
+        "high_visibility_low_effectiveness": "History started this morning spreads; persona cracks.",
+        "high_visibility_high_effectiveness": "Wide mockery; transparent rules earn comeback."
+      },
+      "arc_2": {
+        "options": [
+          "Sourcing Clarification Post",
+          "Thrift Discipline Ledger",
+          "Closet Chaos Amplifier",
+          "Ethical Wardrobe Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Zoe posts a sourcing pledge, then uploads a thrift haul where a sweater still has a security tag from a chain store; nine followers notice, and four post it to a local Facebook group with the energy of a courtroom.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Zoe actually follows the boring plan: shop photos, purchase screenshots, and a pinned note that says 'mixed wardrobe, labeled honestly.' She sends you a voice memo admitting she once called a mall find 'pre-loved' because it was loved by someone else first.",
+        "high_visibility_low_effectiveness": "During a dramatic closet tour, Zoe pans past a shopping bag with a logo visible and tries to call it 'a prop for contrast'; history started this morning trends nationally again while the chat does math on her carbon footprint and her dignity.",
+        "high_visibility_high_effectiveness": "The roast is huge, but Zoe posts one honest joke, kills the pure-thrift fantasy, and pivots to boring proof-of-purchase content for two weeks. Strangers still meme the receipt, but core fans start defending her. She ends check-ins with 'no hauls without a door shot,' which is the most professional she has ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves her comments; Zoe keeps posting 'ethical fashion' over fits that still look like a mall speedrun. She asks if you can make 'vintage' mean 'vintage energy,' and you consider a digital detox.",
+          "good": "Only a modest audience ever cared, and enough of them forgive her that she can post without pretending every hem was excavated. She replaces poetry with a label key—even if the lighting is still soft.",
+          "convincing": "In a small corner of the internet she becomes the creator who got caught blurring thrift and new and then chose receipts—cringe, honest, oddly trustworthy. She mails you a tote bag that says 'MIXED (VERIFIED).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on fashion meme pages; every new post gets scanned for hypocrisy and tag puns. Zoe refreshes her likes like a heartbeat monitor, and she blames 'lighting' so often lighting should invoice her.",
+          "good": "People remember the receipt, but they also remember she started labeling mixed wardrobes and stopped mythologizing every zipper. She asks fewer frantic questions and finally separates thrift from impulse in a spreadsheet.",
+          "convincing": "She earns 'reformed fit check' status; the receipt screenshot becomes a mascot for honesty over aesthetics. Zoe jokes about the mall once, then gets back to outfits, and you can hear the relief in her voice—plus fewer words like 'curated' without a timestamp."
+        },
+        "high": {
+          "poor": "The internet immortalizes Zoe as a global meme for thrift cosplay; every OOTD reads like accidental comedy. She tries a sincere apology and accidentally films a shopping bag in the mirror; she asks if she should rebrand as 'Vintage (Speedrun).'",
+          "good": "She is famous for the wrong receipt, but platforms only tighten disclosure rules instead of demonetizing—mostly. Zoe signs new content standards without reading because she 'trusts the journey,' and you add a sticky note to her mirror: tags first, fit later.",
+          "convincing": "She turns a cursed frame into a credible second act: honest sourcing, mixed wardrobe, and a running joke that finally feels earned. Zoe hosts a live thrift walk with printed receipts and sends a selfie from the sidewalk with the caption 'history optional, honesty required.'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-explainer-mode-wrong-atlas",
+      "client_name": "Anika",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Diaspora Culture Commentary Micro-Influencer",
+      "scenario_title": "Explainer Mode, Wrong Atlas",
+      "problem_summary": "Anika, a diaspora micro-influencer who built her brand on correcting other South Asian creators for a Western audience, begged you to take her case after followers shredded her pinned explainer on Diwali in India. She framed it like one fixed October night nationwide, ignored the lunar calendar, and her 'write it in Hindi' slide put शुभ दीपावली in Gujarati script while she scolded people about Devanagari. Quote-tweets turned into map memes; Anika swears she mixed up two tabs and cannot post another explainer until she stops sounding like a final she did not study for.",
+      "flavor_tone_note": "Diwali homework vs sloppy tabs; Anika means well and performs authority like a syllabus she skimmed.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Pinned Correction Drop",
+          "solution_brief": "Take the post down or pin a precise correction—what was wrong, what stands, no deflection."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Source-First Explainer Reset",
+          "solution_brief": "Rebuild trust with citations: real festival dates, India regional nuance, script checks, named sources."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Atlas Roast Own-Goal Tour",
+          "solution_brief": "High-visibility self-deprecating content to outrun the meme cycle—laugh first, then reframe."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Commentary Standards Relaunch",
+          "solution_brief": "Full credibility reset: editorial checklist, consultant review for sensitive topics, coordinated comeback messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Diwali-date jokes stay niche; trust stays bruised.",
+        "low_visibility_high_effectiveness": "Contained; corrections on India-specific facts repair core followers.",
+        "high_visibility_low_effectiveness": "Explainer fail trends; brand looks preachy on Diwali and scripts.",
+        "high_visibility_high_effectiveness": "Wide mockery; lunar-calendar receipts earn a second look."
+      },
+      "arc_2": {
+        "options": [
+          "Pinned Fact Repair",
+          "Citation Discipline Protocol",
+          "Self-Roast Visibility Blitz",
+          "Explainer Integrity Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Anika posts a solemn apology carousel, then leaves an older story up where she calls Hyderabadi biryani a Punjabi wedding staple; eight followers notice, and six cross-post to a diaspora meme account with the caption 'syllabus optional.'",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Anika follows the boring plan: corrected pin with a real Diwali window by year and a note that says 'I will not correct people faster than I verify.' She sends you a voice memo admitting she used a stock map of India with colonial labels until a cousin texted her in all caps.",
+        "high_visibility_low_effectiveness": "During a comeback live meant to 'model accountability,' Anika mispronounces Lakshmi Puja while insisting she fixed the Diwali slides, and the chat spam-posts Devanagari corrections; a stitch account syncs it to sitcom music. She tries to call it 'a learning moment' while a commenter posts a Panchang screenshot in real time.",
+        "high_visibility_high_effectiveness": "The roast is huge, but Anika posts one honest joke, kills the explainer crown fantasy, and pivots to boring, cited posts for two weeks. Strangers still meme the Diwali slide, but core followers start defending her. She ends check-ins with 'no carousels until two desi proofreaders,' which is the most professional she has ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves her comments; Anika keeps posting 'holding space' over threads that still smell like a rushed Wikipedia spiral. She asks if you can make 'explainer' mean 'explainer energy,' and you schedule a very long silence.",
+          "good": "Only a modest audience ever cared, and enough of them forgive her that she can post without pretending every slide was peer-reviewed. She replaces authority with a sources box—even if the aesthetic is still beige.",
+          "convincing": "In a small corner of the internet she becomes the creator who got caught wrong on Diwali and Devanagari and then chose citations—cringe, honest, oddly trustworthy. She mails you a tote bag that says 'FACT-CHECKED (DESI TEAM).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on diaspora meme pages; every new post gets scanned for hypocrisy and Diwali-calendar puns. Anika refreshes her likes like a heartbeat monitor, and she blames 'the algorithm' so often the algorithm should invoice her.",
+          "good": "People remember the bad pin, but they also remember corrected posts and fewer lectures aimed at clout. She asks fewer frantic questions and finally separates 'community care' from 'being right on the first draft.'",
+          "convincing": "She earns 'reformed explainer' status; the bad Diwali carousel becomes a mascot for humility over performance. Anika jokes about the script slide once, then gets back to culture posts, and you can hear the relief in her voice—plus fewer words like 'decolonize' without a footnote."
+        },
+        "high": {
+          "poor": "The internet immortalizes Anika as a global meme for diaspora cosplay; every carousel reads like accidental comedy. She tries a solemn Notes-app apology and accidentally leaves a tab open titled EXPLAINER_FINAL_FINAL; she asks if she should rebrand as 'Humility (Official).'",
+          "good": "She is famous for the wrong Diwali slide, but platforms only tighten comment literacy instead of demonetizing—mostly. Anika signs new editorial rules without reading because she 'trusts the journey,' and you add a sticky note to her desk: Panchang first, tone second.",
+          "convincing": "She turns a cursed pin into a credible second act: real citations on India, real consultants, and a boring FAQ that actually lists festival windows by region and which scripts match which languages. Anika hosts a live Q&A with two proofreaders on camera and sends a selfie from the library stacks with the caption 'India atlas borrowed (verified).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-opening-prep-engine-window",
+      "client_name": "Marcus",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "YouTube Chess Coach / Streamer",
+      "scenario_title": "Opening Prep, Wrong Monitor",
+      "problem_summary": "Marcus, a peppy YouTube chess coach who built his brand on 'think like a titled player' streams and slow, confident move explanations, begged you to take his case after a live lesson accidentally showed the wrong monitor: a full engine analysis panel with best-line arrows updating in lockstep with his cursor. Viewers clipped the moment, chess meme accounts ran the sync frame-by-frame, and someone overlaid his spoken 'I am calculating this over the board' with a timer that matched the engine refresh. Marcus insists he only used it for opening prep off-stream, swears he forgot to hide the window mid-demo, and says he cannot schedule another broadcast until he stops looking like he outsourced his brain to a box in the corner.",
+      "flavor_tone_note": "Instructional theater meets wrong OBS scene; Marcus means well and panics in algebraic notation.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Stream Clarification Cut",
+          "solution_brief": "Short factual statement: what happened, what was on screen, immediate VOD fix—no excuses dressed as philosophy."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Over-the-Board Credibility Track",
+          "solution_brief": "Rebuild trust with camera-on board-only sessions, supervised formats, and clear engine rules posted everywhere."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Blunder Arc Media Blitz",
+          "solution_brief": "High-visibility self-deprecating content to outrun the meme cycle—own the joke first."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Fair-Play Curriculum Relaunch",
+          "solution_brief": "Full reset: published anti-cheat policy, third-party review of past streams, coordinated comeback messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Engine-window jokes stay niche; trust stays bruised.",
+        "low_visibility_high_effectiveness": "Contained; clear rules and OTB content reassure core viewers.",
+        "high_visibility_low_effectiveness": "Sync clips trend; coach brand looks fraudulent.",
+        "high_visibility_high_effectiveness": "Wide mockery; transparent policy earns a second look."
+      },
+      "arc_2": {
+        "options": [
+          "Honest VOD Statement",
+          "Board-Only Discipline Protocol",
+          "Self-Roast Clip Strategy",
+          "Fair-Play Reputation Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Marcus posts a solemn apology, then his next upload still has a half-second flash of an analysis tab in the corner; nine subscribers notice, and seven post it to a chess shaming subreddit with the title 'prep is a feeling.'",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Marcus follows the boring plan: one camera, one wooden board, engine banned from the stream PC, and a pinned comment that says 'human moves only.' He sends you a voice memo admitting he once called a line 'intuition' while a lichess tab was literally visible in a reflection.",
+        "high_visibility_low_effectiveness": "During a comeback live meant to prove honesty, Marcus alt-tabs by muscle memory and a stock evaluation bar slides across the screen for three full seconds; the chat speedruns skull emojis. A grandmaster quote-tweets 'beautiful prep' with a screenshot and a skull.",
+        "high_visibility_high_effectiveness": "The roast is huge, but Marcus posts one honest joke, kills the infallible coach fantasy, and pivots to boring, verifiable formats for two weeks. Strangers still meme the arrows, but students start defending the syllabus. He ends check-ins with 'no overlays until OBS is triple-checked,' which is the most professional he has ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves his comments; Marcus keeps posting 'growth mindset' over threads that still smell like a minimized window. He asks if you can make 'prep' mean 'spiritual prep,' and you schedule a very long silence.",
+          "good": "Only a modest audience ever cared, and enough of them forgive him that he can stream without pretending every line was born in his head. He replaces swagger with a rules box—even if the lighting is still ring-lit.",
+          "convincing": "In a small corner of YouTube he becomes the coach who got caught with arrows and then chose transparency—cringe, honest, oddly trustworthy. He mails you a pawn keychain that says 'UNASSISTED (MOSTLY).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on chess meme pages; every new video gets scanned for tabs and eval bars. Marcus refreshes dislikes like a heartbeat monitor, and he blames 'OBS' so often OBS should invoice him.",
+          "good": "People remember the engine window, but they also remember board-only streams and fewer miracle moves. He asks fewer frantic questions and finally separates 'teaching' from 'performing genius.'",
+          "convincing": "He earns 'reformed coach' status; the arrow overlay becomes a training slide for what not to show. Marcus jokes about the third monitor once, then gets back to lessons, and you can hear the relief in his voice—plus fewer words like 'calculate' without a camera angle."
+        },
+        "high": {
+          "poor": "The internet immortalizes Marcus as a global meme for chess cosplay; every thumbnail reads like accidental comedy. He tries a solemn video and accidentally leaves a tab titled ENGINE_LINE_FINAL open; he asks if he should rebrand as 'Human-in-the-loop (opening theory).'",
+          "good": "He is famous for the wrong monitor, but platforms only tighten stream disclosure rules instead of striking—mostly. Marcus signs new setup rules without reading because he 'trusts the process,' and you add a sticky note to his desk: board first, bravado second.",
+          "convincing": "He turns a cursed stream into a credible second act: published fair-play policy, named setups, and a boring FAQ that actually lists what software runs during a lesson. Marcus hosts a hand-and-board marathon with a second camera on the laptop lid and sends a selfie from the desk with the caption 'eval bar retired (verified).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-layovers-not-doomscroll",
+      "client_name": "Nina",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Micro Travel / Lifestyle Creator",
+      "scenario_title": "Main Character, Wrong Week",
+      "problem_summary": "Nina, a glossy micro travel creator who built her brand on golden-hour gates and captions about choosing peace over productivity, begged you to take her case after a queued carousel went live with the line 'Main-character energy means I don't do doom scroll—I do layovers,' paired with a grinning tarmac selfie. It dropped the same morning her followers' feeds were wall-to-wall sober coverage of a major international crisis—grounded flights, crowded airports, people trying to get home. Screenshots turned her into the villain of the week, stitch accounts paired her quote with news chyrons, and the comments are a bingo card of read the room. Nina swears she scheduled the post days ago, forgot to pull it before takeoff, and says she cannot post another passport photo until she stops sounding like escapism with a ring light.",
+      "flavor_tone_note": "Scheduled aspirational fluff meets a heavy news cycle; Nina means well and runs on muscle memory and Wi‑Fi.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Queued Post Kill Switch",
+          "solution_brief": "Pull or archive the carousel immediately, post a short factual apology—no jokes—name the timing mistake plainly."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Audience Repair Itinerary",
+          "solution_brief": "Rebuild trust with pinned context, listening posts, and concrete follow-through—links, resources, or aid signal that match the moment."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Layover Mea-Culpa Tour",
+          "solution_brief": "High-visibility self-aware content to outpace the meme cycle—own the cringe first, then pivot."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Travel Voice Standards Reset",
+          "solution_brief": "Full reset: posting rules for crisis weeks, calendar checks, coordinated comeback messaging—no main-character autopilot."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Layover joke stays niche; trust stays bruised.",
+        "low_visibility_high_effectiveness": "Contained; sincere pull-and-apology calms core followers.",
+        "high_visibility_low_effectiveness": "Screenshot tour trends; brand looks cruel by accident.",
+        "high_visibility_high_effectiveness": "Wide mockery; clear accountability earns a second look."
+      },
+      "arc_2": {
+        "options": [
+          "Kill-Switch Statement",
+          "Audience Repair Plan",
+          "Self-Roast Visibility Blitz",
+          "Voice Standards Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Nina posts a solemn Notes-app apology, then her Stories auto-queue fires a 'wheels up' sticker over the same airport photo; seven followers notice, and five cross-post with the caption 'scheduled empathy.'",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Nina follows the boring plan: post pulled, apology without metaphors, and a pinned comment listing resources. She sends you a voice memo admitting she once set 'post while flying' as a flex and forgot it also meant 'post while the world is watching the news.'",
+        "high_visibility_low_effectiveness": "During a comeback live meant to show growth, Nina jokes that she is 'offline for trauma' while a donation ticker lags; the chat speedruns skull emojis. A news account quote-tweets her with the carousel screenshot and a single word: wow.",
+        "high_visibility_high_effectiveness": "The roast is huge, but Nina posts one honest joke, kills the main-character defense, and pivots to boring, calendar-aware posts for two weeks. Strangers still meme the layover line, but regulars start defending her checklist. She ends check-ins with 'no queues during breaking news,' which is the most professional she has ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves her comments; Nina keeps posting 'holding space' over threads that still smell like a departure board. She asks if you can make 'layover' mean 'emotional layover,' and you schedule a very long silence.",
+          "good": "Only a modest audience ever cared, and enough of them forgive her that she can travel-post without pretending every week is neutral. She replaces swagger with a calendar rule—even if the aesthetic is still golden hour.",
+          "convincing": "In a small corner of the internet she becomes the creator who got caught scheduling vibes during a crisis and then chose receipts—cringe, honest, oddly trustworthy. She mails you a luggage tag that says 'HUMAN TIMING (VERIFIED).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on travel meme pages; every new post gets scanned for tone and timestamp jokes. Nina refreshes notifications like a heartbeat monitor, and she blames 'the algorithm' so often the algorithm should invoice her.",
+          "good": "People remember the layover caption, but they also remember pulled posts and resources that matched the week. She asks fewer frantic questions and finally separates wanderlust from indifference.",
+          "convincing": "She earns 'reformed travel voice' status; the carousel becomes a training slide for what not to queue. Nina jokes about the tarmac selfie once, then gets back to trips, and you can hear the relief in her voice—plus fewer words like 'main character' without a calendar check."
+        },
+        "high": {
+          "poor": "The internet immortalizes Nina as a global meme for luxury indifference; every thumbnail reads like accidental comedy. She tries a solemn video and accidentally leaves a tab titled QUEUE_MAIN_CHARACTER_FINAL open; she asks if she should rebrand as 'Layover (Empathy Edition).'",
+          "good": "She is famous for the wrong caption, but platforms only tighten scheduled-post warnings instead of striking—mostly. Nina signs new content rules without reading because she 'trusts the journey,' and you add a sticky note to her desk: news first, gate second.",
+          "convincing": "She turns a cursed carousel into a credible second act: named posting rules, crisis-week pauses, and a boring FAQ that actually lists what gets auto-held. Nina hosts a live with notifications on and sends a selfie from a quiet room with the caption 'doom scroll allowed (verified).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-day-three-same-fit",
+      "client_name": "Sienna",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Freelance Fashion Model & Travel Creator",
+      "scenario_title": "Day Three, Same Fit",
+      "problem_summary": "Sienna, a freelance fashion model who hops between brand campaigns and a personal grid of soft-lit trip diaries, begged you to take her case after followers clocked that her Day 3 coastal carousel still featured the same cropped jacket, raw-hem jeans, and scuffed sneakers as Day 1 arrival and Day 2 museum morning—same stitching, same coffee stain on the cuff, only the captions and golden hour moved. Stitch accounts lined the frames up like a lineup; people joke she shot a whole week out of one suitcase and accuse her of stretching sponsor deliverables across fake days. Sienna swears the itinerary was real, admits she packed a capsule closet and repeated pieces, and says she cannot show up to another casting until she stops looking like a lookbook with amnesia.",
+      "flavor_tone_note": "Wardrobe continuity as crime scene; Sienna means well and confuses minimal packing with infinite outfits.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Timeline & Tag Clarifier",
+          "solution_brief": "Short pinned post: what was shot when, which looks repeated, no myth—pull misleading day labels if needed."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Repeat-Wear Transparency Track",
+          "solution_brief": "Rebuild trust with outfit ledgers for sponsored blocks, honest repeat labels, and DMs open to confused followers."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Capsule Confessional Blitz",
+          "solution_brief": "High-visibility humor-first content: own the one-jacket tour before the meme does—speed over polish."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Sponsored Trip Integrity Reset",
+          "solution_brief": "Full reset: documented shoot calendar, brand-aligned disclosure rules, coordinated comeback—no mystery days."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Same-fit jokes stay in small circles; her book stays shaky.",
+        "low_visibility_high_effectiveness": "Contained; clear captions calm agencies that actually read DMs.",
+        "high_visibility_low_effectiveness": "Lineup memes spread; model looks like she faked the week.",
+        "high_visibility_high_effectiveness": "Pile-on widens; plain-language timeline earns cautious forgiveness."
+      },
+      "arc_2": {
+        "options": [
+          "Caption Repair Drop",
+          "Repeat-Wear Protocol",
+          "Capsule Roast Tour",
+          "Trip Integrity Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Sienna posts a careful apology, then uploads a 'pack with me' reel that still labels three different days with the same thumbnail jacket; eight followers notice, and six drop side-by-side grids in a fashion snark Discord.",
+        "low_visibility_high_effectiveness": "Buzz stays local, but Sienna follows through: dated BTS, one jacket named on-screen, and a pinned note that says 'repeats labeled, days real.' She texts you a photo of her call sheet with coffee rings—proof she is not inventing airports.",
+        "high_visibility_low_effectiveness": "On a comeback live meant to clear her name, Sienna changes into a 'fresh Day 4 fit' and the chat spots the same shoes under the desk; a former classmate quote-tweets with yearbook photos for contrast.",
+        "high_visibility_high_effectiveness": "The story blows up, but Sienna drops one self-aware edit, kills the endless-vacation illusion where it was false, and spends two weeks posting dated, repeat-friendly content with no mythic day count. Outsiders still joke about the jacket, but casting directors quietly note she stopped hiding hangers."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "Whispers follow her Stories; Sienna keeps calling repeats 'styling choices' while the cuff stain reappears like a recurring character. She asks if 'Day 3' can mean 'Day 3 mood,' and you mute the thread for your own sanity.",
+          "good": "Only a tight circle cared; enough of them accept labeled repeats that she can travel-post without faking a fresh runway every sunrise. Her grid gets humbler lighting and fewer fake chapter breaks.",
+          "convincing": "She becomes the model who got caught recycling fits and then labeled every layer—awkward, specific, strangely respected. She sends you a fabric swatch with a handwritten note: 'same jacket, different date, signed Sienna.'"
+        },
+        "medium": {
+          "poor": "The lineup resurfaces whenever she books a trip; every carousel gets inspected for duplicate seams. Sienna doom-scrolls comments at 2 a.m. and answers trolls with emoji that age badly by morning.",
+          "good": "People remember the jacket, but they also remember corrected captions and a shoot calendar she actually honors. She stops treating packing lists like plot twists.",
+          "convincing": "Bookers start citing her as the creator who survived a continuity scandal by admitting suitcases are finite. She laughs once about the cuff stain on a podcast, then changes the subject to union rates."
+        },
+        "high": {
+          "poor": "For a week she is every feed's poster child for fake wanderlust; parody accounts post 'Day 47, same sock.' Sienna films a tearful clarification and leaves a hanger in frame that matches Day 2.",
+          "good": "She is shorthand for the scam, but agencies mostly add 'wardrobe continuity' clauses instead of blacklisting—when she shows up prepared. She adopts a pre-shoot checklist she did not outsource to a mood board.",
+          "convincing": "She turns the mess into a narrow specialty: on-set honesty about repeats, sponsor-safe labeling, and call sheets shared when asked. Her last story of the quarter is a flat lay titled 'three days, one coat, zero mystery,' and the comments are mostly period emojis."
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-soundcheck-hot-mic",
+      "client_name": "Rory",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Local Rock Band Lead Vocalist",
+      "scenario_title": "Soundcheck, Live Wire",
+      "problem_summary": "Rory, lead singer of a loud bar-band that survives on weekend gigs and drink tickets, cold-DMed you at 2 a.m. after a soundcheck went feral: he thought the mic was dead and spent ninety seconds calling the room a shoebox with liability issues, roasting the house PA, and joking that the regulars looked like they lost a custody battle with their own bar tab. The engineer had left the mains patched to the dining room. Patrons, staff, and the owner heard every word before doors; someone filmed the ceiling speakers pulsing while Rory riffed. The clip is already in three group chats, the venue is debating whether to keep tonight's slot, and Rory says he cannot walk onstage again until he stops being the villain of his own room tone.",
+      "flavor_tone_note": "Stage ego meets house audio; Rory means well after beer number three and panic number one.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "House Apology Hail Mary",
+          "solution_brief": "Immediate, plain apology to the room—no riff—coordinate with the owner before any post goes up."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Bar Tab Repair Circuit",
+          "solution_brief": "Rebuild trust with staff and regulars: in-person amends, comp logic if appropriate, no performance of humility."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Feedback Roast Encore",
+          "solution_brief": "Lean into high-visibility self-own content—short clip, own the joke before strangers do."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Stage Rep Standards Reset",
+          "solution_brief": "Full reset: band code of conduct for mics, venue relationship plan, comeback messaging that sticks."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Hot-mic jokes stay between bands; the room stays cold.",
+        "low_visibility_high_effectiveness": "Contained; owner accepts a straight apology and the show goes on.",
+        "high_visibility_low_effectiveness": "Clip escapes to local music Twitter; Rory looks like a tourist in his own scene.",
+        "high_visibility_high_effectiveness": "Pile-on widens; a clean mea culpa plus stage behavior change earns a wary pass."
+      },
+      "arc_2": {
+        "options": [
+          "House Apology Drop",
+          "Staff Repair Circuit",
+          "Self-Own Encore Cut",
+          "Stage Rep Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Rory posts a solemn apology video filmed in the parking lot, then the bassist's story still has him laughing about 'audio karma' over the same venue sign; six locals screenshot it before it vanishes.",
+        "low_visibility_high_effectiveness": "Word stays in the scene, but Rory does the unglamorous work: buys a round for staff, leaves a written note for the owner, and tests the mic with 'check one, respect' until it is not funny anymore.",
+        "high_visibility_low_effectiveness": "At a 'redemption' set, Rory dedicates a ballad to the room and mispronounces the venue name; the clip becomes a second wave. A podcaster titles the episode 'Feedback loop.'",
+        "high_visibility_high_effectiveness": "The story detonates regionally, but Rory releases one brutal self-edit, cancels the clever comeback, and spends a month playing smaller rooms with a printed rider: mains down until handshake. Old hecklers still shout 'liability,' but two bookers note he stopped treating rooms like props."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The bit haunts his mentions; Rory keeps explaining 'comic timing' to people who were holding pitchers when it happened. He asks if 'soundcheck' can mean 'soundcheck fiction,' and you leave him on read until Tuesday.",
+          "good": "Only the bar regulars remember; enough of them accept a blunt sorry that he can play the circuit without a disclaimer tattoo. He tips heavier and talks quieter between songs.",
+          "convincing": "He becomes the singer who insulted the room and then bought it a drink—messy, specific, oddly respected. He slips you a coaster from the bar with 'PAID UP' sharpied on it."
+        },
+        "medium": {
+          "poor": "Every gig poster gets a comment about speakers; Rory refreshes local forums like it is weather. He answers snark with lyrics nobody asked for.",
+          "good": "People remember the roast, but they also remember him sweeping glass he did not break and showing up early the next month. He learns to name the sound engineer before the crowd.",
+          "convincing": "Promoters cite him as the cautionary tale who survived by shutting up and loading out on time. He tells the hot-mic story onstage once—no punchline—and the room claps out of relief."
+        },
+        "high": {
+          "poor": "For a season he is meme shorthand for small-venue ego; cover bands introduce him as a verb. Rory tries a fundraiser stream and leaves a hot mic tab open labeled ROAST_DRAFT.",
+          "good": "He is a name people recognize for the wrong reason, but venues mostly add 'mains etiquette' reminders instead of bans—when he brings a printed stage plot. He stops assuming the room owes him atmosphere.",
+          "convincing": "He turns it into a narrow reputation: reliable load-in, handshake first, joke last. His last interview of the year ends with 'I still hate our old mix, but I say it after the gig now,' and the host laughs once, carefully."
+        }
+      }
+    }
+  ]
+}

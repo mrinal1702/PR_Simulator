@@ -1,0 +1,550 @@
+{
+  "client_type": "Small Company",
+  "description": "Scenarios for Small Company clients. Append new scenario objects to the scenarios array.",
+  "scenarios": [
+    {
+      "scenario_id": "small-company-very-low-farmhouse-table-shutterstock-soul",
+      "client_name": "Wild Thyme Pantry",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Tiny Artisan Pantry Brand",
+      "scenario_title": "Farmhouse Table, Shutterstock Soul",
+      "problem_summary": "Wild Thyme Pantry, a twee shelf-stable brand built on 'our family kitchen' energy and hand-lettered labels, slid into your inbox begging for a rescue after shoppers reverse-image-searched their hero shot to a stock asset titled HAPPY_PASTA_FAMILY_04.jpg. The comment section is doing forensic zooms on wooden spoons, customers feel duped, and someone posted a side-by-side where the only thing authentic is the price point. They insist they meant 'family vibes' in a spiritual sense, swear the sauce is still small-batch, and say they cannot ship another jar until you help them stop looking like a stock photo wearing an apron.",
+      "flavor_tone_note": "Boutique branding meets reverse search; the kitchen is real somewhere, just not in the JPEG.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Photo Credit Clarifier",
+          "solution_brief": "Admit sourcing, fix the site, minimal drama: clear language about what is staged versus what is product."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Real Kitchen Proof Week",
+          "solution_brief": "Actual team photos, process shots, direct replies to buyers—rebuild trust where repeat orders live."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Stock-to-Sauce Roast Campaign",
+          "solution_brief": "Big jokey visibility push to own the narrative; trust recovery may lag behind reach."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Brand Honesty Overhaul",
+          "solution_brief": "New visual system, real shoots, coordinated relaunch and cleaner claims end-to-end."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Buzz stays niche; shoppers still side-eye every label.",
+        "low_visibility_high_effectiveness": "Small audience; transparency wins regulars back.",
+        "high_visibility_low_effectiveness": "Meme detectives go wide; brand looks sneaky.",
+        "high_visibility_high_effectiveness": "Scandal scales; fixes look scrappy and accountable."
+      },
+      "arc_2": {
+        "options": [
+          "Label Honesty Patch",
+          "Kitchen Photoshoot Discipline",
+          "Meme Forensics Media Blitz",
+          "Authentic Visual Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "They promise 'real photos next week,' then upload a new hero image that still has a Shutterstock watermark in the corner—cropped badly enough that the filename is legible. Seven people see it; all seven post it to a Facebook group called 'Local Scams But Make It Rustic.'",
+        "low_visibility_high_effectiveness": "Reach stays small, but Wild Thyme actually follows the boring plan: real kitchen, real hands, real jars, and a pinned note that says 'we used stock once; never again.' They send you a photo of their actual stove and it is charmingly ugly in a way that sells.",
+        "high_visibility_low_effectiveness": "During a 'farmhouse tour' live, the founder pans left and reveals the same stock family's framed photo on a different wall; chat realizes it is a printout. They try to style it out as 'an homage to universal togetherness' and accidentally invent a new meme format.",
+        "high_visibility_high_effectiveness": "The roast goes wide, but Wild Thyme leans into one honest joke, kills the fake kitchen fantasy, and pivots to ugly-real process content for a week. Strangers still mock the old JPEG, but repeat buyers start posting unboxing videos titled 'actually real this time.' They end check-ins with 'no hero shots without a producer,' which is the most professional they have ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their reviews; Wild Thyme keeps posting 'crafted with care' over photos that still look like a mood board for someone else's nonna. They ask if you can 'SEO' the word stock off their brand, and you drink water very slowly.",
+          "good": "Only a modest audience ever cared, and enough of them forgive the brand that they can ship without pretending the kitchen is a museum. They replace the hero shot with something genuinely theirs—even if the lighting is bad.",
+          "convincing": "In a small corner of the internet they become the pantry that got caught cosplaying heritage and chose receipts instead—honest, a little cringe, oddly trustworthy. They mail you a jar with a handwritten label that says 'proof of kitchen (real stove, real chaos).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on food meme pages; every new post gets scanned for hypocrisy and wooden-spoon authenticity. Wild Thyme refreshes their Shopify theme like it is a personality transplant and blames 'the photographer from 2019' so often you expect a ghost credit.",
+          "good": "People remember the stock shot, but they also remember the replacement photos and the refunds that actually shipped. They ask fewer frantic questions and finally hire someone who knows how to white-balance a tomato.",
+          "convincing": "They earn 'reformed rustic' status; the fake kitchen becomes a mascot for transparency. They joke about the JPEG once, then get back to sauce, and you can hear the relief in their newsletter voice—plus fewer words like 'heirloom' without receipts."
+        },
+        "high": {
+          "poor": "The internet immortalizes Wild Thyme as a global meme for fake farmhouse energy; every pantry caption reads like accidental comedy. They try a sincere founder letter and accidentally include the stock site's terms URL in the footer; they ask if they should rebrand as 'ShutterThyme.'",
+          "good": "They are famous for the wrong photo, but retailers only tighten photo rules instead of delisting—mostly. Wild Thyme signs new packaging guidelines without reading because they 'trust the vibe,' and you add a sticky note to their lightbox: real stove, real hands, real shame.",
+          "convincing": "They turn a cringe hero shot into a credible second act: real shoots, real staff, and a running joke that finally feels earned. Wild Thyme hosts a pop-up in their actual kitchen and sends a selfie from the doorway with the caption 'no stock families were harmed (they were never here).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-the-missing-umami",
+      "client_name": "Two Skillet Co.",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Two-Person Chef Collab Sauce Brand",
+      "scenario_title": "The Missing Umami",
+      "problem_summary": "Two Skillet Co., a hyped two-person chef collab built on launch-week hype and jars that looked like edible trophies, begged you to step in after buyers noticed the ingredient list quietly dropped the one thing that made the flavor work. Reviews now call the product 'wet cardboard with ambition,' refund requests are stacking, and someone posted a side-by-side tasting video that plays like a hostage situation. They insist the sauce is still 'chef-driven,' swear the omission was a labeling mistake and not a margin strategy, and say they cannot face another drop until you help them stop tasting like regret.",
+      "flavor_tone_note": "Indie food hype meets chemistry; the brand is loud, the aftertaste is louder.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Ingredient Correction Notice",
+          "solution_brief": "Straight explanation, apology, fix labels fast—no spin, no second scandal."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Batch Recall & Taste Repair Plan",
+          "solution_brief": "Targeted comms, replacements, proof of reformulation—rebuild trust with people who actually ate it."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Flavor Roast Roadshow",
+          "solution_brief": "Loud funny content to own the narrative; reach high, trust recovery uneven."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Product Integrity Relaunch",
+          "solution_brief": "Full recipe reset, new batch story, coordinated comeback and cleaner claims end-to-end."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Complaints stay niche; reputation still tastes bad.",
+        "low_visibility_high_effectiveness": "Small audience; strong fix earns second chances.",
+        "high_visibility_low_effectiveness": "Cardboard ambition goes wide; brand is a punchline.",
+        "high_visibility_high_effectiveness": "Noise scales; reformulation story lands."
+      },
+      "arc_2": {
+        "options": [
+          "Label Hotfix Sprint",
+          "Kitchen Formula Discipline",
+          "Taste-Test Spectacle Tour",
+          "Recipe Reputation Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "They promise a new recipe, then ship old jars with a sticker that says NEW (SAME) in Comic Sans. Twelve people get it; twelve people post photos; two of them tag a local news account 'as a joke' that stops being a joke.",
+        "low_visibility_high_effectiveness": "Reach stays small, but Two Skillet actually follows the boring plan: halt sales, refund first, publish the real ingredient deck, and post a genuinely ugly tasting video where nobody smiles. They send you a jar labeled 'batch 2 (we fixed it)' and it tastes like an apology.",
+        "high_visibility_low_effectiveness": "During a 'transparent tasting' live, the founder gags on camera, tries to style it out as 'bold,' and accidentally says 'this is not what we meant by umami' while the chat speedruns skull emojis. A clip titled 'chef collab tries to eat own product' trends wider than the launch.",
+        "high_visibility_high_effectiveness": "The roast goes wide, but Two Skillet posts one honest joke, kills the hype voice, and pivots to boring proof: lab notes, supplier receipts, and a reformulation timeline posted like a court filing. Strangers still meme the old jar, but repeat buyers start posting 'Batch 2 actually slaps.' They end check-ins with 'no drops without a tasting panel,' which is the most professional they have ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their reviews; Two Skillet keeps posting 'chef-crafted' over jars that still taste like a dare. They ask if you can make the word umami mean 'eventually,' and you consider a new career.",
+          "good": "Only a modest audience ever cared, and enough of them forgive the brand that they can ship without pretending the first batch was 'bold.' They replace the recipe quietly and stop calling every tweak a 'collab drop.'",
+          "convincing": "In a small corner of the internet they become the sauce that apologized with chemistry—honest, a little cursed, oddly trustworthy. They mail you a jar with a handwritten batch number and a note that says 'we fed this to ourselves first (legally).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on food meme pages; every new post gets scanned for hypocrisy and flavor notes like 'notes of shame.' Two Skillet refreshes their Shopify refunds page like it is a heartbeat monitor and blames 'supply chain' so often the supply chain should sue.",
+          "good": "People remember the bad batch, but they also remember refunds that shipped and labels that stopped lying. They ask fewer frantic questions and finally hire a food scientist who owns a thermometer.",
+          "convincing": "They earn 'reformed hype jar' status; the missing ingredient becomes a mascot for transparency. They joke about Batch 1 once, then get back to sauce, and you can hear the relief in their newsletter voice—plus fewer words like 'mouthfeel' without receipts."
+        },
+        "high": {
+          "poor": "The internet immortalizes Two Skillet as a global meme for premium regret; every pantry caption reads like accidental comedy. They try a sincere founder letter and accidentally paste nutritional values from a different SKU; they ask if they should rebrand as 'Cardboard With Ambition (Official).'",
+          "good": "They are famous for the wrong taste, but retailers only tighten claims instead of delisting—mostly. Two Skillet signs new packaging rules without reading because they 'trust the craft,' and you add a sticky note to their test kitchen: taste first, caption later.",
+          "convincing": "They turn a cursed launch into a credible second act: real reformulation, real tasting notes, and a running joke that finally feels earned. Two Skillet hosts a pop-up where people try Batch 2 blind and sends a selfie from the line with the caption 'no hostage situations (today).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-fresh-daily-freezer-reveal",
+      "client_name": "Box & Steam",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Tiny Meal-Prep Startup",
+      "scenario_title": "The 'Fresh Daily' Freezer Reveal",
+      "problem_summary": "Box & Steam, a two-founder meal-prep outfit run from a shared kitchen with loud 'fresh daily' language on every label, flooded your inbox after a delivery driver posted a video of their branded tubs stacked in a chest freezer beside ice packs and what the internet dubbed mystery soup. Priya and Marco swear the food is handled safely, insist 'fresh' was never supposed to mean 'cooked this exact morning,' and beg you to help them survive the one-star wave before their landlord finds the thread and their sublease becomes a court date.",
+      "flavor_tone_note": "Scrappy founders, one viral clip away from chaos and lease trouble; Priya panic-posts, Marco tries to fix it with spreadsheets.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Cold Truth Caption",
+          "solution_brief": "Short clarification about prep and storage, promise clearer wording—no second scandal, no new claims."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Kitchen Window Week",
+          "solution_brief": "Behind-the-scenes proof, batch dates, direct replies to angry customers—rebuild trust where refunds hurt."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Freezer-to-Flavor Campaign",
+          "solution_brief": "Loud funny content about real kitchen life and convenience; high reach, trust recovery uneven."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "From Scratch Relaunch",
+          "solution_brief": "Full repositioning: honest labels, new packaging language, coordinated comeback and cleaner operations story."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Buzz stays niche; repeat orders still slide.",
+        "low_visibility_high_effectiveness": "Small audience; honesty wins early believers back.",
+        "high_visibility_low_effectiveness": "Freezer clip outruns the brand; trust tanks.",
+        "high_visibility_high_effectiveness": "Noise scales; fixes read scrappy and accountable."
+      },
+      "arc_2": {
+        "options": [
+          "Cold Clarification Post",
+          "Kitchen Discipline Sprint",
+          "Freezer Meme Media Push",
+          "Fresh Standards Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Priya posts a correction, then deletes a polite question about batch dates 'to reduce negativity'; Marco uploads a screenshot of the wrong spreadsheet tab and twelve people see it. Three of them are regulars, and they start a group chat called 'Soup Truthers.'",
+        "low_visibility_high_effectiveness": "Reach stays small, but Priya and Marco actually follow the plan: labeled photos, boring batch logs, and replies to every refund with receipts. Marco sends you a folder named FINAL_final_DO_NOT_DELETE that contains only one PDF, and somehow that is progress.",
+        "high_visibility_low_effectiveness": "During a 'transparent kitchen tour' live, Priya opens a freezer door and the camera catches a handwritten sticky that says YESTERDAY - DO NOT SHIP; chat clips it before she can smile through it. Marco tries to spin it as 'radical date transparency' and accidentally makes it worse.",
+        "high_visibility_high_effectiveness": "The pile-on is huge, but Box & Steam posts one honest joke, kills the fake 'daily' fantasy, and pivots to ugly-real prep content for two weeks. Strangers still meme the soup, but repeat customers post photos titled 'Batch numbers match now.' Priya ends check-ins with 'no posts until Marco approves the freezer shot,' which is the most professional she has ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their reviews; Box & Steam keeps posting 'chef-crafted freshness' over photos that still look like a cryogenic yard sale. Priya asks if you can make the word daily mean 'spiritually recent,' and Marco starts a second spreadsheet titled denial.xlsx.",
+          "good": "Only a modest audience ever cared, and enough of them forgive the brand that they can ship without pretending every tub was born this morning. They replace copy with honest batch language—even if the lighting is still bad.",
+          "convincing": "In a small corner of the internet they become the meal-prep that got caught, labeled clearly, and stopped lying about time. They mail you a cooler bag with a note that says 'contents: truth (and chicken).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on food meme pages; every new post gets scanned for hypocrisy and soup puns. Priya refreshes Shopify refunds like a heartbeat monitor, and Marco blames 'logistics' so often logistics should send an invoice.",
+          "good": "People remember the freezer shot, but they also remember refunds that shipped and labels that stopped pretending. They ask fewer frantic questions and finally rent fridge space that matches their story.",
+          "convincing": "They earn 'reformed prep' status; the freezer becomes a mascot for honest storage. They joke about mystery soup once, then get back to cooking, and you can hear the relief in their newsletter voice—plus fewer words like 'artisan' without timestamps."
+        },
+        "high": {
+          "poor": "The internet immortalizes Box & Steam as a global meme for premium regret in plastic; every caption reads like accidental comedy. Priya tries a sincere founder letter and accidentally leaves track changes visible; Marco asks if they should rebrand as 'Soup Uncertain LLC.'",
+          "good": "They are famous for the wrong freezer, but retailers only tighten claims instead of delisting—mostly. Priya signs new packaging rules without reading because she 'trusts the process,' and you add a sticky note to their prep table: label first, post later.",
+          "convincing": "They turn a cursed clip into a credible second act: real cold chain, real batch posts, and a running joke that finally feels earned. Box & Steam hosts a tasting where people read dates off lids and sends a selfie from the walk-in with the caption 'mystery soup retired (RIP).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "small-company-low-24-7-except-most-hours",
+      "client_name": "Second Wind Studio",
+      "client_type": "Small Company",
+      "budget_tier": "Low",
+      "client_subtype": "Local Boutique Gym",
+      "scenario_title": "24/7* (*Except Most Hours)",
+      "problem_summary": "Second Wind Studio, a neighborhood boutique gym co-run by Riley and Sam with neon 'ALWAYS OPEN' energy on every Instagram story, begged you to intervene after members posted time-stamped photos of locked doors at 6 a.m. and 9 p.m. The hashtag Open in Spirit is spreading locally, cancellation DMs are piling up, and someone put the front-door schedule side-by-side with a screenshot of Riley's post that says 'grind never sleeps.' Riley swears the building has quirks, Sam swears the keycard system has 'personality,' and they both say they cannot survive another week of being roasted by people who only wanted to bench press at midnight.",
+      "flavor_tone_note": "Hyper-local outrage with prime meme formatting; Riley posts motivation, Sam fixes the Wi-Fi and both fear Yelp.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Hours Update Notice",
+          "solution_brief": "Straight correction everywhere: site, app, door, Google—match reality to the lock, not the slogan."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Member Trust Repair Plan",
+          "solution_brief": "Direct outreach, make-goods, and proof members can trust—posted hours, staff on schedule, no vibes-only promises."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Sweat O'Clock Campaign",
+          "solution_brief": "Loud challenge and community content to shift attention from complaints to buzz—reach first, nuance second."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Always-On Relaunch",
+          "solution_brief": "Full operational reset: real 24/7 or honest windows, staffing, signage, coordinated comeback messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Hashtag cools; members still drift.",
+        "low_visibility_high_effectiveness": "Local drama; hours rebuild trust.",
+        "high_visibility_low_effectiveness": "Open in Spirit goes citywide; brand is a joke.",
+        "high_visibility_high_effectiveness": "Joke spreads wide; ops and comms win people back."
+      },
+      "arc_2": {
+        "options": [
+          "Hours Correction Bulletin",
+          "Member Reliability Program",
+          "Sweat Signal Blast",
+          "Always-On Trust Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Riley posts 'new honest hours,' then Sam locks up early for a 'team reset' smoothie meeting; the same members who complained yesterday post a photo of the dark lobby with the caption 'spiritually open, physically closed.'",
+        "low_visibility_high_effectiveness": "Reach stays local, but Riley and Sam actually follow the plan: printed hours on the door, one Instagram highlight that matches reality, and refunds that hit before excuses. Sam sends you a spreadsheet titled HOURS_TRUTH_FINAL and it only has twelve rows, which is progress.",
+        "high_visibility_low_effectiveness": "During a comeback reel promising 'we hear you,' Riley films a pep talk in front of the desk while the automatic lights shut off behind them because it is after hours; Open in Spirit trends nationally as a metaphor for capitalism.",
+        "high_visibility_high_effectiveness": "The roast is city-wide, but Second Wind posts one self-aware joke, kills the fake always-on fantasy, and pivots to boring, verifiable access windows for a month. Strangers still meme the old posts, but members start posting 'door was open (proof).' Riley ends check-ins with 'no stories before Sam checks the lock,' which is the most professional they have ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their reviews; Second Wind keeps posting 'no excuses' over photos of a dark lobby. Riley asks if you can make '24/7' mean '24/7 energy,' and Sam starts a note app titled lies_we_told_politely.txt.",
+          "good": "Only a modest member base ever cared, and enough of them accept honest windows that the gym can run without cosplaying insomnia. They replace neon slogans with a clock photo—even if the font is still aggressive.",
+          "convincing": "In a small corner of the neighborhood they become the gym that lied about hours once and then chose the schedule over the flex—sweaty, honest, oddly endearing. They mail you a keychain that says 'OPEN (VERIFIED).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on local fitness meme pages; every new post gets scanned for hypocrisy and padlock puns. Riley refreshes ClassPass like a horoscope, and Sam blames 'the landlord' so often the landlord should get a co-credit.",
+          "good": "People remember the locked door, but they also remember refunds that landed and hours that finally matched the door. They ask fewer frantic questions and finally hire a front-desk person who owns a watch.",
+          "convincing": "They earn 'reformed neighborhood gym' status; Open in Spirit becomes a punchline they own once, then move on. Riley jokes about the slogan, Sam fixes the schedule, and you can hear the relief in their newsletter voice—plus fewer words like 'hustle' without a timestamp."
+        },
+        "high": {
+          "poor": "The internet immortalizes Second Wind as a global meme for fake grind culture; every fitness caption reads like accidental comedy. Riley tries a solemn apology and accidentally films the door locking behind them; they ask if they should rebrand as 'Open in Spirit (LLC).'",
+          "good": "They are famous for the wrong hours, but local partners only tighten partnership terms instead of bailing—mostly. Riley signs new marketing rules without reading because they 'trust the vibe,' and you add a sticky note to the front desk: lock first, post later.",
+          "convincing": "They turn a cursed slogan into a credible second act: real staffing, real access, and a running joke that finally feels earned. Second Wind hosts a 5 a.m. class that actually starts at 5 a.m. and sends a selfie from the lit lobby with the caption 'door tested, ego tested.'"
+        }
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-lavender-dream-gas-station-reality",
+      "client_name": "Northloft Candle Lab",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Tiny Artisanal Candle Startup",
+      "scenario_title": "Lavender Dream, Gas Station Reality",
+      "problem_summary": "Northloft Candle Lab, a two-person hand-pour brand built on moonlit lavender fields copy and labels that look like a postcard from Provence, begged you to intervene after customers zoomed shipping metadata and found the base code reading like new car air freshener. Review videos are calling it premium parking-garage nostalgia, Etsy is filling with refund screenshots, and someone stitched a side-by-side with a gas station air freshener display. Co-founder Nina swears the scent still feels 'lavender-coded,' Theo swears the supplier sheet was 'mislabeled,' and they both say they cannot ship another jar until you help them stop smelling like a sedan in a soy wax jacket.",
+      "flavor_tone_note": "Boutique branding meets accidental honesty; Nina writes romance, Theo reads spreadsheets and both fear the comment section.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Label Clarification Drop",
+          "solution_brief": "Concise clarification, tighten claims, fix listings immediately—no new poetic adjectives until chemistry matches."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Studio Transparency Week",
+          "solution_brief": "Process visibility, batch notes, direct customer comms—rebuild trust with people who actually lit the wick."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Scent Guessing Carnival",
+          "solution_brief": "Loud blind-test and meme content to win visibility; trust recovery may lag behind reach."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Fragrance Reputation Rebuild",
+          "solution_brief": "Full reset: honest ingredient story, refreshed line strategy, coordinated relaunch and supplier accountability."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Metadata joke stays niche; buyers still mock.",
+        "low_visibility_high_effectiveness": "Small circle; transparency wins regulars.",
+        "high_visibility_low_effectiveness": "New-car candle discourse explodes; premium collapses.",
+        "high_visibility_high_effectiveness": "Joke goes wide; honest reformulation lands."
+      },
+      "arc_2": {
+        "options": [
+          "Scent Note Clarifier",
+          "Formula Discipline Diaries",
+          "Fragrance Meme Parade",
+          "Signature Scent Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Nina posts a 'new formula' note, then Theo launches a limited drop called Highway Rest Stop No. 7 as a joke; twelve people buy it ironically, and eight post reviews that are sincere about the smell of regret.",
+        "low_visibility_high_effectiveness": "Reach stays small, but Nina and Theo follow the boring plan: ingredient lists, lot photos, and a pinned note that says 'we used the wrong supplier language once.' Theo sends you a spreadsheet titled BASE_CODES_TRUTH_FINAL and it only has one tab, which is progress.",
+        "high_visibility_low_effectiveness": "During a 'transparent pour' live, the camera catches a drum labeled AIR FRESHENER BASE - DO NOT IG STORY; Nina tries to smile through it while Theo says 'that is vintage industrial lavender' and the chat sets a world record for skull emojis.",
+        "high_visibility_high_effectiveness": "The roast is industry-wide, but Northloft posts one honest joke, kills the fake field fantasy, and pivots to ugly-real ingredient education for two weeks. Strangers still meme the sedan, but repeat buyers post photos titled 'Batch 2 smells like actual plants.' Nina ends check-ins with 'no copy until Theo approves the SDS,' which is the most professional she has ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their reviews; Northloft keeps posting 'handcrafted serenity' over jars that still read like a parking structure. Nina asks if you can make 'lavender' mean 'lavender mood,' and Theo starts a note app titled supplier_denial_backup.txt.",
+          "good": "Only a modest audience ever cared, and enough of them forgive the brand that they can ship without pretending the wax was picked by moonlight. They replace poetry with a spec sheet—even if the photos are still aggressively beige.",
+          "convincing": "In a small corner of the internet they become the candle company that got caught, reformulated honestly, and stopped lying about fields. They mail you a tealight labeled 'proof of plant (not parking).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on indie brand meme pages; every new post gets scanned for hypocrisy and MPG puns. Nina refreshes Etsy refunds like a heart monitor, and Theo blames 'vendor naming conventions' so often vendors should send a cease-and-desist.",
+          "good": "People remember the metadata, but they also remember cleaner labels and refunds that shipped. They ask fewer frantic questions and finally fire the supplier who thought 'new car' was a vibe.",
+          "convincing": "They earn 'reformed pour' status; the air-freshener screenshot becomes a training slide for what not to ship. They joke about the sedan once, then get back to wax, and you can hear the relief in their newsletter voice—plus fewer words like 'heirloom' without a CAS number."
+        },
+        "high": {
+          "poor": "The internet immortalizes Northloft as a global meme for premium regret in a jar; every candle caption reads like accidental comedy. Nina tries a sincere founder letter and accidentally leaves the supplier SKU in the screenshot; they ask if they should rebrand as 'Parking Garage Chic (Official).'",
+          "good": "They are famous for the wrong base, but retailers only tighten ingredient audits instead of delisting—mostly. Nina signs new packaging rules without reading because she 'trusts the process,' and you add a sticky note to the pour table: chemistry first, poetry later.",
+          "convincing": "They turn a cursed metadata leak into a credible second act: real reformulation, real supplier names, and a boring FAQ that actually lists molecules. Northloft hosts a pop-up sniff test with SDS printouts and sends a selfie from the studio with the caption 'sedan retired (RIP).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-cold-pressed-by-microwave",
+      "client_name": "Bright Squeeze",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Tiny Premium Juice Bar",
+      "scenario_title": "Cold-Pressed by Microwave",
+      "problem_summary": "Bright Squeeze, a tiny premium juice bar with a chalkboard menu and cold-pressed wellness shots priced like liquid confidence, begged you to step in after a delivery driver posted a video of staff microwaving bottles for easier pouring. The internet nicknamed the product lukewarm enlightenment, Yelp is a graveyard of one-star rants, and someone synced the clip to a meditation soundscape as a joke. Co-owners Ali and Marco swear the juice is still nutritious, insist 'cold-pressed' was never meant to mean 'never warmed,' and say they cannot survive another weekend of being roasted by people who only wanted to feel alive before 9 a.m.",
+      "flavor_tone_note": "Wellness copywriting vs appliance reality; Ali posts sunshine, Marco runs the numbers and both fear the microwave.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Prep Method Clarifier",
+          "solution_brief": "Straight explanation, fix misleading language everywhere—menu, app, signage—match words to what happens behind the bar."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Back-of-Bar Transparency",
+          "solution_brief": "Process visibility, retraining, direct customer outreach—rebuild trust with people who actually drink the shot."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Shot O'Clock Social Blitz",
+          "solution_brief": "High-visibility playful content to outpace the meme cycle."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Wellness Standards Relaunch",
+          "solution_brief": "Full operational and narrative reset: verified prep methods, coordinated comeback messaging, no vibe-only claims."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Lukewarm joke stays local; trust stays weak.",
+        "low_visibility_high_effectiveness": "Niche clip; clear prep restores regulars.",
+        "high_visibility_low_effectiveness": "Microwave memes go wide; wellness roasts.",
+        "high_visibility_high_effectiveness": "Scandal scales; transparent methods earn comeback."
+      },
+      "arc_2": {
+        "options": [
+          "Cold-Press Clarification Card",
+          "Kitchen Method Discipline",
+          "Wellness Hype Wave",
+          "Process Integrity Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Ali posts a 'new honesty menu,' then Marco films a reel where staff warm a bottle 'for viscosity' while the chalkboard still says 'ice-cold ritual'; seven regulars see it, and five post screenshots in a neighborhood thread titled 'wellness is a feeling.'",
+        "low_visibility_high_effectiveness": "Reach stays local, but Ali and Marco follow the boring plan: posted prep steps, no microwave in frame, and refunds that hit before excuses. Marco sends you a spreadsheet titled TEMPERATURE_TRUTH_FINAL and it only has one tab, which is progress.",
+        "high_visibility_low_effectiveness": "During a comeback live, Ali tries to demonstrate 'cold pour integrity' while the microwave beeps behind the counter; the chat speedruns skull emojis. Marco tries to call it 'ambient warming' and accidentally makes lukewarm enlightenment trend nationally again.",
+        "high_visibility_high_effectiveness": "The roast is city-wide, but Bright Squeeze posts one honest joke, kills the cold-pressed fantasy, and pivots to boring, verifiable prep content for two weeks. Strangers still meme the microwave, but repeat customers post photos titled 'Batch 2 actually cold.' Ali ends check-ins with 'no posts until Marco approves the thermometer,' which is the most professional they have ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their reviews; Bright Squeeze keeps posting 'pure vitality' over shots that still look like soup. Ali asks if you can make 'cold-pressed' mean 'cold-adjacent,' and Marco starts a note app titled microwave_denial.txt.",
+          "good": "Only a modest member base ever cared, and enough of them forgive the brand that they can serve without pretending heat never happened. They replace poetry with a prep note—even if the chalkboard is still aggressively green.",
+          "convincing": "In a small corner of the neighborhood they become the juice bar that got caught warming bottles and then chose honesty—sweaty, earnest, oddly trustworthy. They mail you a cooler sticker that says 'TEMP CHECKED (REAL).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on wellness meme pages; every new post gets scanned for hypocrisy and Celsius puns. Ali refreshes Yelp like a heartbeat monitor, and Marco blames 'logistics' so often logistics should send an invoice.",
+          "good": "People remember the microwave, but they also remember refunds that shipped and labels that stopped lying. They ask fewer frantic questions and finally buy a fridge that matches the story.",
+          "convincing": "They earn 'reformed juice bar' status; the microwave clip becomes a mascot for honesty over aesthetics. Ali jokes about the beep once, then gets back to blending, and you can hear the relief in their newsletter voice—plus fewer words like 'activated' without a thermometer."
+        },
+        "high": {
+          "poor": "The internet immortalizes Bright Squeeze as a global meme for wellness cosplay; every shot caption reads like accidental comedy. Ali tries a solemn founder letter and accidentally films the microwave timer in the reflection; they ask if they should rebrand as 'Lukewarm Enlightenment (Official).'",
+          "good": "They are famous for the wrong appliance, but local partners only tighten claims instead of pulling out—mostly. Ali signs new menu rules without reading because she 'trusts the process,' and you add a sticky note to the bar: temp first, tagline later.",
+          "convincing": "They turn a cursed clip into a credible second act: real cold chain, real prep posts, and a boring FAQ that actually lists degrees. Bright Squeeze hosts a pop-up tasting with a thermometer on camera and sends a selfie from the walk-in with the caption 'microwave retired (RIP).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-organic-pupcakes-mystery-sprinkles",
+      "client_name": "Wiggle Spoon",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Two-Person Pet Bakery Startup",
+      "scenario_title": "Organic Pupcakes, Mystery Sprinkles",
+      "problem_summary": "Wiggle Spoon, a scrappy two-person dog bakery that built its Instagram on oat-flour promises and birthday-party frosting, begged you to take their case after a customer screen-recorded a decorating reel and zoomed in on a sprinkle jar labeled party glitter—craft aisle, not farmers market. Pet owner groups cannot decide whether to panic about glitter toxicity or applaud the sparkle, stitch accounts are doing forensic zooms on the label, and someone turned the frame into a bingo card where every square is 'organic vibes.' Co-owner Sam swears the pupcakes are still mostly organic, insists glitter was a one-off garnish experiment, and says they cannot pack another order until the comment section stops treating their kitchen like a crime scene.",
+      "flavor_tone_note": "Wholesome pet brand, glitter-grade confusion; Sam means well and labels boxes faster than they read them.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Ingredient Clarification Card",
+          "solution_brief": "Short honest post: what is organic, what is not, update labels and listings the same day—no cute deflection."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Treat Kitchen Open Book",
+          "solution_brief": "Repair trust with repeat buyers: prep demos, supplier receipts, and direct answers in DMs—not vibes."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Pawparazzi Sprinkle Parade",
+          "solution_brief": "High-visibility playful pet content to redirect the meme cycle fast—reach first, nuance second."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Canine Credibility Rebuild",
+          "solution_brief": "Full reset: audited ingredient standards, coordinated relaunch copy, and zero 'all-natural' hand-waving."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Glitter screenshot stays local; trust stays shaky.",
+        "low_visibility_high_effectiveness": "Niche drama; transparent labels calm regulars.",
+        "high_visibility_low_effectiveness": "Mystery sprinkles trends in pet feeds; brand gets roasted.",
+        "high_visibility_high_effectiveness": "Meme scales; sourcing proof earns cautious support."
+      },
+      "arc_2": {
+        "options": [
+          "Ingredient Clarification Notice",
+          "Bakery Discipline Checklist",
+          "Pawparazzi Visibility Push",
+          "Pupcake Trust Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Sam posts a 'new honesty menu,' then uploads a behind-the-scenes reel with the glitter tub still on the shelf in wide shot; nine local pet parents see it, and seven cross-post to a Facebook group titled 'organic or performance art.'",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Wiggle Spoon follows the boring plan: ingredient photos, supplier screenshots, and a pinned note that says 'glitter optional, labeled always.' Sam sends you a voice memo admitting they once called sprinkles 'botanical sparkle' because the jar looked cute.",
+        "high_visibility_low_effectiveness": "During a comeback live from the kitchen, co-owner Riley pans past an open cabinet with the same craft glitter facing the camera while Sam insists 'we are farm-to-bowl'; the chat speedruns skull emojis. A playful relaunch ad adds CGI sparkle that looks exactly like the jar, and panic posts surge nationally.",
+        "high_visibility_high_effectiveness": "The roast is huge, but Wiggle Spoon posts one honest joke, kills the all-organic fantasy where it was false, and pivots to boring proof-of-ingredient content for two weeks. Strangers still meme the glitter, but repeat customers post photos titled 'Batch 2 actually matches the label.' Sam ends check-ins with 'no reels until Riley clears the shelf,' which is the most professional they have ever sounded."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their reviews; Wiggle Spoon keeps posting 'pure pup joy' over tubs that still look like a craft store raid. Sam asks if you can make 'organic' mean 'organic energy,' and Riley starts a note app titled glitter_truth_maybe.txt.",
+          "good": "Only a modest dog-parent circle ever cared, and enough of them forgive the brand that they can ship without pretending every sprinkle was blessed by a farmer. They replace poetry with a label key—even if the frosting is still aggressively pink.",
+          "convincing": "In a small corner of the pet internet they become the bakery that got caught on zoom and then chose receipts—cringe, honest, oddly trustworthy. They mail you a bandana that says 'INGREDIENTS (REAL).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on pet meme pages; every new post gets scanned for hypocrisy and glitter puns. Sam refreshes comments like a heartbeat monitor, and Riley blames 'aesthetic' so often aesthetic should invoice them.",
+          "good": "People remember the craft aisle, but they also remember refunds that shipped and labels that stopped lying. They ask fewer frantic questions and finally separate 'organic base' from 'party topper' in the copy.",
+          "convincing": "They earn 'reformed treat shop' status; the zoom frame becomes a mascot for honesty over aesthetics. Sam jokes about the jar once, then gets back to packing, and you can hear the relief in their newsletter voice—plus fewer words like 'wholesome' without a footnote."
+        },
+        "high": {
+          "poor": "The internet immortalizes Wiggle Spoon as a global meme for dog-bakery cosplay; every pupcake caption reads like accidental comedy. Sam tries a solemn founder letter and accidentally films the glitter tub in the reflection; they ask if they should rebrand as 'Botanical Sparkle (Official).'",
+          "good": "They are famous for the wrong jar, but local markets only tighten booth rules instead of kicking them out—mostly. Riley signs new ingredient rules without reading because they 'trust the journey,' and you add a sticky note to the prep table: list first, glitter later.",
+          "convincing": "They turn a cursed reel into a credible second act: real suppliers, real photos, and a boring FAQ that actually names what is organic. Wiggle Spoon hosts a pop-up with jars on the counter and sends a selfie from the kitchen with the caption 'zoom-friendly shelves (verified).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-car-seat-business-reel",
+      "client_name": "Wobble & Whistle Party Co.",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Two-Person Kids' Party Entertainer Duo",
+      "scenario_title": "Business Reel, Backseat Opera",
+      "problem_summary": "Wobble & Whistle Party Co., a two-person kids' party act—Jamie on face paint and balloon animals, Alex sweating inside the fuzzy mascot—showed up in your inbox after a between-gigs Reel hit their public business profile by mistake: Alex is half out of costume with the head on the passenger seat while Jamie, still on camera audio, vents about the party they just left—kids, parents, the whole sugar-fueled opera—and the frame sits on the dash long enough for a printed booking sheet in the cup holder to stay readable, last name and street visible. A parent saved the clip before they could pull it; local parent Facebook groups and a school PTA thread are passing screenshots like case files, and 'trusted entertainers' is doing a lot of heavy lifting in the comments. Jamie swears they queued it on the wrong account, Alex just wants to stop being recognized without the suit, and both say they cannot survive another Saturday booking until someone helps them sound human without pretending the mic never happened.",
+      "flavor_tone_note": "Mascot head on the seat, business tab open; Jamie narrates disaster, Alex prays for invisibility.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Reel Pull & Plain Sorry",
+          "solution_brief": "Delete the Reel, post a short factual apology—name the wrong-account mistake and the privacy harm, no character work."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "PTA & Parent Repair Circuit",
+          "solution_brief": "Reach affected families and schools directly: amends, how you will handle booking data on camera, and a human point of contact."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Bounce-House Mea-Culpa Blitz",
+          "solution_brief": "High-visibility owned clip: joke first, facts second—outrun the screenshot cycle before it hardens."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Performer Conduct & Data Reset",
+          "solution_brief": "Full reset: written conduct between gigs, no client paperwork on camera, social workflow checks, coordinated comeback."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Car rant stays in whisper networks; weekend bookings still vanish.",
+        "low_visibility_high_effectiveness": "Contained; a straight apology and pulled Reel calm the loudest parents.",
+        "high_visibility_low_effectiveness": "Screenshots go regional; the duo looks careless with kids and addresses.",
+        "high_visibility_high_effectiveness": "Pile-on widens; clear accountability plus a data rule earns a wary second chance."
+      },
+      "arc_2": {
+        "options": [
+          "Reel Pull Statement",
+          "Parent Repair Protocol",
+          "Owned Mea-Culpa Blitz",
+          "Conduct & Data Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "They post a careful apology, then Jamie's personal story goes up the same night with the mascot head visible in a gas station mirror; six local parents connect the dots in a group chat.",
+        "low_visibility_high_effectiveness": "Buzz stays neighborhood-sized, but they follow through: Reel gone, written sorry to the named family, and a new rule—no contracts on the dash, ever. Alex texts you a photo of a locked glove box with a label that says 'paper, not content.'",
+        "high_visibility_low_effectiveness": "At a 'make-good' free show in a park, Jamie tries crowd work and accidentally asks who was in 'the Facebook thread'; half the parents stare. Someone films Alex adjusting the suit in a minivan window.",
+        "high_visibility_high_effectiveness": "The story spikes city-wide, but they drop one blunt self-edit, retire the car confessional bit, and spend a month posting only finished-party highlights with faces blurred and dates real. Outsiders still joke about the cup holder, but two libraries quietly put them back on the approved-vendor list."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "Rumors stick to their Google listing; Jamie keeps calling it 'ambient audio' while Alex hides in the suit during grocery runs. They ask if 'kid-friendly' can mean 'kid-forgiving,' and you let the question hang.",
+          "good": "Only a handful of zip codes cared; enough parents accept a blunt sorry that Saturday slots creep back. They stop filming anything that could see a last name.",
+          "convincing": "They become the duo who insulted the minivan and then fixed the glove box—awkward, specific, oddly hireable again. They hand you a balloon twisted into a tiny lock with 'NO PII' written in marker."
+        },
+        "medium": {
+          "poor": "Every new party photo gets inspected for cup holders; Jamie argues with strangers at 11 p.m. Alex starts answering the business line in full mascot voice to avoid recognition.",
+          "good": "People remember the rant, but they also remember the family-specific apology and the policy post with bullet points. Jamie stops treating the car like a podcast booth.",
+          "convincing": "PTA treasurers cite them as the crew that survived a data scare by shutting up and showing forms. They tell the hot-mic story once at a fundraiser—no punchline—and the room exhales."
+        },
+        "high": {
+          "poor": "For a season they are shorthand for 'entertainers who hate your kids'; parody accounts dub voices over parking lots. Jamie goes live with 'we are listening' and the chat autoplays the old clip.",
+          "good": "They are a cautionary name, but most venues add 'no client paperwork in frame' to one-pagers instead of a lifetime ban—when the duo shows up with checklists. Alex carries printouts in a red folder, not the dash.",
+          "convincing": "They narrow into 'boring-safe parties': contracts in envelopes, social posts from a desk, mascot head never next to a mail slot. Their year-end post is a single shot of an empty cup holder and the caption 'lesson learned.'"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,346 @@
+{
+  "client_type": "Corporate",
+  "description": "Scenarios for Corporate clients. Append new scenario objects to the scenarios array.",
+  "scenarios": [
+    {
+      "scenario_id": "corporate-very-low-eco-paper-plastic-trophy",
+      "client_name": "Greystone Office Supply",
+      "client_type": "Corporate",
+      "budget_tier": "Very Low",
+      "client_subtype": "Regional Office Supplies Distributor",
+      "scenario_title": "Eco Paper, Plastic Trophy",
+      "problem_summary": "Greystone Office Supply, a regional B2B distributor that has been loudly paper-first on sustainability, begged you to take the account after their own customer conference handed out individually plastic-wrapped eco awards on tables covered in recycled-paper placemats. Photos spread across local procurement LinkedIn with jokes about shrink-wrapped virtue, and several buyers are cc'ing competitors into the thread for sport. Head of marketing Dana insists it was a third-party vendor mix-up, swears the pledge is not performative, and says they cannot afford to lose RFP season over a trophy that looks like guilt in a clamshell.",
+      "flavor_tone_note": "B2B dread in calm fonts; niche visibility, executive panic measured in polite cc's.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Procurement Apology Note",
+          "solution_brief": "Concise statement: acknowledge the mismatch, outline immediate packaging and vendor corrections—no spin."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Policy-First Cleanup",
+          "solution_brief": "Brief key accounts privately, update procurement and events standards, prove fixes with evidence not adjectives."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Green Office Roadshow",
+          "solution_brief": "High-visibility sustainability content and thought leadership to retake narrative volume—reach first, nuance second."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Compliance Glow-Up Program",
+          "solution_brief": "End-to-end overhaul: audited claims, leadership on-record, refreshed brand narrative and event rules."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Jokes stay in niche feeds; buyers quietly downgrade Greystone.",
+        "low_visibility_high_effectiveness": "Small audience; key accounts accept tighter process.",
+        "high_visibility_low_effectiveness": "Plastic-trophy memes spread; bids get awkward.",
+        "high_visibility_high_effectiveness": "Scrutiny scales; fast cleanup reads competent."
+      },
+      "arc_2": {
+        "options": [
+          "Procurement Memo Refresh",
+          "Policy Compliance Drill",
+          "Green Narrative Blitz",
+          "Sustainability Integrity Overhaul",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Dana circulates new talking points, then the CEO posts a 'proud to lead green' graphic while a company photo in the background still shows shrink-wrapped swag on a pallet. Fourteen procurement managers see it; twelve forward it internally with the subject line 'you cannot make this up.'",
+        "low_visibility_high_effectiveness": "Reach stays contained, but Greystone actually follows the boring plan: vendor swap, packaging rules in writing, and account reps who send PDF receipts instead of vibes. Dana's emails get shorter and scarier in a good way.",
+        "high_visibility_low_effectiveness": "During a LinkedIn Live from their sustainability booth, a camera pan catches a tower of plastic-wrapped giveaway kits with the old logo; comments turn into a bingo card of corporate sins. The CMO tries to call it 'legacy inventory' while standing next to a banner that says 'today, not someday.'",
+        "high_visibility_high_effectiveness": "The pile-on is industry-wide, but Greystone publishes an unsexy audit summary, names the vendor change, and puts procurement contacts on-record. Buyers still roast the old photos, but a few commenters write 'okay that is how you fix a conference.' Dana ends check-ins with 'no booth photos without facilities sign-off,' which is the most governance she has ever enjoyed."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their RFP footnotes; Greystone keeps attaching sustainability PDFs that still smell like plastic. Dana asks if you can make 'paper-first' mean 'paper-mostly,' and you schedule a very long silence.",
+          "good": "Only a modest circle of buyers cared, and enough of them accept tighter event rules that Greystone can pitch without flinching. They replace swag policy with something dull and honest—even if the slide deck is still beige.",
+          "convincing": "In their niche they become the distributor that got caught, fixed vendors, and stopped treating sustainability like confetti. They mail you a stress ball labeled 'recycled anxiety (certified).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on procurement meme accounts; every new post gets scanned for hypocrisy and laminated irony. Dana refreshes the crisis inbox like a metronome, and Legal starts cc'ing 'for awareness' like it is a personality.",
+          "good": "People remember the plastic trophies, but they also remember revised packaging standards and account reps who answer the phone. They ask fewer frantic questions and finally ban shrink-wrap from the booth checklist.",
+          "convincing": "They earn 'reformed supplier' status; the trophy photo becomes a training slide for what not to do. They joke about the clamshell once, then get back to bids, and you can hear the relief in Dana's voice—plus fewer words like 'journey' without receipts."
+        },
+        "high": {
+          "poor": "The internet immortalizes Greystone as a global meme for laminated greenwashing; every LinkedIn caption reads like accidental comedy. The CEO tries a solemn video and accidentally leaves a tab open titled SWAG_ORDER_FINAL_FINAL; they ask if they should pivot to 'transparent plastic (ironic).'",
+          "good": "They are famous for the wrong conference, but enterprise buyers only tighten audit clauses instead of blacklisting—mostly. Dana signs new vendor rules without reading because she 'trusts the process,' and you add a sticky note to the podium: inventory first, banner second.",
+          "convincing": "They turn a cursed event into a credible second act: audited packaging, named suppliers, and a boring press release that actually lists actions. Greystone hosts a customer roundtable with no swag but free coffee and sends a selfie from the loading dock with the caption 'pallets checked, clamshells retired.'"
+        }
+      }
+    },
+    {
+      "scenario_id": "corporate-low-eco-label-oops-all-plastic",
+      "client_name": "ClearCycle Commercial",
+      "client_type": "Corporate",
+      "budget_tier": "Low",
+      "client_subtype": "Regional Office Cleaning Supplier",
+      "scenario_title": "Eco Label, Oops All Plastic",
+      "problem_summary": "ClearCycle Commercial, a regional B2B supplier that launched a green office essentials line with leafy slides and the phrase 'planet-positive procurement,' begged you to take the account after clients photographed shipments arriving in more plastic layers than a birthday present from a guilty uncle. Procurement managers are roasting the eco claim in industry groups, someone made a spreadsheet titled plastic_per_pen, and a buyer cc'd your client's competitor 'for visibility.' Head of sustainability comms Avery insists logistics is fixing it, swears the product inside is genuinely greener, and says they cannot survive another quarter of being the punchline in a Slack channel called sustainability-but-louder.",
+      "flavor_tone_note": "Niche sector drama with loud splash; Avery speaks in ESG bullet points while the shrink-wrap speaks louder.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Packaging Clarifier",
+          "solution_brief": "Acknowledge the mismatch, publish immediate packaging corrections and timelines—no green adjectives until reality matches."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Procurement Confidence Track",
+          "solution_brief": "Key accounts get evidence: process changes, pilot shipments, metrics—not vibes."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Cleaner Tomorrow Roadshow",
+          "solution_brief": "High-visibility sustainability blitz to retake narrative momentum fast."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "End-to-End Green Reset",
+          "solution_brief": "Full overhaul: audited claims, packaging redesign, coordinated relaunch and supplier accountability."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Jokes stay in industry chats; buyers stay cold.",
+        "low_visibility_high_effectiveness": "Niche noise; packaging fixes calm teams.",
+        "high_visibility_low_effectiveness": "Plastic story defines the line; trust tanks.",
+        "high_visibility_high_effectiveness": "Backlash scales; audited changes restore confidence."
+      },
+      "arc_2": {
+        "options": [
+          "Packaging Clarifier 2.0",
+          "Buyer Trust Discipline Plan",
+          "Green Reach Surge",
+          "Eco Claims Reconstruction",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Avery ships a new FAQ, then Operations sends a pallet of old wrap-heavy stock to the same accounts 'to clear inventory.' Six buyers notice; four post photos; two tag Avery with a heart emoji that feels like a threat.",
+        "low_visibility_high_effectiveness": "Reach stays contained, but ClearCycle actually follows the boring plan: pilot packaging, before-and-after photos, and PDF receipts that could bore a lawyer—in a good way. Avery's emails get shorter and more terrifying in a good way.",
+        "high_visibility_low_effectiveness": "During a proud LinkedIn carousel about reduced footprint, the photographer accidentally includes a corner of a warehouse stacked with plastic film rolls; comments turn into a bingo game. Avery tries to call it 'transition inventory' while standing beside a banner that says 'less wrap, more impact.'",
+        "high_visibility_high_effectiveness": "The roast is industry-wide, but ClearCycle publishes an unsexy packaging roadmap with dates, named suppliers, and a photo of a prototype box that is genuinely dull. Buyers still mock last month, but a few commenters write 'okay that is a real plan.' Avery ends check-ins with 'no green posts without facilities sign-off,' which is the most governance they have ever enjoyed."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their bid footnotes; ClearCycle keeps attaching 'eco-forward' PDFs that still crinkle like plastic. Avery asks if you can make 'minimal packaging' mean 'minimal guilt,' and you drink water very slowly.",
+          "good": "Only a modest circle of buyers cared, and enough of them accept tighter packaging rules that ClearCycle can pitch without flinching. They replace leafy stock photos with a diagram—even if the diagram is ugly.",
+          "convincing": "In their niche they become the supplier that got caught shipping wrap and then chose receipts—boring, honest, oddly trustworthy. They mail you a cardboard sample swatch with a note that says 'proof of less (tape included).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on procurement meme accounts; every new post gets scanned for hypocrisy and shrink-wrap puns. Avery refreshes the crisis inbox like a metronome, and Sales starts saying 'eco-ish pricing' in a way that should be illegal.",
+          "good": "People remember the plastic, but they also remember pilot shipments that matched the memo and refunds that landed. They ask fewer frantic questions and finally fire the vendor who insisted on 'protective layers.'",
+          "convincing": "They earn 'reformed supplier' status; the wrap photo becomes a training slide for what not to ship. They joke about the layers once, then get back to bids, and you can hear the relief in Avery's voice—plus fewer words like 'conscious' without a weight in grams."
+        },
+        "high": {
+          "poor": "The internet immortalizes ClearCycle as a global meme for laminated greenwashing; every LinkedIn caption reads like accidental comedy. The CEO tries a solemn video and accidentally holds up a product still sealed in triple wrap; they ask if they should pivot to 'Plastic Appreciation (Irony).'",
+          "good": "They are famous for the wrong wrap, but enterprise buyers only tighten packaging audits instead of blacklisting—mostly. Avery signs new supplier rules without reading because they 'trust the transition,' and you add a sticky note to the loading dock: weigh first, post later.",
+          "convincing": "They turn a cursed launch into a credible second act: audited materials, redesigned cartons, and a boring press release that actually lists plastic grams saved. ClearCycle hosts a warehouse walk-through with no carousel lighting and sends a selfie from the packing line with the caption 'wrap retired (RIP).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "corporate-very-low-ai-optimized-intern-operated",
+      "client_name": "Crestline Office Systems",
+      "client_type": "Corporate",
+      "budget_tier": "Very Low",
+      "client_subtype": "Regional Office Tech Supplier",
+      "scenario_title": "AI-Optimized, Intern-Operated",
+      "problem_summary": "Crestline Office Systems, a regional B2B vendor that has been selling 'AI-optimized resolution' on every slide deck in Calibri, begged you to take the account after a client screen recording captured a support agent muttering 'Kevin, printer again' loud enough to wake procurement from a coma. Industry buyers renamed the stack KevGPT, RFP threads are full of skull emojis, and someone made a bingo card where every square is Kevin. Head of product marketing Jordan insists the roadmap is real, swears Kevin is 'a senior escalation resource, not a deity,' and says they cannot survive another quarter of demos where the smartest line in the room is a hot mic.",
+      "flavor_tone_note": "Enterprise confidence meets one immortal clip; Jordan speaks in OKRs while Kevin lives in the break room.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Service Language Correction",
+          "solution_brief": "Brief, precise clarification of what the product does today; tighten claims and kill vague AI adjectives."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Account Confidence Repair",
+          "solution_brief": "Priority accounts get standards, retraining proof, and measurable service consistency—not vibes."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Future of Support Tour",
+          "solution_brief": "High-visibility thought leadership and content blitz to retake narrative momentum fast."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Enterprise Trust Re-Launch",
+          "solution_brief": "Full reset: audited messaging, revamped support positioning, leadership on-record, coordinated comeback."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "KevGPT stays an inside joke; confidence slips quietly.",
+        "low_visibility_high_effectiveness": "Contained; clearer standards reassure core accounts.",
+        "high_visibility_low_effectiveness": "Meme escapes into B2B; AI claim becomes liability.",
+        "high_visibility_high_effectiveness": "Wide mockery; disciplined correction restores trust."
+      },
+      "arc_2": {
+        "options": [
+          "Support Claim Clarifier",
+          "Service Discipline Protocol",
+          "KevGPT Containment Tour",
+          "Enterprise Support Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Jordan circulates a memo banning 'Kevin' as a verb, then a rep ends a call with 'Kev out' as a joke. Six procurement managers hear it; five forward it to their CFO with the subject line 'we are not paying for this mythology.'",
+        "low_visibility_high_effectiveness": "Reach stays niche, but Crestline actually follows the boring plan: named escalation paths, published SLAs, and a helpdesk script that does not say AI until it means it. Jordan's emails get shorter and more terrifying in a good way.",
+        "high_visibility_low_effectiveness": "During a slick 'future of work' webinar, a live demo pings a chat bubble that says Escalating to Kevin... while the presenter insists the stack is autonomous. The clip goes wide; Kevin trends harder than the product roadmap.",
+        "high_visibility_high_effectiveness": "The roast is industry-wide, but Crestline publishes an unsexy postmortem: what is automated, what is human, and where Kevin sits in the org chart (with a real title). Buyers still joke, but a few commenters write 'okay that is how you fix a lie.' Jordan ends check-ins with 'no webinar slides without a human run-through,' which is the most governance they have ever enjoyed."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their footnotes; Crestline keeps attaching 'AI-forward' PDFs that still sound like Kevin fanfiction. Jordan asks if you can make 'optimized' mean 'emotionally optimized,' and you schedule a very long silence.",
+          "good": "Only a modest circle of buyers cared, and enough of them accept clearer language that Crestline can pitch without flinching. They replace buzzwords with a flowchart—even if the font is still Calibri.",
+          "convincing": "In their niche they become the vendor that got caught mythologizing a desk and then chose receipts—boring, honest, oddly trustworthy. They mail you a mouse pad that says 'Kevin is a person (confirmed).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on procurement meme accounts; every new post gets scanned for hypocrisy and printer puns. Jordan refreshes the crisis inbox like a metronome, and Sales starts saying 'Kevin-aware pricing' in a way that should be illegal.",
+          "good": "People remember the hot mic, but they also remember revised escalation paths and support stats that match reality. They ask fewer frantic questions and finally give Kevin a real job title on the website.",
+          "convincing": "They earn 'reformed ops vendor' status; KevGPT becomes a training slide for what not to demo. They joke about Kevin once, then get back to bids, and you can hear the relief in Jordan's voice—plus fewer words like 'autonomous' without a footnote."
+        },
+        "high": {
+          "poor": "The internet immortalizes Crestline as a global meme for enterprise cosplay; every LinkedIn caption reads like accidental comedy. The CEO tries a solemn video and accidentally leaves a tab open titled KEVIN_ROTA_FINAL; they ask if they should pivot to 'Human-in-the-loop (Kevin).'",
+          "good": "They are famous for the wrong mic, but enterprise buyers only tighten audit clauses instead of blacklisting—mostly. Jordan signs new messaging rules without reading because they 'trust the narrative,' and you add a sticky note to the podium: humans first, acronyms later.",
+          "convincing": "They turn a cursed clip into a credible second act: real automation boundaries, named teams, and a boring press release that actually lists what ships. Crestline hosts a customer Q&A with Kevin in the room (voluntarily) and sends a selfie from the support floor with the caption 'printers fear us (Kevin included).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "corporate-very-low-seamless-automation-manual-panic",
+      "client_name": "SlatePay",
+      "client_type": "Corporate",
+      "budget_tier": "Very Low",
+      "client_subtype": "Regional Payroll Software Provider",
+      "scenario_title": "Seamless Automation, Manual Panic",
+      "problem_summary": "SlatePay, a regional payroll software shop that has been selling seamless full automation on every webinar slide and customer deck, begged you to take the account after a hot mic on a live payroll training picked up the back-office audio: staff frantically hunting a file named FINAL_final_REAL.xlsx while the presenter calmly described 'zero-touch salary flow' and 'set-and-forget compliance.' Finance managers renamed the stack spreadsheets with branding, RFP threads are full of skull emojis, and someone synced the clip to hold music. VP of product marketing Priya insists the roadmap is real, swears the team is not 'just VLOOKUP in hoodies,' and says they cannot survive another quarter of demos where the smartest line in the room is a filename someone forgot to rename.",
+      "flavor_tone_note": "Enterprise confidence meets filename entropy; Priya speaks in roadmaps while the desktop speaks in despair.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Terminology Correction Notice",
+          "solution_brief": "Concise capability statement: what is automated today, what still needs human steps—tighten every customer-facing promise."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "CFO Confidence Program",
+          "solution_brief": "Priority accounts get live process proof, named workflows, and receipts—not slogans."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Payroll Future Broadcast",
+          "solution_brief": "High-visibility thought leadership and content blitz to retake narrative momentum fast."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Operational Trust Overhaul",
+          "solution_brief": "Full reset: audited messaging, leadership on-record, engineering reality checks, coordinated comeback."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "FINAL_final_REAL stays an inside joke; confidence slips quietly.",
+        "low_visibility_high_effectiveness": "Contained; briefings and proof reassure core accounts.",
+        "high_visibility_low_effectiveness": "Spreadsheets with branding goes industry-wide; automation claims crater.",
+        "high_visibility_high_effectiveness": "Wide mockery; disciplined process evidence restores trust."
+      },
+      "arc_2": {
+        "options": [
+          "Automation Scope Clarifier",
+          "Payroll Discipline Program",
+          "Future-of-Payroll Blast",
+          "Reliability Reputation Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Priya circulates a memo banning joke filenames in screen shares, then Sales sends a client email with subject FINAL_final_THIS_ONE_USE_THIS and reignites doubt. Fourteen finance managers see it; twelve forward it internally with the subject line 'automation is a feeling apparently.'",
+        "low_visibility_high_effectiveness": "Reach stays niche, but SlatePay actually follows the boring plan: named workflows in writing, demo scripts that match reality, and a shared drive policy that would make Legal smile. Priya's emails get shorter and more terrifying in a good way.",
+        "high_visibility_low_effectiveness": "During a slick 'future of payroll' webinar, screen share glitches to a desktop wallpaper of nested folders titled final_final_old_DO_NOT_USE while the presenter insists the stack is autonomous. The clip goes wide; FINAL_final_REAL trends harder than the product roadmap.",
+        "high_visibility_high_effectiveness": "The roast is industry-wide, but SlatePay publishes an unsexy postmortem: what is automated, what is manual, and where humans sit in the workflow (with titles). Buyers still joke, but a few commenters write 'okay that is how you fix a webinar.' Priya ends check-ins with 'no slides without a dry run on a clean desktop,' which is the most governance she has ever enjoyed."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their RFP footnotes; SlatePay keeps attaching 'full automation' PDFs that still smell like spreadsheets. Priya asks if you can make 'seamless' mean 'emotionally seamless,' and you schedule a very long silence.",
+          "good": "Only a modest circle of finance buyers cared, and enough of them accept clearer language that SlatePay can pitch without flinching. They replace buzzwords with a workflow diagram—even if the font is still Calibri.",
+          "convincing": "In their niche they become the vendor that got caught on a hot mic and then chose receipts—boring, honest, oddly trustworthy. They mail you a mouse pad that says 'HUMAN STEPS (LISTED).'"
+        },
+        "medium": {
+          "poor": "The clip keeps resurfacing on finance meme accounts; every new post gets scanned for hypocrisy and filename puns. Priya refreshes the crisis inbox like a metronome, and Sales starts saying 'FINAL-aware pricing' in a way that should be illegal.",
+          "good": "People remember the mic, but they also remember revised demo standards and screenshots that match the pitch. They ask fewer frantic questions and finally publish which modules are rules-based versus still hand-touched.",
+          "convincing": "They earn 'reformed payroll vendor' status; FINAL_final_REAL becomes a training slide for what not to screen share. They joke about the file once, then get back to bids, and you can hear the relief in Priya's voice—plus fewer words like 'autonomous' without a footnote."
+        },
+        "high": {
+          "poor": "The internet immortalizes SlatePay as a global meme for enterprise cosplay; every LinkedIn caption reads like accidental comedy. The CEO tries a solemn video and accidentally leaves a tab open titled PAYROLL_MASTER_FINAL_v9_REAL; they ask if they should pivot to 'Human-in-the-loop (spreadsheet).'",
+          "good": "They are famous for the wrong filename, but enterprise buyers only tighten audit clauses instead of blacklisting—mostly. Priya signs new demo rules without reading because she 'trusts the process,' and you add a sticky note to the webinar podium: desktop first, tagline second.",
+          "convincing": "They turn a cursed clip into a credible second act: audited workflows, leadership on-record, and a boring press release that actually lists what runs unattended. SlatePay hosts a customer roundtable with screen share disabled and sends a selfie from the ops floor with the caption 'files renamed (verified).'"
+        }
+      }
+    },
+    {
+      "scenario_id": "corporate-very-low-smart-building-dumb-thermostat-war",
+      "client_name": "Gridwell",
+      "client_type": "Corporate",
+      "budget_tier": "Very Low",
+      "client_subtype": "Regional Facilities Management Company",
+      "scenario_title": "Smart Building, Dumb Thermostat War",
+      "problem_summary": "Gridwell, a regional facilities management firm that has been selling 'intelligent climate' and smart energy savings on every lobby screen and sustainability PDF, begged you to take the account after tenants started posting photos of thermostats taped over with handwritten notes that say the system is thinking and please do not touch. The meme headline became AI climate by office folklore; workplace TikTok stitched the shots to sad elevator music, and a few anchor tenants are threatening to name Gridwell in renewal emails with screenshots attached. Head of client experience Marcus insists the BMS rollout is real, swears the notes were rogue humor from one overworked site lead, and says they cannot survive another week of being roasted as a thermostat that runs on vibes and Scotch tape.",
+      "flavor_tone_note": "Modern automation story, analog office coping; Marcus speaks in uptime while the wall speaks in Sharpie.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Service Scope Clarifier",
+          "solution_brief": "Short honest statement: what the building controls today, what is still manual, what the roadmap actually is—no smart-building poetry."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Tenant Trust Repair Track",
+          "solution_brief": "Priority buildings get site walks, named escalation paths, and temperature logs tenants can see—not slogans."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Efficiency Myth-Busting Tour",
+          "solution_brief": "High-visibility explainers and partnerships to crowd out mockery and retake narrative volume fast."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Smart Systems Reputation Reset",
+          "solution_brief": "End-to-end reset: audited claims, coordinated comms, verified controls, leadership on-record."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Sticky-note jokes stay local; tenants stay cold and annoyed.",
+        "low_visibility_high_effectiveness": "Contained; fixes and proof rebuild trust in core buildings.",
+        "high_visibility_low_effectiveness": "AI climate folklore goes wide; smart campaign looks silly.",
+        "high_visibility_high_effectiveness": "Meme scales; honest scope and fixes earn cautious trust."
+      },
+      "arc_2": {
+        "options": [
+          "System Scope Clarifier",
+          "Tenant Discipline Protocol",
+          "Smart Office Reach Push",
+          "Climate Trust Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Marcus circulates new thermostat talking points, then a site manager in one mid-rise tapes over another panel with system is still thinking (sorry) while on a tenant Zoom with the camera pointed at the wall. Eleven lease admins see it; nine forward it internally with the subject line 'our vendor is a mood board.'",
+        "low_visibility_high_effectiveness": "Reach stays niche, but Gridwell actually follows the boring plan: posted setpoints, named contacts, and site logs that match what people feel in the room. Marcus's emails get shorter and more terrifying in a good way.",
+        "high_visibility_low_effectiveness": "During a slick 'future of the workplace' LinkedIn Live from a flagship lobby, a pan catches a row of thermostats still covered in tape while the presenter insists the stack is autonomous; comments turn into a bingo card of corporate sins. A relaunch post celebrates 'seamless comfort' the same day a new sticky-note photo hits the front page of a facilities meme account.",
+        "high_visibility_high_effectiveness": "The roast is industry-wide, but Gridwell publishes an unsexy postmortem: which buildings are on which controllers, how overrides work, and where humans are still in the loop (with names). Tenants still joke, but a few commenters write 'okay that is how you fix a lobby lie.' Marcus ends check-ins with 'no sustainability graphics until engineering signs the panel photo,' which is the most governance he has ever enjoyed."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never quite leaves their renewal footnotes; Gridwell keeps attaching 'intelligent climate' PDFs that still smell like tape. Marcus asks if you can make 'smart' mean 'smart intentions,' and you schedule a very long silence.",
+          "good": "Only a modest circle of property managers cared, and enough of them accept clearer scope that Gridwell can pitch without flinching. They replace poetry with a thermostat FAQ—even if the font is still corporate blue.",
+          "convincing": "In their niche they become the FM firm that got caught on a lobby wall and then chose receipts—boring, honest, oddly trustworthy. They mail you a stress ball labeled 'SETPOINT (CONFIRMED).'"
+        },
+        "medium": {
+          "poor": "The photos keep resurfacing on workplace meme accounts; every new post gets scanned for hypocrisy and Celsius puns. Marcus refreshes tenant threads like a metronome, and site teams blame 'commissioning' so often commissioning should invoice them.",
+          "good": "People remember the tape, but they also remember site visits that happened and logs that matched complaints. They ask fewer frantic questions and finally remove joke notes before the photographer arrives.",
+          "convincing": "They earn 'reformed facilities vendor' status; the sticky note becomes a training slide for what not to leave on camera. They joke about the Sharpie once, then get back to bids, and you can hear the relief in Marcus's voice—plus fewer words like 'AI-powered' without a diagram."
+        },
+        "high": {
+          "poor": "The internet immortalizes Gridwell as a global meme for smart-building cosplay; every LinkedIn caption reads like accidental comedy. The CEO tries a solemn video and accidentally films a thermostat still wearing tape in the reflection; they ask if they should pivot to 'Human-in-the-loop (thermal).'",
+          "good": "They are famous for the wrong lobby, but anchor tenants only tighten SLAs instead of walking—mostly. Marcus signs new site standards without reading because he 'trusts the rollout,' and you add a sticky note to the brand guidelines: walk the floor first, banner second.",
+          "convincing": "They turn a cursed campaign into a credible second act: verified controls, leadership on-record, and a boring press release that actually lists buildings and timelines. Gridwell hosts a tenant roundtable in a room where the temperature matches the promise and sends a selfie from the BMS screen with the caption 'thinking retired (verified).'"
+        }
+      }
+    }
+  ]
+}

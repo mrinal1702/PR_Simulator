@@ -1,11 +1,11 @@
 import type { ClientKind } from "@/lib/clientEconomyMath";
 
-import scenarioMeta from "../../data/scenario_database.json";
-import scenariosCorporate from "../../data/scenarios_corporate.json";
-import scenariosIndividual from "../../data/scenarios_individual.json";
-import scenariosSmallCompany from "../../data/scenarios_small_company.json";
+import scenarioMeta from "../data/scenario_database.json";
+import scenariosCorporate from "../data/scenarios_corporate.json";
+import scenariosIndividual from "../data/scenarios_individual.json";
+import scenariosSmallCompany from "../data/scenarios_small_company.json";
 
-/** Merged pool; author new rows in the per–client-type JSON files under `data/`. */
+/** Merged pool; JSON lives under `web/data/` so Vercel (root `web/`) can resolve imports. */
 const scenarioDatabase = {
   ...scenarioMeta,
   scenarios: [
