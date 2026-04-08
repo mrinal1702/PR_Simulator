@@ -87,9 +87,13 @@ export function generateCandidates(args: {
   visibility: number;
 }): Candidate[] {
   const bucketSeed = `${args.seedBase}|s${args.season}|${args.role}|${args.tier}|${args.salary}`;
+  const allNames = [...MALE_NAMES, ...FEMALE_NAMES];
+  const uniqueNames = deterministicPickUnique(allNames, 3, `${bucketSeed}|names`);
+  const descriptionPool = getDescriptionPool(args.role, args.tier, args.salary);
+  const uniqueDescriptions = deterministicPickUnique(descriptionPool, 3, `${bucketSeed}|descriptions`);
   return [0, 1, 2].map((idx) => {
     const seed = `${bucketSeed}|c${idx}`;
-    const name = pickName(seed);
+    const name = uniqueNames[idx];
     const productivity = resolveProductivity(seed);
     const skill = resolveSkill({
       seed,
@@ -105,7 +109,7 @@ export function generateCandidates(args: {
       role: args.role,
       tier: args.tier,
       salary: args.salary,
-      description: makeDescription(args.role, args.tier, args.salary, seed),
+      description: uniqueDescriptions[idx],
       hiddenProductivityPct: productivity,
       hiddenSkillScore: skill,
     };
@@ -144,21 +148,33 @@ function resolveSkill(args: {
   return Math.max(cfg.minSkill, Math.min(cfg.maxSkill, Math.round(finalSkill)));
 }
 
-function makeDescription(role: HiringRole, tier: HiringTier, salary: number, seed: string): string {
-  if (tier === "intern") return "Fast learner, brave with chaos, and excellent at emergency checklists.";
-  const flavor = Math.floor(rand01(`${seed}|desc`) * 3);
-  const tone =
-    flavor === 0
-      ? "Gets things done before panic becomes policy."
-      : flavor === 1
-      ? "Brings structure, grit, and suspiciously good timing."
-      : "Handles pressure well and misses fewer obvious traps.";
-  return `${roleLabel(role)} at ${Math.round(salary / 1000)}k band. ${tone}`;
+function getDescriptionPool(role: HiringRole, tier: HiringTier, salary: number): string[] {
+  if (tier === "intern") {
+    return [
+      "Fast learner, brave with chaos, and excellent at emergency checklists.",
+      "Shows up early, asks sharp questions, and survives feedback storms.",
+      "Quick on admin, quick on notes, quicker than expected under pressure.",
+      "Still learning the playbook but already useful in messy situations.",
+      "Low ego, high hustle, and unreasonably calm around deadlines.",
+    ];
+  }
+  const prefix = `${roleLabel(role)} at ${Math.round(salary / 1000)}k band.`;
+  return [
+    `${prefix} Gets things done before panic becomes policy.`,
+    `${prefix} Brings structure, grit, and suspiciously good timing.`,
+    `${prefix} Handles pressure well and misses fewer obvious traps.`,
+    `${prefix} Stays on message while everything else is on fire.`,
+    `${prefix} Practical, adaptable, and rarely needs the same note twice.`,
+  ];
 }
 
-function pickName(seed: string): string {
-  const all = [...MALE_NAMES, ...FEMALE_NAMES];
-  return all[Math.floor(rand01(`${seed}|name`) * all.length)];
+function deterministicPickUnique(pool: string[], count: number, seed: string): string[] {
+  const withScores = pool.map((item, idx) => ({
+    item,
+    score: hash32(`${seed}|${idx}|${item}`),
+  }));
+  withScores.sort((a, b) => a.score - b.score);
+  return withScores.slice(0, Math.min(count, pool.length)).map((x) => x.item);
 }
 
 function rand01(seed: string): number {
