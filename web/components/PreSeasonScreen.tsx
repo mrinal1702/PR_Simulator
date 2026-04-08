@@ -13,6 +13,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [notice, setNotice] = useState<string>("");
   const [showStats, setShowStats] = useState(false);
+  const [showEmployees, setShowEmployees] = useState(false);
 
   const title = useMemo(() => `Pre-season ${season}`, [season]);
   const seasonKey = String(season);
@@ -97,6 +98,9 @@ export function PreSeasonScreen({ season }: { season: number }) {
           <button type="button" className="btn btn-secondary" onClick={() => setShowStats((v) => !v)}>
             {showStats ? "Hide agency stats" : "Agency stats"}
           </button>
+          <button type="button" className="btn btn-secondary" onClick={() => setShowEmployees((v) => !v)}>
+            {showEmployees ? "Hide employees" : "Employees"}
+          </button>
           <button type="button" className="btn btn-secondary" onClick={saveNow}>
             Save
           </button>
@@ -130,6 +134,35 @@ export function PreSeasonScreen({ season }: { season: number }) {
               color={getMetricBand("competence", save.resources.competence).color}
               percent={metricPercent("competence", save.resources.competence)}
             />
+          </div>
+        ) : null}
+
+        {showEmployees ? (
+          <div className="agency-stats-panel">
+            <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Employees</h3>
+            {(save.employees ?? []).length === 0 ? (
+              <p className="muted" style={{ margin: 0 }}>
+                No employees hired yet.
+              </p>
+            ) : (
+              <div style={{ display: "grid", gap: "0.6rem" }}>
+                {[...(save.employees ?? [])]
+                  .sort((a, b) => b.salary - a.salary)
+                  .map((e) => (
+                    <div key={e.id} style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.7rem 0.8rem" }}>
+                      <p style={{ margin: 0, fontWeight: 600 }}>
+                        {e.name} · {e.role}
+                      </p>
+                      <p className="muted" style={{ margin: "0.25rem 0 0" }}>
+                        Salary: EUR {e.salary.toLocaleString("en-GB")}
+                        {e.visibilityGain > 0 ? ` · Visibility +${e.visibilityGain}` : ""}
+                        {e.competenceGain > 0 ? ` · Competence +${e.competenceGain}` : ""}
+                        {e.capacityGain > 0 ? ` · Capacity +${e.capacityGain}` : ""}
+                      </p>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         ) : null}
 

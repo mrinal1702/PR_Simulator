@@ -128,6 +128,19 @@ export function HiringScreen({ season }: { season: number }) {
         ...(save.hiresBySeason ?? {}),
         [seasonKey]: hiredThisSeason + 1,
       },
+      employees: [
+        ...(save.employees ?? []),
+        {
+          id: `${candidate.id}-${season}-${hiredThisSeason + 1}`,
+          name: candidate.name,
+          role: mode === "intern" ? "Intern" : roleLabel(candidate.role),
+          salary: candidate.salary,
+          seasonHired: season,
+          competenceGain,
+          visibilityGain,
+          capacityGain: capGain,
+        },
+      ],
     };
     setSave(updated);
     persistSave(updated);

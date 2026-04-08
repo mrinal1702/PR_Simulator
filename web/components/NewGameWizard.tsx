@@ -43,6 +43,16 @@ export type NewGamePayload = {
   reputation: number;
   resources: BuildStats;
   hiresBySeason?: Partial<Record<string, number>>;
+  employees?: Array<{
+    id: string;
+    name: string;
+    role: string;
+    salary: number;
+    seasonHired: number;
+    competenceGain: number;
+    visibilityGain: number;
+    capacityGain: number;
+  }>;
   createdAt: string;
 };
 
@@ -100,6 +110,7 @@ export function NewGameWizard() {
       reputation: STARTING_REPUTATION,
       resources,
       hiresBySeason: {},
+      employees: [],
       createdAt: new Date().toISOString(),
     };
     persistSave(payload);
