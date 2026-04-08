@@ -17,6 +17,9 @@ export const ECONOMY_BENCHMARK = {
   firmCapacity: 50,
 } as const;
 
+/** Derived firm trust signal; intentionally slow and stable. */
+export const STARTING_REPUTATION = 5;
+
 /**
  * Baseline build resources BEFORE spouse.
  * Target: equal Total_V across all builds.

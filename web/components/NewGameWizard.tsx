@@ -11,6 +11,7 @@ import {
   type GenderValue,
 } from "@/lib/onboardingContent";
 import {
+  STARTING_REPUTATION,
   STARTING_BUILD_STATS,
   applySpouseAtStart,
   type BuildStats,
@@ -32,6 +33,8 @@ export type NewGamePayload = {
   seasonNumber: number;
   phase: "preseason" | "season" | "postseason";
   activityFocusUsedInPreseason: boolean;
+  /** Derived metric; not directly tied to spouse or spend at start. */
+  reputation: number;
   resources: BuildStats;
   createdAt: string;
 };
@@ -82,6 +85,7 @@ export function NewGameWizard() {
       seasonNumber: 1,
       phase: "preseason",
       activityFocusUsedInPreseason: false,
+      reputation: STARTING_REPUTATION,
       resources,
       createdAt: new Date().toISOString(),
     };
@@ -341,6 +345,7 @@ export function NewGameWizard() {
                   </>
                 )}
             </li>
+            <li>Firm reputation: {STARTING_REPUTATION}</li>
           </ul>
           <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.5rem", flexWrap: "wrap" }}>
             <Link href="/game/preseason/1" className="btn btn-primary" style={{ textDecoration: "none" }}>

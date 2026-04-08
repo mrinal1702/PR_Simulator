@@ -103,7 +103,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
           <p className="muted" style={{ margin: 0 }}>
             Current resources: EUR {save.resources.eur.toLocaleString("en-GB")} · Competence{" "}
             {save.resources.competence} · Visibility {save.resources.visibility} · Capacity{" "}
-            {save.resources.firmCapacity}
+            {save.resources.firmCapacity} · Reputation {save.reputation ?? 5}
           </p>
         </div>
       </section>
