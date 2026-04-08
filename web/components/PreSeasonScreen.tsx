@@ -6,14 +6,17 @@ import { GAME_TITLE } from "@/lib/onboardingContent";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { persistSave, loadSave } from "@/lib/saveGameStorage";
+import type { BuildStats } from "@/lib/gameEconomy";
 
 type Focus = "strategy_workshop" | "network";
+type BreakdownMetric = "eur" | "visibility" | "competence" | "firmCapacity" | "reputation";
 
 export function PreSeasonScreen({ season }: { season: number }) {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [notice, setNotice] = useState<string>("");
   const [showStats, setShowStats] = useState(false);
   const [showEmployees, setShowEmployees] = useState(false);
+  const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
 
   const title = useMemo(() => `Pre-season ${season}`, [season]);
   const seasonKey = String(season);
@@ -111,6 +114,10 @@ export function PreSeasonScreen({ season }: { season: number }) {
             <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Agency snapshot</h3>
             <p className="muted" style={{ marginTop: 0 }}>
               Cash: EUR {save.resources.eur.toLocaleString("en-GB")}
+              {" · "}
+              <button type="button" className="btn btn-secondary" style={{ padding: "0.2rem 0.5rem", fontSize: "0.82rem" }} onClick={() => setBreakdownMetric("eur")}>
+                Breakdown
+              </button>
             </p>
 
             <MetricRow
@@ -119,6 +126,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
               bandLabel={getMetricBand("reputation", save.reputation ?? 5).label}
               color={getMetricBand("reputation", save.reputation ?? 5).color}
               percent={metricPercent("reputation", save.reputation ?? 5)}
+              onBreakdown={() => setBreakdownMetric("reputation")}
             />
             <MetricRow
               label="Visibility"
@@ -126,6 +134,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
               bandLabel={getMetricBand("visibility", save.resources.visibility).label}
               color={getMetricBand("visibility", save.resources.visibility).color}
               percent={metricPercent("visibility", save.resources.visibility)}
+              onBreakdown={() => setBreakdownMetric("visibility")}
             />
             <MetricRow
               label="Competence"
@@ -133,7 +142,15 @@ export function PreSeasonScreen({ season }: { season: number }) {
               bandLabel={getMetricBand("competence", save.resources.competence).label}
               color={getMetricBand("competence", save.resources.competence).color}
               percent={metricPercent("competence", save.resources.competence)}
+              onBreakdown={() => setBreakdownMetric("competence")}
             />
+            <p className="muted" style={{ margin: "0.25rem 0 0" }}>
+              Capacity: {save.resources.firmCapacity}
+              {" · "}
+              <button type="button" className="btn btn-secondary" style={{ padding: "0.2rem 0.5rem", fontSize: "0.82rem" }} onClick={() => setBreakdownMetric("firmCapacity")}>
+                Breakdown
+              </button>
+            </p>
           </div>
         ) : null}
 
@@ -212,6 +229,13 @@ export function PreSeasonScreen({ season }: { season: number }) {
           </p>
         </div>
       </section>
+      {breakdownMetric ? (
+        <BreakdownModal
+          metric={breakdownMetric}
+          save={save}
+          onClose={() => setBreakdownMetric(null)}
+        />
+      ) : null}
     </div>
   );
 }
@@ -222,19 +246,24 @@ function MetricRow({
   bandLabel,
   color,
   percent,
+  onBreakdown,
 }: {
   label: string;
   value: number;
   bandLabel: string;
   color: string;
   percent: number;
+  onBreakdown: () => void;
 }) {
   return (
     <div className="metric-row">
       <div className="metric-row-top">
         <strong>{label}</strong>
-        <span className="muted">
+        <span className="muted" style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
           {value} · {bandLabel}
+          <button type="button" className="btn btn-secondary" style={{ padding: "0.15rem 0.45rem", fontSize: "0.78rem" }} onClick={onBreakdown}>
+            Breakdown
+          </button>
         </span>
       </div>
       <div className="metric-track" role="presentation">
@@ -243,5 +272,105 @@ function MetricRow({
       </div>
     </div>
   );
+}
+
+function BreakdownModal({
+  metric,
+  save,
+  onClose,
+}: {
+  metric: BreakdownMetric;
+  save: NewGamePayload;
+  onClose: () => void;
+}) {
+  const lines = buildMetricBreakdown(metric, save);
+  const titleMap: Record<BreakdownMetric, string> = {
+    eur: "Wealth breakdown",
+    visibility: "Visibility breakdown",
+    competence: "Competence breakdown",
+    firmCapacity: "Capacity breakdown",
+    reputation: "Reputation breakdown",
+  };
+  return (
+    <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-label="Metric breakdown">
+      <div className="game-modal">
+        <p className="game-modal-kicker">Agency ledger</p>
+        <h2 style={{ marginTop: 0 }}>{titleMap[metric]}</h2>
+        <div style={{ display: "grid", gap: "0.35rem" }}>
+          {lines.map((line) => (
+            <p key={line.label} style={{ margin: 0 }}>
+              {line.label}: {formatSigned(metric, line.value)}
+            </p>
+          ))}
+        </div>
+        <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end" }}>
+          <button type="button" className="btn btn-primary" onClick={onClose}>
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePayload): Array<{ label: string; value: number }> {
+  const employees = save.employees ?? [];
+  const baseResources: BuildStats = save.initialResources ?? estimateBaseResources(save);
+  const baseReputation = save.initialReputation ?? 5;
+  const focusComp = (save.preseasonFocusCounts?.strategy_workshop ?? 0) * 10;
+  const focusVis = (save.preseasonFocusCounts?.network ?? 0) * 10;
+  const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
+  const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
+  const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
+  const employeeCost = employees.reduce((s, e) => s + e.salary, 0);
+
+  const linesByMetric: Record<BreakdownMetric, Array<{ label: string; value: number }>> = {
+    eur: [
+      { label: "Pre-Season Start", value: baseResources.eur },
+      { label: "Employees", value: -employeeCost },
+    ],
+    visibility: [
+      { label: "Pre-Season Start", value: baseResources.visibility },
+      { label: "Pre-Season Focus", value: focusVis },
+      { label: "Employees", value: employeeVis },
+    ],
+    competence: [
+      { label: "Pre-Season Start", value: baseResources.competence },
+      { label: "Pre-Season Focus", value: focusComp },
+      { label: "Employees", value: employeeComp },
+    ],
+    firmCapacity: [
+      { label: "Pre-Season Start", value: baseResources.firmCapacity },
+      { label: "Employees", value: employeeCap },
+    ],
+    reputation: [{ label: "Pre-Season Start", value: baseReputation }],
+  };
+
+  return linesByMetric[metric].filter((l, idx) => idx === 0 || l.value !== 0);
+}
+
+function estimateBaseResources(save: NewGamePayload): BuildStats {
+  const employees = save.employees ?? [];
+  const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
+  const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
+  const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
+  const employeeCost = employees.reduce((s, e) => s + e.salary, 0);
+  const focusComp = (save.preseasonFocusCounts?.strategy_workshop ?? 0) * 10;
+  const focusVis = (save.preseasonFocusCounts?.network ?? 0) * 10;
+  return {
+    eur: save.resources.eur + employeeCost,
+    visibility: save.resources.visibility - focusVis - employeeVis,
+    competence: save.resources.competence - focusComp - employeeComp,
+    firmCapacity: save.resources.firmCapacity - employeeCap,
+  };
+}
+
+function formatSigned(metric: BreakdownMetric, value: number): string {
+  if (metric === "eur") {
+    const sign = value > 0 ? "+" : "";
+    return `${sign}EUR ${value.toLocaleString("en-GB")}`;
+  }
+  const sign = value > 0 ? "+" : "";
+  return `${sign}${value}`;
 }
 
