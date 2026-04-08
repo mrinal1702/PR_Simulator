@@ -32,6 +32,13 @@ export type NewGamePayload = {
   seasonNumber: number;
   phase: "preseason" | "season" | "postseason";
   activityFocusUsedInPreseason: boolean;
+  /** Season -> selected pre-season focus id (e.g. "1" -> "strategy_workshop"). */
+  preseasonActionBySeason: Partial<Record<string, "strategy_workshop" | "network">>;
+  /** Cumulative focus picks across all pre-seasons (for future scaling logic). */
+  preseasonFocusCounts: {
+    strategy_workshop: number;
+    network: number;
+  };
   /** Derived metric; not directly tied to spouse or spend at start. */
   reputation: number;
   resources: BuildStats;
@@ -84,6 +91,11 @@ export function NewGameWizard() {
       seasonNumber: 1,
       phase: "preseason",
       activityFocusUsedInPreseason: false,
+      preseasonActionBySeason: {},
+      preseasonFocusCounts: {
+        strategy_workshop: 0,
+        network: 0,
+      },
       reputation: STARTING_REPUTATION,
       resources,
       createdAt: new Date().toISOString(),

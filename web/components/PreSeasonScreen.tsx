@@ -15,14 +15,36 @@ export function PreSeasonScreen({ season }: { season: number }) {
   const [showStats, setShowStats] = useState(false);
 
   const title = useMemo(() => `Pre-season ${season}`, [season]);
+  const seasonKey = String(season);
+  const existingSeasonAction = save?.preseasonActionBySeason?.[seasonKey];
+  const legacyUsedFlag =
+    Boolean(save?.activityFocusUsedInPreseason) &&
+    (save?.preseasonActionBySeason == null ||
+      Object.keys(save.preseasonActionBySeason).length === 0) &&
+    save?.phase === "preseason" &&
+    save?.seasonNumber === season;
+  const alreadyUsedThisPreseason = Boolean(existingSeasonAction) || legacyUsedFlag;
 
   const applyFocus = (focus: Focus) => {
-    if (!save || save.activityFocusUsedInPreseason) return;
+    if (!save || alreadyUsedThisPreseason) return;
+    const normalizedCounts = {
+      strategy_workshop: save.preseasonFocusCounts?.strategy_workshop ?? 0,
+      network: save.preseasonFocusCounts?.network ?? 0,
+    };
+    const normalizedActions = save.preseasonActionBySeason ?? {};
     const updated: NewGamePayload = {
       ...save,
       phase: "preseason",
       seasonNumber: season,
       activityFocusUsedInPreseason: true,
+      preseasonActionBySeason: {
+        ...normalizedActions,
+        [seasonKey]: focus,
+      },
+      preseasonFocusCounts: {
+        ...normalizedCounts,
+        [focus]: normalizedCounts[focus] + 1,
+      },
       resources:
         focus === "strategy_workshop"
           ? { ...save.resources, competence: save.resources.competence + 10 }
@@ -116,7 +138,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
             type="button"
             className="choice-card"
             onClick={() => applyFocus("strategy_workshop")}
-            disabled={save.activityFocusUsedInPreseason}
+            disabled={alreadyUsedThisPreseason}
           >
             <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>Strategy workshop</h3>
             <p className="muted" style={{ margin: 0 }}>Improve competence by 10</p>
@@ -125,7 +147,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
             type="button"
             className="choice-card"
             onClick={() => applyFocus("network")}
-            disabled={save.activityFocusUsedInPreseason}
+            disabled={alreadyUsedThisPreseason}
           >
             <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>Network</h3>
             <p className="muted" style={{ margin: 0 }}>Improve visibility by 10</p>
@@ -133,6 +155,12 @@ export function PreSeasonScreen({ season }: { season: number }) {
         </div>
 
         {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
+        {!notice && alreadyUsedThisPreseason ? (
+          <p style={{ marginTop: "1rem" }} className="muted">
+            Focus already used this pre-season:{" "}
+            {existingSeasonAction === "strategy_workshop" ? "Strategy workshop" : "Network"}.
+          </p>
+        ) : null}
 
         <div style={{ marginTop: "1.25rem" }}>
           <p className="muted" style={{ margin: 0 }}>
