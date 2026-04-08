@@ -29,9 +29,9 @@ Check Basement: 0.2 + 1 + 30/80 + 1 = 0.2 + 1 + 0.375 + 1 = **2.575** ✓
 ================================================================================
 SPOUSE MODIFIERS (SEPARATE FROM THE THREE-BUILD EQUALITY)
 ================================================================================
-  • **Rich:** +25,000 EUR at start; +25,000 EUR at end of each season (tunable).
-  • **Supportive:** +25 competence at start; +25 competence at end of each season.
-  • **Influential:** +25 visibility at start; +25 visibility at end of each season.
+  • **Rich:** +20,000 EUR at start; +20,000 EUR at end of each season (tunable).
+  • **Supportive:** +20 competence at start; +20 competence at end of each season.
+  • **Influential:** +20 visibility at start; +20 visibility at end of each season.
   • **No spouse:** firm capacity **100** at start (double baseline 50); **no**
     recurring capacity grants at season end (capacity is front-loaded only).
 

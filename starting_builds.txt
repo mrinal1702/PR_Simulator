@@ -128,7 +128,7 @@ One-liner (UI)
   They proofread your life—and occasionally stop you from emailing while mad.
 
 Mechanics (numbers tunable)
-  • +25 competence at start **and** +25 competence at end of each season.
+  • +20 competence at start **and** +20 competence at end of each season.
 
 --------------------------------------------------------------------------------
 SPEED-DIAL ROYALTY (influential) — mechanical bonus: VISIBILITY
@@ -137,7 +137,7 @@ One-liner (UI)
   They know someone who knows someone, and suddenly you’re on the list.
 
 Mechanics (numbers tunable)
-  • +25 visibility at start **and** +25 visibility at end of each season.
+  • +20 visibility at start **and** +20 visibility at end of each season.
 
 --------------------------------------------------------------------------------
 THE BENEFACTOR (rich) — mechanical bonus: WEALTH
@@ -146,7 +146,7 @@ One-liner (UI)
   Date night sometimes feels like a soft round of funding with dessert.
 
 Mechanics (numbers tunable)
-  • +25,000 EUR at start **and** +25,000 EUR at end of each season.
+  • +20,000 EUR at start **and** +20,000 EUR at end of each season.
 
 --------------------------------------------------------------------------------
 TABLE FOR ONE, LLC (no spouse) — mechanical bonus: FIRM CAPACITY (wild card)

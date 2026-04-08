@@ -125,7 +125,7 @@ You do **not** need to connect Supabase to Git for the app to work. You **do** c
 - [ ] Add `profiles` creation on first login (Supabase Auth + insert).
 - [ ] Implement onboarding UI (name, gender, build, spouse) and insert `game_runs`.
 - [ ] Apply `season_grants` at end of each season (server action or Edge Function with service role).
-- [ ] Tune spouse numbers (25 / 25k) in `web/lib/gameEconomy.ts` and design docs.
+- [ ] Tune spouse numbers (currently 20 / 20k) in `web/lib/gameEconomy.ts` and design docs.
 
 ---
 

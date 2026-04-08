@@ -65,9 +65,9 @@ TIER LABELS (FUNNY) — SHOW IN UI NEXT TO NUMBERS
 ================================================================================
 SPOUSES (START + SEASON-END GRANTS)
 ================================================================================
-  • **Rich:** +25,000 EUR at start; +25,000 EUR at end of each season (tunable).
-  • **Supportive:** +25 competence at start; +25 competence at end of each season.
-  • **Influential:** +25 visibility at start; +25 visibility at end of each season.
+  • **Rich:** +20,000 EUR at start; +20,000 EUR at end of each season (tunable).
+  • **Supportive:** +20 competence at start; +20 competence at end of each season.
+  • **Influential:** +20 visibility at start; +20 visibility at end of each season.
   • **No spouse:** **100** firm capacity at start (no recurring capacity income).
     Other spouse paths keep **50** firm capacity unless design changes.
 

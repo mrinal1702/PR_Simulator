@@ -125,3 +125,16 @@ Limited **effort** per cycle; clients consume effort; employees increase capacit
 ## Non-goals
 
 Do not overcomplicate currencies, chase full realism, or turn the game into a spreadsheet. **Keep decisions meaningful, feedback clear, systems interconnected, player experience first.**
+
+---
+
+## Current implementation snapshot
+
+- Implemented UI loop so far: `Home -> New Game -> Pre-season 1`.
+- `Continue` is enabled and routes to saved `preseason/season/postseason` path.
+- Save system is single-slot local (`localStorage` + `sessionStorage`) via `dma-save-slot`.
+- Pre-season has one-time activity focus (`Strategy workshop` or `Network`) and an `Agency stats` panel.
+- Reputation is initialized at `5` and treated as derived (not directly purchasable at start).
+- Metric bands/labels are data-driven in `web/lib/metricScales.ts`.
+
+For agent handoff and implementation details, see `docs/AGENT_HANDOFF.md`.
