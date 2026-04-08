@@ -14,6 +14,7 @@ import {
   type HiringTier,
 } from "@/lib/hiring";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
+import { canAfford, spendEurOrNull } from "@/lib/budgetGuard";
 
 type EmploymentMode = "intern" | "full_time";
 
@@ -45,14 +46,22 @@ export function HiringScreen({ season }: { season: number }) {
   const hiredThisSeason = save.hiresBySeason?.[seasonKey] ?? 0;
   const cap = getHireCapForSeason(season);
   const capReached = hiredThisSeason >= cap;
-  const salaryOptions = useMemo(
-    () => (mode === "intern" ? [] : getSalaryBands(tier).map((b) => b.anchor * 1000)),
-    [mode, tier]
-  );
+  const salaryOptions = useMemo(() => {
+    if (mode === "intern") return [];
+    return getSalaryBands(tier)
+      .map((b) => b.anchor * 1000)
+      .filter((value) => canAfford(save.resources.eur, value));
+  }, [mode, tier, save.resources.eur]);
+  const canAffordIntern = canAfford(save.resources.eur, 10_000);
+  const canAffordSelected = mode === "intern" ? canAffordIntern : canAfford(save.resources.eur, salary);
 
   const findEmployees = () => {
     if (capReached) return;
     if (mode === "full_time" && !role) return;
+    if (!canAffordSelected) {
+      setNotice("Insufficient budget for this hire.");
+      return;
+    }
     const selectionTier: HiringTier = mode === "intern" ? "intern" : tier;
     const selectionRole: HiringRole = mode === "intern" ? "campaign_manager" : (role as HiringRole);
     const selectedSalary = mode === "intern" ? 10_000 : salary;
@@ -71,6 +80,12 @@ export function HiringScreen({ season }: { season: number }) {
 
   const hireCandidate = (candidate: Candidate) => {
     if (capReached) return;
+    const nextEur = spendEurOrNull(save.resources.eur, candidate.salary);
+    if (nextEur == null) {
+      setNotice("Cannot hire: budget would go negative.");
+      setStage("home");
+      return;
+    }
     const productivity = Math.round(candidate.hiddenProductivityPct);
     const skill = Math.round(candidate.hiddenSkillScore);
     const capGain = Math.round((25 * productivity) / 100);
@@ -92,6 +107,7 @@ export function HiringScreen({ season }: { season: number }) {
       ...save,
       resources: {
         ...save.resources,
+        eur: nextEur,
         competence: save.resources.competence + competenceGain,
         visibility: save.resources.visibility + visibilityGain,
         firmCapacity: save.resources.firmCapacity + capGain,
@@ -146,7 +162,7 @@ export function HiringScreen({ season }: { season: number }) {
         </p>
         <h1 style={{ margin: 0 }}>Talent Bazaar</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
-          Max hires this pre-season: {cap} · Hired: {hiredThisSeason}
+          Cash: EUR {save.resources.eur.toLocaleString("en-GB")} · Max hires this pre-season: {cap} · Hired: {hiredThisSeason}
         </p>
       </header>
 
@@ -183,6 +199,11 @@ export function HiringScreen({ season }: { season: number }) {
               <p className="muted" style={{ margin: 0 }}>
                 Fixed +3 competence and +3 visibility. Interns leave after 1 season.
               </p>
+              {!canAffordIntern ? (
+                <p className="muted" style={{ marginTop: "0.45rem" }}>
+                  Unavailable: not enough budget.
+                </p>
+              ) : null}
             </button>
             <button type="button" className={`choice-card${mode === "full_time" ? " selected" : ""}`} onClick={() => setMode("full_time")}>
               <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.02rem" }}>Full-time employee</h3>
@@ -243,13 +264,20 @@ export function HiringScreen({ season }: { season: number }) {
             <button
               type="button"
               className="btn btn-primary"
-              disabled={capReached || (mode === "full_time" && !role)}
+              disabled={
+                capReached ||
+                !canAffordSelected ||
+                (mode === "full_time" && (!role || salaryOptions.length === 0))
+              }
               onClick={findEmployees}
             >
               Find employees
             </button>
           </div>
           {mode === "intern" ? <p className="muted">Role and budget are fixed for interns.</p> : null}
+          {mode === "full_time" && salaryOptions.length === 0 ? (
+            <p className="muted">No salary bands are currently affordable.</p>
+          ) : null}
         </section>
       ) : (
         <section>
