@@ -130,10 +130,33 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 
 ## Current implementation snapshot
 
-- Implemented UI loop so far: `Home -> New Game -> Pre-season 1`.
+- Implemented UI loop so far: `Home -> New Game -> Pre-season -> Season`.
 - `Continue` is enabled and routes to saved `preseason/season/postseason` path.
 - Save system is single-slot local (`localStorage` + `sessionStorage`) via `dma-save-slot`.
 - Pre-season has one-time activity focus (`Strategy workshop` or `Network`) and an `Agency stats` panel.
+- Pre-season activity buttons disappear after the activity is used for that pre-season.
+- Added dedicated hiring route: `/game/preseason/[season]/hiring` (Talent Bazaar).
+- Hiring supports:
+  - mode split: `Intern` vs `Full-time`
+  - role-first full-time flow (`Data Analyst`, `Sales Representative`, `Campaign Manager`)
+  - salary-band dropdowns (5k steps by tier)
+  - deterministic 3-candidate pools for same run/season/role/tier/budget
+  - unique names + unique descriptions within each 3-candidate result set
+  - irreversible hire action with autosave
+  - themed in-game hire result modal
+  - budget guard (actions blocked if EUR would go negative)
+- Employee contributions now persist and are visible in an `Employees` panel.
+- Employees list is always sorted by salary and shows only non-zero stat contributions.
+- Added per-metric breakdown modal on agency stats (`Wealth`, `Visibility`, `Competence`, `Capacity`, `Reputation`) with zero-value lines hidden for non-base contributors.
+- Added pre-season `Start season` confirmation:
+  - warns player they cannot return to pre-season
+  - shows strong warning if no pre-season activity was selected
+  - still allows proceeding.
+- Season hub now includes:
+  - `Agency stats`
+  - `Employees`
+  - `Invite client` button
+  - no Talent Bazaar option.
 - Reputation is initialized at `5` and treated as derived (not directly purchasable at start).
 - Metric bands/labels are data-driven in `web/lib/metricScales.ts`.
 

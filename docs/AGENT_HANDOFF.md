@@ -4,9 +4,9 @@ Use this file as the fastest context for a fresh agent.
 
 ## Product state
 
-- Deployed web app with onboarding and pre-season MVP flow.
+- Deployed web app with onboarding, pre-season flow, and early season hub.
 - Single local save slot is active (`dma-save-slot`) with Continue routing.
-- Seasons are planned through season 7; only pre-season activity loop is implemented so far.
+- Seasons are planned through season 7; season gameplay proper is still a placeholder, but season entry flow is now active.
 
 ## Implemented flow
 
@@ -23,9 +23,44 @@ Use this file as the fastest context for a fresh agent.
      - `strategy_workshop` => +10 competence
      - `network` => +10 visibility
    - `Agency stats` panel with bars + labels for reputation/visibility/competence
+   - `Employees` panel with salary-sorted roster and non-zero contribution lines
+   - Metric breakdown modal buttons for:
+     - wealth
+     - visibility
+     - competence
+     - capacity
+     - reputation
+   - `Start season` confirmation modal:
+     - warns player they cannot return to pre-season
+     - adds strong warning if no pre-season activity was selected
+     - allows proceed anyway
+   - Activity cards are hidden after pre-season focus is used
+   - Talent Bazaar entry button routes to dedicated hiring screen
    - `Save` button
-4. Placeholder routes exist for future flow safety:
-   - `/game/season/[season]`
+4. Hiring screen (`/game/preseason/[season]/hiring`)
+   - Mode: `Intern` vs `Full-time`
+   - Intern:
+     - fixed salary (`10k`)
+     - no role selection
+     - fixed gains: +3 competence, +3 visibility
+   - Full-time:
+     - role select (`data_analyst`, `sales_representative`, `campaign_manager`)
+     - tiered salary dropdowns (5k anchored bands)
+   - Candidate generation:
+     - deterministic pool of 3 for same run/season/role/tier/budget
+     - unique names and unique descriptions within same 3-option set
+   - Hire behavior:
+     - irreversible
+     - autosaves immediately
+     - updates EUR, stats, and capacity
+     - themed modal shows flavor lines + transparent numeric gains
+   - Budget safety:
+     - blocks unaffordable options and any action that would make EUR negative
+5. Season screen (`/game/season/[season]`)
+   - Shows agency stats and employees panels
+   - Hides Talent Bazaar (pre-season-only)
+   - Provides `Invite client` action button (placeholder)
+6. Placeholder route remains:
    - `/game/postseason/[season]`
 
 ## Save model (single slot)
@@ -38,6 +73,8 @@ Persisted fields:
 - loop state: `seasonNumber`, `phase`, `activityFocusUsedInPreseason`
 - metrics: `resources` (`eur`, `competence`, `visibility`, `firmCapacity`)
 - derived: `reputation`
+- baseline snapshot: `initialResources`, `initialReputation`
+- hiring state: `hiresBySeason`, `employees[]`
 - metadata: `createdAt`
 
 Storage helpers: `web/lib/saveGameStorage.ts`
@@ -48,6 +85,7 @@ Storage helpers: `web/lib/saveGameStorage.ts`
 Notes:
 - Saves are written to both `sessionStorage` and `localStorage`.
 - Older session-only save is auto-migrated to local storage on load.
+- Save is still local-only; existing players keep their own local state until Supabase persistence is wired for gameplay loop.
 
 ## Economy (current constants)
 
@@ -103,7 +141,11 @@ UI behavior:
 - `web/lib/onboardingContent.ts`: display copy + build/spouse IDs and titles
 - `web/components/NewGameWizard.tsx`: onboarding and initial save creation
 - `web/components/HomeMenu.tsx`: Continue/New game entry buttons
-- `web/components/PreSeasonScreen.tsx`: pre-season activity + agency stats + manual save
+- `web/components/PreSeasonScreen.tsx`: pre-season hub (focus, employees, breakdowns, season-start confirmation)
+- `web/components/HiringScreen.tsx`: dedicated hiring flow and hire outcome modal
+- `web/components/SeasonScreen.tsx`: early in-season hub
+- `web/lib/hiring.ts`: candidate generation, band logic, productivity/capacity mapping, campaign manager split
+- `web/lib/budgetGuard.ts`: non-negative EUR guard helpers
 
 ## Supabase status
 
@@ -113,12 +155,16 @@ UI behavior:
 
 ## Safe next tasks for another agent
 
-1. Build employee hiring in pre-season (without breaking activity-focus one-time rule).
-2. Implement season/post-season gameplay screens and transitions.
-3. Persist run state to Supabase (while keeping local fallback).
-4. Add centralized phase router utility if loop grows beyond 3 phases.
+1. Implement `Invite client` flow and first in-season client interaction loop.
+2. Extend stat breakdown ledger to include client-driven deltas/events (keep zero-line suppression behavior).
+3. Add intern expiry after one season transition.
+4. Persist run state to Supabase (while keeping local fallback).
 5. Add automated tests for:
    - save/load/continue path
+   - non-negative budget guard behavior
+   - deterministic candidate pool stability
+   - unique candidate name/description set guarantees
    - metric band selection
-   - spouse modifier invariants.
+   - spouse modifier invariants
+   - pre-season->season transition warning and phase routing.
 

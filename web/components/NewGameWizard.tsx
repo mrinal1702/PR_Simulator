@@ -17,6 +17,7 @@ import {
   type BuildStats,
   type SpouseType,
 } from "@/lib/gameEconomy";
+import type { SeasonLoopState } from "@/lib/seasonClientLoop";
 import { persistSave } from "@/lib/saveGameStorage";
 
 export type NewGamePayload = {
@@ -55,6 +56,7 @@ export type NewGamePayload = {
     visibilityGain: number;
     capacityGain: number;
   }>;
+  seasonLoopBySeason?: Partial<Record<string, SeasonLoopState>>;
   createdAt: string;
 };
 

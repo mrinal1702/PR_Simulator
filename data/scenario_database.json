@@ -1,0 +1,778 @@
+{
+  "schema_version": 1,
+  "description": "Creative scenario database for PR Simulator. Append new scenario objects to the scenarios array.",
+  "scenarios": [
+    {
+      "scenario_id": "ind-very-low-motivation-monday-meltdown",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Neighborhood Life Coach",
+      "scenario_title": "Motivation Monday Meltdown",
+      "problem_summary": "A local life coach famous for daily pep-talk videos was caught on a community livestream yelling at a parking meter and calling it 'an energy vampire.' Followers are sharing clips with captions like 'Manifesting a refund.'",
+      "flavor_tone_note": "Small-town internet fame, maximum meme potential.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Meter Misunderstanding Memo",
+          "solution_brief": "Post a brief apology and move on before the clip gets a sequel."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Calm Coach Mini-Series",
+          "solution_brief": "Launch a focused content run showing practical emotional control and rebuilding trust with core followers."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Parking Lot Peace Challenge",
+          "solution_brief": "Turn the incident into a playful hashtag challenge to flood feeds with visibility, even if credibility recovers slowly."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Full Zen Reintroduction",
+          "solution_brief": "Execute a complete image reset with new messaging, coached appearances, and a polished local comeback."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The clip never fully disappears, and the coach becomes a local punchline without rebuilding trust.",
+        "low_visibility_high_effectiveness": "The drama stays neighborhood-sized, but loyal followers quietly return and defend the coach.",
+        "high_visibility_low_effectiveness": "The meltdown goes citywide as a meme, and the coach is known more for parking-lot rage than pep talks.",
+        "high_visibility_high_effectiveness": "The viral chaos is reframed into a redemption arc, and the coach comes back oddly more likable."
+      },
+      "arc_1_benchmark_variants": {
+        "low_visibility_low_effectiveness": [
+          "The scandal lingers in group chats, and trust stays cracked even after the apology fades.",
+          "The meme cools off, but locals still side-eye every new 'mindset' post.",
+          "Attention drops fast, credibility does not recover, and the brand enters awkward limbo."
+        ],
+        "low_visibility_high_effectiveness": [
+          "Only a small audience sees the drama, and that same audience buys the reset.",
+          "The issue stays contained, while core fans quietly decide the coach earned a second shot.",
+          "The backlash remains local, but the trust repair is surprisingly solid."
+        ],
+        "high_visibility_low_effectiveness": [
+          "The clip explodes beyond the neighborhood, and the message never regains authority.",
+          "Everyone sees it, no one forgives it, and the joke becomes the brand.",
+          "Visibility spikes hard, but so does skepticism, locking the coach into meme status."
+        ],
+        "high_visibility_high_effectiveness": [
+          "The incident trends, then flips into a comeback story people actually root for.",
+          "A huge audience sees the stumble and the recovery, and the reset lands.",
+          "The scandal goes wide, but the response goes wider, turning mockery into momentum."
+        ]
+      },
+      "arc_2": {
+        "options": [
+          "Quiet Curbside Note",
+          "Disciplined Recovery Drill",
+          "Meter Meme World Tour",
+          "Reputation Rebuild Bootcamp",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The coach promises a new era, then rage-replies to a bait comment from ParkingMeterFan42; few people see it, and those who do lose more trust.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but the coach follows the plan, avoids impulse posting, and steadily repairs credibility with core followers.",
+        "high_visibility_low_effectiveness": "During a polished comeback live, the coach accidentally shares notes titled THINGS I PRETEND NOT TO HATE; visibility spikes and credibility drops.",
+        "high_visibility_high_effectiveness": "The coach stays disciplined, lands self-aware humor without spiraling, and converts broad attention into a credible redemption chapter."
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-fresh-daily-freezer-reveal",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Tiny Meal-Prep Startup",
+      "scenario_title": "The 'Fresh Daily' Freezer Reveal",
+      "problem_summary": "A one-room meal-prep startup advertised everything as fresh daily, but a delivery driver posted a video of branded containers stacked in a chest freezer next to ice packs and mystery soup. Customers feel tricked and reviews are sliding.",
+      "flavor_tone_note": "Scrappy business, one viral clip away from chaos.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Cold Truth Caption",
+          "solution_brief": "Publish a short clarification about prep methods and promise clearer wording going forward."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Kitchen Window Week",
+          "solution_brief": "Open the process with behind-the-scenes proof and direct customer comms to rebuild confidence where it matters."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Freezer-to-Flavor Campaign",
+          "solution_brief": "Lean into loud, funny content about convenience to dominate attention, even if trust gains are uneven."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "From Scratch Relaunch",
+          "solution_brief": "Run a full repositioning with new claims, revised packaging language, and a coordinated reputation reboot."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Complaints stay local, but the startup keeps losing repeat customers one annoyed review at a time.",
+        "low_visibility_high_effectiveness": "The issue remains niche, and early customers see enough honesty to keep ordering.",
+        "high_visibility_low_effectiveness": "The freezer clip travels farther than the brand ever has, and trust tanks hard.",
+        "high_visibility_high_effectiveness": "The scandal gets loud, but transparent fixes make the company look scrappy and accountable."
+      },
+      "arc_2": {
+        "options": [
+          "Cold Clarification Post",
+          "Kitchen Discipline Sprint",
+          "Freezer Meme Media Push",
+          "Fresh Standards Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The founder posts a correction, then gets caught deleting polite questions; visibility stays small, trust keeps leaking.",
+        "low_visibility_high_effectiveness": "The team follows strict process transparency, posts clean proof, and quietly wins back repeat customers.",
+        "high_visibility_low_effectiveness": "A behind-the-scenes video accidentally reveals labels reading batch from yesterday, and the clip spreads harder than the apology.",
+        "high_visibility_high_effectiveness": "The startup executes disciplined kitchen updates and consistent messaging, turning wide attention into grudging respect."
+      }
+    },
+    {
+      "scenario_id": "corporate-very-low-eco-paper-plastic-trophy",
+      "client_type": "Corporate",
+      "budget_tier": "Very Low",
+      "client_subtype": "Regional Office Supplies Distributor",
+      "scenario_title": "Eco Paper, Plastic Trophy",
+      "problem_summary": "A regional B2B office supplier promoted a 'paper-first sustainability pledge,' then handed out individually plastic-wrapped eco awards at its own event. Photos spread on local business feeds, and procurement clients are mocking the contradiction.",
+      "flavor_tone_note": "Not globally famous, but very visible in a niche network.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Procurement Apology Note",
+          "solution_brief": "Send a concise statement acknowledging the mismatch and outlining immediate corrections."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Policy-First Cleanup",
+          "solution_brief": "Privately brief key clients, update internal standards, and prove operational fixes through targeted outreach."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Green Office Roadshow",
+          "solution_brief": "Push a high-visibility content blitz around sustainability tips to bury the optics issue with volume."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Compliance Glow-Up Program",
+          "solution_brief": "Deploy an end-to-end reputation overhaul with audited claims, leadership appearances, and a refreshed brand narrative."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The optics issue stays in procurement circles, and purchasing teams quietly downgrade confidence.",
+        "low_visibility_high_effectiveness": "The story stays contained, and key clients accept the corrected sustainability process.",
+        "high_visibility_low_effectiveness": "The plastic-wrapped award photos become industry meme fuel, damaging bid credibility.",
+        "high_visibility_high_effectiveness": "The contradiction goes broad, but fast policy cleanup reframes the brand as responsive."
+      },
+      "arc_2": {
+        "options": [
+          "Procurement Memo Refresh",
+          "Policy Compliance Drill",
+          "Green Narrative Blitz",
+          "Sustainability Integrity Overhaul",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Leadership approves new talking points, then hands out another plastic-heavy event pack; the niche audience notices and rolls its eyes.",
+        "low_visibility_high_effectiveness": "The firm keeps comms tight, enforces packaging rules, and quietly restores confidence among key buyers.",
+        "high_visibility_low_effectiveness": "A director posts eco wins while standing beside shrink-wrapped promo kits, and the contradiction goes viral again.",
+        "high_visibility_high_effectiveness": "Disciplined internal controls and consistent executive messaging turn broad scrutiny into a credible improvement story."
+      }
+    },
+    {
+      "scenario_id": "ind-low-sponsored-by-silence",
+      "client_type": "Individual",
+      "budget_tier": "Low",
+      "client_subtype": "Part-time Local Food Vlogger",
+      "scenario_title": "Sponsored by Silence",
+      "problem_summary": "A micro food creator posted a glowing review of a tiny noodle spot, then the owner commented that they have never met this person. Viewers now think the vlogger invents restaurant visits and reviews from photos.",
+      "flavor_tone_note": "Small creator energy with very public trust wobble.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Pinned Clarification",
+          "solution_brief": "Share a short apology and correction, then keep a low profile while the cycle cools."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Receipt-and-Reset Week",
+          "solution_brief": "Rebuild trust with a focused run of verifiable, unsponsored neighborhood reviews."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Noodle Truth Tour",
+          "solution_brief": "Go loud with playful city-wide tasting content to overwhelm the scandal with visibility."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Credibility Reboot Season",
+          "solution_brief": "Execute a full image reset with transparency rules, filmed check-ins, and a standards relaunch."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The post fades quickly, but neighborhood viewers keep doubting every new review.",
+        "low_visibility_high_effectiveness": "The drama stays small, and the creator rebuilds trust with proof-heavy content.",
+        "high_visibility_low_effectiveness": "The fake-review accusation spreads faster than any food clip, and credibility collapses.",
+        "high_visibility_high_effectiveness": "The callout goes wide, but transparent recovery turns the vlogger into a cautionary comeback."
+      },
+      "arc_2": {
+        "options": [
+          "Pinned Receipt Note",
+          "Verified Review Discipline",
+          "Noodle Noise Campaign",
+          "Credibility Systems Reset",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The vlogger promises stricter standards, then forgets to mark an ad, and local commenters restart the hypocrisy thread.",
+        "low_visibility_high_effectiveness": "They stick to verification rules and clean disclosures, rebuilding trust in a smaller but loyal audience.",
+        "high_visibility_low_effectiveness": "A dramatic comeback reel uses stock food clips by mistake, and the internet treats it as proof of faking everything.",
+        "high_visibility_high_effectiveness": "The creator stays disciplined, shows receipts consistently, and turns mass attention into measured credibility recovery."
+      }
+    },
+    {
+      "scenario_id": "small-company-low-24-7-except-most-hours",
+      "client_type": "Small Company",
+      "budget_tier": "Low",
+      "client_subtype": "Local Boutique Gym",
+      "scenario_title": "24/7* (*Except Most Hours)",
+      "problem_summary": "A neighborhood gym advertised itself as 24/7, but members posted photos of locked doors at 6 a.m. and 9 p.m. A sarcastic hashtag, 'Open in Spirit,' is spreading locally.",
+      "flavor_tone_note": "Hyper-local outrage with prime meme formatting.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Hours Update Notice",
+          "solution_brief": "Issue a straightforward correction and update all listings right away."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Member Trust Repair Plan",
+          "solution_brief": "Prioritize direct outreach, practical make-goods, and consistent proof of reliability."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Sweat O'Clock Campaign",
+          "solution_brief": "Launch loud challenge content to shift attention from complaints to community buzz."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Always-On Relaunch",
+          "solution_brief": "Deliver a full operational and brand reset with verified hours and coordinated comeback messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The hashtag cools off, but members still screenshot locked doors and drift away.",
+        "low_visibility_high_effectiveness": "The issue stays local, and consistent opening times quietly rebuild member confidence.",
+        "high_visibility_low_effectiveness": "Open in Spirit becomes a city meme, and the gym brand turns into a punchline.",
+        "high_visibility_high_effectiveness": "The joke spreads widely, but reliable operations and clear comms win members back."
+      },
+      "arc_2": {
+        "options": [
+          "Hours Correction Bulletin",
+          "Member Reliability Program",
+          "Sweat Signal Blast",
+          "Always-On Trust Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The gym announces fixed hours, then closes early for a team smoothie break and gets called out by the same members.",
+        "low_visibility_high_effectiveness": "Staff sticks to schedule discipline and proactive updates, and local members start trusting the brand again.",
+        "high_visibility_low_effectiveness": "A comeback ad saying we are always open is posted while shutters are visibly down behind the front desk selfie.",
+        "high_visibility_high_effectiveness": "Operational discipline finally matches messaging, and the widely seen relaunch lands as a genuine turnaround."
+      }
+    },
+    {
+      "scenario_id": "corporate-low-eco-label-oops-all-plastic",
+      "client_type": "Corporate",
+      "budget_tier": "Low",
+      "client_subtype": "Regional Office Cleaning Supplier",
+      "scenario_title": "Eco Label, Oops All Plastic",
+      "problem_summary": "A regional B2B supplier launched a green office essentials line, then clients noticed each item shipped with extra plastic layers. Procurement managers are mocking the eco claim in industry groups.",
+      "flavor_tone_note": "Niche sector drama, surprisingly loud reputational splash.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Packaging Clarifier",
+          "solution_brief": "Publish a concise acknowledgment and promise immediate packaging corrections."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Procurement Confidence Track",
+          "solution_brief": "Rebuild trust quietly with key accounts using practical proof of process changes."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Cleaner Tomorrow Roadshow",
+          "solution_brief": "Run a high-visibility sustainability blitz to dominate attention quickly."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "End-to-End Green Reset",
+          "solution_brief": "Execute a full reputation overhaul with audited claims, redesign, and coordinated relaunch."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The criticism stays inside industry chats, and buyers remain unconvinced by green claims.",
+        "low_visibility_high_effectiveness": "The issue remains niche, and practical packaging fixes calm key procurement teams.",
+        "high_visibility_low_effectiveness": "The plastic-heavy shipments become the defining story, and the eco line loses legitimacy.",
+        "high_visibility_high_effectiveness": "The backlash scales up, but audited changes and clearer claims restore confidence."
+      },
+      "arc_2": {
+        "options": [
+          "Packaging Clarifier 2.0",
+          "Buyer Trust Discipline Plan",
+          "Green Reach Surge",
+          "Eco Claims Reconstruction",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The company updates website copy but keeps old packaging in circulation, and buyers quietly stay skeptical.",
+        "low_visibility_high_effectiveness": "Procurement-facing updates are disciplined and evidence-based, steadily recovering account confidence.",
+        "high_visibility_low_effectiveness": "A proud sustainability post accidentally features a pallet of extra plastic wrap in the background and reignites mockery.",
+        "high_visibility_high_effectiveness": "The team executes audited packaging changes with consistent communications, turning broad attention into credibility gains."
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-5am-guru-wakes-at-noon",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Hyper-local Productivity Streamer",
+      "scenario_title": "The 5AM Guru Wakes at Noon",
+      "problem_summary": "A micro productivity creator built their brand on rise at 5AM discipline, then accidentally started a livestream at 12:17 p.m. while still in a burrito blanket and trying to call it a strategic sunrise. Clips are spreading as 'Noon Ascension.'",
+      "flavor_tone_note": "Tiny creator, gigantic meme velocity.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Technical Alarm Issue",
+          "solution_brief": "Post a short statement about a scheduling glitch and move quickly back to normal posts."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Human, Not Hardware",
+          "solution_brief": "Rebuild trust with realistic routine content and consistent accountability for core followers."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Noon Enlightenment Challenge",
+          "solution_brief": "Lean into the meme with playful high-visibility content that dominates timelines."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Monk Mode 2.0",
+          "solution_brief": "Run a full image rework with updated positioning, controlled appearances, and a polished comeback arc."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The noon-stream clip circulates in a small bubble, and the creator remains quietly unserious.",
+        "low_visibility_high_effectiveness": "The meme stays limited, and a realistic routine pivot wins core fans back.",
+        "high_visibility_low_effectiveness": "Noon Ascension trends hard, and discipline branding never recovers.",
+        "high_visibility_high_effectiveness": "The stumble goes viral, but the reset lands as an unexpectedly charming rebrand."
+      },
+      "arc_2": {
+        "options": [
+          "Noon Clarification Snippet",
+          "Routine Discipline Protocol",
+          "Ascension Meme Amplifier",
+          "Sustainable Guru Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The streamer schedules accountability posts, then misses three in a row and blames lunar productivity.",
+        "low_visibility_high_effectiveness": "They follow a realistic routine plan and stop overpromising, winning back a focused core audience.",
+        "high_visibility_low_effectiveness": "A motivational live starts with the creator waking up on camera again, and Noon Ascension trends for round two.",
+        "high_visibility_high_effectiveness": "Disciplined content and self-aware humor convert high reach into a believable identity pivot."
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-lavender-dream-gas-station-reality",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Tiny Artisanal Candle Startup",
+      "scenario_title": "Lavender Dream, Gas Station Reality",
+      "problem_summary": "A two-person candle brand sold a scent as moonlit lavender fields, but customers found shipping metadata labeling the base as new car air freshener. Review videos are calling it premium parking-garage nostalgia.",
+      "flavor_tone_note": "Boutique branding meets accidental honesty.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Label Clarification Drop",
+          "solution_brief": "Publish a concise clarification and tighten product wording immediately."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Studio Transparency Week",
+          "solution_brief": "Repair trust with process visibility and direct communication to existing customers."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Scent Guessing Carnival",
+          "solution_brief": "Push loud comedic blind-test content to win visibility even if trust recovery is uneven."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Fragrance Reputation Rebuild",
+          "solution_brief": "Execute a full reset with cleaner claims, refreshed line strategy, and a coordinated relaunch."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The metadata leak stays niche, and loyal buyers keep making parking-garage jokes.",
+        "low_visibility_high_effectiveness": "The story stays small, and transparency helps the brand recover among regulars.",
+        "high_visibility_low_effectiveness": "New car candle discourse explodes online, and premium positioning collapses.",
+        "high_visibility_high_effectiveness": "The joke spreads far, but honest reformulation messaging turns ridicule into curiosity."
+      },
+      "arc_2": {
+        "options": [
+          "Scent Note Clarifier",
+          "Formula Discipline Diaries",
+          "Fragrance Meme Parade",
+          "Signature Scent Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The brand promises cleaner naming, then launches a candle called Vintage Sedan Mist and confuses everyone again.",
+        "low_visibility_high_effectiveness": "They keep tight formula transparency and consistent customer updates, restoring trust among repeat buyers.",
+        "high_visibility_low_effectiveness": "A relaunch teaser accidentally shows the same old base code, and the parking-garage meme explodes again.",
+        "high_visibility_high_effectiveness": "Disciplined reformulation proof and steady messaging turn broad attention into real product curiosity."
+      }
+    },
+    {
+      "scenario_id": "corporate-very-low-ai-optimized-intern-operated",
+      "client_type": "Corporate",
+      "budget_tier": "Very Low",
+      "client_subtype": "Regional Office Tech Supplier",
+      "scenario_title": "AI-Optimized, Intern-Operated",
+      "problem_summary": "A regional B2B vendor marketed AI-optimized support, but a client recording captured an agent asking Kevin for printer fixes in the background. Industry buyers are now calling the system KevGPT.",
+      "flavor_tone_note": "B2B seriousness derailed by one immortal clip.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Service Language Correction",
+          "solution_brief": "Issue a brief clarification on support capabilities and tighten messaging claims."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Account Confidence Repair",
+          "solution_brief": "Reassure priority accounts with clear standards, retraining, and proof of consistency."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Future of Support Tour",
+          "solution_brief": "Run a broad visibility push to retake narrative momentum fast."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Enterprise Trust Re-Launch",
+          "solution_brief": "Deliver a complete reputation reset with audited messaging and revamped support positioning."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "KevGPT remains an inside joke in client circles, and confidence keeps slipping quietly.",
+        "low_visibility_high_effectiveness": "The incident stays contained, and clearer service standards reassure core accounts.",
+        "high_visibility_low_effectiveness": "KevGPT escapes into broader B2B chatter, and the AI claim becomes a liability.",
+        "high_visibility_high_effectiveness": "The meme goes wide, but disciplined correction restores trust faster than expected."
+      },
+      "arc_2": {
+        "options": [
+          "Support Claim Clarifier",
+          "Service Discipline Protocol",
+          "KevGPT Containment Tour",
+          "Enterprise Support Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The firm promises tighter scripts, then another rep asks Kevin on a hot mic and niche buyers groan.",
+        "low_visibility_high_effectiveness": "Support teams follow disciplined process updates, and key accounts quietly regain confidence.",
+        "high_visibility_low_effectiveness": "A slick AI campaign launches while a leaked chat says can someone grab Kevin, and the meme roars back.",
+        "high_visibility_high_effectiveness": "Consistent service standards and evidence-led comms convert widespread attention into a credible trust recovery."
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-do-not-disturb-please-applaud",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Local Mindfulness Podcaster",
+      "scenario_title": "Do Not Disturb, Please Applaud",
+      "problem_summary": "A tiny mindfulness host uploaded a silent retreat vlog, but reflections in their sunglasses showed a friend holding cue cards for dramatic pauses. Listeners are calling it guided improvisation.",
+      "flavor_tone_note": "Calm branding, chaotic behind-the-scenes energy.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Captioned Clarifier",
+          "solution_brief": "Post a quick explanation and keep a low profile while attention cools."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Unedited Calm Sessions",
+          "solution_brief": "Rebuild trust with raw recordings and consistent audience check-ins."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Silence Challenge Spectacle",
+          "solution_brief": "Turn it into a playful social challenge to maximize visibility and participation."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Authenticity Retreat Relaunch",
+          "solution_brief": "Execute a full image reset with transparent production standards and polished comeback messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The cue-card reveal stays in a niche audience, and the host still feels performative.",
+        "low_visibility_high_effectiveness": "The story remains small, and unedited episodes slowly rebuild listener trust.",
+        "high_visibility_low_effectiveness": "Guided improvisation becomes a full meme wave, and authenticity claims flatline.",
+        "high_visibility_high_effectiveness": "The clip travels far, but a transparent reset reframes the host as self-aware."
+      },
+      "arc_2": {
+        "options": [
+          "Retreat Clarification Note",
+          "Unscripted Calm Discipline",
+          "Meditation Meme Broadcast",
+          "Authenticity Studio Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The host says everything is now unscripted, then forgets to crop cue cards from a thumbnail.",
+        "low_visibility_high_effectiveness": "They commit to raw recording discipline and rebuild trust with a smaller, steadier listener base.",
+        "high_visibility_low_effectiveness": "A staged apology montage gets exposed by another reflection cameo, and the parody clips spread everywhere.",
+        "high_visibility_high_effectiveness": "Consistent unscripted content and restrained comms turn broad visibility into a credible second chance."
+      }
+    },
+    {
+      "scenario_id": "ind-very-low-vintage-haul-fresh-receipt",
+      "client_type": "Individual",
+      "budget_tier": "Very Low",
+      "client_subtype": "Neighborhood Thrift-Fashion Creator",
+      "scenario_title": "Vintage Haul, Fresh Receipt",
+      "problem_summary": "A micro thrifting influencer claimed every look was rescued from history, then accidentally posted a same-day fast-fashion receipt. Comments now joke that history started this morning.",
+      "flavor_tone_note": "Style persona meets timestamped contradiction.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Style Note Correction",
+          "solution_brief": "Issue a brief sourcing clarification and avoid escalating the discourse."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Verified Thrift Diary",
+          "solution_brief": "Repair core audience trust through consistent, verifiable sourcing content."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Closet Confession Tour",
+          "solution_brief": "Go loud with humorous reveal content to retake attention through reach."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Wardrobe Ethics Reboot",
+          "solution_brief": "Run a full credibility overhaul with transparent standards and coordinated relaunch messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The receipt post stays local, but followers keep doubting every thrift claim.",
+        "low_visibility_high_effectiveness": "The issue stays contained, and verified sourcing quickly repairs core trust.",
+        "high_visibility_low_effectiveness": "History started this morning spreads everywhere, and the persona loses credibility.",
+        "high_visibility_high_effectiveness": "The contradiction goes wide, but transparent sourcing rules create a solid comeback."
+      },
+      "arc_2": {
+        "options": [
+          "Sourcing Clarification Post",
+          "Thrift Discipline Ledger",
+          "Closet Chaos Amplifier",
+          "Ethical Wardrobe Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The creator posts a sourcing pledge, then tags a brand-new item as thrift-core and restarts suspicion.",
+        "low_visibility_high_effectiveness": "They keep disciplined sourcing receipts and regain trust with their core fashion audience.",
+        "high_visibility_low_effectiveness": "A dramatic closet tour accidentally leaves store tags visible, and history started this morning trends again.",
+        "high_visibility_high_effectiveness": "Consistent proof and careful posting convert high attention into a genuine ethics-forward reset."
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-cold-pressed-by-microwave",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Tiny Premium Juice Bar",
+      "scenario_title": "Cold-Pressed by Microwave",
+      "problem_summary": "A local juice bar sold cold-pressed wellness shots, then a driver recorded staff warming bottles in a microwave for easier pouring. The nickname online is lukewarm enlightenment.",
+      "flavor_tone_note": "Wellness copywriting vs appliance reality.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Prep Method Clarifier",
+          "solution_brief": "Publish a concise explanation and immediately correct misleading language."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Back-of-Bar Transparency",
+          "solution_brief": "Rebuild trust via process visibility, retraining, and direct customer outreach."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Shot O'Clock Social Blitz",
+          "solution_brief": "Launch high-visibility playful content to outpace the meme cycle."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Wellness Standards Relaunch",
+          "solution_brief": "Deliver a full operational and narrative reset with verified methods and coordinated comeback messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Lukewarm enlightenment stays a local joke, and trust in product claims remains weak.",
+        "low_visibility_high_effectiveness": "The clip stays niche, and clear prep standards restore confidence among regulars.",
+        "high_visibility_low_effectiveness": "The microwave footage goes broad, and wellness positioning gets roasted nonstop.",
+        "high_visibility_high_effectiveness": "The scandal travels far, but transparent methods and consistency earn a comeback."
+      },
+      "arc_2": {
+        "options": [
+          "Cold-Press Clarification Card",
+          "Kitchen Method Discipline",
+          "Wellness Hype Wave",
+          "Process Integrity Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The bar promises process reform, then a staff member jokes warm is spiritually cold and confuses everyone.",
+        "low_visibility_high_effectiveness": "The team follows strict prep discipline and quietly rebuilds trust with regular customers.",
+        "high_visibility_low_effectiveness": "A comeback promo accidentally features the microwave timer in frame, and lukewarm enlightenment trends again.",
+        "high_visibility_high_effectiveness": "Disciplined methods, transparent comms, and steady operations turn broad reach into credibility recovery."
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-organic-pupcakes-mystery-sprinkles",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Two-Person Pet Bakery Startup",
+      "scenario_title": "Organic Pupcakes, Mystery Sprinkles",
+      "problem_summary": "A tiny dog-bakery promised all-organic pupcakes, but a customer zoomed in on a sprinkle jar labeled party glitter from a craft aisle. Pet owners cannot decide whether to panic or applaud.",
+      "flavor_tone_note": "Wholesome pet brand, glitter-grade confusion.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Ingredient Clarification Card",
+          "solution_brief": "Share a brief explanation and update ingredient disclosures immediately."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Treat Kitchen Open Book",
+          "solution_brief": "Repair trust through transparent prep demos and direct communication with repeat buyers."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Pawparazzi Sprinkle Parade",
+          "solution_brief": "Lean into playful pet-content visibility to redirect the narrative quickly."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Canine Credibility Rebuild",
+          "solution_brief": "Execute a full trust reset with tighter sourcing standards and coordinated relaunch messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The glitter screenshot stays in local pet circles, and credibility remains shaky.",
+        "low_visibility_high_effectiveness": "The concern stays contained, and transparent ingredient updates calm repeat buyers.",
+        "high_visibility_low_effectiveness": "Mystery sprinkles goes viral in pet feeds, and the bakery brand gets mocked hard.",
+        "high_visibility_high_effectiveness": "The meme scales up, but strict sourcing proof turns panic into cautious support."
+      },
+      "arc_2": {
+        "options": [
+          "Ingredient Clarification Notice",
+          "Bakery Discipline Checklist",
+          "Pawparazzi Visibility Push",
+          "Pupcake Trust Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "They promise better labeling, then post a behind-the-scenes reel with the glitter tub still on the shelf.",
+        "low_visibility_high_effectiveness": "The bakery follows disciplined ingredient controls and regains confidence from repeat pet owners.",
+        "high_visibility_low_effectiveness": "A playful relaunch ad uses sparkle effects that look exactly like craft glitter, and panic posts surge.",
+        "high_visibility_high_effectiveness": "Clear sourcing proof and consistent behavior help the brand convert broad buzz into trust."
+      }
+    },
+    {
+      "scenario_id": "corporate-very-low-seamless-automation-manual-panic",
+      "client_type": "Corporate",
+      "budget_tier": "Very Low",
+      "client_subtype": "Regional Payroll Software Provider",
+      "scenario_title": "Seamless Automation, Manual Panic",
+      "problem_summary": "A payroll firm promoted fully automated salary flow, then a webinar mic caught staff searching for a file named FINAL_final_REAL. Finance managers now describe the platform as spreadsheets with branding.",
+      "flavor_tone_note": "Enterprise confidence meets filename entropy.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Terminology Correction Notice",
+          "solution_brief": "Release a concise clarification on current capabilities and tighten promise language."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "CFO Confidence Program",
+          "solution_brief": "Prioritize trust repair with key accounts through direct briefings and process proof."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Payroll Future Broadcast",
+          "solution_brief": "Push high-visibility thought-leadership content to retake the narrative quickly."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Operational Trust Overhaul",
+          "solution_brief": "Run a complete credibility reset with audited messaging and coordinated leadership communications."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The FINAL_final_REAL moment stays in finance circles, and product confidence keeps eroding.",
+        "low_visibility_high_effectiveness": "The clip remains niche, and direct briefings restore trust with key clients.",
+        "high_visibility_low_effectiveness": "Spreadsheet with branding becomes industry shorthand, and automation claims lose weight.",
+        "high_visibility_high_effectiveness": "The gaffe spreads widely, but disciplined proof of process rebuilds reputation."
+      },
+      "arc_2": {
+        "options": [
+          "Automation Scope Clarifier",
+          "Payroll Discipline Program",
+          "Future-of-Payroll Blast",
+          "Reliability Reputation Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The team releases process charts, then sends a client email with subject FINAL_final_THIS_ONE and reignites doubt.",
+        "low_visibility_high_effectiveness": "They enforce disciplined workflows and communication controls, restoring trust with core accounts.",
+        "high_visibility_low_effectiveness": "A high-profile webinar glitches into a visible desktop full of final_final files, and the meme spreads industry-wide.",
+        "high_visibility_high_effectiveness": "Consistent operational discipline and evidence-led updates turn high visibility into renewed credibility."
+      }
+    },
+    {
+      "scenario_id": "corporate-very-low-smart-building-dumb-thermostat-war",
+      "client_type": "Corporate",
+      "budget_tier": "Very Low",
+      "client_subtype": "Regional Facilities Management Company",
+      "scenario_title": "Smart Building, Dumb Thermostat War",
+      "problem_summary": "A facilities brand launched a smart energy campaign, then tenants posted thermostats taped over with notes saying the system is thinking. The meme headline became AI climate by office folklore.",
+      "flavor_tone_note": "Modern automation story, analog office coping.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Service Scope Clarifier",
+          "solution_brief": "Publish a short statement defining present capabilities versus future roadmap."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Tenant Trust Repair Track",
+          "solution_brief": "Rebuild confidence with direct stakeholder outreach, protocol fixes, and practical evidence."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Efficiency Myth-Busting Tour",
+          "solution_brief": "Go broad with high-visibility explainers and partnerships to crowd out mockery."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Smart Systems Reputation Reset",
+          "solution_brief": "Deliver an end-to-end image and operations relaunch with verified claims and coordinated communications."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The thermostat-note jokes stay local, and tenants remain unimpressed.",
+        "low_visibility_high_effectiveness": "The issue stays contained, and practical fixes improve stakeholder confidence.",
+        "high_visibility_low_effectiveness": "AI climate by office folklore spreads broadly, and the campaign loses seriousness.",
+        "high_visibility_high_effectiveness": "The meme goes wide, but clear service updates turn confusion into cautious trust."
+      },
+      "arc_2": {
+        "options": [
+          "System Scope Clarifier",
+          "Tenant Discipline Protocol",
+          "Smart Office Reach Push",
+          "Climate Trust Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "The company posts clear thermostat guidance, then a site manager tapes over another panel with system is thinking.",
+        "low_visibility_high_effectiveness": "Facilities teams follow disciplined tenant communication and practical fixes, steadily rebuilding confidence.",
+        "high_visibility_low_effectiveness": "A campaign about smart control goes viral for the wrong reason when a new sticky-note photo appears on launch day.",
+        "high_visibility_high_effectiveness": "Disciplined operations and consistent messaging transform broad scrutiny into a legitimate improvement narrative."
+      }
+    }
+  ]
+}
