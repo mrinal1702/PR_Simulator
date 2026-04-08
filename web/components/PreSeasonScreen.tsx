@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
@@ -12,11 +13,13 @@ type Focus = "strategy_workshop" | "network";
 type BreakdownMetric = "eur" | "visibility" | "competence" | "firmCapacity" | "reputation";
 
 export function PreSeasonScreen({ season }: { season: number }) {
+  const router = useRouter();
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [notice, setNotice] = useState<string>("");
   const [showStats, setShowStats] = useState(false);
   const [showEmployees, setShowEmployees] = useState(false);
   const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
+  const [confirmStartSeason, setConfirmStartSeason] = useState(false);
 
   const title = useMemo(() => `Pre-season ${season}`, [season]);
   const seasonKey = String(season);
@@ -67,6 +70,18 @@ export function PreSeasonScreen({ season }: { season: number }) {
     if (!save) return;
     const ok = persistSave(save);
     setNotice(ok ? "Progress saved." : "Could not save right now.");
+  };
+
+  const startSeason = () => {
+    if (!save) return;
+    const updated: NewGamePayload = {
+      ...save,
+      phase: "season",
+      seasonNumber: season,
+    };
+    setSave(updated);
+    persistSave(updated);
+    router.push(`/game/season/${season}`);
   };
 
   if (!save) {
@@ -183,27 +198,30 @@ export function PreSeasonScreen({ season }: { season: number }) {
           </div>
         ) : null}
 
-        <div className="card-grid cols-2" style={{ marginTop: "1rem" }}>
-          <button
-            type="button"
-            className="choice-card"
-            onClick={() => applyFocus("strategy_workshop")}
-            disabled={alreadyUsedThisPreseason}
-          >
-            <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>Strategy workshop</h3>
-            <p className="muted" style={{ margin: 0 }}>Improve competence by 10</p>
+        {!alreadyUsedThisPreseason ? (
+          <div className="card-grid cols-2" style={{ marginTop: "1rem" }}>
+            <button
+              type="button"
+              className="choice-card"
+              onClick={() => applyFocus("strategy_workshop")}
+            >
+              <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>Strategy workshop</h3>
+              <p className="muted" style={{ margin: 0 }}>Improve competence by 10</p>
+            </button>
+            <button
+              type="button"
+              className="choice-card"
+              onClick={() => applyFocus("network")}
+            >
+              <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>Network</h3>
+              <p className="muted" style={{ margin: 0 }}>Improve visibility by 10</p>
+            </button>
+          </div>
+        ) : null}
+        <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end", gap: "0.6rem", flexWrap: "wrap" }}>
+          <button type="button" className="btn btn-secondary" onClick={() => setConfirmStartSeason(true)}>
+            Start season
           </button>
-          <button
-            type="button"
-            className="choice-card"
-            onClick={() => applyFocus("network")}
-            disabled={alreadyUsedThisPreseason}
-          >
-            <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>Network</h3>
-            <p className="muted" style={{ margin: 0 }}>Improve visibility by 10</p>
-          </button>
-        </div>
-        <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end" }}>
           <Link
             href={`/game/preseason/${season}/hiring`}
             className="btn btn-primary"
@@ -235,6 +253,28 @@ export function PreSeasonScreen({ season }: { season: number }) {
           save={save}
           onClose={() => setBreakdownMetric(null)}
         />
+      ) : null}
+      {confirmStartSeason ? (
+        <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-label="Start season confirmation">
+          <div className="game-modal">
+            <p className="game-modal-kicker">Season transition</p>
+            <h2 style={{ marginTop: 0 }}>Are you sure you want to start Season {season}?</h2>
+            <p style={{ marginTop: 0 }}>You will not be able to come back to this pre-season screen.</p>
+            {!alreadyUsedThisPreseason ? (
+              <p style={{ marginTop: 0, fontWeight: 700 }}>
+                WARNING: YOU HAVE NOT PICKED A PRE-SEASON ACTIVITY.
+              </p>
+            ) : null}
+            <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end", gap: "0.6rem" }}>
+              <button type="button" className="btn btn-secondary" onClick={() => setConfirmStartSeason(false)}>
+                Back
+              </button>
+              <button type="button" className="btn btn-primary" onClick={startSeason}>
+                Start season
+              </button>
+            </div>
+          </div>
+        </div>
       ) : null}
     </div>
   );
