@@ -13,8 +13,7 @@ import {
 } from "@/lib/seasonClientLoop";
 
 /**
- * Client case: opening the screen starts the engagement (Season 1 tranche credited).
- * Player picks a priced solution or “do nothing” to refund the tranche and move on.
+ * Client case: opening the screen starts the engagement; player picks a campaign or passes.
  */
 export function SeasonClientCaseScreen({ season }: { season: number }) {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
@@ -136,7 +135,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       };
       const nextRuns = updated.seasonLoopBySeason?.[seasonKey]?.runs ?? loop.runs;
       advanceToNextClient(nextRuns, updated);
-      setNotice("Declined — Season 1 tranche refunded (no net change to cash). Next client.");
+      setNotice("Passed on this client. Next one when you return to the hub.");
       return;
     }
     if (!canAffordSolution(solution, save.resources.eur, save.resources.firmCapacity)) return;
@@ -240,8 +239,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           </p>
           {isAwaitingSolution ? (
             <p className="muted" style={{ marginTop: "0.65rem", marginBottom: 0 }}>
-              Season 1 tranche is credited to agency cash for this engagement. Execute a campaign below, or choose &quot;Do
-              nothing&quot; to refund it and decline — net agency cash unchanged.
+              Pick a campaign below, or choose &quot;Do nothing&quot; to pass on this client.
             </p>
           ) : !acceptedRun ? (
             <p className="muted" style={{ marginTop: "0.65rem", marginBottom: 0 }}>
@@ -275,7 +273,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
                       </p>
                       <p className="muted" style={{ margin: "0.2rem 0 0" }}>
                         {option.isRejectOption
-                          ? "Refunds the Season 1 tranche — net cash same as before this client."
+                          ? "No campaign for this client."
                           : `Requires: EUR ${option.costBudget.toLocaleString("en-GB")} · Capacity ${option.costCapacity}`}
                         {!option.isRejectOption && !affordable ? " · Not enough resources" : ""}
                       </p>

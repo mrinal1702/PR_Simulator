@@ -149,9 +149,8 @@ const EXECUTABLE_SOLUTION_DEFS: ExecutableSolutionDef[] = [
 const REJECT_OPTION: SolutionOption = {
   id: "reject",
   archetype: "reject",
-  title: "Do nothing / decline client",
-  description:
-    "Decline this client after seeing the brief: the Season 1 tranche is refunded so agency cash is unchanged overall (no capacity used).",
+  title: "Do nothing",
+  description: "Pass on this client — you won't run a campaign for them.",
   costBudget: 0,
   costCapacity: 0,
   baseSpread: 0,
