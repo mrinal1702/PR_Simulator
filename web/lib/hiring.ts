@@ -52,6 +52,14 @@ const TIER_BANDS: Record<
   senior: { minSalary: 65_000, maxSalary: 89_000, anchors: [65, 70, 75, 80, 85], minSkill: 50, maxSkill: 80 },
 };
 
+const JUNIOR_BAND_SKILL_WINDOWS: Record<number, { min: number; max: number }> = {
+  1: { min: 10, max: 14 },
+  2: { min: 11, max: 15 },
+  3: { min: 12, max: 17 },
+  4: { min: 14, max: 18 },
+  5: { min: 15, max: 20 },
+};
+
 export function roleLabel(role: HiringRole): string {
   return ROLE_LABELS[role];
 }
@@ -152,7 +160,12 @@ function resolveSkill(args: {
   const attract = Math.sqrt(weighted);
   const variance = (rand01(`${args.seed}|skill`) - 0.5) * 0.18;
   const finalSkill = base * (0.92 + attract * 0.14 + variance);
-  return Math.max(cfg.minSkill, Math.min(cfg.maxSkill, Math.round(finalSkill)));
+  const rounded = Math.round(finalSkill);
+  if (args.tier === "junior") {
+    const win = JUNIOR_BAND_SKILL_WINDOWS[bandIndex] ?? JUNIOR_BAND_SKILL_WINDOWS[1];
+    return Math.max(win.min, Math.min(win.max, rounded));
+  }
+  return Math.max(cfg.minSkill, Math.min(cfg.maxSkill, rounded));
 }
 
 function getDescriptionPool(role: HiringRole, tier: HiringTier, salary: number): string[] {
