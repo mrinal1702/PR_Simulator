@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import {
+  capacityGainFromProductivity,
   generateCandidates,
   getHireCapForSeason,
   getSalaryBands,
@@ -99,7 +100,7 @@ export function HiringScreen({ season }: { season: number }) {
     }
     const productivity = Math.round(candidate.hiddenProductivityPct);
     const skill = Math.round(candidate.hiddenSkillScore);
-    const capGain = Math.round((25 * productivity) / 100);
+    const capGain = capacityGainFromProductivity(productivity);
     let competenceGain = 0;
     let visibilityGain = 0;
     if (mode === "intern") {

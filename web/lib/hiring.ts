@@ -117,7 +117,14 @@ export function generateCandidates(args: {
 }
 
 function resolveProductivity(seed: string): number {
-  return Math.round(25 + rand01(`${seed}|prod`) * 75);
+  // Hiring-time productivity roll is intentionally capped at 80%.
+  return Math.round(rand01(`${seed}|prod`) * 80);
+}
+
+export function capacityGainFromProductivity(productivityPct: number): number {
+  const clamped = Math.max(0, Math.min(100, productivityPct));
+  // Capacity maps from 10..25 where 25 is theoretical at 100%.
+  return Math.round(10 + (clamped / 100) * 15);
 }
 
 function resolveSkill(args: {
