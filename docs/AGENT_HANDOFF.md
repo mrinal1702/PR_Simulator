@@ -4,7 +4,7 @@ Use this file as the fastest context for a fresh agent.
 
 ## Product state
 
-- Deployed web app with onboarding, pre-season flow, **season hub**, and a **dedicated in-season client case** screen.
+- Deployed web app with onboarding, pre-season flow, **season hub**, **in-season client cases**, **home dashboard** (phase + case log), and **post-season milestone** route after completing the client queue.
 - Single local save slot is active (`dma-save-slot`) with Continue routing.
 - Seasons are planned through season 7; **Season 1–style client queue** (roll → sequential cases → solutions) is implemented; deeper multi-season / round-2 campaign logic can build on `seasonLoopBySeason`.
 
@@ -12,6 +12,7 @@ Use this file as the fastest context for a fresh agent.
 
 1. Home (`/`)
    - `Continue` (enabled when save exists) and `New game`.
+   - With a save: `HomeDashboard` shows **phase** (e.g. Season 1 · In season), agency stats with **metric breakdown** (`web/lib/metricBreakdown.ts`, includes Season 1 client ledger lines), employees, **Case log — Season 1**.
 2. New game (`/game/new`)
    - Founder name + gender (`male`, `female`, `non_binary`)
    - Agency name
@@ -61,14 +62,14 @@ Use this file as the fastest context for a fresh agent.
    - Agency stats, employees, save (same patterns as pre-season).
    - No Talent Bazaar (pre-season only).
    - **`Roll season clients`**: deterministic queue for that season (`plannedClientCount`, `clientsQueue`, `runs`, `currentClientIndex`) stored under `save.seasonLoopBySeason[season]`.
-   - **`Open current client case`**: navigates to `/game/season/[season]/client` when there is a current client and the queue is not finished.
+   - **`Open current client case`**: navigates to `/game/season/[season]/client` while the queue is not finished.
+   - When **`runs.length === plannedClientCount`** and **`currentClientIndex >= plannedClientCount`**, season client work is **done**; **`Continue to post-season`** appears. It sets `phase: "postseason"` and navigates to `/game/postseason/[season]` — **no** “are you sure” modal (unlike pre-season → season).
 6. Client case (`/game/season/[season]/client`)
    - Component: `SeasonClientCaseScreen`.
-   - **No upfront accept/decline.** Opening the page **starts the engagement**: Season 1 tranche (`budgetSeason1`) is **credited** to EUR and a run is recorded with `solutionId: "pending"` (see `seasonClientLoop.ts`).
-   - Player picks one of **four priced solution archetypes** (creative titles/briefs merged from `data/scenario_database.json` via `pickScenarioForClient` + archetype ids 1–4) or **`Do nothing / decline client`**, which **refunds** the Season 1 tranche (net **zero** cash change vs before that client) and advances the queue.
-   - Executing a priced solution subtracts that option’s EUR and capacity; outcome spread/effectiveness/satisfaction from `resolveClientOutcome`.
-7. Placeholder route remains:
-   - `/game/postseason/[season]`
+   - **Season 1 economy**: Season 1 liquid is **not** credited on page load. **Reject client** = no EUR/capacity change. **Execute a campaign** applies `+budgetSeason1 − costBudget` to EUR and subtracts capacity in one step; run records optional `costBudget`, `costCapacity`, `solutionTitle` for ledger/history.
+   - Four priced archetypes + reject; creative copy from `data/scenario_database.json` via `pickScenarioForClient` (unique `scenario_id` per playthrough via `usedScenarioIds`).
+7. Post-season (`/game/postseason/[season]`)
+   - Milestone / placeholder after season work; `Continue` routes here when `phase === "postseason"` (`getContinuePath` in `saveGameStorage.ts`).
 
 ## Save model (single slot)
 
@@ -152,6 +153,8 @@ UI behavior:
 - `web/lib/onboardingContent.ts`: display copy + build/spouse IDs and titles
 - `web/components/NewGameWizard.tsx`: onboarding and initial save creation
 - `web/components/HomeMenu.tsx`: Continue/New game entry buttons
+- `web/components/HomeDashboard.tsx`: phase, stats, breakdowns, Season 1 case log
+- `web/lib/metricBreakdown.ts`: agency ledger lines for breakdown modals (pre-season + home + Season 1 client deltas)
 - `web/components/PreSeasonScreen.tsx`: pre-season hub (focus, employees, breakdowns, season-start confirmation)
 - `web/components/HiringScreen.tsx`: dedicated hiring flow and hire outcome modal
 - `web/components/SeasonHubScreen.tsx`: season hub (roll queue, link to client case)
@@ -167,10 +170,10 @@ UI behavior:
 Useful checks before wider QA:
 
 1. From season hub, **Roll season clients** once; note **Planned client count** and **Current N / N**.
-2. **Open current client case** — on load, **EUR** should increase by this client’s **Season 1** amount (shown on the case screen).
-3. **Do nothing / decline client** — EUR should return to the value **before** step 2 (net zero for that client).
-4. Accept a **priced solution** (if affordable) — EUR and capacity drop by the card’s costs; hub advances to the next client index after returning to the hub or opening the case again.
-5. Repeat until the queue is finished; **Roll** should be disabled for that season once the queue exists (already rolled).
+2. **Open current client case** — **no** automatic Season 1 credit on load. **Reject client** leaves **EUR** unchanged.
+3. **Execute a priced solution** (affordable with **your cash + their Season 1 tranche**) — EUR changes by **`+budgetSeason1 − costBudget`**, capacity by **`−costCapacity`**; hub advances after resolving the case.
+4. Repeat until the queue is finished; **Continue to post-season** appears only when **`runs.length`** matches **planned** count and the queue index is past the last client.
+5. **Continue to post-season** — no confirmation modal; save `phase` is **postseason**; URL `/game/postseason/[season]`.
 
 ## Supabase status
 
@@ -191,5 +194,5 @@ Useful checks before wider QA:
    - metric band selection
    - spouse modifier invariants
    - pre-season → season transition warning and phase routing
-   - **season client queue**: roll idempotency, sequential index, `pending` → solution transition, “do nothing” refund equals credited `budgetSeason1`
+   - **season client queue**: roll idempotency, sequential index, reject = no credit, execute = net Season 1 liquid, **Continue to post-season** when queue fully resolved
 

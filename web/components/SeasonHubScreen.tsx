@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
@@ -12,6 +13,7 @@ import { buildSeasonClients } from "@/lib/seasonClientLoop";
 
 /** Season hub: roll queue, stats, link into the dedicated client-case screen. */
 export function SeasonHubScreen({ season }: { season: number }) {
+  const router = useRouter();
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [showStats, setShowStats] = useState(false);
   const [showEmployees, setShowEmployees] = useState(false);
@@ -43,6 +45,25 @@ export function SeasonHubScreen({ season }: { season: number }) {
   const showClientCaseLink = Boolean(
     loop && loop.currentClientIndex < loop.plannedClientCount && currentClient
   );
+  /** Every queued client has a run; queue index has advanced past the last slot. */
+  const seasonQueueComplete = Boolean(
+    loop &&
+      loop.plannedClientCount > 0 &&
+      loop.currentClientIndex >= loop.plannedClientCount &&
+      loop.runs.length === loop.plannedClientCount
+  );
+
+  const continueToPostSeason = () => {
+    if (!save || !seasonQueueComplete) return;
+    const updated: NewGamePayload = {
+      ...save,
+      seasonNumber: season,
+      phase: "postseason",
+    };
+    setSave(updated);
+    persistSave(updated);
+    router.push(`/game/postseason/${season}`);
+  };
 
   const updateLoop = (nextLoop: NonNullable<NewGamePayload["seasonLoopBySeason"]>[string]) => {
     if (!save) return;
@@ -220,12 +241,21 @@ export function SeasonHubScreen({ season }: { season: number }) {
           </div>
         ) : null}
 
-        {loop && loop.currentClientIndex >= loop.plannedClientCount ? (
+        {loop && loop.currentClientIndex >= loop.plannedClientCount && loop.plannedClientCount > 0 ? (
           <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
-            <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>Season client queue complete</h3>
+            <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>Season work complete</h3>
             <p className="muted" style={{ margin: 0 }}>
-              All planned clients were processed.
+              {seasonQueueComplete
+                ? "Every client scenario for this season is resolved. You can continue to post-season when you are ready."
+                : "Finish any remaining client cases — progress may still be in progress."}
             </p>
+            {seasonQueueComplete ? (
+              <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end" }}>
+                <button type="button" className="btn btn-primary" onClick={continueToPostSeason}>
+                  Continue to post-season
+                </button>
+              </div>
+            ) : null}
           </div>
         ) : null}
 

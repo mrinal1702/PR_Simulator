@@ -130,7 +130,7 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 
 ## Current implementation snapshot
 
-- Implemented UI loop so far: `Home → New Game → Pre-season → Season hub → (optional) Client case screen`. **Home** (with a save) shows **phase** (e.g. Season 1 · In season), **agency stats / employees / breakdowns** (including Season 1 client lines in EUR and capacity ledgers), and **Case log — Season 1** for completed cases (decision, spend, money retained).
+- Implemented UI loop so far: `Home → New Game → Pre-season → Season hub → Client cases → Post-season (milestone)`. **Home** (with a save) shows **phase** (e.g. Season 1 · In season), **agency stats / employees / breakdowns** (including Season 1 client lines in EUR and capacity ledgers), and **Case log — Season 1** for completed cases (decision, spend, money retained).
 - `Continue` is enabled and routes to saved `preseason/season/postseason` path.
 - Save system is single-slot local (`localStorage` + `sessionStorage`) via `dma-save-slot`.
 - Pre-season has one-time activity focus (`Strategy workshop` or `Network`) and an `Agency stats` panel.
@@ -140,8 +140,8 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 - Employees persist; roster is salary-sorted with non-zero contribution lines only.
 - Per-metric breakdown modals on agency stats (zero-value lines hidden for non-base contributors).
 - Pre-season `Start season` confirmation: cannot return to pre-season; extra warning if no activity chosen; can still proceed.
-- **Season hub** (`/game/season/[season]`): agency stats, employees, save, **`Roll season clients`** (builds a **sequential** queue for that season), then **`Open current client case`** when there is a current client.
-- **Client case** (`/game/season/[season]/client`): separate screen for the active client. **Opening the screen starts the engagement**: Season 1 budget tranche is credited to agency EUR, then the player chooses one of four **solution archetypes** (costs from economy math) or **Do nothing / decline client**, which **refunds** that tranche so **net agency cash is unchanged**. Creative scenario titles and copy come from `data/scenario_database.json` (see `docs/SCENARIO_CREATIVE_GUIDELINES.md`).
+- **Season hub** (`/game/season/[season]`): agency stats, employees, save, **`Roll season clients`** (builds a **sequential** queue for that season), **`Open current client case`** while the queue is active, and when **every** queued client has a resolved run, **`Continue to post-season`** (sets `phase` to `postseason`, **no** confirmation modal — unlike pre-season → season). Routes to `/game/postseason/[season]` (milestone / placeholder content for now).
+- **Client case** (`/game/season/[season]/client`): separate screen per client. **Season 1**: Season 1 liquid only applies if you **run a priced campaign** (`+budgetSeason1 − spend`); **Reject client** means **no** funds from them. Creative copy from `data/scenario_database.json` (see `docs/SCENARIO_CREATIVE_GUIDELINES.md`).
 - In-season client economy and loop state: `web/lib/seasonClientLoop.ts`, `web/lib/clientEconomyMath.ts`, `web/lib/scenarios.ts`; save field `seasonLoopBySeason` on `NewGamePayload`.
 - Reputation is initialized at `5` and treated as derived (not directly purchasable at start).
 - Metric bands/labels are data-driven in `web/lib/metricScales.ts`.

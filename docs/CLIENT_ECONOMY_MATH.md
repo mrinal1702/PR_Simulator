@@ -64,3 +64,5 @@ Implemented in `web/lib/seasonClientLoop.ts` (with client construction in `build
 4. **Season 1 — Reject client**: The reject option means the client **does not** commit Season 1 liquid to you; **no** EUR or capacity change. (Later seasons may allow a different “do nothing” where arcs carry over.)
 
 5. **Execute a campaign**: Applies the net EUR and capacity change above; computes spread / effectiveness / satisfaction via `resolveClientOutcome`. **Money retained** for the case log is **`budgetSeason1 − costBudget`** (Season 1 liquid after spend).
+
+6. **Post-season transition**: When every queued client has a resolved run, the season hub offers **Continue to post-season** (updates `phase` to `postseason`, no confirmation modal).
