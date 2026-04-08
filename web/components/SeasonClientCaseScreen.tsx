@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
@@ -12,10 +12,60 @@ import {
   type SolutionOption,
 } from "@/lib/seasonClientLoop";
 
-/** Dedicated client scenario: accept/reject, solution picks, economy-priced options with creative copy. */
+/**
+ * Client case: opening the screen starts the engagement (Season 1 tranche credited).
+ * Player picks a priced solution or “do nothing” to refund the tranche and move on.
+ */
 export function SeasonClientCaseScreen({ season }: { season: number }) {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [notice, setNotice] = useState("");
+
+  const seasonKey = String(season);
+  const loop = save?.seasonLoopBySeason?.[seasonKey];
+  const currentClient = loop?.clientsQueue[loop.currentClientIndex] ?? null;
+  const acceptedRun = currentClient
+    ? loop?.runs.find((r) => r.clientId === currentClient.id && r.accepted)
+    : undefined;
+  const isAwaitingSolution = Boolean(
+    currentClient && acceptedRun && acceptedRun.solutionId === "pending"
+  );
+
+  const solutionOptions = useMemo(
+    () => (currentClient ? buildSolutionOptionsForClientWithScenario(currentClient) : []),
+    [currentClient]
+  );
+
+  /** Mandatory engagement: credit Season 1 tranche when this case is opened (no separate accept/decline step). */
+  useEffect(() => {
+    if (!currentClient) return;
+    const prev = loadSave();
+    if (!prev) return;
+    const loopNow = prev.seasonLoopBySeason?.[seasonKey];
+    if (!loopNow) return;
+    if (loopNow.runs.some((r) => r.clientId === currentClient.id)) return;
+
+    const updated: NewGamePayload = {
+      ...prev,
+      seasonNumber: season,
+      phase: "season",
+      resources: {
+        ...prev.resources,
+        eur: prev.resources.eur + currentClient.budgetSeason1,
+      },
+      seasonLoopBySeason: {
+        ...(prev.seasonLoopBySeason ?? {}),
+        [seasonKey]: {
+          ...loopNow,
+          runs: [
+            ...loopNow.runs,
+            { clientId: currentClient.id, accepted: true, solutionId: "pending" as const },
+          ],
+        },
+      },
+    };
+    persistSave(updated);
+    setSave(updated);
+  }, [season, seasonKey, currentClient?.id]);
 
   if (!save) {
     return (
@@ -30,21 +80,6 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       </div>
     );
   }
-
-  const seasonKey = String(season);
-  const loop = save.seasonLoopBySeason?.[seasonKey];
-  const currentClient = loop?.clientsQueue[loop.currentClientIndex] ?? null;
-  const acceptedRun = currentClient
-    ? loop?.runs.find((r) => r.clientId === currentClient.id && r.accepted)
-    : undefined;
-  const isAwaitingSolution = Boolean(
-    currentClient && acceptedRun && acceptedRun.solutionId === "pending"
-  );
-
-  const solutionOptions = useMemo(
-    () => (currentClient ? buildSolutionOptionsForClientWithScenario(currentClient) : []),
-    [currentClient]
-  );
 
   const updateLoop = (nextLoop: NonNullable<NewGamePayload["seasonLoopBySeason"]>[string]) => {
     const updated: NewGamePayload = {
@@ -80,47 +115,6 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
     persistSave(updated);
   };
 
-  const rejectCurrentClient = () => {
-    if (!save || !loop || !currentClient) return;
-    const nextRuns = [...loop.runs, { clientId: currentClient.id, accepted: false, solutionId: "reject" as const }];
-    const updated: NewGamePayload = {
-      ...save,
-      resources: {
-        ...save.resources,
-        eur: Math.max(0, save.resources.eur - currentClient.budgetTotal),
-      },
-      seasonLoopBySeason: {
-        ...(save.seasonLoopBySeason ?? {}),
-        [seasonKey]: { ...loop, runs: nextRuns },
-      },
-    };
-    advanceToNextClient(nextRuns, updated);
-    setNotice("Client declined. Full client budget deducted from agency cash. Next client.");
-  };
-
-  const acceptCurrentClient = () => {
-    if (!save || !loop || !currentClient) return;
-    const alreadyHandled = loop.runs.some((r) => r.clientId === currentClient.id);
-    if (alreadyHandled) return;
-    const updated: NewGamePayload = {
-      ...save,
-      resources: {
-        ...save.resources,
-        eur: save.resources.eur + currentClient.budgetSeason1,
-      },
-      seasonLoopBySeason: {
-        ...(save.seasonLoopBySeason ?? {}),
-        [seasonKey]: {
-          ...loop,
-          runs: [...loop.runs, { clientId: currentClient.id, accepted: true, solutionId: "pending" }],
-        },
-      },
-    };
-    setSave(updated);
-    persistSave(updated);
-    setNotice("Client accepted. Season 1 budget tranche credited to agency cash.");
-  };
-
   const chooseSolution = (solution: SolutionOption) => {
     if (!save || !loop || !currentClient || !acceptedRun || acceptedRun.solutionId !== "pending") return;
     if (solution.isRejectOption) {
@@ -142,7 +136,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       };
       const nextRuns = updated.seasonLoopBySeason?.[seasonKey]?.runs ?? loop.runs;
       advanceToNextClient(nextRuns, updated);
-      setNotice("No campaign executed. Season 1 tranche returned. Next client.");
+      setNotice("Declined — Season 1 tranche refunded (no net change to cash). Next client.");
       return;
     }
     if (!canAffordSolution(solution, save.resources.eur, save.resources.firmCapacity)) return;
@@ -244,16 +238,15 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
             {currentClient.budgetSeason1.toLocaleString("en-GB")} · Season 2 (follow-up): EUR{" "}
             {currentClient.budgetSeason2.toLocaleString("en-GB")}
           </p>
-
-          {!acceptedRun ? (
-            <div style={{ marginTop: "0.85rem", display: "flex", gap: "0.6rem", justifyContent: "flex-end", flexWrap: "wrap" }}>
-              <button type="button" className="btn btn-secondary" onClick={rejectCurrentClient}>
-                Decline client
-              </button>
-              <button type="button" className="btn btn-primary" onClick={acceptCurrentClient}>
-                Accept client
-              </button>
-            </div>
+          {isAwaitingSolution ? (
+            <p className="muted" style={{ marginTop: "0.65rem", marginBottom: 0 }}>
+              Season 1 tranche is credited to agency cash for this engagement. Execute a campaign below, or choose &quot;Do
+              nothing&quot; to refund it and decline — net agency cash unchanged.
+            </p>
+          ) : !acceptedRun ? (
+            <p className="muted" style={{ marginTop: "0.65rem", marginBottom: 0 }}>
+              Starting engagement…
+            </p>
           ) : null}
 
           {isAwaitingSolution ? (
@@ -282,7 +275,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
                       </p>
                       <p className="muted" style={{ margin: "0.2rem 0 0" }}>
                         {option.isRejectOption
-                          ? "Returns credited Season 1 tranche; no capacity used."
+                          ? "Refunds the Season 1 tranche — net cash same as before this client."
                           : `Requires: EUR ${option.costBudget.toLocaleString("en-GB")} · Capacity ${option.costCapacity}`}
                         {!option.isRejectOption && !affordable ? " · Not enough resources" : ""}
                       </p>

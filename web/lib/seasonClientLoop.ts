@@ -149,8 +149,9 @@ const EXECUTABLE_SOLUTION_DEFS: ExecutableSolutionDef[] = [
 const REJECT_OPTION: SolutionOption = {
   id: "reject",
   archetype: "reject",
-  title: "Reject / do nothing",
-  description: "Walk away: refund the Season 1 tranche that was credited on accept (no capacity spent).",
+  title: "Do nothing / decline client",
+  description:
+    "Decline this client after seeing the brief: the Season 1 tranche is refunded so agency cash is unchanged overall (no capacity used).",
   costBudget: 0,
   costCapacity: 0,
   baseSpread: 0,
