@@ -10,7 +10,12 @@ import {
   type BuildId,
   type GenderValue,
 } from "@/lib/onboardingContent";
-import type { SpouseType } from "@/lib/gameEconomy";
+import {
+  STARTING_BUILD_STATS,
+  applySpouseAtStart,
+  type BuildStats,
+  type SpouseType,
+} from "@/lib/gameEconomy";
 
 const SAVE_KEY = "dma-save-slot";
 
@@ -24,6 +29,10 @@ export type NewGamePayload = {
   spouseGender: GenderValue | null;
   /** Set when spouseType is not `none`; otherwise null. */
   spouseName: string | null;
+  seasonNumber: number;
+  phase: "preseason" | "season" | "postseason";
+  activityFocusUsedInPreseason: boolean;
+  resources: BuildStats;
   createdAt: string;
 };
 
@@ -60,6 +69,8 @@ export function NewGameWizard() {
   const persistAndFinish = useCallback(() => {
     if (!buildId || spouseType === null) return;
     if (spouseType !== "none" && (spouseName.trim() === "" || spouseGender === "")) return;
+    const base = STARTING_BUILD_STATS[buildId];
+    const resources = applySpouseAtStart(base, spouseType);
     const payload: NewGamePayload = {
       playerName: playerName.trim(),
       agencyName: agencyName.trim(),
@@ -68,6 +79,10 @@ export function NewGameWizard() {
       spouseType,
       spouseGender: spouseType === "none" ? null : (spouseGender as GenderValue),
       spouseName: spouseType === "none" ? null : spouseName.trim(),
+      seasonNumber: 1,
+      phase: "preseason",
+      activityFocusUsedInPreseason: false,
+      resources,
       createdAt: new Date().toISOString(),
     };
     try {
@@ -303,7 +318,7 @@ export function NewGameWizard() {
         <section>
           <h2 style={{ marginTop: 0, fontSize: "1.25rem" }}>You&apos;re on the clock</h2>
           <p style={{ marginTop: 0 }}>
-            Your run is stored locally for now (one slot). Next up: Supabase save, seasons, and clients.
+            Your run is stored locally for now (one slot). Next up: pre-season activities.
           </p>
           <ul className="muted" style={{ paddingLeft: "1.2rem" }}>
             <li>
@@ -328,7 +343,10 @@ export function NewGameWizard() {
             </li>
           </ul>
           <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.5rem", flexWrap: "wrap" }}>
-            <Link href="/" className="btn btn-primary" style={{ textDecoration: "none" }}>
+            <Link href="/game/preseason/1" className="btn btn-primary" style={{ textDecoration: "none" }}>
+              Start pre-season 1
+            </Link>
+            <Link href="/" className="btn btn-secondary" style={{ textDecoration: "none" }}>
               Back to menu
             </Link>
           </div>
