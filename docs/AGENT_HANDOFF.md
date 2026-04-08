@@ -83,6 +83,7 @@ Persisted fields:
 - baseline snapshot: `initialResources`, `initialReputation`
 - hiring state: `hiresBySeason`, `employees[]`
 - **in-season client loop**: `seasonLoopBySeason` — optional map keyed by season string → `SeasonLoopState` (`plannedClientCount`, `currentClientIndex`, `clientsQueue`, `runs`, `lastOutcome`). See `web/lib/seasonClientLoop.ts`.
+- **used scenario IDs**: `usedScenarioIds` — list of `scenario_id` values already assigned to a client this playthrough. `pickScenarioForClient` excludes these (widening pool as needed); rolling clients updates the list. Load merges with IDs found in existing `clientsQueue` for older saves. If the DB runs out of unused scenarios, the roll fails with a user-facing message.
 - metadata: `createdAt`
 
 Storage helpers: `web/lib/saveGameStorage.ts`

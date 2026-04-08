@@ -24,6 +24,8 @@ function inferTier(kind: ClientKind, total: number): 1 | 2 {
   return total >= (t1.max + t2.min) / 2 ? 2 : 1;
 }
 
+let cumulativeUsedScenarioIds: string[] = [];
+
 const scenarios: { label: string; visibility: number; note: string }[] = [
   {
     label: "Max visibility",
@@ -44,10 +46,17 @@ const scenarios: { label: string; visibility: number; note: string }[] = [
 
 for (const s of scenarios) {
   const count = plannedClientCountForSeason(SEASON, s.visibility, SEED_BASE);
-  const clients = buildSeasonClients(SEED_BASE, SEASON, count, {
-    reputation: REP,
-    visibility: s.visibility,
-  });
+  const { clients, usedScenarioIds } = buildSeasonClients(
+    SEED_BASE,
+    SEASON,
+    count,
+    {
+      reputation: REP,
+      visibility: s.visibility,
+    },
+    cumulativeUsedScenarioIds
+  );
+  cumulativeUsedScenarioIds = usedScenarioIds;
 
   console.log("\n" + "=".repeat(60));
   console.log(s.label);

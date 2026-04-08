@@ -25,20 +25,38 @@ function hashPickIndex(seed: string, modulo: number): number {
   return Math.abs(h) % modulo;
 }
 
+/** Thrown when every scenario in the DB is already in `excludeIds` (cannot satisfy uniqueness). */
+export const SCENARIO_POOL_EXHAUSTED_MESSAGE =
+  "PR_SIMULATOR_NO_SCENARIOS_LEFT: Every scenario has been used this playthrough.";
+
 /**
  * Pick a creative scenario matching client kind and budget tier; deterministic from seed.
+ * Never returns a scenario whose `scenario_id` is in `excludeIds` while any unused scenario remains
+ * in the database (widens pool: tier+type → same type → global unused).
  */
 export function pickScenarioForClient(
   kind: ClientKind,
   budgetTier: 1 | 2,
-  seed: string
+  seed: string,
+  excludeIds: ReadonlySet<string>
 ): ScenarioRecord {
   const wantType = mapClientKindToDbType(kind);
   const pool = scenarioDatabase.scenarios.filter(
     (s) => s.client_type === wantType && tierMatchesBudgetTier(budgetTier, s.budget_tier)
   );
-  const fallback = scenarioDatabase.scenarios.filter((s) => s.client_type === wantType);
-  const use = pool.length > 0 ? pool : fallback;
-  const idx = hashPickIndex(seed, use.length);
-  return use[idx]!;
+  const fallbackType = scenarioDatabase.scenarios.filter((s) => s.client_type === wantType);
+  const allUnused = scenarioDatabase.scenarios.filter((s) => !excludeIds.has(s.scenario_id));
+
+  let candidates = pool.filter((s) => !excludeIds.has(s.scenario_id));
+  if (candidates.length === 0) {
+    candidates = fallbackType.filter((s) => !excludeIds.has(s.scenario_id));
+  }
+  if (candidates.length === 0) {
+    candidates = allUnused;
+  }
+  if (candidates.length === 0) {
+    throw new Error(SCENARIO_POOL_EXHAUSTED_MESSAGE);
+  }
+  const idx = hashPickIndex(seed, candidates.length);
+  return candidates[idx]!;
 }

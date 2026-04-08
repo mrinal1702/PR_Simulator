@@ -57,6 +57,8 @@ export type NewGamePayload = {
     capacityGain: number;
   }>;
   seasonLoopBySeason?: Partial<Record<string, SeasonLoopState>>;
+  /** `scenario_id` values already assigned to a client this playthrough (no repeats). */
+  usedScenarioIds?: string[];
   createdAt: string;
 };
 
@@ -117,6 +119,7 @@ export function NewGameWizard() {
       initialReputation: STARTING_REPUTATION,
       hiresBySeason: {},
       employees: [],
+      usedScenarioIds: [],
       createdAt: new Date().toISOString(),
     };
     persistSave(payload);

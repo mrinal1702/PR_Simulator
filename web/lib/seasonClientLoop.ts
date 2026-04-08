@@ -211,9 +211,11 @@ export function buildSeasonClients(
   seedBase: string,
   season: number,
   count: number,
-  agency: { reputation: number; visibility: number }
-): SeasonClient[] {
+  agency: { reputation: number; visibility: number },
+  usedScenarioIds: readonly string[] = []
+): { clients: SeasonClient[]; usedScenarioIds: string[] } {
   const clients: SeasonClient[] = [];
+  const exclude = new Set(usedScenarioIds);
 
   const rep = agency.reputation;
 
@@ -230,7 +232,8 @@ export function buildSeasonClients(
     const tier = computeBudgetTierDeterministic(`${kindSeed}|tier`, season, agency.visibility, rep);
     const total = rollClientBudgetTotalInTier(kind, tier, agency.visibility);
     const split = splitBudgetBySeason(total);
-    const scenario = pickScenarioForClient(kind, tier, `${kindSeed}|scn|${tier}`);
+    const scenario = pickScenarioForClient(kind, tier, `${kindSeed}|scn|${tier}`, exclude);
+    exclude.add(scenario.scenario_id);
     clients.push({
       id: `s${season}-c${i + 1}`,
       displayName: scenario.client_subtype,
@@ -252,7 +255,7 @@ export function buildSeasonClients(
     });
   }
 
-  return clients;
+  return { clients, usedScenarioIds: Array.from(exclude) };
 }
 
 /**

@@ -2,17 +2,29 @@ import type { NewGamePayload } from "@/components/NewGameWizard";
 
 const SAVE_KEY = "dma-save-slot";
 
+/** Merge `usedScenarioIds` with scenario IDs already present in season client queues (older saves). */
+function mergeUsedScenarioIds(payload: NewGamePayload): NewGamePayload {
+  const fromSave = new Set(payload.usedScenarioIds ?? []);
+  for (const loop of Object.values(payload.seasonLoopBySeason ?? {})) {
+    if (!loop?.clientsQueue) continue;
+    for (const c of loop.clientsQueue) {
+      if (c.scenarioId) fromSave.add(c.scenarioId);
+    }
+  }
+  return { ...payload, usedScenarioIds: Array.from(fromSave) };
+}
+
 export function loadSave(): NewGamePayload | null {
   if (typeof window === "undefined") return null;
   try {
     const localRaw = localStorage.getItem(SAVE_KEY);
-    if (localRaw) return JSON.parse(localRaw) as NewGamePayload;
+    if (localRaw) return mergeUsedScenarioIds(JSON.parse(localRaw) as NewGamePayload);
     const sessionRaw = sessionStorage.getItem(SAVE_KEY);
     if (!sessionRaw) return null;
     const parsed = JSON.parse(sessionRaw) as NewGamePayload;
     // Migrate old session-only saves to local storage.
     localStorage.setItem(SAVE_KEY, sessionRaw);
-    return parsed;
+    return mergeUsedScenarioIds(parsed);
   } catch {
     return null;
   }

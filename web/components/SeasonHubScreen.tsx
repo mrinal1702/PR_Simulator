@@ -7,6 +7,7 @@ import { GAME_TITLE } from "@/lib/onboardingContent";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { plannedClientCountForSeason } from "@/lib/clientEconomyMath";
+import { SCENARIO_POOL_EXHAUSTED_MESSAGE } from "@/lib/scenarios";
 import { buildSeasonClients } from "@/lib/seasonClientLoop";
 
 /** Season hub: roll queue, stats, link into the dedicated client-case screen. */
@@ -65,16 +66,46 @@ export function SeasonHubScreen({ season }: { season: number }) {
       return;
     }
     const count = plannedClientCountForSeason(season, save.resources.visibility, `${save.createdAt}|${save.playerName}`);
-    const clients = buildSeasonClients(`${save.createdAt}-${save.playerName}`, season, count, {
-      reputation: save.reputation ?? 5,
-      visibility: save.resources.visibility,
-    });
-    updateLoop({
-      plannedClientCount: count,
-      currentClientIndex: 0,
-      clientsQueue: clients,
-      runs: [],
-    });
+    let clients;
+    let usedScenarioIds: string[];
+    try {
+      const built = buildSeasonClients(
+        `${save.createdAt}-${save.playerName}`,
+        season,
+        count,
+        {
+          reputation: save.reputation ?? 5,
+          visibility: save.resources.visibility,
+        },
+        save.usedScenarioIds ?? []
+      );
+      clients = built.clients;
+      usedScenarioIds = built.usedScenarioIds;
+    } catch (e) {
+      setNotice(
+        e instanceof Error && e.message === SCENARIO_POOL_EXHAUSTED_MESSAGE
+          ? "Cannot roll: you've already seen every scenario this playthrough. Finish the run or add more scenarios in a future update."
+          : "Could not roll clients right now."
+      );
+      return;
+    }
+    const updated: NewGamePayload = {
+      ...save,
+      seasonNumber: season,
+      phase: "season",
+      usedScenarioIds,
+      seasonLoopBySeason: {
+        ...(save.seasonLoopBySeason ?? {}),
+        [seasonKey]: {
+          plannedClientCount: count,
+          currentClientIndex: 0,
+          clientsQueue: clients,
+          runs: [],
+        },
+      },
+    };
+    setSave(updated);
+    persistSave(updated);
     setNotice(`Season ${season} rolled: ${count} client(s) will arrive one by one.`);
   };
 
