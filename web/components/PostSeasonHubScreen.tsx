@@ -201,7 +201,7 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
                     <p className="muted" style={{ margin: 0, fontSize: "0.88rem" }}>
                       Resource cost: EUR {entry.costBudget.toLocaleString("en-GB")} · Capacity {entry.costCapacity}
                       <br />
-                      Money retained (Season 1 liquid): EUR {entry.moneyEarned.toLocaleString("en-GB")}
+                      Net cash from this client: EUR {entry.moneyEarned.toLocaleString("en-GB")}
                     </p>
                   </div>
                 ))}

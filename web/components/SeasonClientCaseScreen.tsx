@@ -15,10 +15,6 @@ import {
 } from "@/lib/seasonClientLoop";
 import { computePayrollHeadsUp } from "@/lib/seasonFinancials";
 
-/**
- * Season 1: no client liquid is credited until a campaign runs. "Do nothing" rejects the client (no money).
- * Later seasons may treat "do nothing" differently when arcs carry over.
- */
 export function SeasonClientCaseScreen({ season }: { season: number }) {
   const router = useRouter();
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
@@ -67,8 +63,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           ? {
               ...o,
               title: "Reject client",
-              description:
-                "Pass on this client — they won't commit Season 1 liquid to your agency, and you won't run a campaign for them.",
+              description: "Pass on this client. No campaign runs and no budget is added.",
             }
           : o
       );
@@ -119,7 +114,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         { clientId: currentClient.id, accepted: false as const, solutionId: "reject" as const },
       ];
       advanceToNextClient(nextRuns);
-      setNotice(season === 1 ? "Client rejected — no Season 1 funds from them." : "Passed on this client.");
+      setNotice("Client rejected.");
       return;
     }
 
@@ -212,12 +207,22 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         </p>
         <h1 style={{ margin: 0 }}>Client case</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
-          Client {Math.min(loop.currentClientIndex + 1, loop.plannedClientCount)} of {loop.plannedClientCount} this season — work in order.
+          Client {Math.min(loop.currentClientIndex + 1, loop.plannedClientCount)} of {loop.plannedClientCount} this season.
         </p>
       </header>
 
       <section>
         <div className="agency-stats-panel">
+          <p
+            style={{
+              margin: "0 0 0.55rem",
+              color: "var(--accent)",
+              fontWeight: 700,
+              fontSize: "1rem",
+            }}
+          >
+            Budget: EUR {currentClient.budgetTotal.toLocaleString("en-GB")}
+          </p>
           <p className="muted" style={{ margin: "0 0 0.35rem" }}>
             <strong>{currentClient.scenarioTitle}</strong>
           </p>
@@ -233,22 +238,10 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
             {currentClient.problem}
           </p>
           <p className="muted" style={{ marginTop: 0 }}>
-            Budget total: EUR {currentClient.budgetTotal.toLocaleString("en-GB")} · Season 1 (this round): EUR{" "}
+            This phase budget: EUR{" "}
             {currentClient.budgetSeason1.toLocaleString("en-GB")} · Season 2 (follow-up): EUR{" "}
             {currentClient.budgetSeason2.toLocaleString("en-GB")}
           </p>
-          {awaitingChoice ? (
-            <p className="muted" style={{ marginTop: "0.65rem", marginBottom: 0 }}>
-              {season === 1 ? (
-                <>
-                  Season 1 liquid is only yours if you run a campaign — your cash plus their Season 1 tranche must cover the
-                  spend. Rejecting means they don&apos;t commit funds to you.
-                </>
-              ) : (
-                <>Pick a campaign below, or choose &quot;Do nothing&quot; if allowed for this arc.</>
-              )}
-            </p>
-          ) : null}
 
           {awaitingChoice ? (
             <div style={{ marginTop: "0.9rem" }}>
@@ -276,7 +269,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
                       </p>
                       {!option.isRejectOption ? (
                         <p className="muted" style={{ margin: "0.2rem 0 0" }}>
-                          {`Spend: EUR ${option.costBudget.toLocaleString("en-GB")} (from your cash + their Season 1 tranche) · Capacity ${option.costCapacity}`}
+                          {`Spend: EUR ${option.costBudget.toLocaleString("en-GB")} · Capacity ${option.costCapacity}`}
                           {!affordable ? " · Not enough resources" : ""}
                         </p>
                       ) : null}

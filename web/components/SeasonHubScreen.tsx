@@ -132,7 +132,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
     } catch (e) {
       setNotice(
         e instanceof Error && e.message === SCENARIO_POOL_EXHAUSTED_MESSAGE
-          ? "Cannot roll: you've already seen every scenario this playthrough. Finish the run or add more scenarios in a future update."
+          ? "You have already seen every available scenario in this run."
           : "Could not roll clients right now."
       );
       return;
@@ -165,7 +165,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
         </p>
         <h1 style={{ margin: 0 }}>Season {season}</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
-          Hub: roll your client queue, then open each case in order.
+          Roll your client list, then open each case in order.
         </p>
       </header>
 

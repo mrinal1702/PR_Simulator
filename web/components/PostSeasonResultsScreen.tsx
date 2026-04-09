@@ -150,7 +150,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
         </p>
         <h1 style={{ margin: 0 }}>Campaign results</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
-          Scenario {completed + 1} of {total} (in the order you saw clients this season)
+          Scenario {completed + 1} of {total}
         </p>
       </header>
 
@@ -162,10 +162,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
           <div className="metric-fill" style={{ width: `${completeness}%`, background: "var(--accent)" }} />
         </div>
         <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.88rem" }}>
-          {completeness}% —
-          {season === 1
-            ? " First-year post-season is always half of the scenario arc; later seasons can raise this when multi-season stories resolve."
-            : " Completeness will rise when multi-season arcs finish in a later update."}
+          {completeness}% complete
         </p>
       </section>
 
@@ -183,8 +180,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
       <section className="agency-stats-panel">
         <h3 style={{ marginTop: 0, fontSize: "1.05rem" }}>Optional boost</h3>
         <p className="muted" style={{ marginTop: 0, fontSize: "0.92rem" }}>
-          You may boost <strong>either</strong> reach <strong>or</strong> effectiveness (not both). Boost size is <strong>1–5%</strong> (whole numbers only), from firm competence — same curve as Season 1 campaign math. Maximum gain per boost is{" "}
-          <strong>5 percentage points</strong> on the metric you choose. At your current competence, the next boost would be <strong>{boostPreview}%</strong>.
+          Pick one: boost reach or boost effectiveness. You can only choose one per scenario. Current boost value: <strong>+{boostPreview}%</strong>.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem", marginTop: "0.85rem" }}>
           <button

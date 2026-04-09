@@ -11,7 +11,7 @@ import {
   type BreakdownMetric,
 } from "@/lib/metricBreakdown";
 
-/** Home: phase, agency snapshot with breakdowns, Season 1 case log (local blueprint for later seasons). */
+/** Home: phase, agency snapshot with breakdowns, and case log. */
 export function HomeDashboard() {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [showStats, setShowStats] = useState(false);
@@ -140,7 +140,7 @@ export function HomeDashboard() {
         <div style={{ marginTop: "1rem" }}>
           <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>Case log — Season 1</h3>
           <p className="muted" style={{ marginTop: 0, fontSize: "0.88rem" }}>
-            Completed client cases from this season (local). Other seasons will get their own log when added.
+            Completed client cases from this season.
           </p>
           {caseLog.length === 0 ? (
             <p className="muted" style={{ margin: "0.5rem 0 0" }}>
@@ -163,7 +163,7 @@ export function HomeDashboard() {
                   <p className="muted" style={{ margin: 0, fontSize: "0.88rem" }}>
                     Resource cost: EUR {entry.costBudget.toLocaleString("en-GB")} · Capacity {entry.costCapacity}
                     <br />
-                    Money retained (Season 1 liquid): EUR {entry.moneyEarned.toLocaleString("en-GB")}
+                    Net cash from this client: EUR {entry.moneyEarned.toLocaleString("en-GB")}
                   </p>
                 </div>
               ))}

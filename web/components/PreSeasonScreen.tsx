@@ -165,7 +165,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
         <p className="muted" style={{ marginTop: "0.5rem" }}>
           Choose one activity focus for this pre-season.
           {season >= 2
-            ? " Firm capacity was reset when you left post-season (full pool for your roster). You can use Fire on employees from this pre-season onward (see warnings)."
+            ? " You can also manage your team from here before the season starts."
             : ""}
         </p>
       </header>

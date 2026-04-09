@@ -104,7 +104,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
         </p>
         <h1 style={{ margin: 0 }}>Season {season} summary</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
-          High-level outcomes for this year. Financials use operating cash only (client tranches and post-season reach boosts); founder and spouse starting capital are not client revenue.
+          High-level outcomes for this year.
         </p>
       </header>
 
@@ -226,7 +226,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
       <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
         <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>Company financials</h2>
         <p className="muted" style={{ marginTop: 0, fontSize: "0.92rem" }}>
-          Operating P&amp;L style (this season) and a cash bridge. Starting capital and spouse grants are not shown here — use the agency wealth breakdown for founder and partner funding.
+          Season financial view and cash bridge.
         </p>
         <button type="button" className="btn btn-secondary" onClick={() => setShowFinancials((v) => !v)} style={{ marginTop: "0.5rem" }}>
           {showFinancials ? "Hide financials" : "Company financials"}
@@ -284,7 +284,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
             </table>
 
             <p className="muted" style={{ margin: "1rem 0 0", fontSize: "0.88rem", lineHeight: 1.5 }}>
-              <strong>Future receivables (not in P&amp;L):</strong> {fmtEur(futureReceivables)} total Season 2 tranche budget still expected from this season’s signed clients (recognized when you work it in a future season).
+              <strong>Future receivables:</strong> {fmtEur(futureReceivables)} expected from follow-up work.
             </p>
             <p className="muted" style={{ margin: "0.65rem 0 0", fontSize: "0.88rem", lineHeight: 1.5 }}>
               <strong>Payroll (informational):</strong> cumulative salaries paid when staff joined — {fmtEur(cumulativeSalaries)} total. See wealth breakdown for how this sits with founder and partner capital.
