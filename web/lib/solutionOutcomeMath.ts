@@ -14,15 +14,20 @@
 const BASE_WEIGHT = 0.4;
 const VARIANCE_WEIGHT = 0.6;
 
-/** Reach variance: 60% visibility + 35% competence + 5% random */
+/** Reach variance core: 60% visibility + 35% competence (score jitter applied to V/C). */
 const REACH_W_VIS = 0.6;
 const REACH_W_COMP = 0.35;
-const REACH_W_RAND = 0.05;
 
-/** Effectiveness variance: 70% competence + 25% discipline + 5% random */
+/** Effectiveness variance core: 70% competence + 25% discipline (jitter applied to C). */
 const EFF_W_COMP = 0.7;
 const EFF_W_DISC = 0.25;
-const EFF_W_RAND = 0.05;
+
+/**
+ * Seeded score jitter (small): applied around normalized scores instead of explicit random term.
+ * Visibility jitter is intentionally a bit wider than competence jitter.
+ */
+const C_SCORE_JITTER_MAX = 3.5;
+const V_SCORE_JITTER_MAX = 5.5;
 
 /**
  * Map raw visibility → 0–100 “agency strength” for reach variance.
@@ -91,9 +96,11 @@ function hashToUnit(seed: string): number {
   return u;
 }
 
-/** Deterministic 0–100 roll for the 5% noise slots. */
-function randomScore0to100(seed: string, salt: string): number {
-  return Math.round(hashToUnit(`${seed}\0${salt}`) * 100);
+function jitterScore(seed: string, salt: string, baseScore: number, maxAbsDelta: number): number {
+  const u = hashToUnit(`${seed}\0${salt}`);
+  const delta = (u * 2 - 1) * maxAbsDelta;
+  const out = baseScore + delta;
+  return Math.max(0, Math.min(100, out));
 }
 
 export function visibilityScoreForVariance(visibility: number): number {
@@ -120,16 +127,16 @@ export function computeSeason1SolutionMetrics(input: {
   discipline: number;
   seed: string;
 }): { reach: number; effectiveness: number } {
-  const vVis = visibilityScoreForVariance(input.visibility);
-  const vComp = competenceScoreForVariance(input.competence);
+  const vVisBase = visibilityScoreForVariance(input.visibility);
+  const vCompBase = competenceScoreForVariance(input.competence);
+  const vVis = jitterScore(input.seed, "v-score-jitter", vVisBase, V_SCORE_JITTER_MAX);
+  const vComp = jitterScore(input.seed, "c-score-jitter", vCompBase, C_SCORE_JITTER_MAX);
   const vDisc = disciplineScoreForVariance(input.discipline);
-  const rReach = randomScore0to100(input.seed, "reach-noise");
-  const rEff = randomScore0to100(input.seed, "eff-noise");
 
   const reachVariance =
-    REACH_W_VIS * vVis + REACH_W_COMP * vComp + REACH_W_RAND * rReach;
+    REACH_W_VIS * vVis + REACH_W_COMP * vComp;
   const effectivenessVariance =
-    EFF_W_COMP * vComp + EFF_W_DISC * vDisc + EFF_W_RAND * rEff;
+    EFF_W_COMP * vComp + EFF_W_DISC * vDisc;
 
   const reach = Math.round(
     BASE_WEIGHT * input.baseReach + VARIANCE_WEIGHT * reachVariance
