@@ -8,8 +8,12 @@ import type { NewGamePayload } from "@/components/NewGameWizard";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { persistSave, loadSave } from "@/lib/saveGameStorage";
 import { buildMetricBreakdown, formatSigned, type BreakdownMetric } from "@/lib/metricBreakdown";
-
-type Focus = "strategy_workshop" | "network";
+import { fireEmployeeVoluntary } from "@/lib/employeeActions";
+import {
+  getPreseasonFocusCardCopy,
+  getPreseasonFocusDeltaForSeason,
+  type PreseasonFocusId,
+} from "@/lib/preseasonFocus";
 
 export function PreSeasonScreen({ season }: { season: number }) {
   const router = useRouter();
@@ -19,6 +23,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
   const [showEmployees, setShowEmployees] = useState(false);
   const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
   const [confirmStartSeason, setConfirmStartSeason] = useState(false);
+  const [fireTargetId, setFireTargetId] = useState<string | null>(null);
 
   const title = useMemo(() => `Pre-season ${season}`, [season]);
   const seasonKey = String(season);
@@ -31,13 +36,14 @@ export function PreSeasonScreen({ season }: { season: number }) {
     save?.seasonNumber === season;
   const alreadyUsedThisPreseason = Boolean(existingSeasonAction) || legacyUsedFlag;
 
-  const applyFocus = (focus: Focus) => {
+  const applyFocus = (focus: PreseasonFocusId) => {
     if (!save || alreadyUsedThisPreseason) return;
     const normalizedCounts = {
       strategy_workshop: save.preseasonFocusCounts?.strategy_workshop ?? 0,
       network: save.preseasonFocusCounts?.network ?? 0,
     };
     const normalizedActions = save.preseasonActionBySeason ?? {};
+    const delta = getPreseasonFocusDeltaForSeason(season, focus, save);
     const updated: NewGamePayload = {
       ...save,
       phase: "preseason",
@@ -53,17 +59,29 @@ export function PreSeasonScreen({ season }: { season: number }) {
       },
       resources:
         focus === "strategy_workshop"
-          ? { ...save.resources, competence: save.resources.competence + 10 }
-          : { ...save.resources, visibility: save.resources.visibility + 10 },
+          ? { ...save.resources, competence: save.resources.competence + delta }
+          : { ...save.resources, visibility: save.resources.visibility + delta },
     };
     setSave(updated);
     persistSave(updated);
-    setNotice(
-      focus === "strategy_workshop"
-        ? "Strategy workshop complete: +10 competence."
-        : "Network complete: +10 visibility."
-    );
+    const card = getPreseasonFocusCardCopy(season, focus, save);
+    setNotice(`${card.title} complete: ${card.subtitle}.`);
   };
+
+  const confirmFire = () => {
+    if (!save || fireTargetId == null) return;
+    const result = fireEmployeeVoluntary(save, fireTargetId, season);
+    setFireTargetId(null);
+    if (!result.ok) {
+      setNotice(result.error);
+      return;
+    }
+    setSave(result.save);
+    persistSave(result.save);
+    setNotice("Employee let go. Severance paid; reputation took a hit.");
+  };
+
+  const showFireControls = season >= 2;
 
   const saveNow = () => {
     if (!save) return;
@@ -98,6 +116,9 @@ export function PreSeasonScreen({ season }: { season: number }) {
     );
   }
 
+  const workshopCard = getPreseasonFocusCardCopy(season, "strategy_workshop", save);
+  const networkCard = getPreseasonFocusCardCopy(season, "network", save);
+
   return (
     <div className="shell shell-wide">
       <header style={{ marginBottom: "1.5rem" }}>
@@ -107,6 +128,9 @@ export function PreSeasonScreen({ season }: { season: number }) {
         <h1 style={{ margin: 0 }}>{title}</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
           Choose one activity focus for this pre-season.
+          {season >= 2
+            ? " Firm capacity was reset when you left post-season (full pool for your roster). You can use Fire on employees from this pre-season onward (see warnings)."
+            : ""}
         </p>
       </header>
 
@@ -177,21 +201,52 @@ export function PreSeasonScreen({ season }: { season: number }) {
               </p>
             ) : (
               <div style={{ display: "grid", gap: "0.6rem" }}>
+                {showFireControls && (save.voluntaryLayoffsBySeason?.[seasonKey] ?? 0) >= 1 ? (
+                  <p className="muted" style={{ margin: 0, fontSize: "0.88rem" }}>
+                    Voluntary layoff already used this pre-season.
+                  </p>
+                ) : null}
                 {[...(save.employees ?? [])]
                   .sort((a, b) => b.salary - a.salary)
-                  .map((e) => (
-                    <div key={e.id} style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.7rem 0.8rem" }}>
-                      <p style={{ margin: 0, fontWeight: 600 }}>
-                        {e.name} · {e.role}
-                      </p>
-                      <p className="muted" style={{ margin: "0.25rem 0 0" }}>
-                        Salary: EUR {e.salary.toLocaleString("en-GB")}
-                        {e.visibilityGain > 0 ? ` · Visibility +${e.visibilityGain}` : ""}
-                        {e.competenceGain > 0 ? ` · Competence +${e.competenceGain}` : ""}
-                        {e.capacityGain > 0 ? ` · Capacity +${e.capacityGain}` : ""}
-                      </p>
-                    </div>
-                  ))}
+                  .map((e) => {
+                    const canFire =
+                      showFireControls &&
+                      e.seasonHired !== season &&
+                      (save.voluntaryLayoffsBySeason?.[seasonKey] ?? 0) < 1;
+                    return (
+                      <div key={e.id} style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.7rem 0.8rem" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5rem", flexWrap: "wrap", alignItems: "flex-start" }}>
+                          <div>
+                            <p style={{ margin: 0, fontWeight: 600 }}>
+                              {e.name} · {e.role}
+                            </p>
+                            <p className="muted" style={{ margin: "0.25rem 0 0" }}>
+                              Salary: EUR {e.salary.toLocaleString("en-GB")}
+                              {e.visibilityGain > 0 ? ` · Visibility +${e.visibilityGain}` : ""}
+                              {e.competenceGain > 0 ? ` · Competence +${e.competenceGain}` : ""}
+                              {e.capacityGain > 0 ? ` · Capacity +${e.capacityGain}` : ""}
+                            </p>
+                          </div>
+                          {showFireControls ? (
+                            <button
+                              type="button"
+                              className="btn btn-secondary"
+                              style={{ fontSize: "0.82rem" }}
+                              disabled={!canFire}
+                              onClick={() => canFire && setFireTargetId(e.id)}
+                            >
+                              Fire
+                            </button>
+                          ) : null}
+                        </div>
+                        {showFireControls && e.seasonHired === season ? (
+                          <p className="muted" style={{ margin: "0.25rem 0 0", fontSize: "0.82rem" }}>
+                            Cannot lay off in the same pre-season they were hired.
+                          </p>
+                        ) : null}
+                      </div>
+                    );
+                  })}
               </div>
             )}
           </div>
@@ -204,16 +259,16 @@ export function PreSeasonScreen({ season }: { season: number }) {
               className="choice-card"
               onClick={() => applyFocus("strategy_workshop")}
             >
-              <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>Strategy workshop</h3>
-              <p className="muted" style={{ margin: 0 }}>Improve competence by 10</p>
+              <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>{workshopCard.title}</h3>
+              <p className="muted" style={{ margin: 0 }}>{workshopCard.subtitle}</p>
             </button>
             <button
               type="button"
               className="choice-card"
               onClick={() => applyFocus("network")}
             >
-              <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>Network</h3>
-              <p className="muted" style={{ margin: 0 }}>Improve visibility by 10</p>
+              <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>{networkCard.title}</h3>
+              <p className="muted" style={{ margin: 0 }}>{networkCard.subtitle}</p>
             </button>
           </div>
         ) : null}
@@ -275,6 +330,49 @@ export function PreSeasonScreen({ season }: { season: number }) {
           </div>
         </div>
       ) : null}
+      {fireTargetId && save ? (
+        <FireConfirmModal
+          employee={save.employees?.find((e) => e.id === fireTargetId) ?? null}
+          onCancel={() => setFireTargetId(null)}
+          onConfirm={confirmFire}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function FireConfirmModal({
+  employee,
+  onCancel,
+  onConfirm,
+}: {
+  employee: NonNullable<NewGamePayload["employees"]>[number] | null;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  if (!employee) return null;
+  const severance = Math.floor(employee.salary * 0.2);
+  return (
+    <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-label="Confirm voluntary layoff">
+      <div className="game-modal">
+        <p className="game-modal-kicker">Voluntary layoff</p>
+        <h2 style={{ marginTop: 0 }}>Let {employee.name} go?</h2>
+        <p style={{ marginTop: 0 }}>
+          This is a voluntary layoff: <strong>−10 reputation</strong>, severance <strong>EUR {severance.toLocaleString("en-GB")}</strong> (20% of salary
+          ), and agency stats drop by this employee&apos;s competence, visibility, and capacity contributions.
+        </p>
+        <p className="muted" style={{ marginTop: 0 }}>
+          You can only use one voluntary layoff per season. You cannot fire someone hired in this same pre-season.
+        </p>
+        <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end", gap: "0.6rem" }}>
+          <button type="button" className="btn btn-secondary" onClick={onCancel}>
+            Keep employee
+          </button>
+          <button type="button" className="btn btn-primary" onClick={onConfirm}>
+            Confirm fire
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

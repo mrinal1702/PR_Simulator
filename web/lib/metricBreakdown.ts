@@ -1,12 +1,14 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import type { BuildStats } from "@/lib/gameEconomy";
+import { seasonSpouseGrants } from "@/lib/gameEconomy";
+import { computePreseasonFocusTotals } from "@/lib/preseasonFocus";
 import { collectPostSeasonLedger } from "@/lib/postSeasonResults";
 
 export type BreakdownMetric = "eur" | "visibility" | "competence" | "firmCapacity" | "reputation";
 
-/** Net EUR from Season 1 client work and capacity spent on campaigns (executed solutions only). */
-export function computeSeason1Ledger(save: NewGamePayload): { eurNet: number; capacityUsed: number } {
-  const loop = save.seasonLoopBySeason?.["1"];
+/** Net EUR and capacity from client work for a season (executed solutions only). Uses each client’s Season 1 tranche as the in-season liquid for that campaign. */
+export function computeSeasonLedger(save: NewGamePayload, seasonKey: string): { eurNet: number; capacityUsed: number } {
+  const loop = save.seasonLoopBySeason?.[seasonKey];
   if (!loop) return { eurNet: 0, capacityUsed: 0 };
   let eurNet = 0;
   let capacityUsed = 0;
@@ -20,6 +22,11 @@ export function computeSeason1Ledger(save: NewGamePayload): { eurNet: number; ca
     if (r.costCapacity != null) capacityUsed += r.costCapacity;
   }
   return { eurNet, capacityUsed };
+}
+
+/** @deprecated Use {@link computeSeasonLedger}(save, "1") — kept for call sites. */
+export function computeSeason1Ledger(save: NewGamePayload): { eurNet: number; capacityUsed: number } {
+  return computeSeasonLedger(save, "1");
 }
 
 export type Season1CaseLogEntry = {
@@ -69,12 +76,98 @@ export function buildSeason1CaseLog(save: NewGamePayload): Season1CaseLogEntry[]
   return out;
 }
 
-export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePayload): Array<{ label: string; value: number }> {
+/** Season 2+ pre-season: ledger without prior season client lines; agency “starting” rows separate from roster. */
+export function useSimplifiedPreseasonLedger(save: NewGamePayload): boolean {
+  return save.seasonNumber >= 2 && save.phase === "preseason";
+}
+
+function buildSimplifiedPreseasonBreakdown(
+  metric: BreakdownMetric,
+  save: NewGamePayload
+): Array<{ label: string; value: number }> {
   const employees = save.employees ?? [];
   const baseResources: BuildStats = save.initialResources ?? estimateBaseResources(save);
   const baseReputation = save.initialReputation ?? 5;
-  const focusComp = (save.preseasonFocusCounts?.strategy_workshop ?? 0) * 10;
-  const focusVis = (save.preseasonFocusCounts?.network ?? 0) * 10;
+  const g = seasonSpouseGrants(save.spouseType);
+  const grantApplied = save.preseasonEntrySpouseGrantSeasons?.includes(String(save.seasonNumber)) ?? false;
+  const salarySum = employees.reduce((s, e) => s + e.salary, 0);
+  const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
+  const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
+  const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
+  const focus = computePreseasonFocusTotals(save);
+  const postSeason = collectPostSeasonLedger(save);
+  const postRepSum = postSeason.reduce((s, e) => s + e.reputationDelta, 0);
+
+  const startingWealth = grantApplied ? save.resources.eur - g.eur + salarySum : save.resources.eur + salarySum;
+  const startingVis =
+    (grantApplied ? save.resources.visibility - g.visibility - employeeVis : save.resources.visibility - employeeVis) -
+    focus.visibility;
+  const startingComp =
+    (grantApplied ? save.resources.competence - g.competence - employeeComp : save.resources.competence - employeeComp) -
+    focus.competence;
+  const startingCap = baseResources.firmCapacity;
+
+  const linesByMetric: Record<BreakdownMetric, Array<{ label: string; value: number }>> = {
+    eur: [{ label: "Starting wealth", value: startingWealth }],
+    visibility: [{ label: "Starting visibility", value: startingVis }],
+    competence: [{ label: "Starting competence", value: startingComp }],
+    firmCapacity: [{ label: "Starting capacity", value: startingCap }],
+    reputation: [{ label: "Starting reputation", value: baseReputation }],
+  };
+
+  if (grantApplied && (g.eur !== 0 || g.competence !== 0 || g.visibility !== 0)) {
+    if (g.eur !== 0) linesByMetric.eur.push({ label: `Spouse support (entering Season ${save.seasonNumber})`, value: g.eur });
+    if (g.competence !== 0) linesByMetric.competence.push({ label: `Spouse support (entering Season ${save.seasonNumber})`, value: g.competence });
+    if (g.visibility !== 0) linesByMetric.visibility.push({ label: `Spouse support (entering Season ${save.seasonNumber})`, value: g.visibility });
+  }
+
+  if (focus.competence !== 0) {
+    linesByMetric.competence.push({ label: "Pre-season focus (all seasons)", value: focus.competence });
+  }
+  if (focus.visibility !== 0) {
+    linesByMetric.visibility.push({ label: "Pre-season focus (all seasons)", value: focus.visibility });
+  }
+
+  if (salarySum !== 0) {
+    linesByMetric.eur.push({ label: "Employees (payroll at hire)", value: -salarySum });
+  }
+  if (employeeVis !== 0) {
+    linesByMetric.visibility.push({ label: "Employees (current roster)", value: employeeVis });
+  }
+  if (employeeComp !== 0) {
+    linesByMetric.competence.push({ label: "Employees (current roster)", value: employeeComp });
+  }
+  if (employeeCap !== 0) {
+    linesByMetric.firmCapacity.push({ label: "Employees (current roster)", value: employeeCap });
+  }
+
+  for (const e of postSeason) {
+    if (e.reputationDelta !== 0) {
+      linesByMetric.reputation.push({
+        label: `Post-season (Season ${e.seasonKey}) — ${e.scenarioTitle}`,
+        value: e.reputationDelta,
+      });
+    }
+  }
+
+  const currentRep = save.reputation ?? 5;
+  const remainder = currentRep - baseReputation - postRepSum;
+  if (remainder !== 0) {
+    linesByMetric.reputation.push({ label: "Layoffs and other adjustments", value: remainder });
+  }
+
+  return linesByMetric[metric].filter((l, idx) => idx === 0 || l.value !== 0);
+}
+
+export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePayload): Array<{ label: string; value: number }> {
+  if (useSimplifiedPreseasonLedger(save)) {
+    return buildSimplifiedPreseasonBreakdown(metric, save);
+  }
+
+  const employees = save.employees ?? [];
+  const baseResources: BuildStats = save.initialResources ?? estimateBaseResources(save);
+  const baseReputation = save.initialReputation ?? 5;
+  const focus = computePreseasonFocusTotals(save);
   const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
   const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
   const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
@@ -89,12 +182,12 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
     ],
     visibility: [
       { label: "Pre-Season Start", value: baseResources.visibility },
-      { label: "Pre-Season Focus", value: focusVis },
+      { label: "Pre-Season Focus", value: focus.visibility },
       { label: "Employees", value: employeeVis },
     ],
     competence: [
       { label: "Pre-Season Start", value: baseResources.competence },
-      { label: "Pre-Season Focus", value: focusComp },
+      { label: "Pre-Season Focus", value: focus.competence },
       { label: "Employees", value: employeeComp },
     ],
     firmCapacity: [
@@ -147,8 +240,7 @@ function estimateBaseResources(save: NewGamePayload): BuildStats {
   const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
   const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
   const employeeCost = employees.reduce((s, e) => s + e.salary, 0);
-  const focusComp = (save.preseasonFocusCounts?.strategy_workshop ?? 0) * 10;
-  const focusVis = (save.preseasonFocusCounts?.network ?? 0) * 10;
+  const focus = computePreseasonFocusTotals(save);
   const s1 = computeSeason1Ledger(save);
   const postSeason = collectPostSeasonLedger(save);
   const postVisSum = postSeason.reduce((s, e) => s + e.visibilityGain, 0);
@@ -156,8 +248,8 @@ function estimateBaseResources(save: NewGamePayload): BuildStats {
   const postCapSum = postSeason.reduce((s, e) => s + e.capacitySpentOnEffectivenessBoost, 0);
   return {
     eur: save.resources.eur + employeeCost - s1.eurNet + postEurSum,
-    visibility: save.resources.visibility - focusVis - employeeVis - postVisSum,
-    competence: save.resources.competence - focusComp - employeeComp,
+    visibility: save.resources.visibility - focus.visibility - employeeVis - postVisSum,
+    competence: save.resources.competence - focus.competence - employeeComp,
     firmCapacity: save.resources.firmCapacity - employeeCap + s1.capacityUsed + postCapSum,
   };
 }

@@ -59,6 +59,13 @@ export type NewGamePayload = {
   seasonLoopBySeason?: Partial<Record<string, SeasonLoopState>>;
   /** `scenario_id` values already assigned to a client this playthrough (no repeats). */
   usedScenarioIds?: string[];
+  /**
+   * Spouse end-of-season support applied when entering this pre-season (idempotent per season key).
+   * Used for ledger display and grant application from post-season → pre-season transition.
+   */
+  preseasonEntrySpouseGrantSeasons?: string[];
+  /** Voluntary layoffs taken in a given season number (string key), max 1 per season. */
+  voluntaryLayoffsBySeason?: Partial<Record<string, number>>;
   createdAt: string;
 };
 

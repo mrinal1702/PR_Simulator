@@ -29,6 +29,7 @@ export function HomeDashboard() {
   }, [save]);
 
   const caseLog = useMemo(() => (save ? buildSeason1CaseLog(save) : []), [save]);
+  const showSeason1CaseLog = save ? save.seasonNumber < 2 : false;
 
   if (!save) {
     return null;
@@ -55,9 +56,11 @@ export function HomeDashboard() {
         <button type="button" className="btn btn-secondary" onClick={() => setShowEmployees((v) => !v)}>
           {showEmployees ? "Hide employees" : "Employees"}
         </button>
-        <button type="button" className="btn btn-secondary" onClick={() => setShowCaseLog((v) => !v)}>
-          {showCaseLog ? "Hide case log" : "Case log — Season 1"}
-        </button>
+        {showSeason1CaseLog ? (
+          <button type="button" className="btn btn-secondary" onClick={() => setShowCaseLog((v) => !v)}>
+            {showCaseLog ? "Hide case log" : "Case log — Season 1"}
+          </button>
+        ) : null}
       </div>
 
       {showStats ? (
@@ -133,7 +136,7 @@ export function HomeDashboard() {
         </div>
       ) : null}
 
-      {showCaseLog ? (
+      {showSeason1CaseLog && showCaseLog ? (
         <div style={{ marginTop: "1rem" }}>
           <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>Case log — Season 1</h3>
           <p className="muted" style={{ marginTop: 0, fontSize: "0.88rem" }}>
