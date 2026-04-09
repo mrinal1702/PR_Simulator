@@ -488,7 +488,7 @@ h3 {
   color: var(--text-muted);
 }
 
-/* Client case: scenario budget lines (labels uppercase; green / yellow / white) */
+/* Client case: client fee lines (labels uppercase; green / yellow / white) */
 .client-case-budget-block {
   margin-top: 0.25rem;
 }

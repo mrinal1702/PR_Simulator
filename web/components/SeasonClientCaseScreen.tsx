@@ -66,7 +66,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           ? {
               ...o,
               title: "Reject client",
-              description: "Pass on this client. No campaign runs and no budget is added.",
+              description: "Pass on this client. No campaign runs and no client fees apply.",
             }
           : o
       );
@@ -243,19 +243,19 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           </p>
           <div className="client-case-budget-block">
             <p className="client-case-budget-line">
-              <span className="client-case-budget-label client-case-budget-label--this-season">Budget this season</span>
+              <span className="client-case-budget-label client-case-budget-label--this-season">Client fees this season</span>
               <span className="client-case-budget-amount">
                 EUR {currentClient.budgetSeason1.toLocaleString("en-GB")}
               </span>
             </p>
             <p className="client-case-budget-line">
-              <span className="client-case-budget-label client-case-budget-label--next-season">Budget next season</span>
+              <span className="client-case-budget-label client-case-budget-label--next-season">Client fees next season</span>
               <span className="client-case-budget-amount">
                 EUR {currentClient.budgetSeason2.toLocaleString("en-GB")}
               </span>
             </p>
             <p className="client-case-budget-line">
-              <span className="client-case-budget-label client-case-budget-label--total">Budget total</span>
+              <span className="client-case-budget-label client-case-budget-label--total">Total client fees</span>
               <span className="client-case-budget-amount">EUR {currentClient.budgetTotal.toLocaleString("en-GB")}</span>
             </p>
           </div>
