@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** Mandatory payroll checkpoint removed — resolve roster on main pre-season screen. */
+/** Redirect only: roster and settlement live on `/game/preseason/[season]`. See `docs/AGENCY_FINANCE.md`. */
 export default async function PreSeasonPayrollPage({
   params,
 }: {

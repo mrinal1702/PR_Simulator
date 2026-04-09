@@ -116,7 +116,7 @@ Limited **effort** per cycle; clients consume effort; employees increase capacit
 
 ---
 
-## Consistency checkpoint (single rule)
+## Design consistency (single rule)
 
 **Do not let wealth become the dominant lever for convincingness or stability.** Money may nudge effectiveness with **deliberately weak scaling**, but **reach** is where spending **scales strongly**; **competence, strategy, discipline, and segment fit** must remain what separate great runs from noisy, expensive ones.
 
@@ -130,24 +130,24 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 
 ## Current implementation snapshot
 
-- Implemented UI loop: `Home → New Game → Pre-season → Season hub → Client cases → Post-season hub → Post-season results (per client) → Season summary → (if payroll shortfall) Payroll checkpoint → Pre-season N+1`. **Home** (with a save) shows **phase**, **agency stats / employees / breakdowns** (client + post-season ledger lines), and **Case log — Season 1** where applicable.
+- Implemented UI loop: `Home → New Game → Pre-season → Season hub → Client cases → Post-season hub → Post-season results (per client) → Season summary → Pre-season N+1`. **Home** (with a save) shows **phase**, **agency stats / employees / breakdowns** (client + post-season ledger lines), and **Case log — Season 1** where applicable.
 - `Continue` is enabled and routes to saved `preseason/season/postseason` path.
 - Save system is single-slot local (`localStorage` + `sessionStorage`) via `dma-save-slot`.
 - Pre-season has one-time activity focus (`Strategy workshop` or `Network`) and an `Agency stats` panel.
 - Pre-season activity buttons disappear after the activity is used for that pre-season.
 - Dedicated hiring route: `/game/preseason/[season]/hiring` (Talent Bazaar).
-- Hiring supports intern vs full-time, role-first full-time flow, salary bands, deterministic candidate pools, irreversible hire + autosave, themed modal, and budget guard (EUR cannot go negative).
+- Hiring supports intern vs full-time, role-first full-time flow, salary bands, deterministic candidate pools, irreversible hire + autosave, themed modal, and **liquidity**-based affordability (payables model; see `docs/AGENCY_FINANCE.md`).
 - Employees persist; roster is salary-sorted with non-zero contribution lines only.
 - Per-metric breakdown modals on agency stats (zero-value lines hidden for non-base contributors).
 - Pre-season `Start season` confirmation: cannot return to pre-season; extra warning if no activity chosen; can still proceed.
 - **Season hub** (`/game/season/[season]`): **`Roll season clients`**, **`Open current client case`**, then **`Continue to post-season`** when the queue is fully resolved (`phase` → `postseason`).
-- **Post-season** (`/game/postseason/[season]`): hub with **Season summary**, **View results** (mandatory review + boosts), link to **next pre-season**. **`/game/postseason/[season]/summary`**: stats, scenario overview, company financials (P&amp;L-style + cash bridge), payroll heads-up, **Enter pre-season N+1**.
+- **Post-season** (`/game/postseason/[season]`): hub with **Season summary**, **View results** (mandatory review + boosts), link to **next pre-season**. **`/game/postseason/[season]/summary`**: stats, scenario overview, company financials (P&amp;L-style + cash bridge), liquidity / layoff pressure when relevant, **Enter pre-season N+1**.
 - Outcome math is resolved in `web/lib/solutionOutcomeMath.ts`: archetype base plus a centered, additive force from visibility/competence/discipline drivers (with small score-level jitter), and post-season rewards apply after player action.
 - **Client case** (`/game/season/[season]/client`): separate screen per client. **Season 1**: Season 1 liquid only applies if you **run a priced campaign** (`+budgetSeason1 − spend`); **Reject client** means **no** funds from them. Creative copy from `web/data/scenarios_*.json` (merged in code; see `docs/SCENARIO_CREATIVE_GUIDELINES.md`).
 - In-season client economy and loop state: `web/lib/seasonClientLoop.ts`, `web/lib/clientEconomyMath.ts`, `web/lib/scenarios.ts`; save field `seasonLoopBySeason` on `NewGamePayload`.
 - Reputation is initialized at `5` and treated as derived (not directly purchasable at start).
 - Metric bands/labels are data-driven in `web/lib/metricScales.ts`.
-- **Payroll & employees (implemented for Season 2+):** mandatory **payroll checkpoint** (`/game/preseason/[season]/payroll`) when entering pre-season from summary if cash cannot cover roster payroll; **mandatory layoffs** (no severance, no rep hit) until affordable; **voluntary fire** on pre-season 2+ (severance + rep, same-pre-season hire protection); **pre-hire modals** and inline payroll-risk copy on Talent Bazaar; **payroll deducted** when starting a season from pre-season (season 2+), tracked via `payrollPaidBySeason` so season routes cannot be entered unpaid; **interns** expire when leaving post-season (removed from roster, stat gains reversed). See `docs/PAYROLL_AND_LAYOFF_RULES.md` for full rules; remaining polish (e.g. persistent payroll chip everywhere) is optional.
+- **Agency finance & employees (Season 2+):** **Payables** (wages, severance—positive amounts, red in UI) and **receivables** (guaranteed client follow-up fees—green) feed **liquidity** = cash + receivables − payables. **Layoff pressure** when liquidity &lt; 0: player must fix roster on **main pre-season** (Employees highlighted); **voluntary** fire (severance payable + rep hit; limits apply) vs **mandatory** fire in crisis (no severance, no rep hit). **Hiring** adds wage payables (no full salary deducted from cash at hire); affordability uses liquidity. **Start season** settles receivables minus payables and clears payables; `payrollPaidBySeason` gates season entry. **Interns** expire on year transition (removed from roster, stats reversed). Canonical rules: `docs/AGENCY_FINANCE.md`. Legacy path `/game/preseason/[season]/payroll` redirects to main pre-season.
 
 ## Documentation index
 
@@ -157,7 +157,7 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 | `docs/CLIENT_ECONOMY_MATH.md` | In-season client pricing and Season 1 liquid math |
 | `docs/SCENARIO_CREATIVE_GUIDELINES.md` | Writing / merging scenario JSON |
 | `docs/DEPLOYMENT.md` | Supabase + Vercel |
-| `docs/PAYROLL_AND_LAYOFF_RULES.md` | Payroll, layoffs, gates — **design + what is wired in the web app** |
+| `docs/AGENCY_FINANCE.md` | Cash, payables, receivables, liquidity, hiring, layoffs — **authoritative** |
 | `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md` | Metric anchors for solution / outcome balancing |
 
-For agent handoff and economy notes, start with `docs/AGENT_HANDOFF.md` and `docs/CLIENT_ECONOMY_MATH.md`.
+For agent handoff and economy notes, start with `docs/AGENT_HANDOFF.md`, `docs/AGENCY_FINANCE.md`, and `docs/CLIENT_ECONOMY_MATH.md`.

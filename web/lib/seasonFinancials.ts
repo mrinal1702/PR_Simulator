@@ -159,9 +159,8 @@ export function totalCumulativeSalaries(save: NewGamePayload): number {
 }
 
 /**
- * Payroll vs cash before next season’s payroll checkpoint.
- * Aligns with `docs/PAYROLL_AND_LAYOFF_RULES.md`: roster must be affordable for **upcoming season** payroll;
- * if cash (after known inflows you model elsewhere) is below total payroll, forced layoffs may be required at resolution.
+ * Legacy snapshot: total salaries vs cash (no receivables / payables).
+ * For gating and UI, use `liquidityEur` / `hasLayoffPressure` in `payablesReceivables.ts` — see `docs/AGENCY_FINANCE.md`.
  */
 export type PayrollHeadsUp = {
   upcomingSeasonPayroll: number;
