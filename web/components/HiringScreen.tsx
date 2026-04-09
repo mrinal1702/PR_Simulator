@@ -40,6 +40,7 @@ export function HiringScreen({ season }: { season: number }) {
   const [stage, setStage] = useState<"home" | "results">("home");
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [hireReport, setHireReport] = useState<HireReport | null>(null);
+  const [pendingCandidate, setPendingCandidate] = useState<Candidate | null>(null);
 
   if (!save) {
     return (
@@ -91,7 +92,7 @@ export function HiringScreen({ season }: { season: number }) {
     setStage("results");
   };
 
-  const hireCandidate = (candidate: Candidate) => {
+  const finalizeHireCandidate = (candidate: Candidate) => {
     if (capReached) return;
     const nextEur = spendEurOrNull(save.resources.eur, candidate.salary);
     if (nextEur == null) {
@@ -186,6 +187,16 @@ export function HiringScreen({ season }: { season: number }) {
     setRole(null);
     setSalary(15_000);
     setCandidates([]);
+  };
+
+  const openHireWarning = (candidate: Candidate) => {
+    setPendingCandidate(candidate);
+  };
+
+  const confirmHire = () => {
+    if (!pendingCandidate) return;
+    finalizeHireCandidate(pendingCandidate);
+    setPendingCandidate(null);
   };
 
   return (
@@ -324,8 +335,13 @@ export function HiringScreen({ season }: { season: number }) {
                 <p className="muted" style={{ margin: "0 0 0.4rem" }}>
                   {mode === "intern" ? "Intern" : `${roleLabel(c.role)} · ${tier}`} · EUR {c.salary.toLocaleString("en-GB")}
                 </p>
+                {mode === "full_time" ? (
+                  <p style={{ margin: "0 0 0.4rem", color: "var(--danger, #dc2626)", fontSize: "0.9rem" }}>
+                    Payroll risk warning: if you cannot cover this salary after season end, you will have to lay this employee off.
+                  </p>
+                ) : null}
                 <p style={{ margin: 0 }}>{c.description}</p>
-                <button type="button" className="btn btn-primary" style={{ marginTop: "0.75rem" }} onClick={() => hireCandidate(c)}>
+                <button type="button" className="btn btn-primary" style={{ marginTop: "0.75rem" }} onClick={() => openHireWarning(c)}>
                   Hire
                 </button>
               </div>
@@ -351,6 +367,31 @@ export function HiringScreen({ season }: { season: number }) {
           <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end" }}>
             <button type="button" className="btn btn-primary" onClick={() => setHireReport(null)}>
               OK
+            </button>
+          </div>
+        </div>
+      </div>
+    ) : null}
+    {pendingCandidate ? (
+      <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-label="Confirm hire warning">
+        <div className="game-modal">
+          <p className="game-modal-kicker">Before you hire</p>
+          <h2 style={{ marginTop: 0 }}>Are you sure you want to hire {pendingCandidate.name}?</h2>
+          {mode === "intern" ? (
+            <p style={{ marginTop: 0 }}>
+              Intern reminder: they will leave your agency and will not count toward next season&apos;s payroll.
+            </p>
+          ) : (
+            <p style={{ marginTop: 0 }}>
+              Are you sure? If you can&apos;t afford this employee&apos;s salary after the season ends, you will need to lay them off.
+            </p>
+          )}
+          <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end", gap: "0.6rem" }}>
+            <button type="button" className="btn btn-secondary" onClick={() => setPendingCandidate(null)}>
+              Cancel
+            </button>
+            <button type="button" className="btn btn-primary" onClick={confirmHire}>
+              Confirm hire
             </button>
           </div>
         </div>
