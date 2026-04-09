@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
+import { seasonSpouseGrants } from "@/lib/gameEconomy";
 import {
   acceptedRunsWithOutcomes,
   postSeasonNextRunIndex,
@@ -18,11 +19,42 @@ import {
   computeSeasonScenarioAverages,
   totalCumulativeSalaries,
 } from "@/lib/seasonFinancials";
-import { POST_SEASON_REACH_BOOST_COST_EUR } from "@/lib/postSeasonResults";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 
 function fmtEur(n: number): string {
   return `EUR ${n.toLocaleString("en-GB")}`;
+}
+
+/** 0% dark red → 50% yellow → 100% dark green (for reach / effectiveness display). */
+function metricPercentGradientColor(pct: number): string {
+  const p = Math.max(0, Math.min(100, pct)) / 100;
+  const darkRed = { r: 127, g: 29, b: 29 };
+  const yellow = { r: 234, g: 179, b: 8 };
+  const darkGreen = { r: 22, g: 101, b: 52 };
+  let r: number;
+  let g: number;
+  let b: number;
+  if (p <= 0.5) {
+    const t = p * 2;
+    r = darkRed.r + (yellow.r - darkRed.r) * t;
+    g = darkRed.g + (yellow.g - darkRed.g) * t;
+    b = darkRed.b + (yellow.b - darkRed.b) * t;
+  } else {
+    const t = (p - 0.5) * 2;
+    r = yellow.r + (darkGreen.r - yellow.r) * t;
+    g = yellow.g + (darkGreen.g - yellow.g) * t;
+    b = yellow.b + (darkGreen.b - yellow.b) * t;
+  }
+  return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+}
+
+function ScenarioMetricBar({ pct }: { pct: number }) {
+  const w = Math.max(0, Math.min(100, pct));
+  return (
+    <span className="scenario-summary-metric-bar" role="img" aria-label={`${w} percent`}>
+      <span className="scenario-summary-metric-bar-fill" style={{ width: `${w}%`, display: "block" }} />
+    </span>
+  );
 }
 
 export function SeasonSummaryScreen({ season }: { season: number }) {
@@ -47,8 +79,22 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
   const futureReceivables = useMemo(() => (loop ? computeFutureReceivablesForLoop(loop) : 0), [loop]);
   const cumulativeSalaries = useMemo(() => (save ? totalCumulativeSalaries(save) : 0), [save]);
   const payrollHeadsUp = useMemo(() => (save ? computePayrollHeadsUp(save) : null), [save]);
+  const upcomingSpouseIncomeEur = useMemo(
+    () => (save ? seasonSpouseGrants(save.spouseType).eur : 0),
+    [save]
+  );
   const acceptedForResults = useMemo(() => (loop ? acceptedRunsWithOutcomes(loop) : []), [loop]);
   const resultsDone = acceptedForResults.length === 0 || postSeasonNextRunIndex(acceptedForResults) >= acceptedForResults.length;
+
+  /** Scenario overview tab: only clients the player accepted (not rejected). */
+  const scenarioOverviewRows = useMemo(() => {
+    if (!loop) return [];
+    return loop.clientsQueue.flatMap((client) => {
+      const run = loop.runs.find((r) => r.clientId === client.id);
+      if (!run || !run.accepted || run.solutionId === "reject") return [];
+      return [{ client, run }];
+    });
+  }, [loop]);
 
   const enterNextSeason = () => {
     if (!save) return;
@@ -140,19 +186,33 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
               <p className="muted" style={{ margin: 0, fontSize: "0.92rem", lineHeight: 1.55 }}>
                 No employees on the roster — no payroll to cover for the upcoming season.
               </p>
-            ) : payrollHeadsUp.canCoverPayroll ? (
-              <p style={{ margin: 0, fontSize: "0.92rem", lineHeight: 1.55 }}>
-                <strong>No layoff pressure from cash vs payroll right now:</strong> current cash ({fmtEur(payrollHeadsUp.cash)}) is at or above total payroll for the{" "}
-                <strong>upcoming season</strong> ({fmtEur(payrollHeadsUp.upcomingSeasonPayroll)} for {payrollHeadsUp.employeeCount} employee
-                {payrollHeadsUp.employeeCount === 1 ? "" : "s"}). Spouse or other inflows before the payroll checkpoint are not included here — if those apply, you may be safer than this line suggests.
-              </p>
             ) : (
-              <p style={{ margin: 0, fontSize: "0.92rem", lineHeight: 1.55 }}>
-                <strong>You may need to reduce headcount (or raise cash) before next season:</strong> per payroll rules, everyone on payroll must be affordable for the{" "}
-                <strong>upcoming season</strong>. Your cash ({fmtEur(payrollHeadsUp.cash)}) is{" "}
-                <strong>below</strong> total payroll ({fmtEur(payrollHeadsUp.upcomingSeasonPayroll)}) — shortfall about {fmtEur(payrollHeadsUp.shortfall)}. At the payroll resolution checkpoint, the firm{" "}
-                <strong>cannot retain the full roster</strong> unless cash improves or inflows (e.g. spouse grants) arrive in time. Voluntary layoffs are a separate path with severance and reputation costs when that UI exists.
-              </p>
+              <div style={{ display: "grid", gap: "0.55rem", fontSize: "0.92rem", lineHeight: 1.5 }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontWeight: 700,
+                    color: payrollHeadsUp.canCoverPayroll ? "#16a34a" : "#dc2626",
+                  }}
+                >
+                  {payrollHeadsUp.canCoverPayroll ? "No Layoff Pressure" : "Layoff Pressure"}
+                </p>
+                <p style={{ margin: 0 }}>
+                  <strong>Upcoming Payroll Cost</strong> — {fmtEur(payrollHeadsUp.upcomingSeasonPayroll)}
+                </p>
+                <p style={{ margin: 0 }}>
+                  <strong>Upcoming Income</strong> —{" "}
+                  <span style={{ color: upcomingSpouseIncomeEur > 0 ? "#16a34a" : "#ca8a04", fontWeight: 600 }}>
+                    {fmtEur(upcomingSpouseIncomeEur)}
+                  </span>
+                  {upcomingSpouseIncomeEur > 0 ? (
+                    <span className="muted" style={{ fontWeight: 400 }}>
+                      {" "}
+                      (spouse, before next season)
+                    </span>
+                  ) : null}
+                </p>
+              </div>
             )}
           </div>
         ) : null}
@@ -161,63 +221,98 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
       <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
         <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>Scenario overview</h2>
         <p className="muted" style={{ marginTop: 0, fontSize: "0.92rem" }}>
-          Each client in arrival order. Expand to read the full scenario brief.
+          Clients you accepted and ran a campaign for, in arrival order. Rejected clients are not listed. Expand to read more of the brief.
         </p>
         <button type="button" className="btn btn-secondary" onClick={() => setShowScenarios((v) => !v)} style={{ marginTop: "0.5rem" }}>
           {showScenarios ? "Hide scenario list" : "Scenario overview"}
         </button>
         {showScenarios ? (
           <div style={{ marginTop: "1rem", display: "grid", gap: "0.75rem" }}>
-            {loop.clientsQueue.map((client) => {
-              const run = loop.runs.find((r) => r.clientId === client.id);
-              const expanded = expandedScenario[client.id] ?? false;
-              const toggle = () => setExpandedScenario((m) => ({ ...m, [client.id]: !expanded }));
-              if (!run) return null;
-              const rejected = !run.accepted || run.solutionId === "reject";
-              const outcome = run.outcome;
-              return (
-                <div
-                  key={client.id}
-                  style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.85rem 1rem", textAlign: "left" }}
-                >
-                  <p style={{ margin: "0 0 0.35rem", fontWeight: 600 }}>{client.scenarioTitle}</p>
-                  <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.9rem" }}>
-                    {client.displayName}
-                  </p>
-                  {!expanded ? (
-                    <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.88rem", lineHeight: 1.45 }}>
-                      {client.problem.length > 160 ? `${client.problem.slice(0, 160)}…` : client.problem}
+            {scenarioOverviewRows.length === 0 ? (
+              <p className="muted" style={{ margin: 0, fontSize: "0.92rem" }}>
+                No accepted campaigns this season — rejected clients are not shown here.
+              </p>
+            ) : null}
+            {scenarioOverviewRows.map(({ client, run }) => {
+                const expanded = expandedScenario[client.id] ?? false;
+                const toggle = () => setExpandedScenario((m) => ({ ...m, [client.id]: !expanded }));
+                const outcome = run.outcome;
+                const repDelta = run.postSeason?.reputationDelta ?? 0;
+                const visGain = run.postSeason?.visibilityGain ?? 0;
+                return (
+                  <div
+                    key={client.id}
+                    style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.85rem 1rem", textAlign: "left" }}
+                  >
+                    <p style={{ margin: "0 0 0.35rem", fontWeight: 600 }}>{client.scenarioTitle}</p>
+                    <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.9rem" }}>
+                      {client.displayName}
                     </p>
-                  ) : (
-                    <p style={{ margin: "0 0 0.5rem", fontSize: "0.92rem", lineHeight: 1.5 }}>{client.problem}</p>
-                  )}
-                  <button type="button" className="btn btn-secondary" style={{ padding: "0.35rem 0.65rem", fontSize: "0.82rem" }} onClick={toggle}>
-                    {expanded ? "Show less" : "Full scenario description"}
-                  </button>
-                  <p style={{ margin: "0.65rem 0 0.25rem", fontSize: "0.92rem" }}>
-                    <strong>Decision:</strong>{" "}
-                    {rejected ? "Rejected client" : (run.solutionTitle ?? run.solutionId)}
-                  </p>
-                  {!rejected && outcome ? (
-                    <p className="muted" style={{ margin: "0.35rem 0", fontSize: "0.88rem" }}>
-                      Reach {outcome.messageSpread}% · Effectiveness {outcome.messageEffectiveness}% · Satisfaction {outcome.satisfaction}
+                    {!expanded ? (
+                      <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.88rem", lineHeight: 1.45 }}>
+                        {client.problem.length > 160 ? `${client.problem.slice(0, 160)}…` : client.problem}
+                      </p>
+                    ) : (
+                      <p style={{ margin: "0 0 0.5rem", fontSize: "0.92rem", lineHeight: 1.5 }}>{client.problem}</p>
+                    )}
+                    <button type="button" className="btn btn-secondary" style={{ padding: "0.35rem 0.65rem", fontSize: "0.82rem" }} onClick={toggle}>
+                      {expanded ? "Show less" : "Show more"}
+                    </button>
+
+                    <p style={{ margin: "0.65rem 0 0.25rem", fontSize: "0.92rem" }}>
+                      <strong>Decision:</strong> {run.solutionTitle ?? run.solutionId}
                     </p>
-                  ) : null}
-                  {run.postSeason ? (
-                    <p className="muted" style={{ margin: "0.25rem 0 0", fontSize: "0.88rem" }}>
-                      Post-season: reputation {(run.postSeason.reputationDelta ?? 0) >= 0 ? "+" : ""}
-                      {run.postSeason.reputationDelta ?? 0}, visibility +{run.postSeason.visibilityGain ?? 0}
-                      {run.postSeason.choice === "reach" ? ` · Reach boost (${fmtEur(POST_SEASON_REACH_BOOST_COST_EUR)} spent)` : ""}
-                      {run.postSeason.choice === "effectiveness" ? " · Effectiveness boost (5 capacity)" : ""}
-                      {run.postSeason.choice === "none" ? " · No boost" : ""}
-                    </p>
-                  ) : (
-                    <p className="muted" style={{ margin: "0.25rem 0 0", fontSize: "0.85rem" }}>
-                      Post-season not yet resolved for this campaign.
-                    </p>
-                  )}
-                </div>
-              );
+
+                    <p className="scenario-campaign-results-kicker">Campaign Results</p>
+
+                    {outcome ? (
+                      <>
+                        <div className="scenario-summary-metric-row">
+                          <span style={{ color: metricPercentGradientColor(outcome.messageSpread) }}>
+                            Reach — {outcome.messageSpread}%
+                          </span>
+                          <ScenarioMetricBar pct={outcome.messageSpread} />
+                        </div>
+                        <div className="scenario-summary-metric-row">
+                          <span style={{ color: metricPercentGradientColor(outcome.messageEffectiveness) }}>
+                            Effectiveness — {outcome.messageEffectiveness}%
+                          </span>
+                          <ScenarioMetricBar pct={outcome.messageEffectiveness} />
+                        </div>
+                      </>
+                    ) : (
+                      <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.88rem" }}>
+                        No campaign outcome recorded for this run.
+                      </p>
+                    )}
+
+                    {run.postSeason ? (
+                      <>
+                        <p
+                          style={{
+                            margin: "0.45rem 0 0",
+                            fontSize: "0.92rem",
+                            fontWeight: 600,
+                            color:
+                              repDelta < 0 ? "#dc2626" : repDelta === 0 ? "#fbbf24" : "#22c55e",
+                          }}
+                        >
+                          {repDelta < 0
+                            ? `Reputation Loss: ${repDelta}`
+                            : `Reputation Gain: ${repDelta > 0 ? "+" : ""}${repDelta}`}
+                        </p>
+                        <p style={{ margin: "0.35rem 0 0", fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" }}>
+                          Visibility Gain: {visGain >= 0 ? "+" : ""}
+                          {visGain}
+                        </p>
+                      </>
+                    ) : (
+                      <p className="muted" style={{ margin: "0.45rem 0 0", fontSize: "0.85rem" }}>
+                        Post-season review not completed for this campaign.
+                      </p>
+                    )}
+                  </div>
+                );
             })}
           </div>
         ) : null}
