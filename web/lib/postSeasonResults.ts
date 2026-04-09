@@ -82,8 +82,24 @@ export function reachEffectivenessLabels(reach: number, effectiveness: number): 
   };
 }
 
-/** Short arc blurb for the post-season results screen (copy uses high/low from >50% rule). */
+function postSeasonArcKeyFromMetrics(reach: number, effectiveness: number):
+  | "low_visibility_low_effectiveness"
+  | "low_visibility_high_effectiveness"
+  | "high_visibility_low_effectiveness"
+  | "high_visibility_high_effectiveness" {
+  const reachHigh = reach > 50;
+  const effectivenessHigh = effectiveness > 50;
+  if (!reachHigh && !effectivenessHigh) return "low_visibility_low_effectiveness";
+  if (!reachHigh && effectivenessHigh) return "low_visibility_high_effectiveness";
+  if (reachHigh && !effectivenessHigh) return "high_visibility_low_effectiveness";
+  return "high_visibility_high_effectiveness";
+}
+
+/** Post-season 1 scenario arc blurb (uses scenario arc_2 branches from reach/effectiveness thresholds). */
 export function buildPostSeasonArcBlurb(client: SeasonClient, reach: number, effectiveness: number): string {
+  const key = postSeasonArcKeyFromMetrics(reach, effectiveness);
+  const branch = client.postSeasonArcOutcomes?.[key];
+  if (branch && branch.trim().length > 0) return branch;
   const { reach: rLab, effectiveness: eLab } = reachEffectivenessLabels(reach, effectiveness);
   return [
     `Message reach was ${rLab} and message effectiveness was ${eLab} (above 50% counts as high).`,

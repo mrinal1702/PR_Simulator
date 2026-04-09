@@ -16,6 +16,13 @@ export type ScenarioSolutionLine = {
   solution_brief: string;
 };
 
+export type PostSeasonArcOutcomes = {
+  low_visibility_low_effectiveness?: string;
+  low_visibility_high_effectiveness?: string;
+  high_visibility_low_effectiveness?: string;
+  high_visibility_high_effectiveness?: string;
+};
+
 export type SeasonClient = {
   id: string;
   displayName: string;
@@ -27,6 +34,8 @@ export type SeasonClient = {
   scenarioId: string;
   scenarioTitle: string;
   scenarioSolutions: ScenarioSolutionLine[];
+  /** Scenario arc shown in post-season 1, chosen by reach/effectiveness threshold combination. */
+  postSeasonArcOutcomes?: PostSeasonArcOutcomes;
   hiddenDiscipline: number;
   hiddenPreferenceMotive: ClientPreferenceMotive;
   /**
@@ -327,6 +336,24 @@ export function buildSeasonClients(
     const split = splitBudgetBySeason(total);
     const scenario = pickScenarioForClient(kind, tier, `${kindSeed}|scn|${tier}`, exclude);
     exclude.add(scenario.scenario_id);
+    const arc2Source = (scenario as { arc_2?: unknown }).arc_2;
+    const postSeasonArcOutcomes: PostSeasonArcOutcomes | undefined =
+      arc2Source && typeof arc2Source === "object"
+        ? {
+            low_visibility_low_effectiveness: (
+              arc2Source as { low_visibility_low_effectiveness?: unknown }
+            ).low_visibility_low_effectiveness as string | undefined,
+            low_visibility_high_effectiveness: (
+              arc2Source as { low_visibility_high_effectiveness?: unknown }
+            ).low_visibility_high_effectiveness as string | undefined,
+            high_visibility_low_effectiveness: (
+              arc2Source as { high_visibility_low_effectiveness?: unknown }
+            ).high_visibility_low_effectiveness as string | undefined,
+            high_visibility_high_effectiveness: (
+              arc2Source as { high_visibility_high_effectiveness?: unknown }
+            ).high_visibility_high_effectiveness as string | undefined,
+          }
+        : undefined;
     const baseReach = baseReachWeightForMotive(motive);
     const satisfactionReachWeight = rollSatisfactionReachWeight(baseReach, `${seedBase}-satw-${season}-${i}`);
     clients.push({
@@ -344,6 +371,7 @@ export function buildSeasonClients(
         solution_name: s.solution_name,
         solution_brief: s.solution_brief,
       })),
+      postSeasonArcOutcomes,
       hiddenDiscipline:
         kind === "corporate" ? 45 + (h % 41) : kind === "small_business" ? 38 + (h % 45) : 30 + (h % 56),
       hiddenPreferenceMotive: motive,
