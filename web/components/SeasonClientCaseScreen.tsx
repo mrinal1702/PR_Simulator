@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
@@ -12,16 +13,44 @@ import {
   resolveClientOutcome,
   type SolutionOption,
 } from "@/lib/seasonClientLoop";
+import { computePayrollHeadsUp } from "@/lib/seasonFinancials";
 
 /**
  * Season 1: no client liquid is credited until a campaign runs. "Do nothing" rejects the client (no money).
  * Later seasons may treat "do nothing" differently when arcs carry over.
  */
 export function SeasonClientCaseScreen({ season }: { season: number }) {
+  const router = useRouter();
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [notice, setNotice] = useState("");
+  const [blockedByPayroll, setBlockedByPayroll] = useState(false);
 
   const seasonKey = String(season);
+  const payrollPaidForSeason = save?.payrollPaidBySeason?.[seasonKey] === true;
+  useEffect(() => {
+    if (!save || season < 2) return;
+    if (payrollPaidForSeason) return;
+    const payroll = computePayrollHeadsUp(save);
+    setBlockedByPayroll(true);
+    if (payroll.shortfall > 0) {
+      router.replace(`/game/preseason/${season}/payroll`);
+      return;
+    }
+    router.replace(`/game/preseason/${season}`);
+  }, [save, season, payrollPaidForSeason, router]);
+
+  if (blockedByPayroll) {
+    return (
+      <div className="shell">
+        <p className="muted">
+          <Link href="/">← {GAME_TITLE}</Link>
+        </p>
+        <h1>Redirecting…</h1>
+        <p className="muted">Payroll must be resolved before entering season.</p>
+      </div>
+    );
+  }
+
   const loop = save?.seasonLoopBySeason?.[seasonKey];
   const currentClient = loop?.clientsQueue[loop.currentClientIndex] ?? null;
   const runForCurrentClient = currentClient

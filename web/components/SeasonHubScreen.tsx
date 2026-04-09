@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
@@ -10,6 +10,7 @@ import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { plannedClientCountForSeason } from "@/lib/clientEconomyMath";
 import { SCENARIO_POOL_EXHAUSTED_MESSAGE } from "@/lib/scenarios";
 import { buildSeasonClients } from "@/lib/seasonClientLoop";
+import { computePayrollHeadsUp } from "@/lib/seasonFinancials";
 
 /** Season hub: roll queue, stats, link into the dedicated client-case screen. */
 export function SeasonHubScreen({ season }: { season: number }) {
@@ -18,6 +19,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
   const [showStats, setShowStats] = useState(false);
   const [showEmployees, setShowEmployees] = useState(false);
   const [notice, setNotice] = useState("");
+  const [blockedByPayroll, setBlockedByPayroll] = useState(false);
 
   if (!save) {
     return (
@@ -40,6 +42,31 @@ export function SeasonHubScreen({ season }: { season: number }) {
   };
 
   const seasonKey = String(season);
+  const payrollPaidForSeason = save.payrollPaidBySeason?.[seasonKey] === true;
+  useEffect(() => {
+    if (season < 2) return;
+    if (payrollPaidForSeason) return;
+    const payroll = computePayrollHeadsUp(save);
+    setBlockedByPayroll(true);
+    if (payroll.shortfall > 0) {
+      router.replace(`/game/preseason/${season}/payroll`);
+      return;
+    }
+    router.replace(`/game/preseason/${season}`);
+  }, [save, season, payrollPaidForSeason, router]);
+
+  if (blockedByPayroll) {
+    return (
+      <div className="shell">
+        <p className="muted">
+          <Link href="/">← {GAME_TITLE}</Link>
+        </p>
+        <h1>Redirecting…</h1>
+        <p className="muted">Payroll must be resolved before entering season.</p>
+      </div>
+    );
+  }
+
   const loop = save.seasonLoopBySeason?.[seasonKey];
   const currentClient = loop?.clientsQueue[loop.currentClientIndex] ?? null;
   const showClientCaseLink = Boolean(

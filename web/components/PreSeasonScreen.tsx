@@ -108,6 +108,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
 
   const startSeason = () => {
     if (!save) return;
+    const alreadyPaid = save.payrollPaidBySeason?.[seasonKey] === true;
     if (season >= 2 && save.resources.eur < totalPayroll) {
       setNotice("Payroll is not covered. Resolve mandatory layoffs before starting the season.");
       return;
@@ -117,12 +118,19 @@ export function PreSeasonScreen({ season }: { season: number }) {
       phase: "season",
       seasonNumber: season,
       resources:
-        season >= 2
+        season >= 2 && !alreadyPaid
           ? {
               ...save.resources,
               eur: save.resources.eur - totalPayroll,
             }
           : save.resources,
+      payrollPaidBySeason:
+        season >= 2
+          ? {
+              ...(save.payrollPaidBySeason ?? {}),
+              [seasonKey]: true,
+            }
+          : save.payrollPaidBySeason,
     };
     setSave(updated);
     persistSave(updated);
@@ -428,6 +436,7 @@ function FireConfirmModal({
             </p>
             <p className="muted" style={{ marginTop: 0 }}>
               You can only use one voluntary layoff per season. You cannot fire someone hired in this same pre-season.
+              Once fired, this employee&apos;s salary is removed from upcoming payroll.
             </p>
           </>
         )}

@@ -10,7 +10,15 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
   const nextSeason = completedPostSeason + 1;
   const key = String(nextSeason);
   const already = save.preseasonEntrySpouseGrantSeasons?.includes(key);
-  const employees = save.employees ?? [];
+  const previousSeason = completedPostSeason;
+  const employees = (save.employees ?? []).filter(
+    (e) => !(e.role === "Intern" && e.seasonHired <= previousSeason)
+  );
+  const removedInterns = (save.employees ?? []).filter(
+    (e) => e.role === "Intern" && e.seasonHired <= previousSeason
+  );
+  const removedInternComp = removedInterns.reduce((s, e) => s + e.competenceGain, 0);
+  const removedInternVis = removedInterns.reduce((s, e) => s + e.visibilityGain, 0);
   const capFromEmployees = employees.reduce((s, e) => s + e.capacityGain, 0);
   const baseCap = save.initialResources?.firmCapacity ?? 50;
   const newCapacity = baseCap + capFromEmployees;
@@ -21,8 +29,17 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
       seasonNumber: nextSeason,
       phase: "preseason",
       activityFocusUsedInPreseason: false,
+      employees,
       resources: {
         ...save.resources,
+        competence: clampToScale(
+          save.resources.competence - removedInternComp,
+          METRIC_SCALES.competence
+        ),
+        visibility: clampToScale(
+          save.resources.visibility - removedInternVis,
+          METRIC_SCALES.visibility
+        ),
         firmCapacity: newCapacity,
       },
     };
@@ -35,12 +52,19 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
     seasonNumber: nextSeason,
     phase: "preseason",
     activityFocusUsedInPreseason: false,
+    employees,
     preseasonEntrySpouseGrantSeasons: [...(save.preseasonEntrySpouseGrantSeasons ?? []), key],
     resources: {
       ...save.resources,
       eur: save.resources.eur + g.eur,
-      competence: clampToScale(save.resources.competence + g.competence, METRIC_SCALES.competence),
-      visibility: clampToScale(save.resources.visibility + g.visibility, METRIC_SCALES.visibility),
+      competence: clampToScale(
+        save.resources.competence - removedInternComp + g.competence,
+        METRIC_SCALES.competence
+      ),
+      visibility: clampToScale(
+        save.resources.visibility - removedInternVis + g.visibility,
+        METRIC_SCALES.visibility
+      ),
       firmCapacity: newCapacity,
     },
   };

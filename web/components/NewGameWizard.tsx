@@ -64,6 +64,8 @@ export type NewGamePayload = {
    * Used for ledger display and grant application from post-season → pre-season transition.
    */
   preseasonEntrySpouseGrantSeasons?: string[];
+  /** Whether payroll for a given season key has already been paid before entering that season hub. */
+  payrollPaidBySeason?: Partial<Record<string, boolean>>;
   /** Voluntary layoffs taken in a given season number (string key), max 1 per season. */
   voluntaryLayoffsBySeason?: Partial<Record<string, number>>;
   createdAt: string;
@@ -81,6 +83,7 @@ export function NewGameWizard() {
   const [gender, setGender] = useState<GenderValue | "">("");
 
   const [buildId, setBuildId] = useState<BuildId | null>(null);
+  const [showBuildPreview, setShowBuildPreview] = useState(false);
   const [spouseType, setSpouseType] = useState<SpouseType | null>(null);
   const [spouseName, setSpouseName] = useState("");
   const [spouseGender, setSpouseGender] = useState<GenderValue | "">("");
@@ -232,7 +235,10 @@ export function NewGameWizard() {
                 key={b.id}
                 type="button"
                 className={`choice-card${buildId === b.id ? " selected" : ""}`}
-                onClick={() => setBuildId(b.id)}
+                onClick={() => {
+                  setBuildId(b.id);
+                  setShowBuildPreview(true);
+                }}
               >
                 <h3 style={{ margin: "0 0 0.25rem", fontSize: "0.98rem" }}>{b.name}</h3>
                 <p className="muted" style={{ margin: "0 0 0.45rem", fontSize: "0.8rem", fontStyle: "italic" }}>
@@ -250,11 +256,27 @@ export function NewGameWizard() {
             ))}
           </div>
 
-          {buildId ? (
+          {buildId && showBuildPreview ? (
             <div className="choice-card selected" style={{ marginTop: "0.9rem", padding: "0.9rem 1rem" }}>
-              <h3 style={{ margin: "0 0 0.35rem", fontSize: "0.98rem" }}>
-                {BUILDS.find((b) => b.id === buildId)?.name}
-              </h3>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.6rem", marginBottom: "0.35rem" }}>
+                <h3 style={{ margin: 0, fontSize: "0.98rem" }}>
+                  {BUILDS.find((b) => b.id === buildId)?.name}
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setShowBuildPreview(false)}
+                  style={{
+                    border: "none",
+                    background: "transparent",
+                    color: "var(--text-muted)",
+                    fontSize: "0.7rem",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  Show less
+                </button>
+              </div>
               <p
                 style={{
                   margin: 0,
