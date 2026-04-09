@@ -19,6 +19,11 @@ import {
 } from "@/lib/gameEconomy";
 import type { SeasonLoopState } from "@/lib/seasonClientLoop";
 import { persistSave } from "@/lib/saveGameStorage";
+import {
+  BUILD_SPECIALTY_SYMBOLS,
+  ResourceSymbol,
+  SPOUSE_SPECIALTY_SYMBOL,
+} from "@/components/resourceSymbols";
 
 export type NewGamePayload = {
   playerName: string;
@@ -55,6 +60,10 @@ export type NewGamePayload = {
     competenceGain: number;
     visibilityGain: number;
     capacityGain: number;
+    /** Full-time hiring productivity roll (0–100); used for tenure capacity. Omitted for interns / legacy saves. */
+    productivityPct?: number;
+    /** Cumulative capacity from tenure (applied on post-season → pre-season transitions). */
+    tenureCapacityBonus?: number;
   }>;
   seasonLoopBySeason?: Partial<Record<string, SeasonLoopState>>;
   /** `scenario_id` values already assigned to a client this playthrough (no repeats). */
@@ -241,6 +250,19 @@ export function NewGameWizard() {
                 }}
               >
                 <h3 style={{ margin: "0 0 0.25rem", fontSize: "0.98rem" }}>{b.name}</h3>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    margin: "0 0 0.35rem",
+                    color: "var(--accent)",
+                  }}
+                >
+                  {BUILD_SPECIALTY_SYMBOLS[b.id].map((sym) => (
+                    <ResourceSymbol key={sym} id={sym} size={20} />
+                  ))}
+                </div>
                 <p className="muted" style={{ margin: "0 0 0.45rem", fontSize: "0.8rem", fontStyle: "italic" }}>
                   {b.tagline}
                 </p>
@@ -259,8 +281,24 @@ export function NewGameWizard() {
           {buildId && showBuildPreview ? (
             <div className="choice-card selected" style={{ marginTop: "0.9rem", padding: "0.9rem 1rem" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.6rem", marginBottom: "0.35rem" }}>
-                <h3 style={{ margin: 0, fontSize: "0.98rem" }}>
-                  {BUILDS.find((b) => b.id === buildId)?.name}
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: "0.98rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.45rem",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <span>{BUILDS.find((b) => b.id === buildId)?.name}</span>
+                  {buildId ? (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", color: "var(--accent)" }}>
+                      {BUILD_SPECIALTY_SYMBOLS[buildId].map((sym) => (
+                        <ResourceSymbol key={sym} id={sym} size={20} />
+                      ))}
+                    </span>
+                  ) : null}
                 </h3>
                 <button
                   type="button"
@@ -320,7 +358,21 @@ export function NewGameWizard() {
                 className={`choice-card${spouseType === s.id ? " selected" : ""}`}
                 onClick={() => selectSpouseType(s.id)}
               >
-                <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>{s.title}</h3>
+                <h3
+                  style={{
+                    margin: "0 0 0.35rem",
+                    fontSize: "1.05rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <span>{s.title}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", color: "var(--accent)" }}>
+                    <ResourceSymbol id={SPOUSE_SPECIALTY_SYMBOL[s.id]} size={22} />
+                  </span>
+                </h3>
                 <p style={{ margin: "0 0 0.5rem", fontSize: "0.9rem" }}>{s.blurb}</p>
                 <p className="muted" style={{ margin: 0, fontSize: "0.82rem", fontWeight: 600 }}>
                   {s.boost}
