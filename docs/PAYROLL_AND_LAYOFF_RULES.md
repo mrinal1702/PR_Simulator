@@ -25,7 +25,7 @@ This document locks **rules and UX intent** for payroll coverage, warnings, forc
 
 **Goal:** Warn when a decision pushes the firm into **payroll risk**, without panicking players who can still **earn in-season** from clients.
 
-- **Hard warning (modal):** When an action would make **payroll unaffordable** under **worst-case or no further in-season recovery** (define precisely in implementation — e.g. if current cash after action &lt; payroll and no path to cover before checkpoint without assuming uncertain client income).
+- **Hard warning (modal):** When an action would make **payroll unaffordable** under **worst-case or no further in-season recovery** (define precisely in implementation — e.g. if current cash after the action is below payroll and there is no path to cover before the checkpoint without assuming uncertain client income).
 - **Soft inline warning:** When **below payroll** but **recovery is possible** (e.g. spouse grant already scheduled, or season still has client income opportunity) — explain briefly so the player doesn’t assume instant game over.
 - **Persistent payroll status chip:** Show stable **Cash vs payroll** (and shortfall if any) on a sensible screen — **tone:** informational; **do not** imply “you lose immediately after hire” if season client work can still raise cash.
 

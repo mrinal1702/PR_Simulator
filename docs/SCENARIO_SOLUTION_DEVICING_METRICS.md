@@ -89,10 +89,11 @@ Do **not** treat these as “average good” — they are **stacked** optima. Sc
 
 ## Tie-in to in-season outcomes
 
-`resolveClientOutcome` in `web/lib/seasonClientLoop.ts` (message spread / effectiveness / satisfaction) uses **current** `visibility` and `competence` from the save when a solution is executed. Scenario text and difficulty should stay **consistent** with the same agency stats this document uses as references.
+`resolveClientOutcome` in `web/lib/seasonClientLoop.ts` (via `computeSeason1SolutionMetrics` in `web/lib/solutionOutcomeMath.ts`) uses **current** `visibility` and `competence` from the save when a solution is executed. Scenario text and difficulty should stay **consistent** with the same agency stats this document uses as references. Post-season boosts and summary screens read **final** `outcome` values after post-season resolution.
 
 ---
 
 ## Changelog
 
 - 2026-04-08: Initial snapshot (metric bands, benchmark 80, random-save quartiles, pre-season ceilings).
+- 2026-04-09: Noted `solutionOutcomeMath` / post-season final metrics.

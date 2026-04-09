@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
@@ -17,12 +16,10 @@ import {
   formatSigned,
   type BreakdownMetric,
 } from "@/lib/metricBreakdown";
-import { enterNextPreseason } from "@/lib/preseasonTransition";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 
 /** Post-season hub: agency snapshot (like season hub) + entry into mandatory results flow. */
 export function PostSeasonHubScreen({ season }: { season: number }) {
-  const router = useRouter();
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [showStats, setShowStats] = useState(false);
   const [showEmployees, setShowEmployees] = useState(false);
@@ -49,18 +46,6 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
   };
 
   const refresh = () => setSave(loadSave());
-
-  const goToNextPreseason = () => {
-    const current = loadSave();
-    if (!current) return;
-    const nextSeason = Math.min(season + 1, 7);
-    if (current.seasonNumber === season && current.phase === "postseason") {
-      const next = enterNextPreseason(current, season);
-      persistSave(next);
-      setSave(next);
-    }
-    router.push(`/game/preseason/${nextSeason}`);
-  };
 
   if (!save) {
     return (
@@ -240,9 +225,15 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
             </p>
           ) : null}
           <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: "0.65rem" }}>
-            <Link href={`/game/postseason/${season}/summary`} className="btn btn-secondary" style={{ textDecoration: "none" }}>
-              Season summary
-            </Link>
+            {resultsDone || resultsTotal === 0 ? (
+              <Link href={`/game/postseason/${season}/summary`} className="btn btn-secondary" style={{ textDecoration: "none" }}>
+                Season summary
+              </Link>
+            ) : (
+              <button type="button" className="btn btn-secondary" disabled style={{ opacity: 0.55 }}>
+                Season summary
+              </button>
+            )}
             {resultsTotal === 0 ? (
               <button type="button" className="btn btn-primary" disabled style={{ opacity: 0.55 }}>
                 View results
@@ -264,11 +255,6 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
           </p>
         </div>
 
-        <div style={{ marginTop: "1.25rem" }}>
-          <button type="button" className="btn btn-secondary" style={{ width: "fit-content" }} onClick={goToNextPreseason}>
-            Go to next pre-season
-          </button>
-        </div>
       </section>
 
       {breakdownMetric ? (

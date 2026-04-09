@@ -66,3 +66,10 @@ Implemented in `web/lib/seasonClientLoop.ts` (with client construction in `build
 5. **Execute a campaign**: Applies the net EUR and capacity change above; computes spread / effectiveness / satisfaction via `resolveClientOutcome`. **Money retained** for the case log is **`budgetSeason1 − costBudget`** (Season 1 liquid after spend).
 
 6. **Post-season transition**: When every queued client has a resolved run, the season hub offers **Continue to post-season** (updates `phase` to `postseason`, no confirmation modal).
+
+## Post-season (Season 1 implemented)
+
+Authoritative implementation: `web/lib/postSeasonResults.ts`, `web/lib/solutionOutcomeMath.ts` (in-season outcomes), `web/lib/seasonFinancials.ts` (summary financials), UI under `web/app/game/postseason/`.
+
+- **Results flow**: Player reviews each accepted campaign in order; optional **reach** boost (EUR 5,000) or **effectiveness** boost (5 capacity); competence maps boost size 1–5%. **Reputation** (−2…+5 from effectiveness bands) and **visibility** (+1…10 from satisfaction) apply **after** the choice, using final metrics.
+- **Ledger**: `collectPostSeasonLedger` / `buildMetricBreakdown` include post-season lines. **Season summary** adds operating P&amp;L + cash bridge, future **receivables** footnote (`budgetSeason2` sum), and **payroll vs cash** (see `docs/PAYROLL_AND_LAYOFF_RULES.md`).

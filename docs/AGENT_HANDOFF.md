@@ -2,15 +2,36 @@
 
 Use this file as the fastest context for a fresh agent.
 
+## Documentation map
+
+| File | Contents |
+|------|----------|
+| `README.md` | Design brief + implementation snapshot + doc index |
+| `docs/CLIENT_ECONOMY_MATH.md` | Client / Season 1 liquid math |
+| `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md` | Visibility/competence anchors for solution balancing |
+| `docs/SCENARIO_CREATIVE_GUIDELINES.md` | Scenario JSON authoring |
+| `docs/DEPLOYMENT.md` | Supabase + Vercel |
+| `docs/PAYROLL_AND_LAYOFF_RULES.md` | Payroll, layoffs, warnings, gates (**design**; not fully wired) |
+
 ## Design locked (not yet fully implemented)
 
-- **Payroll, layoffs, spouse timing, progression gates, Fire button, same-pre-season hire protection:** see `docs/PAYROLL_AND_LAYOFF_RULES.md`. Pre-season 2 checkpoint UI is **not** deployed yet; rules are documented for the next build.
+Full spec: **`docs/PAYROLL_AND_LAYOFF_RULES.md`**. Summary:
+
+- **Payroll:** per-season obligation; UI should say “upcoming season” (not vague “annual”); confirm on hire / Talent Bazaar copy.
+- **Spouse grants** apply **before** payroll resolution — call this out in warnings and projections.
+- **Warnings:** hard modal vs soft inline when spend risks missing payroll; persistent **payroll vs cash** chip without scaring players who can still earn **in-season** from clients.
+- **Forced layoffs** at checkpoint if cash cannot cover total payroll after inflows; **choose who** if multiple employees; **auto** if only one must go; conspicuous **Employees** CTA when player must act.
+- **Voluntary Fire:** −10 reputation, **20% severance**, max **1 voluntary layoff per season**; warn on attempt.
+- **Progression:** cannot advance from **pre-season 2** (or equivalent) until payroll / layoff state is resolved if the roster is unaffordable.
+- **Same pre-season:** cannot lay off someone hired **in that same** pre-season.
+- Pre-season **2** checkpoint UI for layoff resolution is **not** deployed yet; rules are for the next build.
 
 ## Product state
 
-- Deployed web app with onboarding, pre-season flow, **season hub**, **in-season client cases**, **home dashboard** (phase + case log), and **post-season milestone** route after completing the client queue.
+- Deployed web app with onboarding, pre-season flow, **season hub**, **in-season client cases**, **home dashboard** (phase + case log), and **post-season** (hub, mandatory results flow, season summary with financials + payroll heads-up).
 - Single local save slot is active (`dma-save-slot`) with Continue routing.
 - Seasons are planned through season 7; **Season 1–style client queue** (roll → sequential cases → solutions) is implemented; deeper multi-season / round-2 campaign logic can build on `seasonLoopBySeason`.
+- **Post-season 1 (Season 1)** is feature-complete for: outcome review, optional reach/effectiveness boosts, reputation/visibility rewards, ledger breakdown lines, **Season summary** (`/game/postseason/[season]/summary`) with scenario overview, operating P&amp;L + cash bridge, future-receivables footnote, and payroll vs cash check (`docs/PAYROLL_AND_LAYOFF_RULES.md` alignment). **Pre-season 2+** route exists from summary (`Enter pre-season N+1`); content may still mirror Season 1 until multi-season economy is expanded.
 
 ## Implemented flow
 
@@ -73,7 +94,10 @@ Use this file as the fastest context for a fresh agent.
    - **Season 1 economy**: Season 1 liquid is **not** credited on page load. **Reject client** = no EUR/capacity change. **Execute a campaign** applies `+budgetSeason1 − costBudget` to EUR and subtracts capacity in one step; run records optional `costBudget`, `costCapacity`, `solutionTitle` for ledger/history.
    - Four priced archetypes + reject; creative copy from merged `web/data/scenarios_*.json` via `pickScenarioForClient` (unique `scenario_id` per playthrough via `usedScenarioIds`).
 7. Post-season (`/game/postseason/[season]`)
-   - Milestone / placeholder after season work; `Continue` routes here when `phase === "postseason"` (`getContinuePath` in `saveGameStorage.ts`).
+   - **`PostSeasonHubScreen`**: agency stats, case log (Season 1), **Season summary** link, **View results** (mandatory one-by-one review of accepted campaigns in queue order).
+   - **`/game/postseason/[season]/results`**: per scenario — arc completeness bar, outcome metrics, optional boost (reach costs EUR 5k, effectiveness costs 5 capacity; gain 1–5% from competence), or do nothing. Updates `run.outcome`, `run.postSeason`, `reputation`, `visibility`, EUR/capacity as applicable.
+   - **`/game/postseason/[season]/summary`**: agency gains (post-season rep/vis), average reach/effectiveness/satisfaction, payroll vs cash (**may need to fire / reduce headcount** if cash &lt; roster payroll per `docs/PAYROLL_AND_LAYOFF_RULES.md`), toggles for **Scenario overview** and **Company financials** (operating P&amp;L + cash bridge; future receivables footnote). **Enter pre-season N+1** button (capped at 7).
+   - `Continue` routes here when `phase === "postseason"` (`getContinuePath` in `saveGameStorage.ts`).
 
 ## Save model (single slot)
 
@@ -87,7 +111,7 @@ Persisted fields:
 - derived: `reputation`
 - baseline snapshot: `initialResources`, `initialReputation`
 - hiring state: `hiresBySeason`, `employees[]`
-- **in-season client loop**: `seasonLoopBySeason` — optional map keyed by season string → `SeasonLoopState` (`plannedClientCount`, `currentClientIndex`, `clientsQueue`, `runs`, `lastOutcome`). See `web/lib/seasonClientLoop.ts`.
+- **in-season client loop**: `seasonLoopBySeason` — optional map keyed by season string → `SeasonLoopState` (`plannedClientCount`, `currentClientIndex`, `clientsQueue`, `runs`, `lastOutcome`). Each `SeasonClientRun` may include **`postSeason`** after the post-season results flow. See `web/lib/seasonClientLoop.ts`.
 - **used scenario IDs**: `usedScenarioIds` — list of `scenario_id` values already assigned to a client this playthrough. `pickScenarioForClient` excludes these (widening pool as needed); rolling clients updates the list. Load merges with IDs found in existing `clientsQueue` for older saves. If the DB runs out of unused scenarios, the roll fails with a user-facing message.
 - metadata: `createdAt`
 
@@ -158,7 +182,11 @@ UI behavior:
 - `web/components/NewGameWizard.tsx`: onboarding and initial save creation
 - `web/components/HomeMenu.tsx`: Continue/New game entry buttons
 - `web/components/HomeDashboard.tsx`: phase, stats, breakdowns, Season 1 case log
-- `web/lib/metricBreakdown.ts`: agency ledger lines for breakdown modals (pre-season + home + Season 1 client deltas)
+- `web/lib/metricBreakdown.ts`: agency ledger lines for breakdown modals (pre-season, home, Season 1 client deltas, post-season rep/vis/EUR/capacity)
+- `web/lib/solutionOutcomeMath.ts`: Season 1 campaign reach/effectiveness (archetype base + variance)
+- `web/lib/postSeasonResults.ts`: post-season boosts, rewards, `collectPostSeasonLedger`
+- `web/lib/seasonFinancials.ts`: season summary cash bridge, future receivables, payroll heads-up
+- `web/components/PostSeasonHubScreen.tsx`, `PostSeasonResultsScreen.tsx`, `SeasonSummaryScreen.tsx`: post-season UI
 - `web/components/PreSeasonScreen.tsx`: pre-season hub (focus, employees, breakdowns, season-start confirmation)
 - `web/components/HiringScreen.tsx`: dedicated hiring flow and hire outcome modal
 - `web/components/SeasonHubScreen.tsx`: season hub (roll queue, link to client case)
@@ -178,6 +206,8 @@ Useful checks before wider QA:
 3. **Execute a priced solution** (affordable with **your cash + their Season 1 tranche**) — EUR changes by **`+budgetSeason1 − costBudget`**, capacity by **`−costCapacity`**; hub advances after resolving the case.
 4. Repeat until the queue is finished; **Continue to post-season** appears only when **`runs.length`** matches **planned** count and the queue index is past the last client.
 5. **Continue to post-season** — no confirmation modal; save `phase` is **postseason**; URL `/game/postseason/[season]`.
+6. Post-season hub: open **View results**, complete every campaign (boost or not); verify EUR/capacity/rep/vis updates and breakdown lines.
+7. **Season summary**: check averages, financials toggle, payroll warning when cash &lt; total salaries; **Enter pre-season 2** (or next) navigates to `/game/preseason/[n]`.
 
 ## Supabase status
 
@@ -187,10 +217,11 @@ Useful checks before wider QA:
 
 ## Safe next tasks for another agent
 
-1. Extend client loop: Season 2 follow-up spend, reputation deltas, ledger lines in stat breakdowns (keep zero-line suppression).
-2. Add intern expiry after one season transition.
-3. Persist run state to Supabase (while keeping local fallback).
-4. Add automated tests for:
+1. **Implement `docs/PAYROLL_AND_LAYOFF_RULES.md`:** projection with spouse grants, spend warnings, checkpoint layoff resolution UI (pre-season 2+), `Fire` on Employees, same-pre-season hire protection, progression gate. (Summary screen already shows cash vs total payroll shortfall.)
+2. Extend client loop: Season 2 follow-up spend, multi-season post-season parity, reputation from non–Season-1 arcs.
+3. Add intern expiry after one season transition.
+4. Persist run state to Supabase (while keeping local fallback).
+5. Add automated tests for:
    - save/load/continue path
    - non-negative budget guard behavior
    - deterministic candidate pool stability (hiring + client kind / budget rolls)
@@ -199,4 +230,4 @@ Useful checks before wider QA:
    - spouse modifier invariants
    - pre-season → season transition warning and phase routing
    - **season client queue**: roll idempotency, sequential index, reject = no credit, execute = net Season 1 liquid, **Continue to post-season** when queue fully resolved
-
+   - **payroll / layoff rules** (once implemented): projection, gate, forced choice, voluntary caps
