@@ -275,7 +275,9 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
                       {!option.isRejectOption ? (
                         <p className="muted" style={{ margin: "0.2rem 0 0" }}>
                           {`Spend: EUR ${option.costBudget.toLocaleString("en-GB")} · Capacity ${option.costCapacity}`}
-                          {!affordable ? " · Not enough resources" : ""}
+                          {!affordable ? (
+                            <span style={{ color: "var(--danger)", fontStyle: "italic" }}> · Not enough resources</span>
+                          ) : null}
                         </p>
                       ) : null}
                     </button>

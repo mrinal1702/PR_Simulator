@@ -249,11 +249,13 @@ export function SeasonHubScreen({ season }: { season: number }) {
           </div>
         ) : null}
 
-        <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end" }}>
-          <button type="button" className="btn btn-primary" onClick={startSeasonClientRoll}>
-            Roll season clients
-          </button>
-        </div>
+        {!loop ? (
+          <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end" }}>
+            <button type="button" className="btn btn-primary" onClick={startSeasonClientRoll}>
+              Roll season clients
+            </button>
+          </div>
+        ) : null}
 
         {loop ? (
           <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
