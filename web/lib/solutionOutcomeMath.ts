@@ -23,10 +23,10 @@ const EFF_W_DISC = 0.25;
  * Additive-force model:
  * final = base + force(centered_driver), so base is the midpoint and stat quality pushes up/down.
  *
- * "60% variance" is interpreted as a full span around base, i.e. +/-30% of base.
- * Example: base=75 -> force range [-22.5, +22.5] -> [52.5, 97.5] before clamp/round.
+ * Fixed variance span (independent of base):
+ * total span = 40 points => force range [-20, +20] before clamp/round.
  */
-const VARIANCE_HALF_SPAN_OF_BASE = 0.3;
+const VARIANCE_HALF_SPAN_ABS = 20;
 const FORCE_CURVE_K = 1.8;
 
 /**
@@ -149,8 +149,8 @@ export function computeSeason1SolutionMetrics(input: {
   const forceFromDriver = (driver: number, maxAbs: number) =>
     Math.tanh(FORCE_CURVE_K * centerNorm(driver)) * maxAbs;
 
-  const reachForceMax = input.baseReach * VARIANCE_HALF_SPAN_OF_BASE;
-  const effectivenessForceMax = input.baseEffectiveness * VARIANCE_HALF_SPAN_OF_BASE;
+  const reachForceMax = VARIANCE_HALF_SPAN_ABS;
+  const effectivenessForceMax = VARIANCE_HALF_SPAN_ABS;
 
   const reach = Math.round(input.baseReach + forceFromDriver(reachDriver, reachForceMax));
   const effectiveness = Math.round(
