@@ -6,6 +6,11 @@ import type { SeasonLoopState } from "@/lib/seasonClientLoop";
 export type SeasonCashBridge = {
   openingCash: number;
   closingCash: number;
+  /** Sum of Season 1 client budgets for executed campaigns. */
+  revenue: number;
+  /** Sum of solution EUR costs for those campaigns (not including post-season reach boosts). */
+  campaignCost: number;
+  /** Same as revenue − campaignCost; cash retained from client work before post-season extras. */
   netClientReceipts: number;
   postSeasonReachSpend: number;
   /** Net client receipts minus post-season reach cash out (this season’s operating cash items). */
@@ -23,12 +28,16 @@ export function computeSeasonCashBridge(save: NewGamePayload, seasonKey: string)
     .filter((e) => e.seasonKey === seasonKey)
     .reduce((s, e) => s + e.eurSpentOnReachBoost, 0);
   const closingCash = save.resources.eur;
+  const revenue = ledger.revenueClientBudgets;
+  const campaignCost = ledger.campaignCostEur;
   const netClientReceipts = ledger.eurNet;
   const netOperatingCash = netClientReceipts - postSeasonReachSpend;
   const openingCash = closingCash - netClientReceipts + postSeasonReachSpend;
   return {
     openingCash,
     closingCash,
+    revenue,
+    campaignCost,
     netClientReceipts,
     postSeasonReachSpend,
     netOperatingCash,

@@ -3,25 +3,39 @@ import type { BuildStats } from "@/lib/gameEconomy";
 import { seasonSpouseGrants } from "@/lib/gameEconomy";
 import { computePreseasonFocusTotals } from "@/lib/preseasonFocus";
 import { collectPostSeasonLedger } from "@/lib/postSeasonResults";
+import { employeeTotalCapacityContribution } from "@/lib/tenureCapacity";
 
 export type BreakdownMetric = "eur" | "visibility" | "competence" | "firmCapacity" | "reputation";
 
 /** Net EUR and capacity from client work for a season (executed solutions only). Uses each client’s Season 1 tranche as the in-season liquid for that campaign. */
-export function computeSeasonLedger(save: NewGamePayload, seasonKey: string): { eurNet: number; capacityUsed: number } {
+export function computeSeasonLedger(save: NewGamePayload, seasonKey: string): {
+  eurNet: number;
+  capacityUsed: number;
+  /** Sum of clients’ Season 1 tranches for executed campaigns. */
+  revenueClientBudgets: number;
+  /** Sum of solution EUR costs for those campaigns (excludes post-season reach spend). */
+  campaignCostEur: number;
+} {
   const loop = save.seasonLoopBySeason?.[seasonKey];
-  if (!loop) return { eurNet: 0, capacityUsed: 0 };
+  if (!loop) {
+    return { eurNet: 0, capacityUsed: 0, revenueClientBudgets: 0, campaignCostEur: 0 };
+  }
   let eurNet = 0;
   let capacityUsed = 0;
+  let revenueClientBudgets = 0;
+  let campaignCostEur = 0;
   for (const r of loop.runs) {
     if (r.solutionId === "pending") continue;
     if (!r.accepted || r.solutionId === "reject") continue;
     if (r.costBudget == null) continue;
     const client = loop.clientsQueue.find((c) => c.id === r.clientId);
     if (!client) continue;
+    revenueClientBudgets += client.budgetSeason1;
+    campaignCostEur += r.costBudget;
     eurNet += client.budgetSeason1 - r.costBudget;
     if (r.costCapacity != null) capacityUsed += r.costCapacity;
   }
-  return { eurNet, capacityUsed };
+  return { eurNet, capacityUsed, revenueClientBudgets, campaignCostEur };
 }
 
 /** @deprecated Use {@link computeSeasonLedger}(save, "1") — kept for call sites. */
@@ -93,7 +107,7 @@ function buildSimplifiedPreseasonBreakdown(
   const salarySum = employees.reduce((s, e) => s + e.salary, 0);
   const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
   const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
-  const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
+  const employeeCap = employees.reduce((s, e) => s + employeeTotalCapacityContribution(e), 0);
   const focus = computePreseasonFocusTotals(save);
   const postSeason = collectPostSeasonLedger(save);
   const postRepSum = postSeason.reduce((s, e) => s + e.reputationDelta, 0);
@@ -170,7 +184,7 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
   const focus = computePreseasonFocusTotals(save);
   const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
   const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
-  const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
+  const employeeCap = employees.reduce((s, e) => s + employeeTotalCapacityContribution(e), 0);
   const employeeCost = employees.reduce((s, e) => s + e.salary, 0);
   const s1 = computeSeason1Ledger(save);
   const postSeason = collectPostSeasonLedger(save);
@@ -238,7 +252,7 @@ function estimateBaseResources(save: NewGamePayload): BuildStats {
   const employees = save.employees ?? [];
   const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
   const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
-  const employeeCap = employees.reduce((s, e) => s + e.capacityGain, 0);
+  const employeeCap = employees.reduce((s, e) => s + employeeTotalCapacityContribution(e), 0);
   const employeeCost = employees.reduce((s, e) => s + e.salary, 0);
   const focus = computePreseasonFocusTotals(save);
   const s1 = computeSeason1Ledger(save);

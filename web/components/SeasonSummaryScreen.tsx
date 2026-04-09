@@ -330,15 +330,23 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.95rem" }}>
               <tbody>
                 <tr>
-                  <td style={{ padding: "0.35rem 0" }}>Net receipts from client engagements</td>
-                  <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>{fmtEur(cash.netClientReceipts)}</td>
+                  <td style={{ padding: "0.35rem 0" }}>Revenue</td>
+                  <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>{fmtEur(cash.revenue)}</td>
                 </tr>
                 <tr>
-                  <td style={{ padding: "0.35rem 0" }}>Post-season reach boosts (cash)</td>
+                  <td style={{ padding: "0.35rem 0" }}>Campaign cost</td>
                   <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
-                    {cash.postSeasonReachSpend > 0 ? `−${fmtEur(cash.postSeasonReachSpend)}` : fmtEur(0)}
+                    {cash.campaignCost > 0 ? `−${fmtEur(cash.campaignCost)}` : fmtEur(0)}
                   </td>
                 </tr>
+                {cash.postSeasonReachSpend > 0 ? (
+                  <tr>
+                    <td style={{ padding: "0.35rem 0" }}>Extra campaign cost</td>
+                    <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
+                      −{fmtEur(cash.postSeasonReachSpend)}
+                    </td>
+                  </tr>
+                ) : null}
                 <tr style={{ borderTop: "1px solid var(--border)" }}>
                   <td style={{ padding: "0.5rem 0 0.35rem" }}>
                     <strong>Net operating cash (this season)</strong>
@@ -358,13 +366,19 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
                   <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>{fmtEur(cash.openingCash)}</td>
                 </tr>
                 <tr>
-                  <td style={{ padding: "0.35rem 0" }}>+ Net receipts from client engagements</td>
-                  <td style={{ padding: "0.35rem 0", textAlign: "right" }}>{fmtEur(cash.netClientReceipts)}</td>
+                  <td style={{ padding: "0.35rem 0" }}>+ Revenue</td>
+                  <td style={{ padding: "0.35rem 0", textAlign: "right" }}>{fmtEur(cash.revenue)}</td>
                 </tr>
                 <tr>
-                  <td style={{ padding: "0.35rem 0" }}>− Post-season reach boosts</td>
-                  <td style={{ padding: "0.35rem 0", textAlign: "right" }}>{fmtEur(cash.postSeasonReachSpend)}</td>
+                  <td style={{ padding: "0.35rem 0" }}>− Campaign cost</td>
+                  <td style={{ padding: "0.35rem 0", textAlign: "right" }}>{fmtEur(cash.campaignCost)}</td>
                 </tr>
+                {cash.postSeasonReachSpend > 0 ? (
+                  <tr>
+                    <td style={{ padding: "0.35rem 0" }}>− Extra campaign cost</td>
+                    <td style={{ padding: "0.35rem 0", textAlign: "right" }}>{fmtEur(cash.postSeasonReachSpend)}</td>
+                  </tr>
+                ) : null}
                 <tr style={{ borderTop: "1px solid var(--border)" }}>
                   <td style={{ padding: "0.5rem 0 0.35rem" }}>
                     <strong>Closing cash</strong>
