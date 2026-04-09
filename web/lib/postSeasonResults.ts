@@ -127,11 +127,16 @@ export function reputationDeltaHalfArcFromEffectiveness(effectivenessPercent: nu
 }
 
 /**
- * Firm visibility gain from client satisfaction (1–10), uniform vs satisfaction % (0–100).
+ * Firm visibility gain (1–10), based 50% on reach and 50% on client satisfaction.
  */
-export function visibilityGainFromClientSatisfaction(satisfactionPercent: number): number {
+export function visibilityGainFromReachAndClientSatisfaction(
+  reachPercent: number,
+  satisfactionPercent: number
+): number {
+  const r = Math.max(0, Math.min(100, reachPercent));
   const s = Math.max(0, Math.min(100, satisfactionPercent));
-  return Math.max(1, Math.min(10, Math.round(1 + (s / 100) * 9)));
+  const blended = r * 0.5 + s * 0.5;
+  return Math.max(1, Math.min(10, Math.round(1 + (blended / 100) * 9)));
 }
 
 /**
@@ -175,7 +180,7 @@ export function applyPostSeasonChoice(
   let visibilityGain = 0;
   if (arcCompleteness === 50) {
     reputationDelta = reputationDeltaHalfArcFromEffectiveness(newEff);
-    visibilityGain = visibilityGainFromClientSatisfaction(satisfaction);
+    visibilityGain = visibilityGainFromReachAndClientSatisfaction(newReach, satisfaction);
   }
 
   const repScale = METRIC_SCALES.reputation;

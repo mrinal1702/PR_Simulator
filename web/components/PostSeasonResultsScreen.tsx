@@ -12,7 +12,6 @@ import {
   canAffordReachBoost,
   POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY,
   POST_SEASON_REACH_BOOST_COST_EUR,
-  postSeasonBoostPointsFromCompetence,
   postSeasonCompletedCount,
   postSeasonNextRunIndex,
   postSeasonScenarioCompletenessPercent,
@@ -34,8 +33,6 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
   const done = total > 0 && nextIdx >= total;
   const currentRun = !done && nextIdx < total ? accepted[nextIdx] : null;
   const currentClient = currentRun ? loop?.clientsQueue.find((c) => c.id === currentRun.clientId) : null;
-
-  const boostPreview = save ? postSeasonBoostPointsFromCompetence(save.resources.competence) : 0;
 
   const commitChoice = (choice: "reach" | "effectiveness" | "none") => {
     if (!save || !loop || !currentRun || busy) return;
@@ -180,7 +177,8 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
       <section className="agency-stats-panel">
         <h3 style={{ marginTop: 0, fontSize: "1.05rem" }}>Optional boost</h3>
         <p className="muted" style={{ marginTop: 0, fontSize: "0.92rem" }}>
-          Pick one: boost reach or boost effectiveness. You can only choose one per scenario. Current boost value: <strong>+{boostPreview}%</strong>.
+          Pick one: increase reach or increase effectiveness. You can only choose one per scenario. Each increase is
+          based on firm competence, up to 5%.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem", marginTop: "0.85rem" }}>
           <button
@@ -191,7 +189,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
             style={{ justifyContent: "space-between", textAlign: "left" }}
           >
             <span>
-              Boost reach (+{boostPreview}% max 5%) — costs EUR {POST_SEASON_REACH_BOOST_COST_EUR.toLocaleString("en-GB")}
+              Increase reach (up to 5%) — costs EUR {POST_SEASON_REACH_BOOST_COST_EUR.toLocaleString("en-GB")}
             </span>
           </button>
           <button
@@ -202,7 +200,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
             style={{ justifyContent: "space-between", textAlign: "left" }}
           >
             <span>
-              Boost effectiveness (+{boostPreview}% max 5%) — costs {POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY} capacity
+              Increase effectiveness (up to 5%) — costs {POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY} capacity
             </span>
           </button>
           <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => commitChoice("none")}>
