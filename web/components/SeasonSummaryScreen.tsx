@@ -17,7 +17,6 @@ import {
   computePayrollHeadsUp,
   computeSeasonPostSeasonStatGains,
   computeSeasonScenarioAverages,
-  totalCumulativeSalaries,
 } from "@/lib/seasonFinancials";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 
@@ -77,7 +76,6 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
   );
   const averages = useMemo(() => computeSeasonScenarioAverages(loop), [loop]);
   const futureReceivables = useMemo(() => (loop ? computeFutureReceivablesForLoop(loop) : 0), [loop]);
-  const cumulativeSalaries = useMemo(() => (save ? totalCumulativeSalaries(save) : 0), [save]);
   const payrollHeadsUp = useMemo(() => (save ? computePayrollHeadsUp(save) : null), [save]);
   const upcomingSpouseIncomeEur = useMemo(
     () => (save ? seasonSpouseGrants(save.spouseType).eur : 0),
@@ -379,10 +377,10 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
             </table>
 
             <p className="muted" style={{ margin: "1rem 0 0", fontSize: "0.88rem", lineHeight: 1.5 }}>
-              <strong>Future receivables:</strong> {fmtEur(futureReceivables)} expected from follow-up work.
+              <strong>Future receivables:</strong> {fmtEur(futureReceivables)}
             </p>
             <p className="muted" style={{ margin: "0.65rem 0 0", fontSize: "0.88rem", lineHeight: 1.5 }}>
-              <strong>Payroll (informational):</strong> cumulative salaries paid when staff joined — {fmtEur(cumulativeSalaries)} total. See wealth breakdown for how this sits with founder and partner capital.
+              <strong>Next Season Payroll:</strong> {fmtEur(payrollHeadsUp?.upcomingSeasonPayroll ?? 0)}
             </p>
           </div>
         ) : null}
