@@ -103,6 +103,19 @@ h3 {
   background: #1c2430;
 }
 
+/** Primary “next step” CTA (post-season → summary → next season) */
+.btn-next-hint {
+  background: linear-gradient(180deg, #facc15 0%, #eab308 100%);
+  color: #171717;
+  border-color: #ca8a04;
+  font-weight: 700;
+}
+
+.btn-next-hint:hover:not(:disabled) {
+  filter: brightness(1.06);
+  border-color: #fbbf24;
+}
+
 .btn:disabled,
 .btn[aria-disabled="true"] {
   opacity: 0.45;

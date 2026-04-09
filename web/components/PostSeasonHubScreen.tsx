@@ -44,6 +44,8 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
     resultsTotal > 0 && postSeasonNextRunIndex(acceptedForResults) >= resultsTotal;
   const resultsProgress =
     resultsTotal > 0 ? `${postSeasonCompletedCount(acceptedForResults)} / ${resultsTotal} reviewed` : "—";
+  /** Summary is available and is the forward path (reviews done, or nothing to review). */
+  const summaryReady = resultsDone || resultsTotal === 0;
 
   const caseLog = useMemo(() => (save && season === 1 ? buildSeason1CaseLog(save) : []), [save, season]);
 
@@ -252,8 +254,12 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
             </p>
           ) : null}
           <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: "0.65rem" }}>
-            {resultsDone || resultsTotal === 0 ? (
-              <Link href={`/game/postseason/${season}/summary`} className="btn btn-secondary" style={{ textDecoration: "none" }}>
+            {summaryReady ? (
+              <Link
+                href={`/game/postseason/${season}/summary`}
+                className="btn btn-next-hint"
+                style={{ textDecoration: "none" }}
+              >
                 Season summary
               </Link>
             ) : (

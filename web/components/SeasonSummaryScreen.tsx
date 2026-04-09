@@ -67,6 +67,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
   const [expandedScenario, setExpandedScenario] = useState<Record<string, boolean>>({});
   const [showFinancials, setShowFinancials] = useState(false);
   const [showScenarios, setShowScenarios] = useState(false);
+  const [confirmAdvanceOpen, setConfirmAdvanceOpen] = useState(false);
 
   const seasonKey = String(season);
   const loop = save?.seasonLoopBySeason?.[seasonKey];
@@ -98,14 +99,15 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
     });
   }, [loop]);
 
+  const nextPreseasonNum = Math.min(season + 1, 7);
+
   const enterNextSeason = () => {
     if (!save) return;
     if (!resultsDone) return;
-    const nextSeason = Math.min(season + 1, 7);
     const next = enterNextPreseason(save, season);
     persistSave(next);
     setSave(next);
-    router.push(`/game/preseason/${nextSeason}`);
+    router.push(`/game/preseason/${nextPreseasonNum}`);
   };
 
   if (!save) {
@@ -386,8 +388,14 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
         <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none" }}>
           Back to post-season
         </Link>
-        <button type="button" className="btn btn-secondary" onClick={enterNextSeason} disabled={!resultsDone} style={{ opacity: resultsDone ? 1 : 0.55 }}>
-          Enter pre-season {Math.min(season + 1, 7)}
+        <button
+          type="button"
+          className={resultsDone ? "btn btn-next-hint" : "btn btn-secondary"}
+          onClick={() => resultsDone && setConfirmAdvanceOpen(true)}
+          disabled={!resultsDone}
+          style={{ opacity: resultsDone ? 1 : 0.55 }}
+        >
+          Enter pre-season {nextPreseasonNum}
         </button>
         {!resultsDone ? (
           <p className="muted" style={{ margin: 0, fontSize: "0.86rem" }}>
@@ -395,6 +403,34 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
           </p>
         ) : null}
       </div>
+
+      {confirmAdvanceOpen ? (
+        <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="advance-season-title">
+          <div className="game-modal">
+            <h2 id="advance-season-title" style={{ marginTop: 0 }}>
+              Are you sure?
+            </h2>
+            <p style={{ margin: "0.5rem 0 0", lineHeight: 1.55 }}>
+              You will leave this summary and continue to <strong>pre-season {nextPreseasonNum}</strong>. This season will be marked complete.
+            </p>
+            <div style={{ marginTop: "1rem", display: "flex", flexWrap: "wrap", gap: "0.65rem", justifyContent: "flex-end" }}>
+              <button type="button" className="btn btn-secondary" onClick={() => setConfirmAdvanceOpen(false)}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-next-hint"
+                onClick={() => {
+                  setConfirmAdvanceOpen(false);
+                  enterNextSeason();
+                }}
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
