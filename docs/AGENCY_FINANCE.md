@@ -44,7 +44,7 @@ There is **no** “layoff pressure” copy on the first pre-season onboarding su
 ## 5. In-season vs pre-season accrual
 
 - **Entering a season:** At **Start season**, the game **settles** pre-season: cash is adjusted by **receivables − sum(payables)**, then **payables are cleared** for that transition (nothing carries as accrued payables mid-season in this model). `payrollPaidBySeason` marks that pre-season was completed for season ≥ 2 so the season hub cannot be entered without having finished pre-season settlement.
-- **During the season:** Operating cash moves with client cases as implemented today; the payables/receivables **snapshot** for liquidity is defined for pre-season and summary surfaces, not a parallel “accrual every click” ledger.
+- **During the season (`phase === "season"`):** Guaranteed receivables from **accepted** clients (non-reject) accrue against the **current season’s** client loop. The resource strip and liquidity use that total so receivables update as soon as a campaign is committed. Operating cash still moves with Season 1 tranches per client case.
 
 ---
 

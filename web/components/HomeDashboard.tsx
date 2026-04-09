@@ -4,12 +4,11 @@ import { useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { loadSave } from "@/lib/saveGameStorage";
-import {
-  buildMetricBreakdown,
-  buildSeason1CaseLog,
-  formatSigned,
-  type BreakdownMetric,
-} from "@/lib/metricBreakdown";
+import { buildSeason1CaseLog, type BreakdownMetric } from "@/lib/metricBreakdown";
+import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import { AgencyFinanceStatsRows } from "@/components/AgencyFinanceStatsRows";
+import { MetricBreakdownModalBody } from "@/components/MetricBreakdownModalBody";
+import { ResourceSymbol } from "@/components/resourceSymbols";
 import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
 
 /** Home: phase, agency snapshot with breakdowns, and case log. */
@@ -38,6 +37,7 @@ export function HomeDashboard() {
 
   return (
     <div className="agency-stats-panel" style={{ marginBottom: "1.5rem", maxWidth: "40rem", marginLeft: "auto", marginRight: "auto" }}>
+      <AgencyResourceStrip save={save} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "0.75rem" }}>
         <div>
           <p className="muted" style={{ margin: "0 0 0.25rem", fontSize: "0.82rem", textTransform: "uppercase", letterSpacing: "0.06em" }}>
@@ -67,13 +67,21 @@ export function HomeDashboard() {
       {showStats ? (
         <div style={{ marginTop: "1rem" }}>
           <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Agency snapshot</h3>
-          <p className="muted" style={{ marginTop: 0 }}>
-            Cash: EUR {save.resources.eur.toLocaleString("en-GB")}
+          <p className="muted" style={{ marginTop: 0, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.35rem" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+              <ResourceSymbol id="eur" size={17} />
+              <strong>Cash</strong>: EUR {save.resources.eur.toLocaleString("en-GB")}
+            </span>
             {" · "}
             <button type="button" className="btn btn-secondary" style={{ padding: "0.2rem 0.5rem", fontSize: "0.82rem" }} onClick={() => setBreakdownMetric("eur")}>
               Breakdown
             </button>
           </p>
+          <AgencyFinanceStatsRows
+            save={save}
+            onPayables={() => setBreakdownMetric("payables")}
+            onReceivables={() => setBreakdownMetric("receivables")}
+          />
           <MetricRow
             label="Reputation"
             value={save.reputation ?? 5}
@@ -176,25 +184,7 @@ export function HomeDashboard() {
       {breakdownMetric ? (
         <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-label="Metric breakdown">
           <div className="game-modal">
-            <p className="game-modal-kicker">Agency ledger</p>
-            <h2 style={{ marginTop: 0 }}>
-              {breakdownMetric === "eur"
-                ? "Wealth breakdown"
-                : breakdownMetric === "visibility"
-                  ? "Visibility breakdown"
-                  : breakdownMetric === "competence"
-                    ? "Competence breakdown"
-                    : breakdownMetric === "firmCapacity"
-                      ? "Capacity breakdown"
-                      : "Reputation breakdown"}
-            </h2>
-            <div style={{ display: "grid", gap: "0.35rem" }}>
-              {buildMetricBreakdown(breakdownMetric, save).map((line) => (
-                <p key={line.label} style={{ margin: 0 }}>
-                  {line.label}: {formatSigned(breakdownMetric, line.value)}
-                </p>
-              ))}
-            </div>
+            <MetricBreakdownModalBody metric={breakdownMetric} save={save} />
             <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end" }}>
               <button type="button" className="btn btn-primary" onClick={() => setBreakdownMetric(null)}>
                 OK

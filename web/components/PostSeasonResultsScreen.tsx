@@ -18,12 +18,16 @@ import {
 } from "@/lib/postSeasonResults";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import { AgencyFinanceBreakdownHost } from "@/components/AgencyFinanceBreakdownHost";
+import { AgencyFinanceSnapshot } from "@/components/AgencyFinanceSnapshot";
 import { ResourceSymbol } from "@/components/resourceSymbols";
+import type { BreakdownMetric } from "@/lib/metricBreakdown";
 
 export function PostSeasonResultsScreen({ season }: { season: number }) {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
+  const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
 
   const seasonKey = String(season);
   const loop = save?.seasonLoopBySeason?.[seasonKey];
@@ -74,79 +78,103 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
 
   if (!loop) {
     return (
-      <div className="shell shell-wide">
-        <header style={{ marginBottom: "1.25rem" }}>
-          <p className="muted" style={{ margin: "0 0 0.25rem" }}>
-            <Link href="/">← {GAME_TITLE}</Link>
-          </p>
-          <h1 style={{ margin: 0 }}>Post-season {season} · Results</h1>
-          <p className="muted" style={{ marginTop: "0.5rem" }}>
-            No season data for this year. Return to the season hub.
-          </p>
-        </header>
-        <AgencyResourceStrip save={save} />
-        <Link href={`/game/season/${season}`} className="btn btn-secondary" style={{ textDecoration: "none", width: "fit-content" }}>
-          Back to season hub
-        </Link>
-      </div>
+      <>
+        <div className="shell shell-wide">
+          <header style={{ marginBottom: "1.25rem" }}>
+            <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+              <Link href="/">← {GAME_TITLE}</Link>
+            </p>
+            <h1 style={{ margin: 0 }}>Post-season {season} · Results</h1>
+            <p className="muted" style={{ marginTop: "0.5rem" }}>
+              No season data for this year. Return to the season hub.
+            </p>
+          </header>
+          <AgencyResourceStrip save={save} />
+          <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
+          <Link href={`/game/season/${season}`} className="btn btn-secondary" style={{ textDecoration: "none", width: "fit-content" }}>
+            Back to season hub
+          </Link>
+        </div>
+        {breakdownMetric ? (
+          <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
+        ) : null}
+      </>
     );
   }
 
   if (total === 0) {
     return (
-      <div className="shell shell-wide">
-        <header style={{ marginBottom: "1.25rem" }}>
-          <p className="muted" style={{ margin: "0 0 0.25rem" }}>
-            <Link href="/">← {GAME_TITLE}</Link>
-          </p>
-          <h1 style={{ margin: 0 }}>Post-season {season} · Results</h1>
-          <p className="muted" style={{ marginTop: "0.5rem" }}>
-            There are no completed campaigns to review (every client was rejected or has no outcome).
-          </p>
-        </header>
-        <AgencyResourceStrip save={save} />
-        <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none", width: "fit-content" }}>
-          Back to post-season
-        </Link>
-      </div>
+      <>
+        <div className="shell shell-wide">
+          <header style={{ marginBottom: "1.25rem" }}>
+            <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+              <Link href="/">← {GAME_TITLE}</Link>
+            </p>
+            <h1 style={{ margin: 0 }}>Post-season {season} · Results</h1>
+            <p className="muted" style={{ marginTop: "0.5rem" }}>
+              There are no completed campaigns to review (every client was rejected or has no outcome).
+            </p>
+          </header>
+          <AgencyResourceStrip save={save} />
+          <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
+          <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none", width: "fit-content" }}>
+            Back to post-season
+          </Link>
+        </div>
+        {breakdownMetric ? (
+          <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
+        ) : null}
+      </>
     );
   }
 
   if (done) {
     return (
-      <div className="shell shell-wide">
-        <header style={{ marginBottom: "1.25rem" }}>
-          <p className="muted" style={{ margin: "0 0 0.25rem" }}>
-            <Link href="/">← {GAME_TITLE}</Link>
-          </p>
-          <h1 style={{ margin: 0 }}>Post-season {season} · Results complete</h1>
-          <p className="muted" style={{ marginTop: "0.5rem" }}>
-            You have reviewed every campaign from this season in order.
-          </p>
-        </header>
-        <AgencyResourceStrip save={save} />
-        <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none", width: "fit-content" }}>
-          Back to post-season
-        </Link>
-      </div>
+      <>
+        <div className="shell shell-wide">
+          <header style={{ marginBottom: "1.25rem" }}>
+            <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+              <Link href="/">← {GAME_TITLE}</Link>
+            </p>
+            <h1 style={{ margin: 0 }}>Post-season {season} · Results complete</h1>
+            <p className="muted" style={{ marginTop: "0.5rem" }}>
+              You have reviewed every campaign from this season in order.
+            </p>
+          </header>
+          <AgencyResourceStrip save={save} />
+          <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
+          <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none", width: "fit-content" }}>
+            Back to post-season
+          </Link>
+        </div>
+        {breakdownMetric ? (
+          <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
+        ) : null}
+      </>
     );
   }
 
   if (!currentRun?.outcome || !currentClient) {
     return (
-      <div className="shell shell-wide">
-        <header style={{ marginBottom: "1.25rem" }}>
-          <p className="muted" style={{ margin: "0 0 0.25rem" }}>
-            <Link href="/">← {GAME_TITLE}</Link>
-          </p>
-          <h1 style={{ margin: 0 }}>Post-season {season} · Results</h1>
-          <p className="muted" style={{ marginTop: "0.5rem" }}>Missing client data for this step.</p>
-        </header>
-        <AgencyResourceStrip save={save} />
-        <button type="button" className="btn btn-secondary" onClick={() => setSave(loadSave())}>
-          Refresh
-        </button>
-      </div>
+      <>
+        <div className="shell shell-wide">
+          <header style={{ marginBottom: "1.25rem" }}>
+            <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+              <Link href="/">← {GAME_TITLE}</Link>
+            </p>
+            <h1 style={{ margin: 0 }}>Post-season {season} · Results</h1>
+            <p className="muted" style={{ marginTop: "0.5rem" }}>Missing client data for this step.</p>
+          </header>
+          <AgencyResourceStrip save={save} />
+          <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
+          <button type="button" className="btn btn-secondary" onClick={() => setSave(loadSave())}>
+            Refresh
+          </button>
+        </div>
+        {breakdownMetric ? (
+          <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
+        ) : null}
+      </>
     );
   }
 
@@ -157,6 +185,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
   const affordEff = canAffordEffectivenessBoost(save.resources.firmCapacity);
 
   return (
+    <>
     <div className="shell shell-wide">
       <header style={{ marginBottom: "1.25rem" }}>
         <p className="muted" style={{ margin: "0 0 0.25rem" }}>
@@ -173,6 +202,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
       </header>
 
       <AgencyResourceStrip save={save} />
+      <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
 
       <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
         <p className="muted" style={{ margin: "0 0 0.25rem", fontSize: "0.82rem", textTransform: "uppercase", letterSpacing: "0.06em" }}>
@@ -261,5 +291,9 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
         {notice ? <p style={{ marginTop: "0.75rem" }}>{notice}</p> : null}
       </section>
     </div>
+    {breakdownMetric ? (
+      <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
+    ) : null}
+    </>
   );
 }

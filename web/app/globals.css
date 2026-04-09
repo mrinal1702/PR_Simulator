@@ -376,6 +376,14 @@ h3 {
   line-height: 1;
 }
 
+.preseason-resource-strip__val--payables {
+  color: #f87171 !important;
+}
+
+.preseason-resource-strip__val--receivables {
+  color: #4ade80 !important;
+}
+
 /* Post-season results: optional boost buttons — align resource symbols with copy */
 .postseason-boost-cost-line {
   display: inline-flex;

@@ -7,7 +7,7 @@ import { GAME_TITLE } from "@/lib/onboardingContent";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { persistSave, loadSave } from "@/lib/saveGameStorage";
-import { buildMetricBreakdown, formatSigned, type BreakdownMetric } from "@/lib/metricBreakdown";
+import { type BreakdownMetric } from "@/lib/metricBreakdown";
 import { fireEmployeeForPayrollShortfall, fireEmployeeVoluntary } from "@/lib/employeeActions";
 import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
 import {
@@ -16,6 +16,8 @@ import {
   type PreseasonFocusId,
 } from "@/lib/preseasonFocus";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import { AgencyFinanceStatsRows } from "@/components/AgencyFinanceStatsRows";
+import { MetricBreakdownModalBody } from "@/components/MetricBreakdownModalBody";
 import { ResourceSymbol } from "@/components/resourceSymbols";
 
 export function PreSeasonScreen({ season }: { season: number }) {
@@ -199,13 +201,21 @@ export function PreSeasonScreen({ season }: { season: number }) {
         {showStats ? (
           <div className="agency-stats-panel">
             <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Agency snapshot</h3>
-            <p className="muted" style={{ marginTop: 0 }}>
-              Cash: EUR {save.resources.eur.toLocaleString("en-GB")}
+            <p className="muted" style={{ marginTop: 0, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.35rem" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                <ResourceSymbol id="eur" size={17} />
+                <strong>Cash</strong>: EUR {save.resources.eur.toLocaleString("en-GB")}
+              </span>
               {" · "}
               <button type="button" className="btn btn-secondary" style={{ padding: "0.2rem 0.5rem", fontSize: "0.82rem" }} onClick={() => setBreakdownMetric("eur")}>
                 Breakdown
               </button>
             </p>
+            <AgencyFinanceStatsRows
+              save={save}
+              onPayables={() => setBreakdownMetric("payables")}
+              onReceivables={() => setBreakdownMetric("receivables")}
+            />
 
             <MetricRow
               label="Reputation"
@@ -516,26 +526,10 @@ function BreakdownModal({
   save: NewGamePayload;
   onClose: () => void;
 }) {
-  const lines = buildMetricBreakdown(metric, save);
-  const titleMap: Record<BreakdownMetric, string> = {
-    eur: "Wealth breakdown",
-    visibility: "Visibility breakdown",
-    competence: "Competence breakdown",
-    firmCapacity: "Capacity breakdown",
-    reputation: "Reputation breakdown",
-  };
   return (
     <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-label="Metric breakdown">
       <div className="game-modal">
-        <p className="game-modal-kicker">Agency ledger</p>
-        <h2 style={{ marginTop: 0 }}>{titleMap[metric]}</h2>
-        <div style={{ display: "grid", gap: "0.35rem" }}>
-          {lines.map((line) => (
-            <p key={line.label} style={{ margin: 0 }}>
-              {line.label}: {formatSigned(metric, line.value)}
-            </p>
-          ))}
-        </div>
+        <MetricBreakdownModalBody metric={metric} save={save} />
         <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end" }}>
           <button type="button" className="btn btn-primary" onClick={onClose}>
             OK

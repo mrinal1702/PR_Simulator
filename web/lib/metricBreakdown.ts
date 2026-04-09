@@ -4,12 +4,41 @@ import { seasonSpouseGrants } from "@/lib/gameEconomy";
 import { computePreseasonFocusTotals } from "@/lib/preseasonFocus";
 import { collectPostSeasonLedger } from "@/lib/postSeasonResults";
 import { employeeTotalCapacityContribution } from "@/lib/tenureCapacity";
-import { getPendingReceivablesEur, liquidityEur, totalPayables } from "@/lib/payablesReceivables";
+import {
+  getPendingReceivablesEur,
+  getReceivableLineItems,
+  liquidityEur,
+  totalPayables,
+} from "@/lib/payablesReceivables";
 
-export type BreakdownMetric = "eur" | "visibility" | "competence" | "firmCapacity" | "reputation";
+export type BreakdownMetric =
+  | "eur"
+  | "payables"
+  | "receivables"
+  | "visibility"
+  | "competence"
+  | "firmCapacity"
+  | "reputation";
+
+/** Rows in the wealth modal: cash activity first, then Payables / Receivables totals, then liquidity. */
+export type BreakdownLineKind =
+  | "normal"
+  | "heading"
+  | "payablesTotal"
+  | "receivablesTotal"
+  | "liquidity";
+
+export type BreakdownLine = {
+  label: string;
+  value: number;
+  kind?: BreakdownLineKind;
+};
 
 /** Net EUR and capacity from client work for a season (executed solutions only). Uses each client’s Season 1 tranche as the in-season liquid for that campaign. */
-export function computeSeasonLedger(save: NewGamePayload, seasonKey: string): {
+export function computeSeasonLedger(
+  save: NewGamePayload,
+  seasonKey: string
+): {
   eurNet: number;
   capacityUsed: number;
   /** Sum of clients’ Season 1 tranches for executed campaigns. */
@@ -96,17 +125,41 @@ export function useSimplifiedPreseasonLedger(save: NewGamePayload): boolean {
   return save.seasonNumber >= 2 && save.phase === "preseason";
 }
 
-function buildSimplifiedPreseasonBreakdown(
-  metric: BreakdownMetric,
-  save: NewGamePayload
-): Array<{ label: string; value: number }> {
+function appendPayablesReceivablesSection(lines: BreakdownLine[], save: NewGamePayload): void {
+  lines.push({ label: "Payables", value: 0, kind: "heading" });
+  lines.push({ label: "Total payables", value: totalPayables(save), kind: "payablesTotal" });
+  lines.push({ label: "Receivables", value: 0, kind: "heading" });
+  lines.push({ label: "Total receivables", value: getPendingReceivablesEur(save), kind: "receivablesTotal" });
+  lines.push({
+    label: "Liquidity (cash + receivables − payables)",
+    value: liquidityEur(save),
+    kind: "liquidity",
+  });
+}
+
+function filterCashEurLines(lines: BreakdownLine[]): BreakdownLine[] {
+  let seenHeading = false;
+  let cashIndex = 0;
+  return lines.filter((l) => {
+    if (l.kind === "heading" || l.kind === "payablesTotal" || l.kind === "receivablesTotal" || l.kind === "liquidity") {
+      seenHeading = true;
+      return true;
+    }
+    if (!seenHeading) {
+      const keep = cashIndex === 0 || l.value !== 0;
+      cashIndex += 1;
+      return keep;
+    }
+    return true;
+  });
+}
+
+function buildSimplifiedPreseasonBreakdown(metric: BreakdownMetric, save: NewGamePayload): BreakdownLine[] {
   const employees = save.employees ?? [];
   const baseResources: BuildStats = save.initialResources ?? estimateBaseResources(save);
   const baseReputation = save.initialReputation ?? 5;
   const g = seasonSpouseGrants(save.spouseType);
   const grantApplied = save.preseasonEntrySpouseGrantSeasons?.includes(String(save.seasonNumber)) ?? false;
-  const payLines = save.payablesLines ?? [];
-  const recEur = getPendingReceivablesEur(save);
   const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
   const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
   const employeeCap = employees.reduce((s, e) => s + employeeTotalCapacityContribution(e), 0);
@@ -114,7 +167,6 @@ function buildSimplifiedPreseasonBreakdown(
   const postSeason = collectPostSeasonLedger(save);
   const postRepSum = postSeason.reduce((s, e) => s + e.reputationDelta, 0);
 
-  const startingWealth = grantApplied ? save.resources.eur - g.eur : save.resources.eur;
   const startingVis =
     (grantApplied ? save.resources.visibility - g.visibility - employeeVis : save.resources.visibility - employeeVis) -
     focus.visibility;
@@ -123,23 +175,39 @@ function buildSimplifiedPreseasonBreakdown(
     focus.competence;
   const startingCap = baseResources.firmCapacity;
 
-  const linesByMetric: Record<BreakdownMetric, Array<{ label: string; value: number }>> = {
-    eur: [
-      { label: "Cash on hand", value: save.resources.eur },
-      ...(recEur > 0 ? [{ label: "Receivables (guaranteed)", value: recEur }] : []),
-      ...payLines.map((pl) => ({ label: pl.label, value: -pl.amount })),
-      { label: "Liquidity (cash + receivables − payables)", value: liquidityEur(save) },
-    ],
+  const eurCash: BreakdownLine[] = [{ label: "Cash on hand", value: save.resources.eur, kind: "normal" }];
+  if (grantApplied && g.eur !== 0) {
+    eurCash.push({
+      label: `Spouse support (entering Season ${save.seasonNumber})`,
+      value: g.eur,
+      kind: "normal",
+    });
+  }
+  appendPayablesReceivablesSection(eurCash, save);
+
+  const linesByMetric: Record<BreakdownMetric, BreakdownLine[]> = {
+    eur: filterCashEurLines(eurCash),
     visibility: [{ label: "Starting visibility", value: startingVis }],
     competence: [{ label: "Starting competence", value: startingComp }],
     firmCapacity: [{ label: "Starting capacity", value: startingCap }],
     reputation: [{ label: "Starting reputation", value: baseReputation }],
+    payables: [],
+    receivables: [],
   };
 
-  if (grantApplied && (g.eur !== 0 || g.competence !== 0 || g.visibility !== 0)) {
-    if (g.eur !== 0) linesByMetric.eur.push({ label: `Spouse support (entering Season ${save.seasonNumber})`, value: g.eur });
-    if (g.competence !== 0) linesByMetric.competence.push({ label: `Spouse support (entering Season ${save.seasonNumber})`, value: g.competence });
-    if (g.visibility !== 0) linesByMetric.visibility.push({ label: `Spouse support (entering Season ${save.seasonNumber})`, value: g.visibility });
+  if (grantApplied && (g.competence !== 0 || g.visibility !== 0)) {
+    if (g.competence !== 0) {
+      linesByMetric.competence.push({
+        label: `Spouse support (entering Season ${save.seasonNumber})`,
+        value: g.competence,
+      });
+    }
+    if (g.visibility !== 0) {
+      linesByMetric.visibility.push({
+        label: `Spouse support (entering Season ${save.seasonNumber})`,
+        value: g.visibility,
+      });
+    }
   }
 
   if (focus.competence !== 0) {
@@ -174,13 +242,41 @@ function buildSimplifiedPreseasonBreakdown(
     linesByMetric.reputation.push({ label: "Layoffs and other adjustments", value: remainder });
   }
 
-  return linesByMetric[metric].filter((l, idx) => {
-    if (metric === "eur" && l.label.includes("Liquidity")) return true;
-    return idx === 0 || l.value !== 0;
-  });
+  if (metric === "eur") {
+    return linesByMetric.eur;
+  }
+  return linesByMetric[metric].filter((l, idx) => idx === 0 || l.value !== 0);
 }
 
-export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePayload): Array<{ label: string; value: number }> {
+export function metricBreakdownModalTitle(metric: BreakdownMetric): string {
+  const titles: Record<BreakdownMetric, string> = {
+    eur: "Wealth breakdown",
+    payables: "Payables breakdown",
+    receivables: "Receivables breakdown",
+    visibility: "Visibility breakdown",
+    competence: "Competence breakdown",
+    firmCapacity: "Capacity breakdown",
+    reputation: "Reputation breakdown",
+  };
+  return titles[metric];
+}
+
+export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePayload): BreakdownLine[] {
+  if (metric === "payables") {
+    const lines = save.payablesLines ?? [];
+    if (lines.length === 0) {
+      return [{ label: "No current payables", value: 0 }];
+    }
+    return lines.map((pl) => ({ label: pl.label, value: pl.amount }));
+  }
+  if (metric === "receivables") {
+    const items = getReceivableLineItems(save);
+    if (items.length === 0) {
+      return [{ label: "No receivables", value: 0 }];
+    }
+    return items.map((i) => ({ label: i.label, value: i.amount }));
+  }
+
   if (useSimplifiedPreseasonLedger(save)) {
     return buildSimplifiedPreseasonBreakdown(metric, save);
   }
@@ -192,17 +288,26 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
   const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
   const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
   const employeeCap = employees.reduce((s, e) => s + employeeTotalCapacityContribution(e), 0);
-  const payLines = save.payablesLines ?? [];
-  const recLine = getPendingReceivablesEur(save);
   const s1 = computeSeason1Ledger(save);
   const postSeason = collectPostSeasonLedger(save);
 
-  const linesByMetric: Record<BreakdownMetric, Array<{ label: string; value: number }>> = {
-    eur: [
-      { label: "Pre-Season Start", value: baseResources.eur },
-      ...(recLine > 0 ? [{ label: "Receivables (guaranteed)", value: recLine }] : []),
-      ...payLines.map((pl) => ({ label: pl.label, value: -pl.amount })),
-    ],
+  const eurCash: BreakdownLine[] = [{ label: "Pre-Season Start", value: baseResources.eur, kind: "normal" }];
+  if (s1.eurNet !== 0) {
+    eurCash.push({ label: "Season 1 engagements (net)", value: s1.eurNet, kind: "normal" });
+  }
+  for (const e of postSeason) {
+    if (e.eurSpentOnReachBoost !== 0) {
+      eurCash.push({
+        label: `Post-season reach boost — ${e.scenarioTitle}`,
+        value: -e.eurSpentOnReachBoost,
+        kind: "normal",
+      });
+    }
+  }
+  appendPayablesReceivablesSection(eurCash, save);
+
+  const linesByMetric: Record<BreakdownMetric, BreakdownLine[]> = {
+    eur: filterCashEurLines(eurCash),
     visibility: [
       { label: "Pre-Season Start", value: baseResources.visibility },
       { label: "Pre-Season Focus", value: focus.visibility },
@@ -218,11 +323,10 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
       { label: "Employees", value: employeeCap },
     ],
     reputation: [{ label: "Pre-Season Start", value: baseReputation }],
+    payables: [],
+    receivables: [],
   };
 
-  if (s1.eurNet !== 0) {
-    linesByMetric.eur.push({ label: "Season 1 engagements (net)", value: s1.eurNet });
-  }
   if (s1.capacityUsed !== 0) {
     linesByMetric.firmCapacity.push({ label: "Season 1 campaign capacity used", value: -s1.capacityUsed });
   }
@@ -238,12 +342,6 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
       linesByMetric.visibility.push({
         label: `Post-season (Season ${e.seasonKey}) — ${e.scenarioTitle}`,
         value: e.visibilityGain,
-      });
-    }
-    if (e.eurSpentOnReachBoost !== 0) {
-      linesByMetric.eur.push({
-        label: `Post-season reach boost — ${e.scenarioTitle}`,
-        value: -e.eurSpentOnReachBoost,
       });
     }
     if (e.capacitySpentOnEffectivenessBoost !== 0) {
@@ -278,6 +376,9 @@ function estimateBaseResources(save: NewGamePayload): BuildStats {
 }
 
 export function formatSigned(metric: BreakdownMetric, value: number): string {
+  if (metric === "payables" || metric === "receivables") {
+    return `EUR ${value.toLocaleString("en-GB")}`;
+  }
   if (metric === "eur") {
     const sign = value > 0 ? "+" : "";
     return `${sign}EUR ${value.toLocaleString("en-GB")}`;

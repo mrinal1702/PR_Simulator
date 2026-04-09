@@ -143,10 +143,69 @@ export function SymbolStarFilled({ size = 18, className, label, title }: IconPro
   );
 }
 
-export type ResourceSymbolId = "eur" | "visibility" | "competence" | "capacity" | "reputation";
+/** Document + arrow out — obligations owed (payables). Red arrow. */
+export function SymbolPayablesDoc({ size = 18, className, label, title }: IconProps) {
+  return (
+    <span title={title ?? label} className={className} style={svgSize(size)} aria-hidden>
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" role="img" aria-label={label}>
+        <title>{label}</title>
+        <path
+          d="M6 3.5h8l4 4V20.5a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 20V5A1.5 1.5 0 0 1 6 3.5Z"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <path d="M14 3.5V8h4.5" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        <path
+          d="M19.5 12.5h-6M12.5 12.5l2.5-2.5M12.5 12.5l2.5 2.5"
+          stroke="#ef4444"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
+  );
+}
+
+/** Document + arrow in — guaranteed inflows (receivables). Green arrow. */
+export function SymbolReceivablesDoc({ size = 18, className, label, title }: IconProps) {
+  return (
+    <span title={title ?? label} className={className} style={svgSize(size)} aria-hidden>
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" role="img" aria-label={label}>
+        <title>{label}</title>
+        <path
+          d="M6 3.5h8l4 4V20.5a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 20V5A1.5 1.5 0 0 1 6 3.5Z"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <path d="M14 3.5V8h4.5" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        <path
+          d="M4.5 12.5h6M10.5 12.5l-2.5-2.5M10.5 12.5l-2.5 2.5"
+          stroke="#22c55e"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
+  );
+}
+
+export type ResourceSymbolId =
+  | "eur"
+  | "payables"
+  | "receivables"
+  | "visibility"
+  | "competence"
+  | "capacity"
+  | "reputation";
 
 const LABELS: Record<ResourceSymbolId, string> = {
   eur: "Wealth (EUR)",
+  payables: "Payables",
+  receivables: "Receivables",
   visibility: "Visibility",
   competence: "Competence",
   capacity: "Firm capacity",
@@ -166,6 +225,10 @@ export function ResourceSymbol({
   switch (id) {
     case "eur":
       return <SymbolEur size={size} label={label} title={label} className={className} />;
+    case "payables":
+      return <SymbolPayablesDoc size={size} label={label} title={label} className={className} />;
+    case "receivables":
+      return <SymbolReceivablesDoc size={size} label={label} title={label} className={className} />;
     case "visibility":
       return <SymbolEye size={size} label={label} title={label} className={className} />;
     case "competence":

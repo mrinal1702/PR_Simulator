@@ -12,6 +12,9 @@ import { SCENARIO_POOL_EXHAUSTED_MESSAGE } from "@/lib/scenarios";
 import { buildSeasonClients } from "@/lib/seasonClientLoop";
 import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import { AgencyFinanceBreakdownHost } from "@/components/AgencyFinanceBreakdownHost";
+import { AgencyFinanceSnapshot } from "@/components/AgencyFinanceSnapshot";
+import type { BreakdownMetric } from "@/lib/metricBreakdown";
 
 /** Season hub: roll queue, stats, link into the dedicated client-case screen. */
 export function SeasonHubScreen({ season }: { season: number }) {
@@ -21,6 +24,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
   const [showEmployees, setShowEmployees] = useState(false);
   const [notice, setNotice] = useState("");
   const [blockedByPayroll, setBlockedByPayroll] = useState(false);
+  const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
 
   if (!save) {
     return (
@@ -154,6 +158,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
   };
 
   return (
+    <>
     <div className="shell shell-wide">
       <header style={{ marginBottom: "1.5rem" }}>
         <p className="muted" style={{ margin: "0 0 0.25rem" }}>
@@ -183,9 +188,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
         {showStats ? (
           <div className="agency-stats-panel">
             <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Agency snapshot</h3>
-            <p className="muted" style={{ marginTop: 0 }}>
-              Cash: EUR {save.resources.eur.toLocaleString("en-GB")}
-            </p>
+            <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} compact />
 
             <MetricRow
               label="Reputation"
@@ -289,6 +292,10 @@ export function SeasonHubScreen({ season }: { season: number }) {
         {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
       </section>
     </div>
+    {breakdownMetric ? (
+      <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
+    ) : null}
+    </>
   );
 }
 

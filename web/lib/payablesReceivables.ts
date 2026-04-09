@@ -27,15 +27,50 @@ export function sumReceivablesFromLoop(save: NewGamePayload, seasonLoopKey: stri
 /**
  * Receivables shown in UI: not in pre-season 1; after that, from the last completed season's queue.
  */
-export function getPendingReceivablesEur(save: NewGamePayload): number {
-  if (save.seasonNumber <= 1 && save.phase === "preseason") return 0;
+/**
+ * Season loop key for pending receivables, or null if none shown (e.g. pre-season 1 only).
+ * During **in-season** play, uses the **current** season’s queue so receivables update as soon as
+ * a client is accepted (non-reject). Post-season and pre-season 2+ use the same loop rules as before.
+ */
+export function getReceivableLoopKey(save: NewGamePayload): string | null {
+  if (save.seasonNumber <= 1 && save.phase === "preseason") return null;
+  if (save.phase === "season") {
+    return String(save.seasonNumber);
+  }
   if (save.phase === "preseason" && save.seasonNumber >= 2) {
-    return sumReceivablesFromLoop(save, String(save.seasonNumber - 1));
+    return String(save.seasonNumber - 1);
   }
   if (save.phase === "postseason") {
-    return sumReceivablesFromLoop(save, String(save.seasonNumber));
+    return String(save.seasonNumber);
   }
-  return 0;
+  return null;
+}
+
+export function getPendingReceivablesEur(save: NewGamePayload): number {
+  const key = getReceivableLoopKey(save);
+  if (!key) return 0;
+  return sumReceivablesFromLoop(save, key);
+}
+
+/** One row per accepted client with a positive Season 2 tranche (for breakdown UI). */
+export function getReceivableLineItems(save: NewGamePayload): { label: string; amount: number }[] {
+  const key = getReceivableLoopKey(save);
+  if (!key) return [];
+  const loop = save.seasonLoopBySeason?.[key];
+  if (!loop) return [];
+  const out: { label: string; amount: number }[] = [];
+  for (const run of loop.runs) {
+    if (!run.accepted || run.solutionId === "reject") continue;
+    const client = loop.clientsQueue.find((c) => c.id === run.clientId);
+    if (!client) continue;
+    const amt = Math.max(0, client.budgetSeason2);
+    if (amt <= 0) continue;
+    out.push({
+      label: `${client.displayName} — ${client.scenarioTitle}`,
+      amount: amt,
+    });
+  }
+  return out;
 }
 
 /** Cash + guaranteed receivables − payables (all EUR). */

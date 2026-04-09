@@ -14,7 +14,10 @@ import {
   type SolutionOption,
 } from "@/lib/seasonClientLoop";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import { AgencyFinanceBreakdownHost } from "@/components/AgencyFinanceBreakdownHost";
+import { AgencyFinanceSnapshot } from "@/components/AgencyFinanceSnapshot";
 import { ResourceSymbol } from "@/components/resourceSymbols";
+import type { BreakdownMetric } from "@/lib/metricBreakdown";
 
 export function SeasonClientCaseScreen({ season }: { season: number }) {
   const router = useRouter();
@@ -22,6 +25,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
   const [notice, setNotice] = useState("");
   const [blockedByPayroll, setBlockedByPayroll] = useState(false);
   const [pendingSolution, setPendingSolution] = useState<SolutionOption | null>(null);
+  const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
 
   const seasonKey = String(season);
   const payrollPaidForSeason = save?.payrollPaidBySeason?.[seasonKey] === true;
@@ -197,6 +201,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
   const liquidForAfford = save.resources.eur + currentClient.budgetSeason1;
 
   return (
+    <>
     <div className="shell shell-wide">
       <header style={{ marginBottom: "1.5rem" }}>
         <p className="muted" style={{ margin: "0 0 0.25rem" }}>
@@ -209,6 +214,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       </header>
 
       <AgencyResourceStrip save={save} />
+      <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
 
       <section>
         <div className="agency-stats-panel">
@@ -364,5 +370,9 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         </div>
       ) : null}
     </div>
+    {breakdownMetric ? (
+      <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
+    ) : null}
+    </>
   );
 }
