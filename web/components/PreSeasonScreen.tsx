@@ -19,6 +19,13 @@ import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 import { AgencyFinanceStatsRows } from "@/components/AgencyFinanceStatsRows";
 import { MetricBreakdownModalBody } from "@/components/MetricBreakdownModalBody";
 import { ResourceSymbol } from "@/components/resourceSymbols";
+import {
+  getPendingReceivablesEur,
+  hasLayoffPressure,
+  liquidityEur,
+  settlePreseasonAndEnterSeason,
+  totalPayables,
+} from "@/lib/payablesReceivables";
 
 export function PreSeasonScreen({ season }: { season: number }) {
   const router = useRouter();
@@ -40,10 +47,10 @@ export function PreSeasonScreen({ season }: { season: number }) {
     save?.phase === "preseason" &&
     save?.seasonNumber === season;
   const alreadyUsedThisPreseason = Boolean(existingSeasonAction) || legacyUsedFlag;
-  const currentEur = save?.resources.eur ?? 0;
-  const totalPayroll = (save?.employees ?? []).reduce((sum, e) => sum + e.salary, 0);
-  const payrollBlocked = Boolean(save) && season >= 2 && totalPayroll > 0 && currentEur < totalPayroll;
-  const payrollShortfall = Math.max(0, totalPayroll - currentEur);
+  const payrollBlocked = save != null && hasLayoffPressure(save);
+  const liquidity = save ? liquidityEur(save) : 0;
+  const payablesTotal = save ? totalPayables(save) : 0;
+  const receivablesTotal = save ? getPendingReceivablesEur(save) : 0;
 
   const applyFocus = (focus: PreseasonFocusId) => {
     if (!save || alreadyUsedThisPreseason || payrollBlocked) return;
@@ -106,30 +113,11 @@ export function PreSeasonScreen({ season }: { season: number }) {
 
   const startSeason = () => {
     if (!save) return;
-    const alreadyPaid = save.payrollPaidBySeason?.[seasonKey] === true;
-    if (season >= 2 && save.resources.eur < totalPayroll) {
-      setNotice("Payroll is not covered. Resolve mandatory layoffs before starting the season.");
+    if (hasLayoffPressure(save)) {
+      setNotice("Liquidity is negative (cash + receivables < payables). Resolve layoffs before starting the season.");
       return;
     }
-    const updated: NewGamePayload = {
-      ...save,
-      phase: "season",
-      seasonNumber: season,
-      resources:
-        season >= 2 && !alreadyPaid
-          ? {
-              ...save.resources,
-              eur: save.resources.eur - totalPayroll,
-            }
-          : save.resources,
-      payrollPaidBySeason:
-        season >= 2
-          ? {
-              ...(save.payrollPaidBySeason ?? {}),
-              [seasonKey]: true,
-            }
-          : save.payrollPaidBySeason,
-    };
+    const updated = settlePreseasonAndEnterSeason(save, seasonKey);
     setSave(updated);
     persistSave(updated);
     router.push(`/game/season/${season}`);
@@ -174,15 +162,15 @@ export function PreSeasonScreen({ season }: { season: number }) {
         {payrollBlocked ? (
           <div className="agency-stats-panel" style={{ borderColor: "#dc2626", marginBottom: "0.85rem" }}>
             <h3 style={{ marginTop: 0, marginBottom: "0.45rem", color: "#dc2626" }}>
-              Payroll checkpoint (mandatory)
+              Layoff pressure (mandatory)
             </h3>
             <p style={{ margin: 0 }}>
-              Cash is below required payroll. You cannot use activities, hire, or start the season until payroll is affordable.
-              Remove employees now using mandatory layoffs (no severance).
+              Liquidity is negative — you cannot use activities, hire, or start the season until cash plus receivables covers payables.
+              Remove employees with mandatory layoffs (no severance) or raise liquidity.
             </p>
             <p className="muted" style={{ margin: "0.45rem 0 0" }}>
-              Cash: EUR {save.resources.eur.toLocaleString("en-GB")} · Payroll: EUR {totalPayroll.toLocaleString("en-GB")} ·
-              Shortfall: EUR {payrollShortfall.toLocaleString("en-GB")}
+              Cash: EUR {save.resources.eur.toLocaleString("en-GB")} · Payables: EUR {payablesTotal.toLocaleString("en-GB")} ·
+              Receivables: EUR {receivablesTotal.toLocaleString("en-GB")} · Liquidity: EUR {liquidity.toLocaleString("en-GB")}
             </p>
           </div>
         ) : null}

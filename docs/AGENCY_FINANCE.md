@@ -43,7 +43,7 @@ There is **no** “layoff pressure” copy on the first pre-season onboarding su
 
 ## 5. In-season vs pre-season accrual
 
-- **Entering a season:** At **Start season**, the game **settles** pre-season: cash is adjusted by **receivables − sum(payables)**, then **payables are cleared** for that transition (nothing carries as accrued payables mid-season in this model). `payrollPaidBySeason` marks that pre-season was completed for season ≥ 2 so the season hub cannot be entered without having finished pre-season settlement.
+- **Pre-season N → season N (golden rule):** On **Start season**, **always** settle: **cash** becomes `cash + receivables − payables`, then **`payablesLines` are cleared** (receivables for that settlement are whatever `getPendingReceivablesEur` returns in pre-season—typically **0** in pre-season 1). This applies to **season 1 and every later season**; there is no separate “cash-only” path for season 1. After settlement, new wage accruals only appear when you hire again in a **future** pre-season.
 - **During the season (`phase === "season"`):** Guaranteed receivables from **accepted** clients (non-reject) accrue against the **current season’s** client loop. The resource strip and liquidity use that total so receivables update as soon as a campaign is committed. Operating cash still moves with Season 1 tranches per client case.
 
 ---
@@ -76,10 +76,11 @@ There is **no** “layoff pressure” copy on the first pre-season onboarding su
 
 ## 8. Starting a season (settlement)
 
-`settlePreseasonAndEnterSeason` (in `payablesReceivables.ts`):
+`settlePreseasonAndEnterSeason` (in `payablesReceivables.ts`) is invoked from **Pre-season** when the player confirms **Start season** — **every** season number:
 
-1. Adds receivables to cash and subtracts payables (then clears `payablesLines`).
-2. For season ≥ 2, sets `payrollPaidBySeason[season]` so season routes know pre-season was completed.
+1. **Cash:** `resources.eur + getPendingReceivablesEur − sum(payablesLines)` (floored at 0).
+2. **`payablesLines`:** cleared to `[]`.
+3. **`payrollPaidBySeason[season]`:** set to `true` when **season ≥ 2** (route guard: season hub requires pre-season completed before play).
 
 ---
 
