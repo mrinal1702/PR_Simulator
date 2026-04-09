@@ -18,7 +18,10 @@ import {
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { liquidityEur, wageLineId } from "@/lib/payablesReceivables";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import { AgencyFinanceBreakdownHost } from "@/components/AgencyFinanceBreakdownHost";
+import { AgencyFinanceSnapshot } from "@/components/AgencyFinanceSnapshot";
 import { ResourceSymbol } from "@/components/resourceSymbols";
+import type { BreakdownMetric } from "@/lib/metricBreakdown";
 
 const HIRING_ROLE_OPTIONS: {
   id: HiringRole;
@@ -64,6 +67,7 @@ export function HiringScreen({ season }: { season: number }) {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [hireReport, setHireReport] = useState<HireReport | null>(null);
   const [pendingCandidate, setPendingCandidate] = useState<Candidate | null>(null);
+  const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
 
   if (!save) {
     return (
@@ -252,6 +256,7 @@ export function HiringScreen({ season }: { season: number }) {
       </header>
 
       <AgencyResourceStrip save={save} />
+      <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
 
       <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.9rem", flexWrap: "wrap" }}>
         <button
@@ -470,6 +475,9 @@ export function HiringScreen({ season }: { season: number }) {
           </div>
         </div>
       </div>
+    ) : null}
+    {breakdownMetric ? (
+      <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
     ) : null}
     </>
   );
