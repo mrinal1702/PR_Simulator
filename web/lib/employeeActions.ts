@@ -53,3 +53,33 @@ export function fireEmployeeVoluntary(
   };
   return { ok: true, save: next };
 }
+
+/**
+ * Mandatory payroll layoff: no severance and no reputation penalty.
+ * Used only when payroll cannot be covered at pre-season checkpoint.
+ */
+export function fireEmployeeForPayrollShortfall(
+  save: NewGamePayload,
+  employeeId: string
+): FireEmployeeResult {
+  const emp = save.employees?.find((e) => e.id === employeeId);
+  if (!emp) return { ok: false, error: "Employee not found." };
+  const newEmployees = (save.employees ?? []).filter((e) => e.id !== employeeId);
+  const next: NewGamePayload = {
+    ...save,
+    employees: newEmployees,
+    resources: {
+      ...save.resources,
+      competence: clampToScale(
+        save.resources.competence - emp.competenceGain,
+        METRIC_SCALES.competence
+      ),
+      visibility: clampToScale(
+        save.resources.visibility - emp.visibilityGain,
+        METRIC_SCALES.visibility
+      ),
+      firmCapacity: Math.max(0, save.resources.firmCapacity - emp.capacityGain),
+    },
+  };
+  return { ok: true, save: next };
+}

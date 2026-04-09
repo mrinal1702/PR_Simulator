@@ -13,9 +13,9 @@ import { enterNextPreseason } from "@/lib/preseasonTransition";
 import {
   computeSeasonCashBridge,
   computeFutureReceivablesForLoop,
+  computePayrollHeadsUp,
   computeSeasonPostSeasonStatGains,
   computeSeasonScenarioAverages,
-  computePayrollHeadsUp,
   totalCumulativeSalaries,
 } from "@/lib/seasonFinancials";
 import { POST_SEASON_REACH_BOOST_COST_EUR } from "@/lib/postSeasonResults";
@@ -55,8 +55,13 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
     if (!resultsDone) return;
     const nextSeason = Math.min(season + 1, 7);
     const next = enterNextPreseason(save, season);
+    const nextPayroll = computePayrollHeadsUp(next);
     persistSave(next);
     setSave(next);
+    if (nextSeason >= 2 && nextPayroll.shortfall > 0) {
+      router.push(`/game/preseason/${nextSeason}/payroll`);
+      return;
+    }
     router.push(`/game/preseason/${nextSeason}`);
   };
 

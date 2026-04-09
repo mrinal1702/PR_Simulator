@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { persistSave, loadSave } from "@/lib/saveGameStorage";
 import { buildMetricBreakdown, formatSigned, type BreakdownMetric } from "@/lib/metricBreakdown";
-import { fireEmployeeVoluntary } from "@/lib/employeeActions";
+import { fireEmployeeForPayrollShortfall, fireEmployeeVoluntary } from "@/lib/employeeActions";
 import {
   getPreseasonFocusCardCopy,
   getPreseasonFocusDeltaForSeason,
@@ -35,9 +35,20 @@ export function PreSeasonScreen({ season }: { season: number }) {
     save?.phase === "preseason" &&
     save?.seasonNumber === season;
   const alreadyUsedThisPreseason = Boolean(existingSeasonAction) || legacyUsedFlag;
+  const currentEur = save?.resources.eur ?? 0;
+  const totalPayroll = (save?.employees ?? []).reduce((sum, e) => sum + e.salary, 0);
+  const payrollBlocked = Boolean(save) && season >= 2 && totalPayroll > 0 && currentEur < totalPayroll;
+  const payrollShortfall = Math.max(0, totalPayroll - currentEur);
+
+  useEffect(() => {
+    if (!save) return;
+    if (season >= 2 && payrollBlocked) {
+      router.push(`/game/preseason/${season}/payroll`);
+    }
+  }, [save, season, payrollBlocked, router]);
 
   const applyFocus = (focus: PreseasonFocusId) => {
-    if (!save || alreadyUsedThisPreseason) return;
+    if (!save || alreadyUsedThisPreseason || payrollBlocked) return;
     const normalizedCounts = {
       strategy_workshop: save.preseasonFocusCounts?.strategy_workshop ?? 0,
       network: save.preseasonFocusCounts?.network ?? 0,
@@ -70,7 +81,9 @@ export function PreSeasonScreen({ season }: { season: number }) {
 
   const confirmFire = () => {
     if (!save || fireTargetId == null) return;
-    const result = fireEmployeeVoluntary(save, fireTargetId, season);
+    const result = payrollBlocked
+      ? fireEmployeeForPayrollShortfall(save, fireTargetId)
+      : fireEmployeeVoluntary(save, fireTargetId, season);
     setFireTargetId(null);
     if (!result.ok) {
       setNotice(result.error);
@@ -78,7 +91,11 @@ export function PreSeasonScreen({ season }: { season: number }) {
     }
     setSave(result.save);
     persistSave(result.save);
-    setNotice("Employee let go. Severance paid; reputation took a hit.");
+    setNotice(
+      payrollBlocked
+        ? "Mandatory layoff applied (no severance). Payroll shortfall reduced."
+        : "Employee let go. Severance paid; reputation took a hit."
+    );
   };
 
   const showFireControls = season >= 2;
@@ -91,10 +108,21 @@ export function PreSeasonScreen({ season }: { season: number }) {
 
   const startSeason = () => {
     if (!save) return;
+    if (season >= 2 && save.resources.eur < totalPayroll) {
+      setNotice("Payroll is not covered. Resolve mandatory layoffs before starting the season.");
+      return;
+    }
     const updated: NewGamePayload = {
       ...save,
       phase: "season",
       seasonNumber: season,
+      resources:
+        season >= 2
+          ? {
+              ...save.resources,
+              eur: save.resources.eur - totalPayroll,
+            }
+          : save.resources,
     };
     setSave(updated);
     persistSave(updated);
@@ -135,6 +163,21 @@ export function PreSeasonScreen({ season }: { season: number }) {
       </header>
 
       <section>
+        {payrollBlocked ? (
+          <div className="agency-stats-panel" style={{ borderColor: "#dc2626", marginBottom: "0.85rem" }}>
+            <h3 style={{ marginTop: 0, marginBottom: "0.45rem", color: "#dc2626" }}>
+              Payroll checkpoint (mandatory)
+            </h3>
+            <p style={{ margin: 0 }}>
+              Cash is below required payroll. You cannot use activities, hire, or start the season until payroll is affordable.
+              Remove employees now using mandatory layoffs (no severance).
+            </p>
+            <p className="muted" style={{ margin: "0.45rem 0 0" }}>
+              Cash: EUR {save.resources.eur.toLocaleString("en-GB")} · Payroll: EUR {totalPayroll.toLocaleString("en-GB")} ·
+              Shortfall: EUR {payrollShortfall.toLocaleString("en-GB")}
+            </p>
+          </div>
+        ) : null}
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
           <button type="button" className="btn btn-secondary" onClick={() => setShowStats((v) => !v)}>
             {showStats ? "Hide agency stats" : "Agency stats"}
@@ -201,7 +244,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
               </p>
             ) : (
               <div style={{ display: "grid", gap: "0.6rem" }}>
-                {showFireControls && (save.voluntaryLayoffsBySeason?.[seasonKey] ?? 0) >= 1 ? (
+                {!payrollBlocked && showFireControls && (save.voluntaryLayoffsBySeason?.[seasonKey] ?? 0) >= 1 ? (
                   <p className="muted" style={{ margin: 0, fontSize: "0.88rem" }}>
                     Voluntary layoff already used this pre-season.
                   </p>
@@ -211,8 +254,8 @@ export function PreSeasonScreen({ season }: { season: number }) {
                   .map((e) => {
                     const canFire =
                       showFireControls &&
-                      e.seasonHired !== season &&
-                      (save.voluntaryLayoffsBySeason?.[seasonKey] ?? 0) < 1;
+                      (payrollBlocked ||
+                        (e.seasonHired !== season && (save.voluntaryLayoffsBySeason?.[seasonKey] ?? 0) < 1));
                     return (
                       <div key={e.id} style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.7rem 0.8rem" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5rem", flexWrap: "wrap", alignItems: "flex-start" }}>
@@ -235,11 +278,11 @@ export function PreSeasonScreen({ season }: { season: number }) {
                               disabled={!canFire}
                               onClick={() => canFire && setFireTargetId(e.id)}
                             >
-                              Fire
+                              {payrollBlocked ? "Mandatory layoff" : "Fire"}
                             </button>
                           ) : null}
                         </div>
-                        {showFireControls && e.seasonHired === season ? (
+                        {!payrollBlocked && showFireControls && e.seasonHired === season ? (
                           <p className="muted" style={{ margin: "0.25rem 0 0", fontSize: "0.82rem" }}>
                             Cannot lay off in the same pre-season they were hired.
                           </p>
@@ -252,7 +295,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
           </div>
         ) : null}
 
-        {!alreadyUsedThisPreseason ? (
+        {!alreadyUsedThisPreseason && !payrollBlocked ? (
           <div className="card-grid cols-2" style={{ marginTop: "1rem" }}>
             <button
               type="button"
@@ -273,16 +316,27 @@ export function PreSeasonScreen({ season }: { season: number }) {
           </div>
         ) : null}
         <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end", gap: "0.6rem", flexWrap: "wrap" }}>
-          <button type="button" className="btn btn-secondary" onClick={() => setConfirmStartSeason(true)}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setConfirmStartSeason(true)}
+            disabled={payrollBlocked}
+          >
             Start season
           </button>
-          <Link
-            href={`/game/preseason/${season}/hiring`}
-            className="btn btn-primary"
-            style={{ textDecoration: "none" }}
-          >
-            Talent Bazaar (Hire employees)
-          </Link>
+          {payrollBlocked ? (
+            <span className="btn btn-primary" style={{ opacity: 0.55 }}>
+              Talent Bazaar (Hire employees)
+            </span>
+          ) : (
+            <Link
+              href={`/game/preseason/${season}/hiring`}
+              className="btn btn-primary"
+              style={{ textDecoration: "none" }}
+            >
+              Talent Bazaar (Hire employees)
+            </Link>
+          )}
         </div>
 
         {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
@@ -333,6 +387,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
       {fireTargetId && save ? (
         <FireConfirmModal
           employee={save.employees?.find((e) => e.id === fireTargetId) ?? null}
+          payrollBlocked={payrollBlocked}
           onCancel={() => setFireTargetId(null)}
           onConfirm={confirmFire}
         />
@@ -343,10 +398,12 @@ export function PreSeasonScreen({ season }: { season: number }) {
 
 function FireConfirmModal({
   employee,
+  payrollBlocked,
   onCancel,
   onConfirm,
 }: {
   employee: NonNullable<NewGamePayload["employees"]>[number] | null;
+  payrollBlocked: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 }) {
@@ -355,15 +412,25 @@ function FireConfirmModal({
   return (
     <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-label="Confirm voluntary layoff">
       <div className="game-modal">
-        <p className="game-modal-kicker">Voluntary layoff</p>
+        <p className="game-modal-kicker">{payrollBlocked ? "Mandatory payroll layoff" : "Voluntary layoff"}</p>
         <h2 style={{ marginTop: 0 }}>Let {employee.name} go?</h2>
-        <p style={{ marginTop: 0 }}>
-          This is a voluntary layoff: <strong>−10 reputation</strong>, severance <strong>EUR {severance.toLocaleString("en-GB")}</strong> (20% of salary
-          ), and agency stats drop by this employee&apos;s competence, visibility, and capacity contributions.
-        </p>
-        <p className="muted" style={{ marginTop: 0 }}>
-          You can only use one voluntary layoff per season. You cannot fire someone hired in this same pre-season.
-        </p>
+        {payrollBlocked ? (
+          <p style={{ marginTop: 0 }}>
+            Payroll is not affordable. This mandatory layoff has <strong>no severance</strong> and <strong>no reputation penalty</strong>.
+            Agency stats still drop by this employee&apos;s competence, visibility, and capacity contributions.
+          </p>
+        ) : (
+          <>
+            <p style={{ marginTop: 0 }}>
+              This is a voluntary layoff: <strong>−10 reputation</strong>, severance{" "}
+              <strong>EUR {severance.toLocaleString("en-GB")}</strong> (20% of salary), and agency stats drop by this employee&apos;s
+              competence, visibility, and capacity contributions.
+            </p>
+            <p className="muted" style={{ marginTop: 0 }}>
+              You can only use one voluntary layoff per season. You cannot fire someone hired in this same pre-season.
+            </p>
+          </>
+        )}
         <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end", gap: "0.6rem" }}>
           <button type="button" className="btn btn-secondary" onClick={onCancel}>
             Keep employee
