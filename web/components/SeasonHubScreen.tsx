@@ -259,16 +259,6 @@ export function SeasonHubScreen({ season }: { season: number }) {
           </div>
         ) : null}
 
-        {loop?.lastOutcome ? (
-          <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
-            <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>Last solution outcome</h3>
-            <p className="muted" style={{ margin: 0 }}>
-              Message spread: {loop.lastOutcome.messageSpread} · Message effectiveness:{" "}
-              {loop.lastOutcome.messageEffectiveness} · Client satisfaction: {loop.lastOutcome.satisfaction}
-            </p>
-          </div>
-        ) : null}
-
         {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
 
         <div style={{ marginTop: "1.25rem" }}>
