@@ -1,4 +1,5 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import { applySpouseAtStart, STARTING_BUILD_STATS } from "@/lib/gameEconomy";
 import { computeSeasonLedger } from "@/lib/metricBreakdown";
 import { collectPostSeasonLedger } from "@/lib/postSeasonResults";
 import type { SeasonLoopState } from "@/lib/seasonClientLoop";
@@ -41,6 +42,67 @@ export function computeSeasonCashBridge(save: NewGamePayload, seasonKey: string)
     netClientReceipts,
     postSeasonReachSpend,
     netOperatingCash,
+  };
+}
+
+export type SeasonCashFlow = {
+  /** Cash before wages shown below: Season 1 = build endowment + spouse; Season 2+ = cash before season-start payroll (when payroll applies) or in-season start. */
+  openingCash: number;
+  /** Payroll at hire (Season 1) or season-start payroll deduction (Season 2+), when applicable. */
+  wagesPaid: number;
+  /** Client budgets net of solution EUR (same as operating summary net before post-season reach). */
+  cashFlowFromOperations: number;
+  extraCampaignCost: number;
+  closingCash: number;
+  /** True when opening is the Season 1 endowment + spouse package. */
+  openingIsEndowmentAndSpouse: boolean;
+  /** Non-zero if other EUR movements (or rounding) prevent a perfect tie-out. */
+  reconciliationGap: number;
+};
+
+function initialEndowmentEur(save: NewGamePayload): number {
+  if (save.initialResources) return save.initialResources.eur;
+  const build = STARTING_BUILD_STATS[save.buildId] ?? STARTING_BUILD_STATS.portfolio_pivot;
+  return applySpouseAtStart(build, save.spouseType).eur;
+}
+
+/**
+ * Cash flow for the season summary: opening → wages → client operations → optional post-season reach → closing.
+ * Season 1 opening is explicit starting wealth (endowment + spouse). Season 2+ opening is cash before payroll at season start when payroll is modelled, else cash at in-season start.
+ */
+export function computeSeasonCashFlow(save: NewGamePayload, seasonKey: string): SeasonCashFlow {
+  const bridge = computeSeasonCashBridge(save, seasonKey);
+  const seasonNum = Number(seasonKey);
+  const employees = save.employees ?? [];
+  const { netClientReceipts, postSeasonReachSpend, closingCash } = bridge;
+  const cashAfterPayrollAtInSeasonStart = closingCash - netClientReceipts + postSeasonReachSpend;
+
+  let openingCash: number;
+  let wagesPaid: number;
+
+  if (seasonNum === 1) {
+    openingCash = initialEndowmentEur(save);
+    wagesPaid = employees.filter((e) => e.seasonHired === 1).reduce((s, e) => s + e.salary, 0);
+  } else {
+    const payrollPaid = save.payrollPaidBySeason?.[seasonKey] === true;
+    wagesPaid =
+      payrollPaid && seasonNum >= 2
+        ? employees.filter((e) => e.seasonHired <= seasonNum).reduce((s, e) => s + e.salary, 0)
+        : 0;
+    openingCash = payrollPaid ? cashAfterPayrollAtInSeasonStart + wagesPaid : cashAfterPayrollAtInSeasonStart;
+  }
+
+  const impliedClosing = openingCash - wagesPaid + netClientReceipts - postSeasonReachSpend;
+  const reconciliationGap = closingCash - impliedClosing;
+
+  return {
+    openingCash,
+    wagesPaid,
+    cashFlowFromOperations: netClientReceipts,
+    extraCampaignCost: postSeasonReachSpend,
+    closingCash,
+    openingIsEndowmentAndSpouse: seasonNum === 1,
+    reconciliationGap,
   };
 }
 

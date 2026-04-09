@@ -13,6 +13,7 @@ import {
 import { enterNextPreseason } from "@/lib/preseasonTransition";
 import {
   computeSeasonCashBridge,
+  computeSeasonCashFlow,
   computeFutureReceivablesForLoop,
   computePayrollHeadsUp,
   computeSeasonPostSeasonStatGains,
@@ -68,6 +69,10 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
 
   const cash = useMemo(
     () => (save ? computeSeasonCashBridge(save, seasonKey) : null),
+    [save, seasonKey]
+  );
+  const cashFlow = useMemo(
+    () => (save ? computeSeasonCashFlow(save, seasonKey) : null),
     [save, seasonKey]
   );
   const statGains = useMemo(
@@ -319,12 +324,12 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
       <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
         <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>Company financials</h2>
         <p className="muted" style={{ marginTop: 0, fontSize: "0.92rem" }}>
-          Season financial view and cash bridge.
+          Season financial view: operating summary and cash flow.
         </p>
         <button type="button" className="btn btn-secondary" onClick={() => setShowFinancials((v) => !v)} style={{ marginTop: "0.5rem" }}>
           {showFinancials ? "Hide financials" : "Company financials"}
         </button>
-        {showFinancials && cash ? (
+        {showFinancials && cash && cashFlow ? (
           <div style={{ marginTop: "1rem" }}>
             <h3 style={{ fontSize: "1rem", margin: "0 0 0.5rem" }}>Operating summary (cash)</h3>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.95rem" }}>
@@ -358,37 +363,53 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
               </tbody>
             </table>
 
-            <h3 style={{ fontSize: "1rem", margin: "1.25rem 0 0.5rem" }}>Cash bridge</h3>
+            <h3 style={{ fontSize: "1rem", margin: "1.25rem 0 0.5rem" }}>Cash flow</h3>
+            <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.86rem", lineHeight: 1.45 }}>
+              {cashFlow.openingIsEndowmentAndSpouse
+                ? "Opening is your build endowment plus spouse support at game start."
+                : "Opening is cash before this season’s payroll (when deducted at season start) or cash at in-season start."}
+            </p>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.95rem" }}>
               <tbody>
                 <tr>
-                  <td style={{ padding: "0.35rem 0" }}>Opening cash (derived from this season’s flows)</td>
-                  <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>{fmtEur(cash.openingCash)}</td>
+                  <td style={{ padding: "0.35rem 0" }}>Opening value</td>
+                  <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>{fmtEur(cashFlow.openingCash)}</td>
                 </tr>
                 <tr>
-                  <td style={{ padding: "0.35rem 0" }}>+ Revenue</td>
-                  <td style={{ padding: "0.35rem 0", textAlign: "right" }}>{fmtEur(cash.revenue)}</td>
+                  <td style={{ padding: "0.35rem 0" }}>Wages</td>
+                  <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
+                    {cashFlow.wagesPaid > 0 ? `−${fmtEur(cashFlow.wagesPaid)}` : fmtEur(0)}
+                  </td>
                 </tr>
                 <tr>
-                  <td style={{ padding: "0.35rem 0" }}>− Campaign cost</td>
-                  <td style={{ padding: "0.35rem 0", textAlign: "right" }}>{fmtEur(cash.campaignCost)}</td>
+                  <td style={{ padding: "0.35rem 0" }}>Cash flow from operations</td>
+                  <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
+                    {fmtEur(cashFlow.cashFlowFromOperations)}
+                  </td>
                 </tr>
-                {cash.postSeasonReachSpend > 0 ? (
+                {cashFlow.extraCampaignCost > 0 ? (
                   <tr>
-                    <td style={{ padding: "0.35rem 0" }}>− Extra campaign cost</td>
-                    <td style={{ padding: "0.35rem 0", textAlign: "right" }}>{fmtEur(cash.postSeasonReachSpend)}</td>
+                    <td style={{ padding: "0.35rem 0" }}>Extra campaign cost</td>
+                    <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
+                      −{fmtEur(cashFlow.extraCampaignCost)}
+                    </td>
                   </tr>
                 ) : null}
                 <tr style={{ borderTop: "1px solid var(--border)" }}>
                   <td style={{ padding: "0.5rem 0 0.35rem" }}>
-                    <strong>Closing cash</strong>
+                    <strong>Closing</strong>
                   </td>
                   <td style={{ padding: "0.5rem 0 0.35rem", textAlign: "right" }}>
-                    <strong>{fmtEur(cash.closingCash)}</strong>
+                    <strong>{fmtEur(cashFlow.closingCash)}</strong>
                   </td>
                 </tr>
               </tbody>
             </table>
+            {Math.abs(cashFlow.reconciliationGap) > 1 ? (
+              <p className="muted" style={{ margin: "0.75rem 0 0", fontSize: "0.82rem", lineHeight: 1.45 }}>
+                Cash movements not shown here (for example future season tools) may explain a small gap of {fmtEur(Math.round(cashFlow.reconciliationGap))} vs this roll-up.
+              </p>
+            ) : null}
 
             <p className="muted" style={{ margin: "1rem 0 0", fontSize: "0.88rem", lineHeight: 1.5 }}>
               <strong>Future receivables:</strong> {fmtEur(futureReceivables)}
