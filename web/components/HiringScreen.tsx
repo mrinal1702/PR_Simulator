@@ -17,6 +17,29 @@ import {
 } from "@/lib/hiring";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { canAfford, spendEurOrNull } from "@/lib/budgetGuard";
+import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import { ResourceSymbol } from "@/components/resourceSymbols";
+
+const HIRING_ROLE_OPTIONS: {
+  id: HiringRole;
+  title: string;
+  focusLabel: string;
+  symbols: Array<"competence" | "visibility">;
+}[] = [
+  { id: "data_analyst", title: "Data Analyst", focusLabel: "Competence Focus", symbols: ["competence"] },
+  {
+    id: "sales_representative",
+    title: "Sales Representative",
+    focusLabel: "Visibility Focus",
+    symbols: ["visibility"],
+  },
+  {
+    id: "campaign_manager",
+    title: "Campaign Manager",
+    focusLabel: "Balanced Focus",
+    symbols: ["competence", "visibility"],
+  },
+];
 
 type EmploymentMode = "intern" | "full_time";
 type HireReport = {
@@ -142,6 +165,7 @@ export function HiringScreen({ season }: { season: number }) {
           competenceGain,
           visibilityGain,
           capacityGain: capGain,
+          ...(mode === "full_time" ? { productivityPct: productivity, tenureCapacityBonus: 0 } : {}),
         },
       ],
     };
@@ -208,9 +232,11 @@ export function HiringScreen({ season }: { season: number }) {
         </p>
         <h1 style={{ margin: 0 }}>Talent Bazaar</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
-          Cash: EUR {save.resources.eur.toLocaleString("en-GB")} · Max hires this pre-season: {cap} · Hired: {hiredThisSeason}
+          Max hires this pre-season: {cap} · Hired: {hiredThisSeason}
         </p>
       </header>
+
+      <AgencyResourceStrip save={save} />
 
       <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.9rem", flexWrap: "wrap" }}>
         <button
@@ -260,65 +286,80 @@ export function HiringScreen({ season }: { season: number }) {
           </div>
 
           <h2 style={{ marginTop: "1rem", fontSize: "1.15rem" }}>2) Configure hire</h2>
-          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "end", marginTop: "0.5rem" }}>
-            <label className="field" style={{ minWidth: "250px", margin: 0 }}>
-              <span>Seniority</span>
-              <select
-                disabled={mode === "intern"}
-                value={tier}
-                onChange={(e) => {
-                  const nextTier = e.target.value as Exclude<HiringTier, "intern">;
-                  setTier(nextTier);
-                  setSalary(getSalaryBands(nextTier)[0].anchor * 1000);
-                }}
-              >
-                <option value="junior">Junior (15k-39k)</option>
-                <option value="mid">Mid (40k-64k)</option>
-                <option value="senior">Senior (65k-89k)</option>
-              </select>
-            </label>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "0.5rem" }}>
+            {mode === "full_time" ? (
+              <div className="field" style={{ margin: 0, maxWidth: "32rem" }}>
+                <span>Role</span>
+                <div className="hiring-role-picker" role="radiogroup" aria-label="Employee role">
+                  {HIRING_ROLE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      className={`hiring-role-option${role === opt.id ? " selected" : ""}`}
+                      onClick={() => setRole(opt.id)}
+                      aria-pressed={role === opt.id}
+                    >
+                      <span className="hiring-role-option__icons">
+                        {opt.symbols.map((sym) => (
+                          <ResourceSymbol key={sym} id={sym} size={18} />
+                        ))}
+                      </span>
+                      <span className="hiring-role-option__body">
+                        <span className="hiring-role-option__title">{opt.title}</span>
+                        <span className="hiring-role-option__focus">{opt.focusLabel}</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
 
-            <label className="field" style={{ minWidth: "250px", margin: 0 }}>
-              <span>Role</span>
-              <select
-                disabled={mode === "intern"}
-                value={role ?? ""}
-                onChange={(e) => setRole((e.target.value as HiringRole) || null)}
-              >
-                <option value="">Select a role</option>
-                <option value="data_analyst">Data Analyst (competence focus)</option>
-                <option value="sales_representative">Sales Representative (visibility focus)</option>
-                <option value="campaign_manager">Campaign Manager (balanced focus)</option>
-              </select>
-            </label>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "end" }}>
+              <label className="field" style={{ minWidth: "250px", margin: 0 }}>
+                <span>Seniority</span>
+                <select
+                  disabled={mode === "intern"}
+                  value={tier}
+                  onChange={(e) => {
+                    const nextTier = e.target.value as Exclude<HiringTier, "intern">;
+                    setTier(nextTier);
+                    setSalary(getSalaryBands(nextTier)[0].anchor * 1000);
+                  }}
+                >
+                  <option value="junior">Junior (15k-39k)</option>
+                  <option value="mid">Mid (40k-64k)</option>
+                  <option value="senior">Senior (65k-89k)</option>
+                </select>
+              </label>
 
-            <label className="field" style={{ minWidth: "220px", margin: 0 }}>
-              <span>Budget (salary)</span>
-              <select
-                disabled={mode === "intern"}
-                value={salary}
-                onChange={(e) => setSalary(Number.parseInt(e.target.value, 10))}
-              >
-                {salaryOptions.map((value) => (
-                  <option key={value} value={value}>
-                    EUR {value.toLocaleString("en-GB")}
-                  </option>
-                ))}
-              </select>
-            </label>
+              <label className="field" style={{ minWidth: "220px", margin: 0 }}>
+                <span>Budget (salary)</span>
+                <select
+                  disabled={mode === "intern"}
+                  value={salary}
+                  onChange={(e) => setSalary(Number.parseInt(e.target.value, 10))}
+                >
+                  {salaryOptions.map((value) => (
+                    <option key={value} value={value}>
+                      EUR {value.toLocaleString("en-GB")}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-            <button
-              type="button"
-              className="btn btn-primary"
-              disabled={
-                capReached ||
-                !canAffordSelected ||
-                (mode === "full_time" && (!role || salaryOptions.length === 0))
-              }
-              onClick={findEmployees}
-            >
-              Find employees
-            </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={
+                  capReached ||
+                  !canAffordSelected ||
+                  (mode === "full_time" && (!role || salaryOptions.length === 0))
+                }
+                onClick={findEmployees}
+              >
+                Find employees
+              </button>
+            </div>
           </div>
           {mode === "intern" ? <p className="muted">Role and budget are fixed for interns.</p> : null}
           {mode === "full_time" && salaryOptions.length === 0 ? (

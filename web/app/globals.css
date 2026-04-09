@@ -350,3 +350,71 @@ h3 {
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
+
+/* Talent Bazaar: full-time role picker (SVG icons; native <option> cannot render them) */
+.hiring-role-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.hiring-role-option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: left;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.hiring-role-option:hover:not(:disabled) {
+  border-color: rgba(240, 180, 41, 0.35);
+  background: #1e2733;
+}
+
+.hiring-role-option.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  background: var(--accent-dim);
+}
+
+.hiring-role-option:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.hiring-role-option__icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.hiring-role-option__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.hiring-role-option__title {
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.25;
+}
+
+.hiring-role-option__focus {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
