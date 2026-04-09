@@ -13,6 +13,7 @@ This document defines how scenario writing should work for PR Simulator.
 ## Client identity (names and voice)
 
 - **`client_name`**: required in the database. **Individuals**: first name only. **Small companies / corporates**: company or brand name.
+- **Do not repeat first names** across scenarios for **new** characters (co-founders, execs, named staff). Maintain the living list in **`docs/SCENARIO_NAMES_USED.md`** and update it whenever you add a speaking name.
 - **Names**: vary across scenarios; for influencer-style individuals you may lean on common Western / familiar first-name vibes (e.g. Greg, Sarah, Matthew) without making every client identical—rotate naming styles elsewhere for diversity.
 - **Personality in the opening**: After the facts are clear, add a **human beat**—stress, embarrassment, or how they reached you—so the briefing feels like a real intake. Length is optional; **clarity is not**.
 
@@ -23,8 +24,8 @@ This document defines how scenario writing should work for PR Simulator.
 ### `problem_summary`
 
 1. **State the wrong thing early.** In the first two or three sentences, a reader should be able to answer: *What did they do (or what leaked)?* and *Why is that a problem?*
-2. **Prefer several short sentences over one long sentence.** If a sentence has more than one comma chain or multiple unrelated ideas, split it.
-3. **One beat per sentence where possible.** Setup → incident → evidence → spread → stakes can be separate sentences instead of one dense paragraph.
+2. **Sentence rhythm:** Aim for **slightly shorter sentences than long, winding “witty” paragraphs** of the past—not a staccato of one-liners. Combine related beats when it reads naturally; split when a line has too many turns or the scandal gets buried.
+3. **Avoid both extremes:** neither a single endless sentence nor a forced fragment every line—clarity first, then voice.
 4. **Name concrete anchors** (platform, object, place) before jokes: e.g. “business Instagram Reel,” “cup holder,” “PTA thread,” not only metaphor.
 5. **Add voice after the spine.** Once the fact pattern is clear, layer adjectives, humor, or character—never the reverse.
 6. **Self-check:** Can someone summarize the crisis in **one plain sentence** without guessing? If not, rewrite before polishing jokes.
@@ -105,6 +106,7 @@ Budget tier should influence scale and profile, not exact numbers.
 - Primary store: split by `client_type` — `web/data/scenarios_individual.json`, `web/data/scenarios_small_company.json`, `web/data/scenarios_corporate.json`
 - Glossary (`solution_options` vs `resolution_grid`): `web/data/scenario_database.json`
 - Append new scenarios to the correct file’s `scenarios` array
+- After adding named characters, update **`docs/SCENARIO_NAMES_USED.md`** so future drafts avoid duplicate first names
 - Keep existing scenarios immutable unless explicitly requested to revise
 - Use stable `scenario_id` values in kebab-case for easy reference (already present on each record)
 - Store **`client_name`** alongside `scenario_id` for display and tooling
@@ -135,7 +137,9 @@ Glossary keys in `web/data/scenario_database.json`: **`solution_options`** vs **
 
 ## Overly repeated phrases (audit — rotate or avoid)
 
-Patterns that show up **often** across the current pool. New scenarios should **vary** closers, metaphors, and joke templates so back-to-back clients do not sound like the same writer.
+**Last refreshed against the full scenario pool (29 scenarios, Apr 2026).** Re-run a quick grep when the pool grows; add new patterns here.
+
+Patterns that show up **often** across the pool. New scenarios should **vary** closers, metaphors, and joke templates so back-to-back clients do not sound like the same writer.
 
 ### Sentence templates / beats
 
@@ -156,6 +160,16 @@ Patterns that show up **often** across the current pool. New scenarios should **
 - **“They / She mails you [swag] that says ‘…(VERIFIED)’ / ‘…(REAL)’ / ‘…(CONFIRMED)’”** — Bracket punchline on **convincing** endings.
 - **“The internet immortalizes [X] as a global meme for…”** — **arc_resolution** **high** / **poor** opener (many scenarios).
 - **“…a few commenters write ‘okay that is how you fix a [noun].’”** — Corporate / recovery beat (reused).
+
+### Newer patterns (still easy to overuse — rotate)
+
+These show up in **recent** drafts; they are not banned, but **vary** them so new work does not converge on the same rhythm.
+
+- **Intake / how they reach you:** **“hit your inbox,”** **“landed in your queue,”** **“showed up in your inbox”** — same role as older “begged you to take the case”; rotate (calendar invite, forwarded thread, vendor introduced you, etc.).
+- **High-visibility recovery beats:** **“The story spikes”** / **“The story blows up”** — arc_2 high/high and similar.
+- **Outsiders / strangers:** **“Outsiders still joke about [X], but…”** — middle of a redemption beat.
+- **Convincing / good endings:** **“They narrow into [dull/boring/safe]…”** — credible second act.
+- **High / poor endings:** **“For a season they are shorthand for…”** — meme-status summary.
 
 ### Words and phrases
 
@@ -182,6 +196,6 @@ Before finalizing a scenario:
 - Client subtype plausibly matches tier
 - Tone is playful, not dark
 - **Problem summary passes the one-sentence test** (see **Clarity first**)
-- Problem summary is concise; sentences are short enough that the scandal is obvious
+- Problem summary is concise; rhythm is readable (see **Sentence rhythm** under Clarity first)
 - Solutions are thematic and non-generic
 - All four `solution_archetype_id` values are present exactly once

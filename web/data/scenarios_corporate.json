@@ -341,6 +341,74 @@
           "convincing": "They turn a cursed campaign into a credible second act: verified controls, leadership on-record, and a boring press release that actually lists buildings and timelines. Gridwell hosts a tenant roundtable in a room where the temperature matches the promise and sends a selfie from the BMS screen with the caption 'thinking retired (verified).'"
         }
       }
+    },
+    {
+      "scenario_id": "corporate-very-low-hiring-thread-wrong-handle",
+      "client_name": "SummitTrust Financial",
+      "client_type": "Corporate",
+      "budget_tier": "Very Low",
+      "client_subtype": "National Retail Bank (Employer Brand)",
+      "scenario_title": "We're Hiring—Wrong Logo",
+      "problem_summary": "SummitTrust Financial—a household-name retail bank whose logo is on arenas and airport walkways—landed in your crisis queue after a 'We're hiring—join our culture' LinkedIn thread went live with a competitor's careers handle tagged in the first comment, as if the two brands shared a talent pipeline. Scheduling software pointed the wrong @ from a dropdown; the rival account quote-posted once with a polite emoji, and finance Twitter screenshotted the thread before HR could pull it. Head of employer brand Morgan says the quarterly social budget for this mess is basically thread copy plus one correction, swears it was a mis-click, not sabotage, and insists they cannot post another campus photo until someone helps them sound like a bank that knows which logo it is hiring for.",
+      "flavor_tone_note": "Stadium-sized brand, typo-sized scandal; Morgan owns EVP language while Legal breathes into a paper bag.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Thread Correction & Kill Switch",
+          "solution_brief": "Delete or reply-edit the tag, post one plain correction—what happened, human error, no jokes in the first hour."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Employer Brand Repair Sprint",
+          "solution_brief": "Brief key campus recruiters and comms leads, share internal talking points, monitor competitor thread without engaging."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Self-Own LinkedIn Pulse",
+          "solution_brief": "Lean into high-visibility humble copy—one controlled post that owns the mistake before parody accounts do."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Social Governance & Handle Audit",
+          "solution_brief": "Full reset: scheduling tool rules, approval gates for @ mentions, leadership sign-off on hiring posts, coordinated recovery."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Wrong-tag jokes stay in finance meme corners; campus recruiting still winces.",
+        "low_visibility_high_effectiveness": "Contained; fast correction and a dull apology calm internal comms.",
+        "high_visibility_low_effectiveness": "Screenshots spread on industry Twitter; the bank looks sloppy, not evil.",
+        "high_visibility_high_effectiveness": "Pile-on widens; crisp accountability plus a process fix earns eye-rolls instead of boycotts."
+      },
+      "arc_2": {
+        "options": [
+          "Thread Correction Drop",
+          "Campus Comms Repair",
+          "Self-Own Pulse Post",
+          "Handle Governance Reset",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Morgan posts a careful correction, then an intern queues a 'Meet our recruiters' carousel that still previews the competitor's hex code in a design mock; seven employees screenshot it internally before brand pulls the file.",
+        "low_visibility_high_effectiveness": "Buzz stays mostly inside the industry, but they follow through: wrong tag gone, Morgan sends a one-pager to every campus lead, and Legal gets a labeled screenshot in a PDF titled DO_NOT_TWEET_THIS_AGAIN.pdf.",
+        "high_visibility_low_effectiveness": "During a livestreamed campus Q&A meant to reset trust, the moderator's lower third briefly flashes the rival bank's ticker from an old template; the chat loses composure. Someone sets the clip to elevator music.",
+        "high_visibility_high_effectiveness": "Finance Twitter runs hot for a day, but SummitTrust ships one dry mea culpa, freezes non-approved hiring posts for a week, and rolls out a boring handle whitelist. Outsiders still meme the dropdown, but a few threads note the correction landed before the lunch bell."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The screenshot never quite leaves Slack; Morgan keeps calling it 'brand proximity' while recruiters side-eye every @ symbol. Leadership asks if 'culture' can mean 'shared industry values,' and you point to the employee handbook.",
+          "good": "Only a modest circle of finance nerds cared; enough of them accept a blunt correction that campus posts resume with fewer adjectives. They stop letting interns own the scheduling tool solo.",
+          "convincing": "They become the big bank that tagged the wrong logo and then published a flowchart—embarrassing, specific, oddly respected internally. Morgan hands you a sticky with the right @ written three times and one underlined."
+        },
+        "medium": {
+          "poor": "Every new hiring post gets inspected for hex codes; Morgan answers Slack at midnight with screenshots. Legal starts reviewing captions like loan agreements.",
+          "good": "People remember the tag, but they also remember a clean correction and a real approval step before publish. Morgan stops treating LinkedIn like a group chat.",
+          "convincing": "Recruiting conferences cite them as the case that survived a viral typo by shutting up and fixing the tool. They tell the story once at an internal town hall—no punchline—and interns actually listen."
+        },
+        "high": {
+          "poor": "For a week they are shorthand for 'talent pipeline cosplay'; parody accounts tag two banks at once for sport. The CEO films a sincerity video and the teleprompter still shows the rival ticker.",
+          "good": "They are a punchline name, but most regulators only care about disclosures that move markets—still, HR tightens vendor access to brand kits. Morgan carries a printed allowlist, not a mood board.",
+          "convincing": "They narrow into dull, safe employer posts: pre-approved templates, no @ without a second pair of eyes, and a rule that campus shoots never reuse last year's deck. Their next hiring season opens with a plain text post and zero stadium metaphors—and engagement is fine."
+        }
+      }
     }
   ]
 }

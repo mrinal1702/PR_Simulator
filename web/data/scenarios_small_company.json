@@ -545,6 +545,142 @@
           "convincing": "They narrow into 'boring-safe parties': contracts in envelopes, social posts from a desk, mascot head never next to a mail slot. Their year-end post is a single shot of an empty cup holder and the caption 'lesson learned.'"
         }
       }
+    },
+    {
+      "scenario_id": "small-company-very-low-commuter-shake-fail",
+      "client_name": "LockTight Travelware",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Two-Person Insulated Drinkware Brand",
+      "scenario_title": "Commuter Shake, Real Physics",
+      "problem_summary": "LockTight Travelware is a two-person insulated-mug brand built on farmers-market demos and shaky Facebook Lives, and the mess hit your queue after a flagship stream went sideways. Co-owner Quinn ran the promised 'commuter shake test' on a folding table, spun the flagship mug hard, and the lid seal let go—coffee jumped the rim, drenched the phone rig, and baptized a volunteer's tote while comments spammed gifts. Neighboring vendors replay the clip from their stalls; Quinn says that unit was pre-production, Elena says they torqued the gasket twice, and both refuse another on-camera pour until you help them sound like founders who own a bad demo instead of influencers who lost to physics for content.",
+      "flavor_tone_note": "Demo-day physics versus ring-light confidence; Quinn spins fast, Elena trusts a torque spec until the internet does not.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Stream Takedown & Plain Post-Mortem",
+          "solution_brief": "Pull the clip, post a short factual explanation—what failed, which SKU, no stunt framing."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Market & Volunteer Repair Pass",
+          "solution_brief": "Make the volunteer whole, post refund or replace policy for anyone who bought on hype, and share a simple engineering note customers can follow."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Physics Roast Roadshow",
+          "solution_brief": "High-visibility owned content: laugh at the demo, show the fix on camera—speed before polish."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Demo & QA Standards Relaunch",
+          "solution_brief": "Full reset: staged test protocol, no live hero tests without backup units, coordinated comeback messaging."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Shake-fail jokes stay between vendors; wholesale interest still cools.",
+        "low_visibility_high_effectiveness": "Contained; honest clip pull and apology calm the worst threads.",
+        "high_visibility_low_effectiveness": "Clip escapes craft-market TikTok; the brand looks like stunt-first commerce.",
+        "high_visibility_high_effectiveness": "Pile-on widens; transparent failure analysis earns a skeptical second look."
+      },
+      "arc_2": {
+        "options": [
+          "Post-Mortem Post",
+          "Market Repair Pass",
+          "Owned Physics Blitz",
+          "Demo QA Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Quinn posts a careful apology, then Elena uploads a 'fixed seal' reel that still uses the old lid on a different mug; seven followers notice, and five post side-by-side stills in a coffee snob Discord.",
+        "low_visibility_high_effectiveness": "Buzz stays local, but they follow through: clip gone, volunteer comped, and a pinned note that lists SKU, batch, and 'do not shake above shoulder height.' Elena emails you a torque spec PDF with coffee rings on page one.",
+        "high_visibility_low_effectiveness": "At a comeback farmers-market live, Quinn announces 'shake test 2.0' and the replacement lid pops on the first twist; the crowd laughs harder than intended. Someone films Elena's face and turns it into a reaction sticker.",
+        "high_visibility_high_effectiveness": "The story spikes regionally, but they ship one blunt cut: no live hero demos until two passed units sit off-camera, and two weeks of ugly test footage with timestamps. Outsiders still meme the baptism, but three small retailers restock them with a warning label people actually read."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The clip haunts their shop tab; Quinn keeps calling it 'user error' while Elena hides the torque wrench. They ask if 'leakproof' can mean 'emotionally leakproof,' and you change the subject.",
+          "good": "Only a thin slice of the market cared; enough buyers accept a blunt post-mortem that weekend sales crawl back. They stop treating the folding table like a lab bench.",
+          "convincing": "They become the mug people who failed in public and then published the gasket part number—awkward, specific, oddly trusted. They hand you a travel mug with a label that says 'batch: honest.'"
+        },
+        "medium": {
+          "poor": "Every new pour gets slow-mo scrutiny; Quinn argues with strangers about laminar flow at midnight. Elena starts answering DMs with diagrams nobody asked for.",
+          "good": "People remember the splash, but they also remember refunds that landed and a lid revision with a date. Quinn stops scripting demos like game shows.",
+          "convincing": "Small retailers cite them as the brand that survived a viral fail by showing torque values. They tell the shake story once at a maker fair—no hero music—and the line actually moves."
+        },
+        "high": {
+          "poor": "For a season they are shorthand for 'mug company versus gravity'; parody accounts shake water bottles at the camera. Quinn goes live with 'we fixed it' and the audio glitches into the old clip.",
+          "good": "They are a cautionary name, but most stockists add 'demo disclaimer' clauses instead of a permanent ban—when the duo ships QA sheets first. Elena carries a spare lid in a red tin, not her pocket.",
+          "convincing": "They narrow into dull, trustworthy gear: filmed tests, boring FAQs, and no flagship stream without a backup mug in the cooler. Their year-end post is a single slow pour that does not move for forty seconds, and the comments are mostly relieved punctuation."
+        }
+      }
+    },
+    {
+      "scenario_id": "small-company-very-low-peakline-rented-empire",
+      "client_name": "Peakline Lifestyle Co.",
+      "client_type": "Small Company",
+      "budget_tier": "Very Low",
+      "client_subtype": "Two-Person Supplement & Course Brand",
+      "scenario_title": "Empire Mornings, Rented Afternoons",
+      "problem_summary": "Peakline Lifestyle Co., a two-person 'empire mornings' supplement-and-course brand built on garage glamour and loud thumbnails, hit your inbox after a leak dumped Turo receipts, a day-rate loft invoice, and raw B-roll filenames next to their 'keys to the kingdom' launch. The supercars were rentals, the penthouse was a set, and freelance videographer Reese—hired to shoot the flex, not to play anyone's partner—posted that her final invoice was paid late, then dropped side-by-side clips of founders Miles and Dean handing off the same key fob between a wrapped rental and a shoot Civic. Commenters are doing forensic zooms on watch reflections; Miles insists the product is real even if the scenery was leased, Dean has gone quiet in the group chat, and both say they cannot ship another drop until you help them sound like honest hucksters instead of cosplay billionaires.",
+      "flavor_tone_note": "Staged wealth meets spreadsheet truth; Miles talks vision, Dean mutters invoices, Reese still has the project folder.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Launch Freeze & Fact Sheet",
+          "solution_brief": "Pause hype posts, pull misleading thumbnails, publish a short list: what was rented, what is real product—no mythic garage required."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Buyer & Crew Repair Track",
+          "solution_brief": "Pay contractors on record, offer refunds or credits to angry buyers, separate product claims from lifestyle staging in writing."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Rented Empire Roast Tour",
+          "solution_brief": "High-visibility owned narrative: joke about the flex, show the real office, beat the meme to the punch."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Marketing Honesty Relaunch",
+          "solution_brief": "Full reset: disclosure rules for shoots, no stock keys in frame, legal-reviewed claims, coordinated comeback."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Receipt jokes stay in niche finance meme corners; refunds still hurt.",
+        "low_visibility_high_effectiveness": "Contained; a straight correction and Reese paid in public calms the worst threads.",
+        "high_visibility_low_effectiveness": "Folder leak trends; the brand looks like costume wealth.",
+        "high_visibility_high_effectiveness": "Pile-on widens; transparent receipts plus product proof earn a skeptical second look."
+      },
+      "arc_2": {
+        "options": [
+          "Fact Sheet Drop",
+          "Crew & Buyer Repair",
+          "Roast Tour Pivot",
+          "Honesty Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Miles posts a 'new transparency' carousel, then Dean uploads a B-roll still with the rental agency logo in the mirror; eight subscribers notice, and six cross-post to a snark subreddit titled 'sigma spreadsheet.'",
+        "low_visibility_high_effectiveness": "Buzz stays small, but they follow through: Reese paid, pinned disclosure, and a note that says 'product tested; garage rented.' Dean emails you a folder named receipts_for_real_this_time with actual PDFs.",
+        "high_visibility_low_effectiveness": "At a comeback live from a real strip-mall office, Miles promises 'no more cosplay' while a donation ticker still shows a Lamborghini emoji; the chat loses patience. Someone syncs the old key-fob clip to circus music.",
+        "high_visibility_high_effectiveness": "The story spikes, but they kill the empire fantasy where it was fake: one blunt video, two weeks of boring lab shots for the supplement, and a ban on car keys in frame. Outsiders still joke about Turo, but a few threads grudgingly admit the disclosure finally matches the spreadsheet."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "Whispers follow every launch; Miles keeps calling the leak 'hater math' while Dean refreshes Shopify chargebacks. They ask if 'empire' can mean 'empire mindset,' and you redirect to the refund policy.",
+          "good": "Only a thin audience cared; enough buyers accept labeled staging that they can sell without pretending the garage is a 401(k). They stop filming next to vehicles they do not own.",
+          "convincing": "They become the brand that got caught renting the vibe and then published the line items—awkward, specific, oddly memorable. They send you a keychain with a toy car and a tag that says 'prop, not portfolio.'"
+        },
+        "medium": {
+          "poor": "Every new thumbnail gets inspected for reflections; Miles argues with strangers about watch brands at 1 a.m. Dean starts answering DMs with spreadsheets nobody asked for.",
+          "good": "People remember the fob handoff, but they also remember contractors paid on time and a disclosure box that matches reality. Miles stops scripting launches like music videos.",
+          "convincing": "Micro-influencer coaches cite them as the case that survived by separating product from flex. They tell the rental story once on a panel—no sunglasses—and the room laughs once, carefully."
+        },
+        "high": {
+          "poor": "For a season they are meme shorthand for leased confidence; parody accounts dub key clicks over stock footage. Miles goes live with 'we hear you' and the overlay still shows a sports car emoji.",
+          "good": "They are a cautionary logo, but most payment processors only tighten marketing claims instead of freezing—when the duo ships ingredient docs first. Dean carries a printout of allowed set language, not a ring light.",
+          "convincing": "They narrow into dull, defensible gear: supplement COAs, plain backgrounds, and a rule that any car in frame has a rental agreement in the caption. Their year-end post is a fluorescent office selfie with the caption 'no garage, no problem.'"
+        }
+      }
     }
   ]
 }
