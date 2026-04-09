@@ -224,7 +224,7 @@ export function NewGameWizard() {
         <section>
           <h2 style={{ marginTop: 0, fontSize: "1.25rem" }}>Origin story</h2>
           <p className="muted" style={{ marginTop: 0 }}>
-            Pick how your agency began—each path has the same overall starting power, different flavors.
+            Pick how your agency began. Tap a build to preview details, then press Continue.
           </p>
           <div className="card-grid cols-3 build-cards" style={{ marginTop: "1.25rem" }}>
             {BUILDS.map((b) => (
@@ -234,26 +234,40 @@ export function NewGameWizard() {
                 className={`choice-card${buildId === b.id ? " selected" : ""}`}
                 onClick={() => setBuildId(b.id)}
               >
-                <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>{b.name}</h3>
-                <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.85rem", fontStyle: "italic" }}>
+                <h3 style={{ margin: "0 0 0.25rem", fontSize: "0.98rem" }}>{b.name}</h3>
+                <p className="muted" style={{ margin: "0 0 0.45rem", fontSize: "0.8rem", fontStyle: "italic" }}>
                   {b.tagline}
                 </p>
-                <p
-                  style={{
-                    margin: "0 0 0.65rem",
-                    fontSize: "0.875rem",
-                    lineHeight: 1.58,
-                    textAlign: "left",
-                  }}
-                >
-                  {b.bio}
-                </p>
-                <p className="muted" style={{ margin: 0, fontSize: "0.8rem" }}>
+                <p className="muted" style={{ margin: 0, fontSize: "0.76rem" }}>
                   {b.statsSummary}
                 </p>
+                {buildId === b.id ? (
+                  <p className="muted" style={{ margin: "0.6rem 0 0", fontSize: "0.74rem" }}>
+                    Selected for preview
+                  </p>
+                ) : null}
               </button>
             ))}
           </div>
+
+          {buildId ? (
+            <div className="choice-card selected" style={{ marginTop: "0.9rem", padding: "0.9rem 1rem" }}>
+              <h3 style={{ margin: "0 0 0.35rem", fontSize: "0.98rem" }}>
+                {BUILDS.find((b) => b.id === buildId)?.name}
+              </h3>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "0.84rem",
+                  lineHeight: 1.5,
+                  textAlign: "left",
+                }}
+              >
+                {BUILDS.find((b) => b.id === buildId)?.bio}
+              </p>
+            </div>
+          ) : null}
+
           <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.75rem", flexWrap: "wrap" }}>
             <button type="button" className="btn btn-secondary" onClick={() => setStep(1)}>
               Back
