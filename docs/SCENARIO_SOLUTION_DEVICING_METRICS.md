@@ -91,9 +91,16 @@ Do **not** treat these as “average good” — they are **stacked** optima. Sc
 
 `resolveClientOutcome` in `web/lib/seasonClientLoop.ts` (via `computeSeason1SolutionMetrics` in `web/lib/solutionOutcomeMath.ts`) uses **current** `visibility` and `competence` from the save when a solution is executed. Scenario text and difficulty should stay **consistent** with the same agency stats this document uses as references. Post-season boosts and summary screens read **final** `outcome` values after post-season resolution.
 
+Current resolver note (`solutionOutcomeMath.ts`):
+- Reach/effectiveness start from archetype base and use an **additive signed force** from centered driver scores (rather than blending base toward a variance layer).
+- Current tuning uses a fixed full span of **40 points** around base: **±20** before clamp/round.
+- Explicit random term was removed from reach/effectiveness variance; instead, small deterministic jitter is applied to `V_score` / `C_score` (visibility jitter wider than competence jitter).
+
 ---
 
 ## Changelog
 
 - 2026-04-08: Initial snapshot (metric bands, benchmark 80, random-save quartiles, pre-season ceilings).
 - 2026-04-09: Noted `solutionOutcomeMath` / post-season final metrics.
+- 2026-04-09: Updated for additive-force resolver, ±30% half-span interpretation, and score-level jitter.
+- 2026-04-09: Updated resolver tuning to fixed ±20 force span around base.

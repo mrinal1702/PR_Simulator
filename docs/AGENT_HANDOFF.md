@@ -95,7 +95,7 @@ Full spec: **`docs/PAYROLL_AND_LAYOFF_RULES.md`**. Summary:
    - Four priced archetypes + reject; creative copy from merged `web/data/scenarios_*.json` via `pickScenarioForClient` (unique `scenario_id` per playthrough via `usedScenarioIds`).
 7. Post-season (`/game/postseason/[season]`)
    - **`PostSeasonHubScreen`**: agency stats, case log (Season 1), **Season summary** link, **View results** (mandatory one-by-one review of accepted campaigns in queue order).
-   - **`/game/postseason/[season]/results`**: per scenario — arc completeness bar, outcome metrics, optional boost (reach costs EUR 5k, effectiveness costs 5 capacity; gain 1–5% from competence), or do nothing. Updates `run.outcome`, `run.postSeason`, `reputation`, `visibility`, EUR/capacity as applicable.
+   - **`/game/postseason/[season]/results`**: per scenario — arc completeness bar, outcome metrics, optional boost (reach costs EUR 5k, effectiveness costs 5 capacity; up to 5% from competence), or do nothing. Updates `run.outcome`, `run.postSeason`, `reputation`, `visibility`, EUR/capacity as applicable.
    - **`/game/postseason/[season]/summary`**: agency gains (post-season rep/vis), average reach/effectiveness/satisfaction, payroll vs cash (**may need to fire / reduce headcount** if cash &lt; roster payroll per `docs/PAYROLL_AND_LAYOFF_RULES.md`), toggles for **Scenario overview** and **Company financials** (operating P&amp;L + cash bridge; future receivables footnote). **Enter pre-season N+1** button (capped at 7).
    - `Continue` routes here when `phase === "postseason"` (`getContinuePath` in `saveGameStorage.ts`).
 
@@ -183,7 +183,7 @@ UI behavior:
 - `web/components/HomeMenu.tsx`: Continue/New game entry buttons
 - `web/components/HomeDashboard.tsx`: phase, stats, breakdowns, Season 1 case log
 - `web/lib/metricBreakdown.ts`: agency ledger lines for breakdown modals (pre-season, home, Season 1 client deltas, post-season rep/vis/EUR/capacity)
-- `web/lib/solutionOutcomeMath.ts`: Season 1 campaign reach/effectiveness (archetype base + variance)
+- `web/lib/solutionOutcomeMath.ts`: Season 1 campaign reach/effectiveness (archetype base + additive signed force; score-level jitter)
 - `web/lib/postSeasonResults.ts`: post-season boosts, rewards, `collectPostSeasonLedger`
 - `web/lib/seasonFinancials.ts`: season summary cash bridge, future receivables, payroll heads-up
 - `web/components/PostSeasonHubScreen.tsx`, `PostSeasonResultsScreen.tsx`, `SeasonSummaryScreen.tsx`: post-season UI
