@@ -50,12 +50,9 @@ export type SeasonCashFlow = {
   openingCash: number;
   /** Payroll at hire (Season 1) or season-start payroll deduction (Season 2+), when applicable. */
   wagesPaid: number;
-  /** Client budgets net of solution EUR (same as operating summary net before post-season reach). */
+  /** Same as {@link SeasonCashBridge.netOperatingCash}: client net after solution spend and post-season reach cash. */
   cashFlowFromOperations: number;
-  extraCampaignCost: number;
   closingCash: number;
-  /** True when opening is the Season 1 endowment + spouse package. */
-  openingIsEndowmentAndSpouse: boolean;
   /** Non-zero if other EUR movements (or rounding) prevent a perfect tie-out. */
   reconciliationGap: number;
 };
@@ -67,14 +64,14 @@ function initialEndowmentEur(save: NewGamePayload): number {
 }
 
 /**
- * Cash flow for the season summary: opening → wages → client operations → optional post-season reach → closing.
+ * Cash flow for the season summary: opening → wages → net operating cash (matches operating summary) → closing.
  * Season 1 opening is explicit starting wealth (endowment + spouse). Season 2+ opening is cash before payroll at season start when payroll is modelled, else cash at in-season start.
  */
 export function computeSeasonCashFlow(save: NewGamePayload, seasonKey: string): SeasonCashFlow {
   const bridge = computeSeasonCashBridge(save, seasonKey);
   const seasonNum = Number(seasonKey);
   const employees = save.employees ?? [];
-  const { netClientReceipts, postSeasonReachSpend, closingCash } = bridge;
+  const { netClientReceipts, postSeasonReachSpend, closingCash, netOperatingCash } = bridge;
   const cashAfterPayrollAtInSeasonStart = closingCash - netClientReceipts + postSeasonReachSpend;
 
   let openingCash: number;
@@ -92,16 +89,14 @@ export function computeSeasonCashFlow(save: NewGamePayload, seasonKey: string): 
     openingCash = payrollPaid ? cashAfterPayrollAtInSeasonStart + wagesPaid : cashAfterPayrollAtInSeasonStart;
   }
 
-  const impliedClosing = openingCash - wagesPaid + netClientReceipts - postSeasonReachSpend;
+  const impliedClosing = openingCash - wagesPaid + netOperatingCash;
   const reconciliationGap = closingCash - impliedClosing;
 
   return {
     openingCash,
     wagesPaid,
-    cashFlowFromOperations: netClientReceipts,
-    extraCampaignCost: postSeasonReachSpend,
+    cashFlowFromOperations: netOperatingCash,
     closingCash,
-    openingIsEndowmentAndSpouse: seasonNum === 1,
     reconciliationGap,
   };
 }

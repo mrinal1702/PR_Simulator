@@ -331,7 +331,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
         </button>
         {showFinancials && cash && cashFlow ? (
           <div style={{ marginTop: "1rem" }}>
-            <h3 style={{ fontSize: "1rem", margin: "0 0 0.5rem" }}>Operating summary (cash)</h3>
+            <h3 style={{ fontSize: "1rem", margin: "0 0 0.5rem", color: "#fbbf24" }}>Net Operating Summary (Cash)</h3>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.95rem" }}>
               <tbody>
                 <tr>
@@ -354,7 +354,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
                 ) : null}
                 <tr style={{ borderTop: "1px solid var(--border)" }}>
                   <td style={{ padding: "0.5rem 0 0.35rem" }}>
-                    <strong>Net operating cash (this season)</strong>
+                    <strong>Net operating cash</strong>
                   </td>
                   <td style={{ padding: "0.5rem 0 0.35rem", textAlign: "right" }}>
                     <strong>{fmtEur(cash.netOperatingCash)}</strong>
@@ -363,12 +363,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
               </tbody>
             </table>
 
-            <h3 style={{ fontSize: "1rem", margin: "1.25rem 0 0.5rem" }}>Cash flow</h3>
-            <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.86rem", lineHeight: 1.45 }}>
-              {cashFlow.openingIsEndowmentAndSpouse
-                ? "Opening is your build endowment plus spouse support at game start."
-                : "Opening is cash before this season’s payroll (when deducted at season start) or cash at in-season start."}
-            </p>
+            <h3 style={{ fontSize: "1rem", margin: "1.25rem 0 0.5rem", color: "#fbbf24" }}>Cash Flow</h3>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.95rem" }}>
               <tbody>
                 <tr>
@@ -387,14 +382,6 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
                     {fmtEur(cashFlow.cashFlowFromOperations)}
                   </td>
                 </tr>
-                {cashFlow.extraCampaignCost > 0 ? (
-                  <tr>
-                    <td style={{ padding: "0.35rem 0" }}>Extra campaign cost</td>
-                    <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
-                      −{fmtEur(cashFlow.extraCampaignCost)}
-                    </td>
-                  </tr>
-                ) : null}
                 <tr style={{ borderTop: "1px solid var(--border)" }}>
                   <td style={{ padding: "0.5rem 0 0.35rem" }}>
                     <strong>Closing</strong>
