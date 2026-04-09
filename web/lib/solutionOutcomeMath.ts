@@ -11,16 +11,21 @@
  * (empirical Q1/median/Q3, ~80 benchmark, stacked pre-season ceilings).
  */
 
-const BASE_WEIGHT = 0.4;
-const VARIANCE_WEIGHT = 0.6;
-
-/** Reach variance core: 60% visibility + 35% competence (score jitter applied to V/C). */
+/** Reach driver core: 60% visibility + 35% competence (score jitter applied to V/C). */
 const REACH_W_VIS = 0.6;
 const REACH_W_COMP = 0.35;
 
-/** Effectiveness variance core: 70% competence + 25% discipline (jitter applied to C). */
+/** Effectiveness driver core: 70% competence + 25% discipline (jitter applied to C). */
 const EFF_W_COMP = 0.7;
 const EFF_W_DISC = 0.25;
+
+/**
+ * Additive-force model:
+ * final = base + force(centered_driver), so base is the midpoint and stat quality pushes up/down.
+ */
+const REACH_FORCE_MAX = 28;
+const EFFECTIVENESS_FORCE_MAX = 28;
+const FORCE_CURVE_K = 1.8;
 
 /**
  * Seeded score jitter (small): applied around normalized scores instead of explicit random term.
@@ -116,8 +121,8 @@ export function disciplineScoreForVariance(discipline: number): number {
 }
 
 /**
- * Season 1 solution metrics: 40% archetype base + 60% weighted variance layer
- * (variance can pull outcomes above or below the base).
+ * Season 1 solution metrics (additive-force):
+ * keep archetype base as midpoint; stat-driven driver applies a signed force around it.
  */
 export function computeSeason1SolutionMetrics(input: {
   baseReach: number;
@@ -133,16 +138,18 @@ export function computeSeason1SolutionMetrics(input: {
   const vComp = jitterScore(input.seed, "c-score-jitter", vCompBase, C_SCORE_JITTER_MAX);
   const vDisc = disciplineScoreForVariance(input.discipline);
 
-  const reachVariance =
+  const reachDriver =
     REACH_W_VIS * vVis + REACH_W_COMP * vComp;
-  const effectivenessVariance =
+  const effectivenessDriver =
     EFF_W_COMP * vComp + EFF_W_DISC * vDisc;
 
-  const reach = Math.round(
-    BASE_WEIGHT * input.baseReach + VARIANCE_WEIGHT * reachVariance
-  );
+  const centerNorm = (score: number) => (Math.max(0, Math.min(100, score)) - 50) / 50;
+  const forceFromDriver = (driver: number, maxAbs: number) =>
+    Math.tanh(FORCE_CURVE_K * centerNorm(driver)) * maxAbs;
+
+  const reach = Math.round(input.baseReach + forceFromDriver(reachDriver, REACH_FORCE_MAX));
   const effectiveness = Math.round(
-    BASE_WEIGHT * input.baseEffectiveness + VARIANCE_WEIGHT * effectivenessVariance
+    input.baseEffectiveness + forceFromDriver(effectivenessDriver, EFFECTIVENESS_FORCE_MAX)
   );
 
   return {
