@@ -218,35 +218,47 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
 
       <section>
         <div className="agency-stats-panel">
-          <p
+          <h2
             style={{
-              margin: "0 0 0.55rem",
-              color: "var(--accent)",
-              fontWeight: 700,
-              fontSize: "1rem",
+              margin: "0 0 0.5rem",
+              fontSize: "clamp(1.05rem, 2.5vw, 1.2rem)",
+              fontFamily: "var(--font-display)",
+              fontWeight: 600,
+              lineHeight: 1.25,
             }}
           >
-            Budget: EUR {currentClient.budgetTotal.toLocaleString("en-GB")}
-          </p>
-          <p className="muted" style={{ margin: "0 0 0.35rem" }}>
-            <strong>{currentClient.scenarioTitle}</strong>
-          </p>
-          <p style={{ margin: "0 0 0.35rem" }}>
-            <strong>{currentClient.displayName}</strong> ·{" "}
+            {currentClient.scenarioTitle}
+          </h2>
+          <p style={{ margin: "0 0 0.75rem" }}>
+            <strong>{currentClient.displayName}</strong>
+            {" - "}
             {currentClient.clientKind === "corporate"
               ? "Corporate"
               : currentClient.clientKind === "small_business"
                 ? "Small business"
                 : "Individual"}
           </p>
-          <p className="muted" style={{ marginTop: 0 }}>
+          <p className="muted" style={{ marginTop: 0, marginBottom: "1rem" }}>
             {currentClient.problem}
           </p>
-          <p className="muted" style={{ marginTop: 0 }}>
-            This phase budget: EUR{" "}
-            {currentClient.budgetSeason1.toLocaleString("en-GB")} · Season 2 (follow-up): EUR{" "}
-            {currentClient.budgetSeason2.toLocaleString("en-GB")}
-          </p>
+          <div className="client-case-budget-block">
+            <p className="client-case-budget-line">
+              <span className="client-case-budget-label client-case-budget-label--this-season">Budget this season</span>
+              <span className="client-case-budget-amount">
+                EUR {currentClient.budgetSeason1.toLocaleString("en-GB")}
+              </span>
+            </p>
+            <p className="client-case-budget-line">
+              <span className="client-case-budget-label client-case-budget-label--next-season">Budget next season</span>
+              <span className="client-case-budget-amount">
+                EUR {currentClient.budgetSeason2.toLocaleString("en-GB")}
+              </span>
+            </p>
+            <p className="client-case-budget-line">
+              <span className="client-case-budget-label client-case-budget-label--total">Budget total</span>
+              <span className="client-case-budget-amount">EUR {currentClient.budgetTotal.toLocaleString("en-GB")}</span>
+            </p>
+          </div>
 
           {awaitingChoice ? (
             <div style={{ marginTop: "0.9rem" }}>
