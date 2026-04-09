@@ -316,3 +316,37 @@ h3 {
   padding: 0.32rem 0.58rem;
   font-size: 0.86rem;
 }
+
+/* Pre-season: compact sticky resource bar (symbols + values; hover = full names on desktop) */
+.preseason-resource-strip {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
+  margin: 0 0 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-elevated) 94%, transparent);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+.preseason-resource-strip__pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--accent);
+  cursor: help;
+}
+
+.preseason-resource-strip__pair .preseason-resource-strip__val {
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}

@@ -9,11 +9,35 @@ import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { persistSave, loadSave } from "@/lib/saveGameStorage";
 import { buildMetricBreakdown, formatSigned, type BreakdownMetric } from "@/lib/metricBreakdown";
 import { fireEmployeeForPayrollShortfall, fireEmployeeVoluntary } from "@/lib/employeeActions";
+import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
 import {
   getPreseasonFocusCardCopy,
   getPreseasonFocusDeltaForSeason,
   type PreseasonFocusId,
 } from "@/lib/preseasonFocus";
+import { ResourceSymbol } from "@/components/resourceSymbols";
+
+function PreseasonResourceStrip({ save }: { save: NewGamePayload }) {
+  const r = save.resources;
+  const rep = save.reputation ?? 5;
+  const items: Array<{ id: "eur" | "competence" | "visibility" | "capacity" | "reputation"; value: string; title: string }> = [
+    { id: "eur", value: r.eur.toLocaleString("en-GB"), title: "Wealth (EUR)" },
+    { id: "competence", value: String(r.competence), title: "Competence" },
+    { id: "visibility", value: String(r.visibility), title: "Visibility" },
+    { id: "capacity", value: String(r.firmCapacity), title: "Firm capacity" },
+    { id: "reputation", value: String(rep), title: "Reputation" },
+  ];
+  return (
+    <div className="preseason-resource-strip" role="region" aria-label="Agency resources">
+      {items.map((item) => (
+        <span key={item.id} className="preseason-resource-strip__pair" title={item.title}>
+          <ResourceSymbol id={item.id} size={17} />
+          <span className="preseason-resource-strip__val">{item.value}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
 
 export function PreSeasonScreen({ season }: { season: number }) {
   const router = useRouter();
@@ -170,6 +194,8 @@ export function PreSeasonScreen({ season }: { season: number }) {
         </p>
       </header>
 
+      <PreseasonResourceStrip save={save} />
+
       <section>
         {payrollBlocked ? (
           <div className="agency-stats-panel" style={{ borderColor: "#dc2626", marginBottom: "0.85rem" }}>
@@ -275,7 +301,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
                               Salary: EUR {e.salary.toLocaleString("en-GB")}
                               {e.visibilityGain > 0 ? ` · Visibility +${e.visibilityGain}` : ""}
                               {e.competenceGain > 0 ? ` · Competence +${e.competenceGain}` : ""}
-                              {e.capacityGain > 0 ? ` · Capacity +${e.capacityGain}` : ""}
+                              {formatEmployeeCapacitySuffix(e)}
                             </p>
                           </div>
                           {showFireControls ? (
@@ -310,7 +336,21 @@ export function PreSeasonScreen({ season }: { season: number }) {
               className="choice-card"
               onClick={() => applyFocus("strategy_workshop")}
             >
-              <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>{workshopCard.title}</h3>
+              <h3
+                style={{
+                  margin: "0 0 0.35rem",
+                  fontSize: "1.05rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.45rem",
+                  flexWrap: "wrap",
+                }}
+              >
+                <span style={{ display: "inline-flex", alignItems: "center", color: "var(--accent)" }}>
+                  <ResourceSymbol id="competence" size={20} />
+                </span>
+                <span>{workshopCard.title}</span>
+              </h3>
               <p className="muted" style={{ margin: 0 }}>{workshopCard.subtitle}</p>
             </button>
             <button
@@ -318,7 +358,21 @@ export function PreSeasonScreen({ season }: { season: number }) {
               className="choice-card"
               onClick={() => applyFocus("network")}
             >
-              <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.05rem" }}>{networkCard.title}</h3>
+              <h3
+                style={{
+                  margin: "0 0 0.35rem",
+                  fontSize: "1.05rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.45rem",
+                  flexWrap: "wrap",
+                }}
+              >
+                <span style={{ display: "inline-flex", alignItems: "center", color: "var(--accent)" }}>
+                  <ResourceSymbol id="visibility" size={20} />
+                </span>
+                <span>{networkCard.title}</span>
+              </h3>
               <p className="muted" style={{ margin: 0 }}>{networkCard.subtitle}</p>
             </button>
           </div>
@@ -354,14 +408,6 @@ export function PreSeasonScreen({ season }: { season: number }) {
             {existingSeasonAction === "strategy_workshop" ? "Strategy workshop" : "Network"}.
           </p>
         ) : null}
-
-        <div style={{ marginTop: "1.25rem" }}>
-          <p className="muted" style={{ margin: 0 }}>
-            Current resources: EUR {save.resources.eur.toLocaleString("en-GB")} · Competence{" "}
-            {save.resources.competence} · Visibility {save.resources.visibility} · Capacity{" "}
-            {save.resources.firmCapacity} · Reputation {save.reputation ?? 5}
-          </p>
-        </div>
       </section>
       {breakdownMetric ? (
         <BreakdownModal
