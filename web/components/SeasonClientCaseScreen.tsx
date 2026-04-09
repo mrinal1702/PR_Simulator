@@ -14,12 +14,15 @@ import {
   type SolutionOption,
 } from "@/lib/seasonClientLoop";
 import { computePayrollHeadsUp } from "@/lib/seasonFinancials";
+import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import { ResourceSymbol } from "@/components/resourceSymbols";
 
 export function SeasonClientCaseScreen({ season }: { season: number }) {
   const router = useRouter();
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [notice, setNotice] = useState("");
   const [blockedByPayroll, setBlockedByPayroll] = useState(false);
+  const [pendingSolution, setPendingSolution] = useState<SolutionOption | null>(null);
 
   const seasonKey = String(season);
   const payrollPaidForSeason = save?.payrollPaidBySeason?.[seasonKey] === true;
@@ -105,7 +108,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
     persistSave(updated);
   };
 
-  const chooseSolution = (solution: SolutionOption) => {
+  const commitSolution = (solution: SolutionOption) => {
     if (!save || !loop || !currentClient || runForCurrentClient) return;
 
     if (solution.isRejectOption) {
@@ -211,6 +214,8 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         </p>
       </header>
 
+      <AgencyResourceStrip save={save} />
+
       <section>
         <div className="agency-stats-panel">
           <p
@@ -259,7 +264,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
                       key={option.id}
                       type="button"
                       className="choice-card"
-                      onClick={() => chooseSolution(option)}
+                      onClick={() => setPendingSolution(option)}
                       disabled={!option.isRejectOption && (forceRejectOnly || !affordable)}
                       style={{ textAlign: "left" }}
                     >
@@ -282,11 +287,74 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         </div>
 
         {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
-
-        <p className="muted" style={{ marginTop: "1.25rem" }}>
-          Cash: EUR {save.resources.eur.toLocaleString("en-GB")} · Capacity: {save.resources.firmCapacity}
-        </p>
       </section>
+
+      {pendingSolution ? (
+        <div
+          className="game-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="solution-confirm-title"
+        >
+          <div className="game-modal">
+            {pendingSolution.isRejectOption ? (
+              <>
+                <p className="game-modal-kicker">Reject client</p>
+                <h2 id="solution-confirm-title" style={{ marginTop: 0 }}>
+                  Pass on this client?
+                </h2>
+                <p style={{ marginTop: 0 }}>Are you sure?</p>
+              </>
+            ) : (
+              <>
+                <p className="game-modal-kicker">Confirm campaign</p>
+                <h2 id="solution-confirm-title" style={{ marginTop: 0 }}>
+                  {pendingSolution.title}
+                </h2>
+                <p className="muted" style={{ marginTop: 0, marginBottom: "0.5rem" }}>
+                  Cost for this choice:
+                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "0.75rem 1.25rem",
+                    alignItems: "center",
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  <span className="preseason-resource-strip__pair" title="Wealth (EUR)">
+                    <ResourceSymbol id="eur" size={18} />
+                    <span className="preseason-resource-strip__val">
+                      {pendingSolution.costBudget.toLocaleString("en-GB")}
+                    </span>
+                  </span>
+                  <span className="preseason-resource-strip__pair" title="Firm capacity">
+                    <ResourceSymbol id="capacity" size={18} />
+                    <span className="preseason-resource-strip__val">{pendingSolution.costCapacity}</span>
+                  </span>
+                </div>
+                <p style={{ marginTop: 0 }}>Are you sure?</p>
+              </>
+            )}
+            <div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end", gap: "0.6rem", flexWrap: "wrap" }}>
+              <button type="button" className="btn btn-secondary" onClick={() => setPendingSolution(null)}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => {
+                  commitSolution(pendingSolution);
+                  setPendingSolution(null);
+                }}
+              >
+                {pendingSolution.isRejectOption ? "Yes, reject" : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -11,6 +11,8 @@ import { plannedClientCountForSeason } from "@/lib/clientEconomyMath";
 import { SCENARIO_POOL_EXHAUSTED_MESSAGE } from "@/lib/scenarios";
 import { buildSeasonClients } from "@/lib/seasonClientLoop";
 import { computePayrollHeadsUp } from "@/lib/seasonFinancials";
+import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
+import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 
 /** Season hub: roll queue, stats, link into the dedicated client-case screen. */
 export function SeasonHubScreen({ season }: { season: number }) {
@@ -169,6 +171,8 @@ export function SeasonHubScreen({ season }: { season: number }) {
         </p>
       </header>
 
+      <AgencyResourceStrip save={save} />
+
       <section>
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
           <button type="button" className="btn btn-secondary" onClick={() => setShowStats((v) => !v)}>
@@ -236,7 +240,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
                         Salary: EUR {e.salary.toLocaleString("en-GB")}
                         {e.visibilityGain > 0 ? ` · Visibility +${e.visibilityGain}` : ""}
                         {e.competenceGain > 0 ? ` · Competence +${e.competenceGain}` : ""}
-                        {e.capacityGain > 0 ? ` · Capacity +${e.capacityGain}` : ""}
+                        {formatEmployeeCapacitySuffix(e)}
                       </p>
                     </div>
                   ))}
@@ -287,14 +291,6 @@ export function SeasonHubScreen({ season }: { season: number }) {
         ) : null}
 
         {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
-
-        <div style={{ marginTop: "1.25rem" }}>
-          <p className="muted" style={{ margin: 0 }}>
-            Current resources: EUR {save.resources.eur.toLocaleString("en-GB")} · Competence{" "}
-            {save.resources.competence} · Visibility {save.resources.visibility} · Capacity{" "}
-            {save.resources.firmCapacity} · Reputation {save.reputation ?? 5}
-          </p>
-        </div>
       </section>
     </div>
   );
