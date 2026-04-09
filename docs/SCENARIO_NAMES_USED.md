@@ -2,7 +2,7 @@
 
 When adding **new** characters (founders, co-owners, executives, named staff), **do not reuse** first names already on this list. **Brand / company** `client_name` values are listed separately—they can sound similar to a person name but are orgs, not people.
 
-**Pool snapshot:** 31 scenarios total (Apr 2026) — 15 Individual, 10 Small Company, 6 Corporate. Source: `web/data/scenarios_*.json`.
+**Pool snapshot:** 40 scenarios total (Apr 2026) — 19 Individual, 13 Small Company, 8 Corporate. Source: `web/data/scenarios_*.json`.
 
 Last full pass: scenario JSON in `web/data/scenarios_*.json`. Update this file when you introduce a new **speaking** name in any scenario field.
 
@@ -14,10 +14,13 @@ These are the lead **client** identities; treat as taken for any new individual 
 
 - Anika  
 - Emma  
+- Elodie  
 - Greg  
 - Iris  
 - Jake  
+- Kieran  
 - Leo  
+- Maya  
 - Marcus  
 - Mila  
 - Nathan  
@@ -25,6 +28,7 @@ These are the lead **client** identities; treat as taken for any new individual 
 - Ronan  
 - Rory  
 - Sienna  
+- Toby  
 - Zoe  
 
 ---
@@ -39,13 +43,16 @@ Includes co-founders, partners, execs, and recurring side characters in `problem
 - Avery  
 - Dana  
 - Dean  
+- Elodie  
 - Elena  
 - Jamie  
 - Jordan  
+- Kieran  
 - Jules  
 - Kevin *(also used as running gag / agent name)*  
 - Marco  
 - Marcus *(corporate + individual—same string, two roles)*  
+- Maya  
 - Miles  
 - Morgan  
 - Nina *(small-company co-founder + individual travel creator)*  
@@ -55,6 +62,7 @@ Includes co-founders, partners, execs, and recurring side characters in `problem
 - Riley  
 - Sam  
 - Theo  
+- Toby  
 
 **Note:** `Nina` and `Marcus` appear as **different people** in different scenarios—still **do not reuse** those strings for new characters.
 
@@ -78,12 +86,17 @@ Brands and companies currently in the pool (fine to keep as org names; do not cr
 - Crestline Office Systems  
 - Greystone Office Supply  
 - Gridwell  
+- Ink Harbor Studio  
+- JetVanta Regional  
 - LockTight Travelware  
 - Northloft Candle Lab  
+- Northbridge Health Insurance  
 - Peakline Lifestyle Co.  
+- PulseForge Nutrition  
 - Second Wind Studio  
 - SlatePay  
 - SummitTrust Financial  
+- TipTap Ledger  
 - Two Skillet Co.  
 - Wild Thyme Pantry  
 - Wiggle Spoon  

@@ -1035,6 +1035,278 @@
           "convincing": "He turns a viral credibility hit into a mature second act: expert-reviewed explainers, clearer guardrails, and better teaching discipline. The same phrase that mocked him, 'easy to understand,' becomes his rebuilt brand promise."
         }
       }
+    },
+    {
+      "scenario_id": "ind-low-work-smart-look-cooked",
+      "client_name": "Toby",
+      "client_type": "Individual",
+      "budget_tier": "Low",
+      "client_subtype": "Career Optimization Creator",
+      "scenario_title": "Work Smart, Get Cooked",
+      "problem_summary": "Toby, a cheerful career optimization creator known for tidy desk setups, five-step confidence scripts, and the line 'work smart, look calm,' came to you after a podcast appearance turned into a public roast. He booked the interview expecting a promo boost for his new guide, but the host opened with, 'Toby sells productivity plans like a man who just discovered bullet points yesterday,' then spent forty minutes reading Toby's old posts back to him, especially the one where he advised people to decline low-value meetings while he once bragged about attending seven networking breakfasts in one day. Clips spread fast, comments called him the CEO of saying obvious things in premium fonts, and his follower growth flipped negative in 48 hours. Toby insists the host edited for drama, but he also emailed you at 1:12 a.m. with subject line URGENT: am I the low-value meeting?",
+      "flavor_tone_note": "Podcast ambush meets brand contradiction; Toby talks in frameworks until the framework bites him.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Calm Clarification Note",
+          "solution_brief": "Post a short factual correction, acknowledge contradictions, and stop litigating every joke in comments."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Receipts-First Credibility Sprint",
+          "solution_brief": "Rebuild trust with transparent examples, specific corrections, and practical advice that can be tested."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Self-Roast Press Tour",
+          "solution_brief": "Lean into visibility with self-aware clips and guest spots to reclaim the narrative before mockery hardens."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Advisor Brand Rebuild Program",
+          "solution_brief": "Full reset: evidence standards, expert co-signals, and a disciplined relaunch of his coaching brand."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The episode stays niche, but trust in Toby's advice drops hard among core followers.",
+        "low_visibility_high_effectiveness": "The roast reaches a limited audience; clear corrections and humility steady his base.",
+        "high_visibility_low_effectiveness": "Clips of the takedown outrun everything else; Toby becomes a productivity punchline.",
+        "high_visibility_high_effectiveness": "The pile-on goes broad, but a disciplined response reframes him as teachable, not fraudulent."
+      },
+      "arc_2": {
+        "options": [
+          "Calm Clarification Note",
+          "Receipts-First Credibility Sprint",
+          "Self-Roast Press Tour",
+          "Advisor Brand Rebuild Program",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Toby posts a solemn video titled Context Matters, then accidentally screen-shares a draft folder named HOT_TAKES_FOR_ENGAGEMENT_FINAL_FINAL while saying he never optimizes for controversy. Only a small crowd sees it, but one listener clips the moment with the caption 'work smart, leak smarter,' and that clip immediately becomes the thumbnail under every apology.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Toby follows the plan: one plain correction thread, concrete examples where he was wrong, and no more motivational slogans for two weeks. Comments shift from dunking to cautious 'okay, this is at least honest.'",
+        "high_visibility_low_effectiveness": "During a comeback podcast, Toby tries to prove growth by bringing a printed Accountability Framework and drops it on mic; page one reads MONETIZE BACKLASH IDEAS. The host pauses for five full seconds and says, 'Toby, your framework has a villain arc tab.' Clips spread faster than his original interview disaster.",
+        "high_visibility_high_effectiveness": "The discourse goes wide, but Toby stays unusually disciplined: short apology, independent expert interview, and consistent practical content that actually helps people. The old jokes keep circulating, but the new clips start getting shared for substance instead of irony."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The backlash never fully explodes, but his credibility keeps leaking in small ways; every post gets at least one 'is this another premium obvious?' reply. Toby keeps rewriting captions like legal disclaimers with mood lighting.",
+          "good": "Only a limited audience follows the controversy, and enough of them accept his corrections that his channel stabilizes. He sounds less like a keynote deck and more like a person.",
+          "convincing": "In his niche, Toby becomes the creator who got publicly cooked and then quietly improved. The audience still remembers the roast, but they also remember the follow-through."
+        },
+        "medium": {
+          "poor": "The interview clips resurface every few weeks and drag each launch into the same comment cycle. Toby starts posting around anticipated mockery instead of around useful advice.",
+          "good": "People remember the host's jokes, but they also remember Toby stopped spinning and started showing his work. Brand conversations return, with stricter briefs and fewer buzzwords.",
+          "convincing": "He earns a reformed productivity guy reputation by trading slogans for practical, testable guidance. The narrative shifts from exposed to learned the hard way."
+        },
+        "high": {
+          "poor": "The internet freezes him as a template for fake guru culture; every clip gets stitched with someone saying, 'is the low-value meeting in the room with us?' Toby's catchphrase survives only as parody audio.",
+          "good": "He remains widely known for getting flattened in that interview, but avoids total collapse by publishing consistently useful, ego-light content. Sponsors return cautiously, mostly with heavy review clauses.",
+          "convincing": "He turns a public career faceplant into a credible second act: clearer claims, better evidence, and fewer theatrical promises. The same host who roasted him later introduces him as annoyingly improved, which is the closest thing to a medal he was ever going to get."
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-low-book-cafe-empty-launch",
+      "client_name": "Maya",
+      "client_type": "Individual",
+      "budget_tier": "Low",
+      "client_subtype": "Indie Self-Help Author",
+      "scenario_title": "Signed One Copy",
+      "problem_summary": "Maya, an indie self-help author with a modest but loyal online following, reached out after her sold-out-energy launch event at a bookstore cafe turned into a painfully public ghost town. She posted countdown reels, hired a photographer, and promised a community night, but when doors opened the room held three staff members, one confused delivery rider, and a cardboard standee of her own book. A barista clipped the untouched pastry table, comments filled with intimate crowd jokes, and people asked whether the event time was fake or just aspirational. Maya says a listing glitch hid the date on one platform and insists she can handle low sales, but not being memed as the author who signed exactly one copy, her own.",
+      "flavor_tone_note": "Soft-launch aesthetics, hard-empty room; Maya is earnest, overprepared, and now very online for the wrong reason.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Event Timing Clarifier",
+          "solution_brief": "Post a plain correction on the listing error and acknowledge the optics without defensive spin."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Reader Trust Recovery Week",
+          "solution_brief": "Run smaller verified sessions, direct reader outreach, and transparent attendance framing to rebuild trust."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Empty-Room Self-Roast Tour",
+          "solution_brief": "Lean into the meme with high-visibility humor and quick follow-up appearances before the narrative hardens."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Author Relaunch With Real Metrics",
+          "solution_brief": "Full reset: booking workflow checks, venue coordination, and a coordinated comeback with grounded claims."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The clip stays local, but Maya's credibility wobbles and event RSVPs flatten.",
+        "low_visibility_high_effectiveness": "Drama stays contained; clear context and humble follow-through steady core readers.",
+        "high_visibility_low_effectiveness": "The empty-room footage spreads; she becomes shorthand for manufactured hype.",
+        "high_visibility_high_effectiveness": "Backlash goes wide, but disciplined comms and real audience wins keep her recoverable."
+      },
+      "arc_2": {
+        "options": [
+          "Listing Error Statement",
+          "Reader Repair Sessions",
+          "Self-Roast Visibility Push",
+          "Grounded Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Maya posts a sincere correction, then accidentally uploads a behind-the-scenes caption template that reads CROWD_REACTION_PLACEHOLDER in all caps. Only a small audience sees it, but one commenter writes 'manifesting attendance in markdown' and the screenshot gets pinned in a local book club chat.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but she follows the boring plan: corrected listings, capped micro-events, and photos that show the real room size without excuses. Readers stop clowning and start asking actual book questions again.",
+        "high_visibility_low_effectiveness": "During a comeback podcast, Maya says she is done with inflated language, then promotes a 'sold-out mindset workshop' five minutes later. The host laughs, asks 'sold out to whom,' and that clip outruns the full interview by evening.",
+        "high_visibility_high_effectiveness": "The story travels widely, but Maya sticks to one plain script: what went wrong, what changed, and what she will never fake again. Meme comments continue, yet new clips start circulating for honest Q&A moments instead of empty-chair jokes."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The incident never fully detonates, but every event post gets at least one chair-count joke. Maya spends more time pre-explaining logistics than talking about the book.",
+          "good": "Only a narrow audience follows the saga, and enough readers accept the correction arc that events stabilize at realistic levels. She drops grandiose language and sounds more grounded.",
+          "convincing": "In her niche she becomes the author who got humbled in public and handled it cleanly. The one-copy meme lingers, but trust starts compounding again."
+        },
+        "medium": {
+          "poor": "The empty-room clip resurfaces with every launch announcement, and attendance narratives overshadow content. Maya starts writing captions around anticipated mockery instead of reader value.",
+          "good": "People remember the ghost launch, but they also remember consistent smaller sessions that were actually attended. Partner stores stay cautious but keep inviting her back.",
+          "convincing": "She earns a reformed-author reputation by trading hype aesthetics for reliable community events. The narrative moves from cringe to resilient."
+        },
+        "high": {
+          "poor": "The internet immortalizes her as a template for fake-it-till-you-film-it launches; every promo gets quote-posted with folding-chair jokes. Her brand phrase becomes meme audio for irony edits.",
+          "good": "She remains known for the wrong event, but avoids collapse through steady transparency and useful reader engagement. Sponsors and hosts return slowly with stricter expectations.",
+          "convincing": "She turns a viral empty-room moment into a credible second act: honest attendance framing, cleaner planning, and stronger reader trust. One host later introduces her as 'the author who stopped performing audience size and started building one.'"
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-low-rags-to-riches-inheritance-leak",
+      "client_name": "Kieran",
+      "client_type": "Individual",
+      "budget_tier": "Low",
+      "client_subtype": "Self-Help / Wealth Mindset Influencer",
+      "scenario_title": "Start With Nothing (Terms Apply)",
+      "problem_summary": "Kieran, a self-help influencer famous for from bus-stop to boardroom storytelling, reached out after his origin narrative collapsed in public. For years he sold courses built on claims like 'I built everything from zero,' 'no safety net, just discipline,' and 'I learned money by surviving it,' but a finance newsletter published property records showing he inherited two apartments at 23 plus trust distributions that financed his first business. The pile-on escalated when old clips resurfaced of him saying anyone can build an emergency fund by skipping one summer abroad and calling rent a mindset expense. Comments flipped overnight from motivational quotes to inheritance calculators, and his signature line start with nothing now trends next to family office paperwork screenshots.",
+      "flavor_tone_note": "Aspirational hustle branding meets document-level receipts; Kieran speaks in grind slogans while the archives speak in assets.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Line-by-Line Origin Clarifier",
+          "solution_brief": "Issue a plain correction of the story timeline and acknowledge inherited advantages without spin."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Credibility Repair With Receipts",
+          "solution_brief": "Publish verifiable financial context, update course claims, and rebuild trust through specifics."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Own-the-Myth Media Sprint",
+          "solution_brief": "Lean into high-visibility self-awareness to regain narrative control before ridicule hardens."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Founder Story Rebuild Program",
+          "solution_brief": "Full reset: audited messaging, revised product positioning, and a coordinated trust relaunch."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The receipts stay in niche circles, but core audience trust slips quickly.",
+        "low_visibility_high_effectiveness": "Issue stays contained; a factual correction stabilizes followers who stayed for practical advice.",
+        "high_visibility_low_effectiveness": "The inheritance threads go wide; Kieran becomes shorthand for performative hustle lore.",
+        "high_visibility_high_effectiveness": "Backlash spreads, but disciplined transparency keeps his reputation recoverable."
+      },
+      "arc_2": {
+        "options": [
+          "Origin Clarifier Statement",
+          "Receipt-Backed Repair Plan",
+          "Self-Aware Visibility Push",
+          "Narrative Integrity Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Kieran posts a serious correction thread, then accidentally includes a draft talking-point card that says POVERTY ARC (SHORT VERSION) for keynote openers. Only a small audience catches it, but one repost captioned it 'method acting for adversity' and the screenshot outperforms his apology.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but he follows the boring plan: corrected bio language, updated course disclaimers, and one clear timeline that names inherited assets without euphemisms. Critics still disagree, but the bad-faith guessing slows down.",
+        "high_visibility_low_effectiveness": "During a comeback podcast, Kieran says he has learned humility, then jokes that everyone should try a trust fund sabbatical for mindset clarity. The host stares in silence for three seconds, and the clip goes viral before the episode ends.",
+        "high_visibility_high_effectiveness": "The story goes broad, but Kieran keeps it factual: what was inherited, what was built later, and what claims were wrong. Mockery continues, yet practical content starts getting shared again by people who previously wrote him off."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never fully detonates, but his credibility leaks in every comment section; even neutral posts get inheritance jokes. Kieran keeps sounding like a TED Talk edited by legal counsel.",
+          "good": "Only a modest audience follows the receipts, and enough followers accept the correction arc that his platform stabilizes. He drops the mythology language and becomes less theatrical.",
+          "convincing": "In his niche, he becomes the creator who got exposed, corrected the record, and stopped selling struggle cosplay. People still remember the clips, but trust returns in practical pockets."
+        },
+        "medium": {
+          "poor": "The old quotes resurface with every launch and turn each campaign into a fairness argument. Kieran spends more time defending his backstory than discussing useful advice.",
+          "good": "People remember the inheritance reveal, but they also remember updated claims and clearer boundaries around his story. Partners return cautiously with stricter review standards.",
+          "convincing": "He earns reformed-coach status by replacing grind theater with transparent context and useful specifics. The narrative shifts from fraud-adjacent vibes to imperfect but accountable."
+        },
+        "high": {
+          "poor": "The internet immortalizes him as a meme for premium struggle roleplay; every clip gets stitched with calculator overlays and family office jokes. His no-safety-net line survives only as parody audio.",
+          "good": "He remains famous for the exposure, but avoids total collapse by publishing grounded material and retiring inflated origin claims. Sponsors re-enter slowly under heavy guardrails.",
+          "convincing": "He turns a viral credibility implosion into a viable second act: audited storytelling, corrected products, and less ego-forward positioning. One skeptical interviewer later calls him 'finally specific,' which lands better than applause."
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-low-hidden-gem-beach-whiplash",
+      "client_name": "Elodie",
+      "client_type": "Individual",
+      "budget_tier": "Low",
+      "client_subtype": "Travel Influencer & Live Vlogger",
+      "scenario_title": "Hidden Gem, Public Chaos",
+      "problem_summary": "Elodie, a budget travel vlogger known for quiet corners before they blow up, went live to unveil what she called the coast's best hidden-gem beach: clean water, no crowds, pure reset energy. She parked, hyped the reveal from her dashboard, and walked in streaming straight into packed sand, plastic cups in the shallows, three Bluetooth speakers in a volume war, and a banana-boat vendor yelling over her intro. While she tried to pivot on camera with 'serene can also mean socially vibrant,' a drone crash-landed behind her and two tourists argued about stolen flip-flops directly into her mic. She promised viewers she would find the peaceful pocket, turned the corner, and found a queue for a paid photo swing labeled VIP SUNSET EXPERIENCE. Clips spread with captions like hidden gem discovered by everyone, and Elodie now needs you to salvage her calm-travel brand before it becomes a live blooper franchise.",
+      "flavor_tone_note": "Aspirational serenity pitch versus field reality; Elodie is quick on pivots and slower on exits.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Live Clarification Post",
+          "solution_brief": "Acknowledge the mismatch plainly, correct the beach claim, and avoid defensive rebranding language."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Trust Rebuild Destination Series",
+          "solution_brief": "Publish verified location context and practical travel caveats to rebuild credibility with core viewers."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Own-the-Bloopers Visibility Run",
+          "solution_brief": "Lean into high-reach self-aware edits to reclaim the narrative before mockery hardens."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Editorial Standards Relaunch",
+          "solution_brief": "Full reset: location vetting checklist, live-stream guardrails, and a disciplined brand comeback."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The clip stays in niche travel circles, but audience trust dips fast.",
+        "low_visibility_high_effectiveness": "Issue stays contained; factual corrections and better context calm regular viewers.",
+        "high_visibility_low_effectiveness": "The live meltdown goes wide; Elodie becomes a hidden-gem irony meme.",
+        "high_visibility_high_effectiveness": "Backlash spreads, but disciplined transparency keeps her channel recoverable."
+      },
+      "arc_2": {
+        "options": [
+          "Location Clarifier Thread",
+          "Verified Beach Series",
+          "Self-Aware Clip Tour",
+          "Calm-Travel Standards Reset",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Elodie posts a serious correction, then accidentally uploads a draft map screenshot with two pins labeled QUIET_BROLL_ONLY and CHAOS_IF_LIVE. A small audience catches it, and one repost tags it 'influencer weather forecast: partly truthful.'",
+        "low_visibility_high_effectiveness": "Reach stays modest, but she executes the boring plan: verified timing notes, crowd-level disclaimers, and no idyllic claims without day-and-hour context. Comments shift from gotcha jokes to practical travel questions.",
+        "high_visibility_low_effectiveness": "During a comeback live from a supposedly calmer cove, she says 'today is peaceful by comparison' right as a megaphone tour boat passes behind her playing dance remixes. The clip gets stitched overnight with captions like by comparison to what, airport security.",
+        "high_visibility_high_effectiveness": "The story goes broad, but Elodie sticks to one honest format: what she missed, what she changed, and what viewers should expect before they go. Meme edits keep circulating, yet her corrected guides begin outperforming the original disaster clip."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The incident never fully detonates, but every new destination post gets at least one crowded-beach callback. Elodie spends more time caveating serenity than showing the trip.",
+          "good": "Only a modest audience follows the fiasco, and enough viewers accept the correction arc that trust stabilizes. Her content gets less dreamy and more useful.",
+          "convincing": "In her niche, she becomes the creator who got caught overselling calm and then corrected in public. The irony meme lingers, but credibility returns in practical slices."
+        },
+        "medium": {
+          "poor": "The clip resurfaces every summer and drags each beach upload into the same joke cycle. Elodie starts scripting around anticipated ridicule instead of storytelling.",
+          "good": "People remember the chaotic live, but they also remember clearer location context and fewer exaggerated claims. Partners stay cautious while continuing selective collaborations.",
+          "convincing": "She earns reformed-travel-guide status by replacing hidden-gem hype with verifiable context and honest tradeoffs. The narrative shifts from cringe to competent."
+        },
+        "high": {
+          "poor": "The internet immortalizes her as a template for influencer expectation versus reality; every coastal post gets quote-posted with speaker and flip-flop emojis. Her calm-travel tagline becomes reaction audio.",
+          "good": "She remains widely known for the beach whiplash, but avoids collapse through transparent updates and consistent delivery. Sponsors return slowly with stricter content briefs.",
+          "convincing": "She turns a viral livestream own-goal into a credible second act: better vetting, clearer framing, and travel advice that survives reality checks. One viewer comments, 'less magic, more truth,' and it becomes her best-performing pinned reply."
+        }
+      }
     }
   ]
 }

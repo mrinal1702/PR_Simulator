@@ -1,6 +1,10 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { seasonSpouseGrants } from "@/lib/gameEconomy";
 import { METRIC_SCALES, clampToScale } from "@/lib/metricScales";
+import {
+  employeeTotalCapacityContribution,
+  tenureCapacityIncrementFromProductivity,
+} from "@/lib/tenureCapacity";
 
 /**
  * Leaving post-season → next pre-season: apply end-of-season spouse support, reset firm capacity
@@ -19,7 +23,16 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
   );
   const removedInternComp = removedInterns.reduce((s, e) => s + e.competenceGain, 0);
   const removedInternVis = removedInterns.reduce((s, e) => s + e.visibilityGain, 0);
-  const capFromEmployees = employees.reduce((s, e) => s + e.capacityGain, 0);
+  const employeesWithTenure = employees.map((e) => {
+    if (e.role === "Intern") return e;
+    const prod = e.productivityPct;
+    if (prod == null) return e;
+    const seasonsWithFirm = nextSeason - e.seasonHired;
+    const inc = tenureCapacityIncrementFromProductivity(prod, seasonsWithFirm);
+    if (inc <= 0) return e;
+    return { ...e, tenureCapacityBonus: (e.tenureCapacityBonus ?? 0) + inc };
+  });
+  const capFromEmployees = employeesWithTenure.reduce((s, e) => s + employeeTotalCapacityContribution(e), 0);
   const baseCap = save.initialResources?.firmCapacity ?? 50;
   const newCapacity = baseCap + capFromEmployees;
 
@@ -29,7 +42,7 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
       seasonNumber: nextSeason,
       phase: "preseason",
       activityFocusUsedInPreseason: false,
-      employees,
+      employees: employeesWithTenure,
       resources: {
         ...save.resources,
         competence: clampToScale(
@@ -52,7 +65,7 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
     seasonNumber: nextSeason,
     phase: "preseason",
     activityFocusUsedInPreseason: false,
-    employees,
+    employees: employeesWithTenure,
     preseasonEntrySpouseGrantSeasons: [...(save.preseasonEntrySpouseGrantSeasons ?? []), key],
     resources: {
       ...save.resources,

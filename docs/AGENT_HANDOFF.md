@@ -11,27 +11,32 @@ Use this file as the fastest context for a fresh agent.
 | `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md` | Visibility/competence anchors for solution balancing |
 | `docs/SCENARIO_CREATIVE_GUIDELINES.md` | Scenario JSON authoring |
 | `docs/DEPLOYMENT.md` | Supabase + Vercel |
-| `docs/PAYROLL_AND_LAYOFF_RULES.md` | Payroll, layoffs, warnings, gates (**design**; not fully wired) |
+| `docs/PAYROLL_AND_LAYOFF_RULES.md` | Payroll, layoffs, gates — **design + implementation status** |
 
-## Design locked (not yet fully implemented)
+## Payroll & employees (implemented vs remaining)
 
-Full spec: **`docs/PAYROLL_AND_LAYOFF_RULES.md`**. Summary:
+Authoritative spec: **`docs/PAYROLL_AND_LAYOFF_RULES.md`**.
 
-- **Payroll:** per-season obligation; UI should say “upcoming season” (not vague “annual”); confirm on hire / Talent Bazaar copy.
-- **Spouse grants** apply **before** payroll resolution — call this out in warnings and projections.
-- **Warnings:** hard modal vs soft inline when spend risks missing payroll; persistent **payroll vs cash** chip without scaring players who can still earn **in-season** from clients.
-- **Forced layoffs** at checkpoint if cash cannot cover total payroll after inflows; **choose who** if multiple employees; **auto** if only one must go; conspicuous **Employees** CTA when player must act.
-- **Voluntary Fire:** −10 reputation, **20% severance**, max **1 voluntary layoff per season**; warn on attempt.
-- **Progression:** cannot advance from **pre-season 2** (or equivalent) until payroll / layoff state is resolved if the roster is unaffordable.
-- **Same pre-season:** cannot lay off someone hired **in that same** pre-season.
-- Pre-season **2** checkpoint UI for layoff resolution is **not** deployed yet; rules are for the next build.
+**Implemented in the web app:**
+
+- **Mandatory payroll checkpoint:** route `web/app/game/preseason/[season]/payroll/page.tsx` + `PayrollCheckpointScreen`. If shortfall after **Season summary** → **Enter pre-season N+1**, the player is sent here first (not straight to pre-season) until cash covers upcoming payroll; mandatory layoffs remove **no severance** and **no reputation** penalty; stat contributions from removed employees are reversed.
+- **Pre-season 2+** (`PreSeasonScreen`): same roster rules, **Fire** (voluntary) vs **Mandatory layoff** when in shortfall; **Start season** on season 2+ deducts **total payroll** once and sets `payrollPaidBySeason[season]`.
+- **Season route guard:** `SeasonHubScreen` and `SeasonClientCaseScreen` redirect to pre-season (or payroll checkpoint if shortfall) if season ≥ 2 and payroll has not been marked paid — blocks direct URL entry to season while unpaid.
+- **Hiring:** pre-hire confirmation modal + inline full-time payroll-risk line on talent cards (`HiringScreen`).
+- **Interns:** on `enterNextPreseason` (post-season → next pre-season), interns whose `seasonHired` is the completed season are **removed** from `employees[]` and their competence/visibility gains are removed from agency stats (they do not roll into next year’s payroll).
+
+**Not fully implemented / polish:**
+
+- Persistent **payroll vs cash** chip on every screen (optional UX).
+- **Soft vs hard** spend warnings beyond hiring modals (e.g. mid-season spend) — not exhaustively modeled.
+- **Auto-layoff** when only one employee must go (design option); current UI is player-chosen mandatory layoffs.
 
 ## Product state
 
 - Deployed web app with onboarding, pre-season flow, **season hub**, **in-season client cases**, **home dashboard** (phase + case log), and **post-season** (hub, mandatory results flow, season summary with financials + payroll heads-up).
 - Single local save slot is active (`dma-save-slot`) with Continue routing.
 - Seasons are planned through season 7; **Season 1–style client queue** (roll → sequential cases → solutions) is implemented; deeper multi-season / round-2 campaign logic can build on `seasonLoopBySeason`.
-- **Post-season 1 (Season 1)** is feature-complete for: outcome review, optional reach/effectiveness boosts, reputation/visibility rewards, ledger breakdown lines, **Season summary** (`/game/postseason/[season]/summary`) with scenario overview, operating P&amp;L + cash bridge, future-receivables footnote, and payroll vs cash check (`docs/PAYROLL_AND_LAYOFF_RULES.md` alignment). **Pre-season 2+** route exists from summary (`Enter pre-season N+1`); content may still mirror Season 1 until multi-season economy is expanded.
+- **Post-season 1 (Season 1)** is feature-complete for: outcome review, optional reach/effectiveness boosts, reputation/visibility rewards, ledger breakdown lines, **Season summary** (`/game/postseason/[season]/summary`) with scenario overview, operating P&amp;L + cash bridge, future-receivables footnote, and payroll vs cash check. **Enter pre-season N+1** applies spouse grant + capacity reset + intern expiry; if payroll shortfall, routes to **`/game/preseason/[n]/payroll`** (mandatory checkpoint), else **`/game/preseason/[n]`**. **Pre-season 2+** uses the same `PreSeasonScreen` with upgraded focus cards, **Fire**, simplified ledgers when `seasonNumber >= 2` and `phase === "preseason"`, and payroll deduction on **Start season** (season 2+).
 
 ## Implemented flow
 
@@ -45,9 +50,9 @@ Full spec: **`docs/PAYROLL_AND_LAYOFF_RULES.md`**. Summary:
    - Spouse selection (4 options) with spouse name+gender when spouse is not `none`
    - Writes initial run payload and routes to pre-season.
 3. Pre-season screen (`/game/preseason/[season]`)
-   - Activity focus once per pre-season:
-     - `strategy_workshop` => +10 competence
-     - `network` => +10 visibility
+   - Activity focus once per pre-season (season 1: +10 each track; season 2+: **+15** if doubling down on last pre-season’s track, **+10** on the other — see `web/lib/preseasonFocus.ts`):
+     - `strategy_workshop` => competence
+     - `network` => visibility
    - `Agency stats` panel with bars + labels for reputation/visibility/competence
    - `Employees` panel with salary-sorted roster and non-zero contribution lines
    - Metric breakdown modal buttons for:
@@ -61,8 +66,11 @@ Full spec: **`docs/PAYROLL_AND_LAYOFF_RULES.md`**. Summary:
      - adds strong warning if no pre-season activity was selected
      - allows proceed anyway
    - Activity cards are hidden after pre-season focus is used
-   - Talent Bazaar entry button routes to dedicated hiring screen
+   - Talent Bazaar entry button routes to dedicated hiring screen (disabled while payroll shortfall blocks pre-season on season 2+)
+   - Season **2+**: **Fire** on employees (voluntary layoff with severance + rep; or **Mandatory layoff** during payroll shortfall — no severance); payroll checkpoint redirect if `cash < total payroll` (`useEffect` → `/game/preseason/[season]/payroll`)
    - `Save` button
+3b. Payroll checkpoint (`/game/preseason/[season]/payroll`) — **mandatory** when entering pre-season from summary with payroll shortfall; must resolve before `Continue to pre-season N`.
+
 4. Hiring screen (`/game/preseason/[season]/hiring`)
    - Mode: `Intern` vs `Full-time`
    - Intern:
@@ -85,6 +93,7 @@ Full spec: **`docs/PAYROLL_AND_LAYOFF_RULES.md`**. Summary:
 5. Season hub (`/game/season/[season]`)
    - Component: `SeasonHubScreen` (also exported as `SeasonScreen` from `web/components/SeasonScreen.tsx` for a stable import path).
    - Agency stats, employees, save (same patterns as pre-season).
+   - Season **≥ 2**: if `payrollPaidBySeason[season]` is false, **redirect** to pre-season (or payroll checkpoint if shortfall) — unpaid season entry blocked.
    - No Talent Bazaar (pre-season only).
    - **`Roll season clients`**: deterministic queue for that season (`plannedClientCount`, `clientsQueue`, `runs`, `currentClientIndex`) stored under `save.seasonLoopBySeason[season]`.
    - **`Open current client case`**: navigates to `/game/season/[season]/client` while the queue is not finished.
@@ -111,6 +120,8 @@ Persisted fields:
 - derived: `reputation`
 - baseline snapshot: `initialResources`, `initialReputation`
 - hiring state: `hiresBySeason`, `employees[]`
+- payroll: `payrollPaidBySeason` — per season key, set when pre-season **Start season** deducts payroll (season 2+); used to block season hub / client case until paid
+- transitions: `preseasonEntrySpouseGrantSeasons`, `voluntaryLayoffsBySeason`
 - **in-season client loop**: `seasonLoopBySeason` — optional map keyed by season string → `SeasonLoopState` (`plannedClientCount`, `currentClientIndex`, `clientsQueue`, `runs`, `lastOutcome`). Each `SeasonClientRun` may include **`postSeason`** after the post-season results flow. See `web/lib/seasonClientLoop.ts`.
 - **used scenario IDs**: `usedScenarioIds` — list of `scenario_id` values already assigned to a client this playthrough. `pickScenarioForClient` excludes these (widening pool as needed); rolling clients updates the list. Load merges with IDs found in existing `clientsQueue` for older saves. If the DB runs out of unused scenarios, the roll fails with a user-facing message.
 - metadata: `createdAt`
@@ -187,7 +198,10 @@ UI behavior:
 - `web/lib/postSeasonResults.ts`: post-season boosts, rewards, `collectPostSeasonLedger`
 - `web/lib/seasonFinancials.ts`: season summary cash bridge, future receivables, payroll heads-up
 - `web/components/PostSeasonHubScreen.tsx`, `PostSeasonResultsScreen.tsx`, `SeasonSummaryScreen.tsx`: post-season UI
-- `web/components/PreSeasonScreen.tsx`: pre-season hub (focus, employees, breakdowns, season-start confirmation)
+- `web/components/PreSeasonScreen.tsx`: pre-season hub (focus, employees, breakdowns, season-start confirmation, payroll block + fire modals)
+- `web/components/PayrollCheckpointScreen.tsx`, `web/app/game/preseason/[season]/payroll/page.tsx`: mandatory payroll resolution before pre-season when shortfall
+- `web/lib/employeeActions.ts`: voluntary vs mandatory (`fireEmployeeForPayrollShortfall`) layoffs
+- `web/lib/preseasonTransition.ts`: post-season → next pre-season (spouse grant, capacity reset, intern expiry)
 - `web/components/HiringScreen.tsx`: dedicated hiring flow and hire outcome modal
 - `web/components/SeasonHubScreen.tsx`: season hub (roll queue, link to client case)
 - `web/components/SeasonClientCaseScreen.tsx`: dedicated client scenario + solution choices
@@ -207,7 +221,7 @@ Useful checks before wider QA:
 4. Repeat until the queue is finished; **Continue to post-season** appears only when **`runs.length`** matches **planned** count and the queue index is past the last client.
 5. **Continue to post-season** — no confirmation modal; save `phase` is **postseason**; URL `/game/postseason/[season]`.
 6. Post-season hub: open **View results**, complete every campaign (boost or not); verify EUR/capacity/rep/vis updates and breakdown lines.
-7. **Season summary**: check averages, financials toggle, payroll warning when cash &lt; total salaries; **Enter pre-season 2** (or next) navigates to `/game/preseason/[n]`.
+7. **Season summary**: check averages, financials toggle, payroll warning when cash is below total payroll; **Enter pre-season 2** (or next): if shortfall, expect **`/game/preseason/[n]/payroll`** first; else **`/game/preseason/[n]`**. After resolving payroll, **Start season** from pre-season should deduct payroll once; direct navigation to **`/game/season/2`** should redirect back if unpaid.
 
 ## Supabase status
 
@@ -217,11 +231,10 @@ Useful checks before wider QA:
 
 ## Safe next tasks for another agent
 
-1. **Implement `docs/PAYROLL_AND_LAYOFF_RULES.md`:** projection with spouse grants, spend warnings, checkpoint layoff resolution UI (pre-season 2+), `Fire` on Employees, same-pre-season hire protection, progression gate. (Summary screen already shows cash vs total payroll shortfall.)
+1. Optional payroll UX: persistent **cash vs payroll** chip on hub / pre-season; richer **soft vs hard** spend warnings outside hiring.
 2. Extend client loop: Season 2 follow-up spend, multi-season post-season parity, reputation from non–Season-1 arcs.
-3. Add intern expiry after one season transition.
-4. Persist run state to Supabase (while keeping local fallback).
-5. Add automated tests for:
+3. Persist run state to Supabase (while keeping local fallback).
+4. Add automated tests for:
    - save/load/continue path
    - non-negative budget guard behavior
    - deterministic candidate pool stability (hiring + client kind / budget rolls)
@@ -230,4 +243,4 @@ Useful checks before wider QA:
    - spouse modifier invariants
    - pre-season → season transition warning and phase routing
    - **season client queue**: roll idempotency, sequential index, reject = no credit, execute = net Season 1 liquid, **Continue to post-season** when queue fully resolved
-   - **payroll / layoff rules** (once implemented): projection, gate, forced choice, voluntary caps
+   - **payroll / layoff rules**: mandatory checkpoint, season route guard, `payrollPaidBySeason`, voluntary vs mandatory fire

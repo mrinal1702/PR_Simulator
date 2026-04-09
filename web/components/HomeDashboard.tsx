@@ -10,6 +10,7 @@ import {
   formatSigned,
   type BreakdownMetric,
 } from "@/lib/metricBreakdown";
+import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
 
 /** Home: phase, agency snapshot with breakdowns, and case log. */
 export function HomeDashboard() {
@@ -127,7 +128,7 @@ export function HomeDashboard() {
                       Salary: EUR {e.salary.toLocaleString("en-GB")}
                       {e.visibilityGain > 0 ? ` · Visibility +${e.visibilityGain}` : ""}
                       {e.competenceGain > 0 ? ` · Competence +${e.competenceGain}` : ""}
-                      {e.capacityGain > 0 ? ` · Capacity +${e.capacityGain}` : ""}
+                      {formatEmployeeCapacitySuffix(e)}
                     </p>
                   </div>
                 ))}

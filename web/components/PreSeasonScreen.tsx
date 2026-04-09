@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import type { NewGamePayload } from "@/components/NewGameWizard";
@@ -42,13 +42,6 @@ export function PreSeasonScreen({ season }: { season: number }) {
   const totalPayroll = (save?.employees ?? []).reduce((sum, e) => sum + e.salary, 0);
   const payrollBlocked = Boolean(save) && season >= 2 && totalPayroll > 0 && currentEur < totalPayroll;
   const payrollShortfall = Math.max(0, totalPayroll - currentEur);
-
-  useEffect(() => {
-    if (!save) return;
-    if (season >= 2 && payrollBlocked) {
-      router.push(`/game/preseason/${season}/payroll`);
-    }
-  }, [save, season, payrollBlocked, router]);
 
   const applyFocus = (focus: PreseasonFocusId) => {
     if (!save || alreadyUsedThisPreseason || payrollBlocked) return;
@@ -401,6 +394,9 @@ export function PreSeasonScreen({ season }: { season: number }) {
             <p className="game-modal-kicker">Season transition</p>
             <h2 style={{ marginTop: 0 }}>Are you sure you want to start Season {season}?</h2>
             <p style={{ marginTop: 0 }}>You will not be able to come back to this pre-season screen.</p>
+            <p className="muted" style={{ marginTop: "0.5rem", fontSize: "0.9rem" }}>
+              When you start, guaranteed receivables credit to cash and payables (wages, severance) settle from cash.
+            </p>
             {!alreadyUsedThisPreseason ? (
               <p style={{ marginTop: 0, fontWeight: 700 }}>
                 WARNING: YOU HAVE NOT PICKED A PRE-SEASON ACTIVITY.
@@ -455,13 +451,12 @@ function FireConfirmModal({
         ) : (
           <>
             <p style={{ marginTop: 0 }}>
-              This is a voluntary layoff: <strong>−10 reputation</strong>, severance{" "}
-              <strong>EUR {severance.toLocaleString("en-GB")}</strong> (20% of salary), and agency stats drop by this employee&apos;s
-              competence, visibility, and capacity contributions.
+              This is a voluntary layoff: <strong>−10 reputation</strong>, and{" "}
+              <strong>EUR {severance.toLocaleString("en-GB")}</strong> severance (20% of salary) moves to <strong>payables</strong> (settled when you go to season). Agency stats drop by this employee&apos;s competence, visibility, and capacity contributions.
             </p>
             <p className="muted" style={{ marginTop: 0 }}>
               You can only use one voluntary layoff per season. You cannot fire someone hired in this same pre-season.
-              Once fired, this employee&apos;s salary is removed from upcoming payroll.
+              Their wage payable is replaced by the severance payable.
             </p>
           </>
         )}

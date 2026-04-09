@@ -19,6 +19,7 @@ import {
 } from "@/lib/gameEconomy";
 import type { SeasonLoopState } from "@/lib/seasonClientLoop";
 import { persistSave } from "@/lib/saveGameStorage";
+import type { PayableLine } from "@/lib/payablesReceivables";
 import {
   BUILD_SPECIALTY_SYMBOLS,
   ResourceSymbol,
@@ -77,6 +78,11 @@ export type NewGamePayload = {
   payrollPaidBySeason?: Partial<Record<string, boolean>>;
   /** Voluntary layoffs taken in a given season number (string key), max 1 per season. */
   voluntaryLayoffsBySeason?: Partial<Record<string, number>>;
+  /**
+   * Accrued payables (wages, severance, future categories). Settled to cash at “Go to season”.
+   * Legacy saves omit this; load migrates from employees + EUR refund.
+   */
+  payablesLines?: PayableLine[];
   createdAt: string;
 };
 
@@ -139,6 +145,7 @@ export function NewGameWizard() {
       hiresBySeason: {},
       employees: [],
       usedScenarioIds: [],
+      payablesLines: [],
       createdAt: new Date().toISOString(),
     };
     persistSave(payload);

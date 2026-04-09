@@ -681,6 +681,210 @@
           "convincing": "They narrow into dull, defensible gear: supplement COAs, plain backgrounds, and a rule that any car in frame has a rental agreement in the caption. Their year-end post is a fluorescent office selfie with the caption 'no garage, no problem.'"
         }
       }
+    },
+    {
+      "scenario_id": "small-company-low-preworkout-urgent-cardio",
+      "client_name": "PulseForge Nutrition",
+      "client_type": "Small Company",
+      "budget_tier": "Low",
+      "client_subtype": "Gym Supplement Startup",
+      "scenario_title": "PR Gains, Timing Losses",
+      "problem_summary": "PulseForge Nutrition, a scrappy gym-supplement startup built on 'clean gains, no compromises,' hired you after its new pre-workout protein blend backfired in the most public way possible. Within a week, reviews shifted from shaker selfies to coded disaster reports: one buyer wrote, 'Hit a deadlift PR and then sprinted somewhere I did not plan to sprint,' while another posted, 'Great pump, catastrophic timing, never trust this before leg day.' Fitness creators started stitching screenshots, comment sections filled with 'urgent cardio' jokes, and refund requests stacked up faster than reorders. The founders insist the formula is safe and call it individual sensitivity, but their reputation now lives in a review page that reads like a cautionary anthology.",
+      "flavor_tone_note": "Supplement confidence meets locker-room folklore; the product promise is strong, the timing jokes are stronger.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Usage Guidance Clarifier",
+          "solution_brief": "Publish plain timing and dosage guidance, acknowledge complaints, and stop defensive replies."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Customer Safety Recovery Plan",
+          "solution_brief": "Proactive support, refunds where needed, and transparent usage education to rebuild trust."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Meme Control Fitness Tour",
+          "solution_brief": "High-visibility self-aware content to reclaim narrative momentum before jokes harden."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Formula Trust Relaunch",
+          "solution_brief": "Full reset: revised labels, clearer onboarding, and coordinated credibility relaunch."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Complaints stay in niche fitness circles; refunds rise and trust drops.",
+        "low_visibility_high_effectiveness": "Issue stays contained; clear guidance and support calm core buyers.",
+        "high_visibility_low_effectiveness": "Review screenshots go viral; the product becomes a gym joke.",
+        "high_visibility_high_effectiveness": "Backlash spreads wide, but disciplined fixes keep the brand recoverable."
+      },
+      "arc_2": {
+        "options": [
+          "Usage Guidance Clarifier",
+          "Customer Safety Recovery Plan",
+          "Meme Control Fitness Tour",
+          "Formula Trust Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "PulseForge posts a best-practices reel, then accidentally captions it 'ideal for pre-commute mornings.' One customer replies, 'I commute by subway. Be serious.' The thread stays small but savage, and screenshots circulate in private gym group chats by lunch.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but the team executes: clearer timing guidance, proactive refunds, and support replies that stop sounding like legal dodgeball. Repeat buyers do not love the launch, but they start believing the company is listening.",
+        "high_visibility_low_effectiveness": "During a live Q&A meant to rebuild trust, a founder says 'most people have no issues,' then reads a review that starts with 'I trusted this before squats and learned humility.' The clip gets remixed by fitness meme pages within hours, and the brand name becomes shorthand for schedule conflict.",
+        "high_visibility_high_effectiveness": "The story goes broad, but PulseForge sticks to one playbook: plain acknowledgment, clearer labels, conservative usage guidance, and a no-drama support flow. Jokes continue, but customers begin posting 'used as directed, zero chaos' updates that slowly reset sentiment."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never fully explodes, but local gym circles keep warning new buyers with knowing emojis and timing jokes. PulseForge keeps posting motivational copy while quietly processing refunds.",
+          "good": "Only a modest audience tracks the issue, and enough of them accept the corrective steps that the line stabilizes. The brand tone gets less macho and more practical, which helps.",
+          "convincing": "In a smaller fitness niche, PulseForge becomes the company that had a messy launch and handled it like adults. People still joke, but they also acknowledge the brand fixed what it could."
+        },
+        "medium": {
+          "poor": "Review screenshots resurface every few weeks, and each new campaign gets hijacked by 'not before leg day' comments. The team spends more time moderating punchlines than promoting benefits.",
+          "good": "People remember the embarrassing reviews, but they also remember responsive support and clearer usage guidance. Retail partners stay cautious, yet keep the product on shelf.",
+          "convincing": "PulseForge earns reformed sports-nutrition status by staying boringly consistent after the stumble. The narrative shifts from ridicule to reluctant respect."
+        },
+        "high": {
+          "poor": "The internet immortalizes the launch as gym folklore; every ad gets quote-posted with 'check your calendar first.' The product is discussed for unintended urgency more than performance.",
+          "good": "They are widely known for the wrong reason, but avoid collapse through steady fixes and careful messaging. Influencers return slowly, usually with extra disclaimers and a water bottle in frame.",
+          "convincing": "They turn a highly memeable fiasco into a credible second act: precise labels, improved onboarding, and support behavior that matches the promise. One creator sums it up best: 'Cursed launch, professional recovery.'"
+        }
+      }
+    },
+    {
+      "scenario_id": "small-company-low-frictionless-tip-decimal-disaster",
+      "client_name": "TipTap Ledger",
+      "client_type": "Small Company",
+      "budget_tier": "Low",
+      "client_subtype": "Tiny Fintech Payments App",
+      "scenario_title": "Frictionless, Except the Decimal",
+      "problem_summary": "TipTap Ledger, a tiny fintech app that grew fast by promising frictionless tipping in two taps, reached out after a rollout turned their best slogan into a legal headache. A decimal bug in the latest update multiplied some tips by 100, and screenshot threads exploded with charges like a $4.50 latte becoming a $450.00 thank-you. One user posted, 'I tipped more than my rent for oat milk,' another wrote, 'Barista was kind, but not security-deposit kind,' and the phrase frictionless bankruptcy started trending in replies. The founders say refunds are processing and insist no one intended this, but the app now looks less like convenience and more like a financial jump scare in premium UI.",
+      "flavor_tone_note": "Slick payment UX meets one missing dot; trust evaporates faster than coffee foam.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Decimal Incident Notice",
+          "solution_brief": "Ship a plain-language incident note, pause affected flows, and post concrete refund timing."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Refund & Merchant Repair Track",
+          "solution_brief": "Process make-goods quickly, brief partner cafes, and show exactly how safeguards now work."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Two-Tap Trust Tour",
+          "solution_brief": "High-visibility explanation campaign with product demos to reclaim narrative speed."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Payments Integrity Relaunch",
+          "solution_brief": "Full reset: verification layers, audited release process, and coordinated confidence rebuild."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Complaint threads stay niche, but user trust keeps draining.",
+        "low_visibility_high_effectiveness": "Issue stays contained; refunds and clear comms steady core users.",
+        "high_visibility_low_effectiveness": "The screenshot wave goes broad; TipTap becomes a cautionary meme.",
+        "high_visibility_high_effectiveness": "Backlash spreads, but disciplined fixes keep the brand recoverable."
+      },
+      "arc_2": {
+        "options": [
+          "Decimal Incident Notice",
+          "Refund & Merchant Repair Track",
+          "Two-Tap Trust Tour",
+          "Payments Integrity Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "TipTap posts a calm update saying all affected users will be made whole, then accidentally attaches an FAQ screenshot where a sample tip still shows 750.00 for a sandwich. Only a few hundred people see it, but one caption reads 'frictionless heart attack' and the post gets archived by finance meme accounts.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but they execute: fast refunds, proactive merchant emails, and a boring walkthrough of new tip-confirmation checks. Users still complain about the scare, yet support tickets shift from rage to receipts.",
+        "high_visibility_low_effectiveness": "During a livestream demo meant to prove stability, the presenter says 'we cannot reproduce the bug' and immediately taps a staging account into a four-figure tip on camera. The clip spreads in under an hour, and someone overlays game-show applause over the moment.",
+        "high_visibility_high_effectiveness": "The story goes wide, but TipTap sticks to plain math and plain language: published timeline, proof of refunds, merchant-side controls, and a visible release checklist. Jokes persist, but people begin sharing successful refund screenshots instead of disaster totals."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The crisis never fully detonates, but small-business owners keep warning customers before every tap. TipTap's app store reviews settle into a polite version of never again.",
+          "good": "Only a modest audience follows the incident, and enough users accept the remediation that daily usage stabilizes. The brand sounds less slick and more accountable, which helps.",
+          "convincing": "In a small fintech niche, TipTap becomes the app that ate a decimal in public and then published every fix. People still joke about rent-sized coffee tips, but they trust the controls now."
+        },
+        "medium": {
+          "poor": "Screenshot threads resurface each launch week, and every new feature post gets ratioed with calculator emojis. The team spends more time responding to old images than pitching new tools.",
+          "good": "People remember the giant tips, but they also remember refunds landing and merchants confirming the patch worked. Partners stay cautious, yet keep the integration live.",
+          "convincing": "TipTap earns reformed-fintech status by running a dull, transparent release process after the mess. The narrative shifts from clown show to competent cleanup."
+        },
+        "high": {
+          "poor": "The internet immortalizes TipTap as the app that could tip your month away in one tap; every promo gets quote-posted with rent jokes. The product name becomes shorthand for decimal anxiety.",
+          "good": "They are famous for the wrong screenshot, but avoid collapse through visible controls and relentless refund follow-through. Larger partners return slowly, with strict audit clauses.",
+          "convincing": "They turn a meme-grade payments failure into a credible second act: safer defaults, audited deploys, and communication that reads like grown-up incident response. One merchant sums it up: 'Worst Tuesday, best recovery docs.'"
+        }
+      }
+    },
+    {
+      "scenario_id": "small-company-low-ink-harbor-debt-vow",
+      "client_name": "Ink Harbor Studio",
+      "client_type": "Small Company",
+      "budget_tier": "Low",
+      "client_subtype": "Neighborhood Tattoo Studio",
+      "scenario_title": "Till Debt Do Us Part",
+      "problem_summary": "Ink Harbor Studio, a tiny tattoo shop known for meaning-over-trend script work, came to you after a wedding-vow tattoo went catastrophically literal. A client requested 'Till Death Do Us Part' across the upper chest, and the final ink read 'Till Debt Do Us Part' before anyone caught it. Photos spread before the cover-up consult was booked, wedding forums piled on, and one top comment read, 'Nothing says forever like shared liabilities.' The owner says it was a stencil-layer typo and offered a free correction, but right now the studio looks less like sacred storytelling and more like permanent financial satire.",
+      "flavor_tone_note": "High-emotion tattoo, one fatal vowel shift; artistry gets overshadowed by accidental fiscal commentary.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Immediate Script Error Notice",
+          "solution_brief": "Issue a plain apology, explain correction options, and stop defensive language around intent."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Client Care & Quality Recovery",
+          "solution_brief": "Prioritize client support, transparent correction timelines, and quality-check proof for future bookings."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Own-the-Error Visibility Push",
+          "solution_brief": "Use controlled, self-aware content to reclaim narrative pace before roast threads define the studio."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Precision Script Relaunch",
+          "solution_brief": "Full reset: stencil verification protocol, two-step spelling checks, and a trust-first relaunch."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The story stays local, but booking confidence drops sharply.",
+        "low_visibility_high_effectiveness": "Issue remains contained; a sincere apology and clear correction process calm regulars.",
+        "high_visibility_low_effectiveness": "Screenshot threads explode; the studio becomes a punchline for permanent typos.",
+        "high_visibility_high_effectiveness": "The backlash goes wide, but disciplined handling keeps recovery possible."
+      },
+      "arc_2": {
+        "options": [
+          "Script Error Notice",
+          "Client Care Recovery Plan",
+          "Self-Aware Studio Tour",
+          "Precision Script Relaunch",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Ink Harbor posts a careful apology carousel, then accidentally includes a template slide reading SPELLCHECK FINAL_v3_maybe. Few people see it, but one local account captions it, 'Bold strategy for permanent words,' and that screenshot becomes the new review header.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but the studio follows through: client-first support, transparent correction windows, and visible spelling verification on every script booking. Comments shift from outrage to cautious 'at least they learned.'",
+        "high_visibility_low_effectiveness": "During a live trust-rebuild Q&A, the owner says, 'We've tightened every review step,' while a whiteboard behind them still says Debt/Death audit as a joke from staff. The clip goes viral instantly and wedding pages frame it as proof the studio still does not get the stakes.",
+        "high_visibility_high_effectiveness": "The story goes broad, but Ink Harbor keeps it plain: no jokes, clear restitution, and a boring new verification workflow shown start to finish. The meme keeps circulating, but new clients start posting clean results and saying the process feels safer."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The scandal never fully breaks out, but local clients keep asking for triple confirmation before the needle starts. Ink Harbor's script portfolio gets viewed through a permanent typo lens.",
+          "good": "Only a modest audience tracks the incident, and enough clients accept the corrective process that bookings stabilize. The shop's tone becomes less romantic and more precise, which helps.",
+          "convincing": "In a small tattoo niche, Ink Harbor becomes the studio that made one brutal mistake and rebuilt around verification discipline. The debt joke lingers, but trust returns with receipts."
+        },
+        "medium": {
+          "poor": "The screenshot resurfaces whenever they post script work, and every caption fills with finance puns. Artists spend more time answering typo anxiety than showcasing design quality.",
+          "good": "People remember the vow mistake, but they also remember fast restitution and a transparent process overhaul. Referrals recover slowly through consistency, not charisma.",
+          "convincing": "Ink Harbor earns reformed-studio status by treating precision as operations, not personality. The narrative shifts from laughingstock to careful craft shop."
+        },
+        "high": {
+          "poor": "The internet immortalizes the typo as wedding-season folklore; every promo gets quote-posted with loan jokes. The studio name becomes shorthand for script cautionary tales.",
+          "good": "They stay widely known for the wrong tattoo, but avoid collapse through visible standards and disciplined communication. Partner planners return carefully with stricter guardrails.",
+          "convincing": "They turn a viral script disaster into a credible second act: rigorous checks, calmer messaging, and consistent outcomes clients can see. One reviewer sums it up: 'Worst typo, best process recovery in town.'"
+        }
+      }
     }
   ]
 }

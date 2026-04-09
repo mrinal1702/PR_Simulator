@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import {
@@ -16,7 +16,7 @@ import {
   type HiringTier,
 } from "@/lib/hiring";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
-import { canAfford, spendEurOrNull } from "@/lib/budgetGuard";
+import { liquidityEur, wageLineId } from "@/lib/payablesReceivables";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 import { ResourceSymbol } from "@/components/resourceSymbols";
 
@@ -87,10 +87,19 @@ export function HiringScreen({ season }: { season: number }) {
     if (mode === "intern") return [];
     return getSalaryBands(tier)
       .map((b) => b.anchor * 1000)
-      .filter((value) => canAfford(save.resources.eur, value));
-  }, [mode, tier, save.resources.eur]);
-  const canAffordIntern = canAfford(save.resources.eur, 10_000);
-  const canAffordSelected = mode === "intern" ? canAffordIntern : canAfford(save.resources.eur, salary);
+      .filter((value) => liquidityEur(save) >= value);
+  }, [mode, tier, save]);
+  const canAffordIntern = liquidityEur(save) >= 10_000;
+  const canAffordSelected =
+    mode === "intern" ? canAffordIntern : liquidityEur(save) >= salary;
+
+  useEffect(() => {
+    if (mode !== "full_time") return;
+    if (salaryOptions.length === 0) return;
+    if (!salaryOptions.includes(salary)) {
+      setSalary(salaryOptions[0]);
+    }
+  }, [mode, salaryOptions, salary]);
 
   const findEmployees = () => {
     if (capReached) return;
@@ -117,10 +126,8 @@ export function HiringScreen({ season }: { season: number }) {
 
   const finalizeHireCandidate = (candidate: Candidate) => {
     if (capReached) return;
-    const nextEur = spendEurOrNull(save.resources.eur, candidate.salary);
-    if (nextEur == null) {
-      setNotice("Cannot hire: budget would go negative.");
-      setStage("home");
+    if (liquidityEur(save) < candidate.salary) {
+      setNotice("Cannot hire: cash and receivables would not cover payables plus this wage.");
       return;
     }
     const productivity = Math.round(candidate.hiddenProductivityPct);
@@ -141,15 +148,23 @@ export function HiringScreen({ season }: { season: number }) {
       visibilityGain = split.visibility;
     }
 
+    const newEmployeeId = `${candidate.id}-${season}-${hiredThisSeason + 1}`;
     const updated: NewGamePayload = {
       ...save,
       resources: {
         ...save.resources,
-        eur: nextEur,
         competence: save.resources.competence + competenceGain,
         visibility: save.resources.visibility + visibilityGain,
         firmCapacity: save.resources.firmCapacity + capGain,
       },
+      payablesLines: [
+        ...(save.payablesLines ?? []),
+        {
+          id: wageLineId(newEmployeeId),
+          label: `${candidate.name} wage`,
+          amount: candidate.salary,
+        },
+      ],
       hiresBySeason: {
         ...(save.hiresBySeason ?? {}),
         [seasonKey]: hiredThisSeason + 1,
@@ -157,7 +172,7 @@ export function HiringScreen({ season }: { season: number }) {
       employees: [
         ...(save.employees ?? []),
         {
-          id: `${candidate.id}-${season}-${hiredThisSeason + 1}`,
+          id: newEmployeeId,
           name: candidate.name,
           role: mode === "intern" ? "Intern" : roleLabel(candidate.role),
           salary: candidate.salary,
@@ -323,7 +338,9 @@ export function HiringScreen({ season }: { season: number }) {
                   onChange={(e) => {
                     const nextTier = e.target.value as Exclude<HiringTier, "intern">;
                     setTier(nextTier);
-                    setSalary(getSalaryBands(nextTier)[0].anchor * 1000);
+                    const anchors = getSalaryBands(nextTier).map((b) => b.anchor * 1000);
+                    const filtered = anchors.filter((value) => liquidityEur(save) >= value);
+                    setSalary(filtered[0] ?? anchors[0]);
                   }}
                 >
                   <option value="junior">Junior (15k-39k)</option>
@@ -376,11 +393,6 @@ export function HiringScreen({ season }: { season: number }) {
                 <p className="muted" style={{ margin: "0 0 0.4rem" }}>
                   {mode === "intern" ? "Intern" : `${roleLabel(c.role)} · ${tier}`} · EUR {c.salary.toLocaleString("en-GB")}
                 </p>
-                {mode === "full_time" ? (
-                  <p style={{ margin: "0 0 0.4rem", color: "var(--danger, #dc2626)", fontSize: "0.9rem" }}>
-                    Payroll risk warning: if you cannot cover this salary after season end, you will have to lay this employee off.
-                  </p>
-                ) : null}
                 <p style={{ margin: 0 }}>{c.description}</p>
                 <button type="button" className="btn btn-primary" style={{ marginTop: "0.75rem" }} onClick={() => openHireWarning(c)}>
                   Hire

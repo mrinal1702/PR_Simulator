@@ -409,6 +409,142 @@
           "convincing": "They narrow into dull, safe employer posts: pre-approved templates, no @ without a second pair of eyes, and a rule that campus shoots never reuse last year's deck. Their next hiring season opens with a plain text post and zero stadium metaphors—and engagement is fine."
         }
       }
+    },
+    {
+      "scenario_id": "corporate-low-coupon-blast-free-flight-stampede",
+      "client_name": "JetVanta Regional",
+      "client_type": "Corporate",
+      "budget_tier": "Low",
+      "client_subtype": "Regional Passenger Airline",
+      "scenario_title": "100 Seats, 10,000 Smiles",
+      "problem_summary": "JetVanta Regional, a mid-size airline trying to juice off-season bookings, landed in your queue after a coupon campaign escaped containment in spectacular fashion. They built a limited promo code, SKYONUS, with the tagline '100 seats. 100 smiles. Zero drama.' and meant it for 100 loyalty members, but a misconfigured list plus an auto-forward partner blast pushed it to about 10,000 inboxes in under an hour. Screenshot threads showing FREE FARE APPLIED went viral, airport desks braced for chaos, and creators started posting tutorials on how to outrun airline math. JetVanta says it was a distribution error and is reviewing redemption terms, but the brand now looks less like reliable travel and more like a raffle that forgot the rules.",
+      "flavor_tone_note": "Airline precision meets coupon entropy; one promo code turned gate operations into improv theater.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Coupon Error Clarifier",
+          "solution_brief": "Post a plain correction, freeze code misuse pathways, and define who is eligible in one unambiguous update."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Passenger Recovery Protocol",
+          "solution_brief": "Priority support for affected passengers, make-good options, and direct comms to loyalty members and agents."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Skyonus Story Reclaim Tour",
+          "solution_brief": "High-visibility explanation campaign with controlled humor to retake narrative momentum quickly."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Promo Governance Relaunch",
+          "solution_brief": "Full reset: code controls, partner distribution rules, and audited sign-off before any future fare campaign."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "Confusion stays mostly local, but trust in promo fairness takes a hit.",
+        "low_visibility_high_effectiveness": "Issue stays contained; clear eligibility rules calm core passengers.",
+        "high_visibility_low_effectiveness": "Coupon screenshots go wide; JetVanta becomes a discount-chaos punchline.",
+        "high_visibility_high_effectiveness": "The backlash scales, but disciplined recovery keeps brand damage manageable."
+      },
+      "arc_2": {
+        "options": [
+          "Coupon Clarifier Bulletin",
+          "Passenger Recovery Desk",
+          "Narrative Reclaim Push",
+          "Promo Governance Reset",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "JetVanta posts an FAQ saying the code is now constrained, then accidentally leaves a marketing test page live with a banner reading SKYONUS_UNLIMITED_DEV_ONLY. A few hundred people catch it, and one thread titles the screenshot 'development branch, destination branch.'",
+        "low_visibility_high_effectiveness": "Reach stays modest, but they run the boring plan: clear eligibility matrix, fast case handling, and direct notices to anyone who clicked the bad code. Complaints continue, yet customer tone shifts from outrage to grudging process questions.",
+        "high_visibility_low_effectiveness": "During a livestream Q&A meant to reassure travelers, a host says 'no one is boarding for free anymore,' then reads a fresh comment from someone at Gate B12 holding an active zero-fare boarding pass. The clip detonates across travel TikTok with airport departure-board edits.",
+        "high_visibility_high_effectiveness": "The story goes broad, but JetVanta sticks to one script: what happened, who gets honored, who gets compensated, and how future campaigns are locked down. Memes keep flying, but operational updates start getting shared more than outrage screenshots."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The mess never becomes a national firestorm, but frequent flyers treat every new promo email like a phishing test. JetVanta's campaign copy starts sounding like legal disclaimers in airline blue.",
+          "good": "Only a modest travel audience tracks the incident, and enough passengers accept the recovery policy that loyalty churn stabilizes. The airline gets less flashy and more explicit, which helps.",
+          "convincing": "In its regional niche, JetVanta becomes the carrier that over-sent one code and then handled the fallout with receipts. The SKYONUS joke survives, but trust stops sliding."
+        },
+        "medium": {
+          "poor": "The coupon screenshot resurfaces every sale cycle, and each announcement gets ratioed with calculator memes. Teams spend more time deconflicting old threads than promoting new routes.",
+          "good": "People remember the free-flight stampede, but they also remember timely make-goods and clearer promotion rules. Partners stay cautious yet continue co-marketing.",
+          "convincing": "JetVanta earns reformed-promo status by running a visibly boring campaign process after the incident. The narrative shifts from chaos airline to procedural adult supervision."
+        },
+        "high": {
+          "poor": "The internet immortalizes JetVanta as the airline that accidentally launched universal basic airfare; every fare ad gets quote-posted with boarding pass jokes. The tagline 'Zero drama' becomes an automatic reaction meme.",
+          "good": "They remain known for the coupon blowout, but avoid full collapse through strict controls and transparent customer handling. Larger partners return with stricter contractual guardrails.",
+          "convincing": "They turn a meme-grade promo failure into a credible second act: hardened code governance, cleaner partner workflows, and comms that match operations. One travel blogger sums it up: 'Worst coupon math, best postmortem packet.'"
+        }
+      }
+    },
+    {
+      "scenario_id": "corporate-low-wellness-campaign-adjacency-whiplash",
+      "client_name": "Northbridge Health Insurance",
+      "client_type": "Corporate",
+      "budget_tier": "Low",
+      "client_subtype": "Regional Health Insurance Provider",
+      "scenario_title": "Breathe Better, Bet Better?",
+      "problem_summary": "Northbridge Health Insurance, a regional insurer pushing a polished burnout-prevention campaign called Breathe Better, Live Better, came to you after media placement backfired in public. Customers posted screenshots of Northbridge pre-roll ads running before late-night gambling streams and high-risk get-rich clips on the same platform, including one frame where the wellness tagline sits above a host yelling 'rent money on red.' The irony went viral, comments called it mindful breathing for reckless wagering, and patient advocacy pages started questioning whether the brand's values are real or outsourced. Northbridge says buying was automated through a third-party network and high-risk categories were excluded, but right now the company looks like it delegated ethics to a checkbox.",
+      "flavor_tone_note": "Premium wellness creative, chaotic ad adjacency; one targeting miss turned policy tone into punchline fuel.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Placement Clarifier Bulletin",
+          "solution_brief": "Acknowledge the adjacency failure, pause risky inventory, and publish immediate brand-safety constraints."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Brand-Safety Repair Program",
+          "solution_brief": "Audit placements, brief stakeholders, and share verifiable controls for future media buys."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Narrative Containment Media Push",
+          "solution_brief": "Use high-visibility explainers and controlled self-awareness to regain narrative speed."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Media Governance Relaunch",
+          "solution_brief": "Full reset: stricter ad-category rules, human sign-off loops, and coordinated trust recovery."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The mismatch stays niche, but policyholders lose confidence in brand sincerity.",
+        "low_visibility_high_effectiveness": "Issue remains contained; transparent controls calm core stakeholders.",
+        "high_visibility_low_effectiveness": "Screenshots spread wide; Northbridge becomes a values-whiplash meme.",
+        "high_visibility_high_effectiveness": "Backlash grows, but disciplined remediation keeps reputation salvageable."
+      },
+      "arc_2": {
+        "options": [
+          "Placement Clarifier Post",
+          "Brand-Safety Repair Track",
+          "Visibility Reclaim Push",
+          "Media Governance Reset",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Northbridge posts a sober statement about updated exclusions, then a cached ad-preview link still shows their campaign next to a slot-stream thumbnail with jackpot confetti. A few hundred people see it, but one repost captioned 'wellness, now with odds' does disproportionate damage.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but they execute the boring plan: category blacklist verified, placement logs shared, and partner briefings with timestamps. Critics still grumble, yet trust metrics stop sliding.",
+        "high_visibility_low_effectiveness": "During a livestream meant to prove controls are fixed, the demo dashboard auto-refreshes and briefly recommends 'high-intent betting audiences' under active segments. The host freezes, chat explodes, and the clip circulates as enterprise comedy by dinner.",
+        "high_visibility_high_effectiveness": "The story travels broadly, but Northbridge sticks to plain facts: what failed, where ads ran, what guardrails are now active, and who signs off next time. Memes linger, but watchdog accounts start linking their transparency update instead of only posting screenshots."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The issue never becomes a national scandal, but customers treat every campaign as potentially off-brand. Northbridge's wellness tone starts reading like risk-managed poetry.",
+          "good": "Only a limited audience follows the incident, and enough stakeholders accept the fix that campaign trust stabilizes. Messaging gets less glossy and more concrete.",
+          "convincing": "In its regional lane, Northbridge becomes the insurer that got burned by ad adjacency and responded with receipts. The joke persists, but confidence returns incrementally."
+        },
+        "medium": {
+          "poor": "Screenshot threads resurface each launch cycle, and every new ad gets challenged for placement context. Teams spend more energy proving where ads did not run than discussing outcomes.",
+          "good": "People remember the mismatch, but they also remember published controls and fewer repeat incidents. Partners stay alert, yet keep media plans active.",
+          "convincing": "Northbridge earns reformed-media-governance status by making ad safety visibly procedural. The narrative shifts from checkbox ethics to adult supervision."
+        },
+        "high": {
+          "poor": "The internet immortalizes Northbridge as the insurer that put mindfulness next to betting hype; every brand video gets quote-posted with roulette emojis. Their wellness tagline becomes reaction-meme shorthand.",
+          "good": "They remain known for the wrong adjacency, but avoid collapse through strict controls and transparent reporting. Larger partners return with tighter placement clauses.",
+          "convincing": "They turn a meme-grade targeting failure into a credible second act: audited media rules, human approvals, and comms that match operational reality. One advocacy newsletter sums it up: 'Bad placement, serious cleanup.'"
+        }
+      }
     }
   ]
 }

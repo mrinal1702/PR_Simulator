@@ -10,7 +10,6 @@ import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { plannedClientCountForSeason } from "@/lib/clientEconomyMath";
 import { SCENARIO_POOL_EXHAUSTED_MESSAGE } from "@/lib/scenarios";
 import { buildSeasonClients } from "@/lib/seasonClientLoop";
-import { computePayrollHeadsUp } from "@/lib/seasonFinancials";
 import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 
@@ -48,12 +47,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
   useEffect(() => {
     if (season < 2) return;
     if (payrollPaidForSeason) return;
-    const payroll = computePayrollHeadsUp(save);
     setBlockedByPayroll(true);
-    if (payroll.shortfall > 0) {
-      router.replace(`/game/preseason/${season}/payroll`);
-      return;
-    }
     router.replace(`/game/preseason/${season}`);
   }, [save, season, payrollPaidForSeason, router]);
 
@@ -64,7 +58,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
           <Link href="/">← {GAME_TITLE}</Link>
         </p>
         <h1>Redirecting…</h1>
-        <p className="muted">Payroll must be resolved before entering season.</p>
+        <p className="muted">Pre-season must be completed before entering season.</p>
       </div>
     );
   }

@@ -4,6 +4,7 @@ import { seasonSpouseGrants } from "@/lib/gameEconomy";
 import { computePreseasonFocusTotals } from "@/lib/preseasonFocus";
 import { collectPostSeasonLedger } from "@/lib/postSeasonResults";
 import { employeeTotalCapacityContribution } from "@/lib/tenureCapacity";
+import { getPendingReceivablesEur, liquidityEur, totalPayables } from "@/lib/payablesReceivables";
 
 export type BreakdownMetric = "eur" | "visibility" | "competence" | "firmCapacity" | "reputation";
 
@@ -104,7 +105,8 @@ function buildSimplifiedPreseasonBreakdown(
   const baseReputation = save.initialReputation ?? 5;
   const g = seasonSpouseGrants(save.spouseType);
   const grantApplied = save.preseasonEntrySpouseGrantSeasons?.includes(String(save.seasonNumber)) ?? false;
-  const salarySum = employees.reduce((s, e) => s + e.salary, 0);
+  const payLines = save.payablesLines ?? [];
+  const recEur = getPendingReceivablesEur(save);
   const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
   const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
   const employeeCap = employees.reduce((s, e) => s + employeeTotalCapacityContribution(e), 0);
@@ -112,7 +114,7 @@ function buildSimplifiedPreseasonBreakdown(
   const postSeason = collectPostSeasonLedger(save);
   const postRepSum = postSeason.reduce((s, e) => s + e.reputationDelta, 0);
 
-  const startingWealth = grantApplied ? save.resources.eur - g.eur + salarySum : save.resources.eur + salarySum;
+  const startingWealth = grantApplied ? save.resources.eur - g.eur : save.resources.eur;
   const startingVis =
     (grantApplied ? save.resources.visibility - g.visibility - employeeVis : save.resources.visibility - employeeVis) -
     focus.visibility;
@@ -122,7 +124,12 @@ function buildSimplifiedPreseasonBreakdown(
   const startingCap = baseResources.firmCapacity;
 
   const linesByMetric: Record<BreakdownMetric, Array<{ label: string; value: number }>> = {
-    eur: [{ label: "Starting wealth", value: startingWealth }],
+    eur: [
+      { label: "Cash on hand", value: save.resources.eur },
+      ...(recEur > 0 ? [{ label: "Receivables (guaranteed)", value: recEur }] : []),
+      ...payLines.map((pl) => ({ label: pl.label, value: -pl.amount })),
+      { label: "Liquidity (cash + receivables − payables)", value: liquidityEur(save) },
+    ],
     visibility: [{ label: "Starting visibility", value: startingVis }],
     competence: [{ label: "Starting competence", value: startingComp }],
     firmCapacity: [{ label: "Starting capacity", value: startingCap }],
@@ -142,9 +149,6 @@ function buildSimplifiedPreseasonBreakdown(
     linesByMetric.visibility.push({ label: "Pre-season focus (all seasons)", value: focus.visibility });
   }
 
-  if (salarySum !== 0) {
-    linesByMetric.eur.push({ label: "Employees (payroll at hire)", value: -salarySum });
-  }
   if (employeeVis !== 0) {
     linesByMetric.visibility.push({ label: "Employees (current roster)", value: employeeVis });
   }
@@ -170,7 +174,10 @@ function buildSimplifiedPreseasonBreakdown(
     linesByMetric.reputation.push({ label: "Layoffs and other adjustments", value: remainder });
   }
 
-  return linesByMetric[metric].filter((l, idx) => idx === 0 || l.value !== 0);
+  return linesByMetric[metric].filter((l, idx) => {
+    if (metric === "eur" && l.label.includes("Liquidity")) return true;
+    return idx === 0 || l.value !== 0;
+  });
 }
 
 export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePayload): Array<{ label: string; value: number }> {
@@ -185,14 +192,16 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
   const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
   const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
   const employeeCap = employees.reduce((s, e) => s + employeeTotalCapacityContribution(e), 0);
-  const employeeCost = employees.reduce((s, e) => s + e.salary, 0);
+  const payLines = save.payablesLines ?? [];
+  const recLine = getPendingReceivablesEur(save);
   const s1 = computeSeason1Ledger(save);
   const postSeason = collectPostSeasonLedger(save);
 
   const linesByMetric: Record<BreakdownMetric, Array<{ label: string; value: number }>> = {
     eur: [
       { label: "Pre-Season Start", value: baseResources.eur },
-      { label: "Employees", value: -employeeCost },
+      ...(recLine > 0 ? [{ label: "Receivables (guaranteed)", value: recLine }] : []),
+      ...payLines.map((pl) => ({ label: pl.label, value: -pl.amount })),
     ],
     visibility: [
       { label: "Pre-Season Start", value: baseResources.visibility },
@@ -253,7 +262,7 @@ function estimateBaseResources(save: NewGamePayload): BuildStats {
   const employeeVis = employees.reduce((s, e) => s + e.visibilityGain, 0);
   const employeeComp = employees.reduce((s, e) => s + e.competenceGain, 0);
   const employeeCap = employees.reduce((s, e) => s + employeeTotalCapacityContribution(e), 0);
-  const employeeCost = employees.reduce((s, e) => s + e.salary, 0);
+  const payablesSum = totalPayables(save);
   const focus = computePreseasonFocusTotals(save);
   const s1 = computeSeason1Ledger(save);
   const postSeason = collectPostSeasonLedger(save);
@@ -261,7 +270,7 @@ function estimateBaseResources(save: NewGamePayload): BuildStats {
   const postEurSum = postSeason.reduce((s, e) => s + e.eurSpentOnReachBoost, 0);
   const postCapSum = postSeason.reduce((s, e) => s + e.capacitySpentOnEffectivenessBoost, 0);
   return {
-    eur: save.resources.eur + employeeCost - s1.eurNet + postEurSum,
+    eur: save.resources.eur + payablesSum - s1.eurNet + postEurSum,
     visibility: save.resources.visibility - focus.visibility - employeeVis - postVisSum,
     competence: save.resources.competence - focus.competence - employeeComp,
     firmCapacity: save.resources.firmCapacity - employeeCap + s1.capacityUsed + postCapSum,

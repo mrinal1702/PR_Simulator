@@ -19,6 +19,12 @@ import {
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import {
+  getPendingReceivablesEur,
+  hasLayoffPressure,
+  liquidityEur,
+  totalPayables,
+} from "@/lib/payablesReceivables";
 
 /** Post-season hub: agency snapshot (like season hub) + entry into mandatory results flow. */
 export function PostSeasonHubScreen({ season }: { season: number }) {
@@ -76,6 +82,23 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
       </header>
 
       <AgencyResourceStrip save={save} />
+
+      <div className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
+        <p
+          style={{
+            margin: 0,
+            fontWeight: 600,
+            color: hasLayoffPressure(save) ? "#dc2626" : "#16a34a",
+          }}
+        >
+          {hasLayoffPressure(save) ? "Layoff pressure" : "No layoff pressure"}
+        </p>
+        <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.88rem" }}>
+          Liquidity EUR {liquidityEur(save).toLocaleString("en-GB")} · Payables EUR{" "}
+          {totalPayables(save).toLocaleString("en-GB")} · Receivables EUR{" "}
+          {getPendingReceivablesEur(save).toLocaleString("en-GB")}
+        </p>
+      </div>
 
       <section>
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
-import { seasonSpouseGrants } from "@/lib/gameEconomy";
 import {
   acceptedRunsWithOutcomes,
   postSeasonNextRunIndex,
@@ -15,10 +14,15 @@ import {
   computeSeasonCashBridge,
   computeSeasonCashFlow,
   computeFutureReceivablesForLoop,
-  computePayrollHeadsUp,
   computeSeasonPostSeasonStatGains,
   computeSeasonScenarioAverages,
 } from "@/lib/seasonFinancials";
+import {
+  getPendingReceivablesEur,
+  hasLayoffPressure,
+  liquidityEur,
+  totalPayables,
+} from "@/lib/payablesReceivables";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 
 function fmtEur(n: number): string {
@@ -81,11 +85,6 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
   );
   const averages = useMemo(() => computeSeasonScenarioAverages(loop), [loop]);
   const futureReceivables = useMemo(() => (loop ? computeFutureReceivablesForLoop(loop) : 0), [loop]);
-  const payrollHeadsUp = useMemo(() => (save ? computePayrollHeadsUp(save) : null), [save]);
-  const upcomingSpouseIncomeEur = useMemo(
-    () => (save ? seasonSpouseGrants(save.spouseType).eur : 0),
-    [save]
-  );
   const acceptedForResults = useMemo(() => (loop ? acceptedRunsWithOutcomes(loop) : []), [loop]);
   const resultsDone = acceptedForResults.length === 0 || postSeasonNextRunIndex(acceptedForResults) >= acceptedForResults.length;
 
@@ -104,13 +103,8 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
     if (!resultsDone) return;
     const nextSeason = Math.min(season + 1, 7);
     const next = enterNextPreseason(save, season);
-    const nextPayroll = computePayrollHeadsUp(next);
     persistSave(next);
     setSave(next);
-    if (nextSeason >= 2 && nextPayroll.shortfall > 0) {
-      router.push(`/game/preseason/${nextSeason}/payroll`);
-      return;
-    }
     router.push(`/game/preseason/${nextSeason}`);
   };
 
@@ -182,43 +176,23 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
           </p>
         )}
 
-        {payrollHeadsUp ? (
-          <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid var(--border)" }}>
-            <h3 style={{ margin: "0 0 0.5rem", fontSize: "1rem" }}>Roster &amp; payroll (before next season)</h3>
-            {payrollHeadsUp.employeeCount === 0 ? (
-              <p className="muted" style={{ margin: 0, fontSize: "0.92rem", lineHeight: 1.55 }}>
-                No employees on the roster — no payroll to cover for the upcoming season.
-              </p>
-            ) : (
-              <div style={{ display: "grid", gap: "0.55rem", fontSize: "0.92rem", lineHeight: 1.5 }}>
-                <p
-                  style={{
-                    margin: 0,
-                    fontWeight: 700,
-                    color: payrollHeadsUp.canCoverPayroll ? "#16a34a" : "#dc2626",
-                  }}
-                >
-                  {payrollHeadsUp.canCoverPayroll ? "No Layoff Pressure" : "Layoff Pressure"}
-                </p>
-                <p style={{ margin: 0 }}>
-                  <strong>Upcoming Payroll Cost</strong> — {fmtEur(payrollHeadsUp.upcomingSeasonPayroll)}
-                </p>
-                <p style={{ margin: 0 }}>
-                  <strong>Upcoming Income</strong> —{" "}
-                  <span style={{ color: upcomingSpouseIncomeEur > 0 ? "#16a34a" : "#ca8a04", fontWeight: 600 }}>
-                    {fmtEur(upcomingSpouseIncomeEur)}
-                  </span>
-                  {upcomingSpouseIncomeEur > 0 ? (
-                    <span className="muted" style={{ fontWeight: 400 }}>
-                      {" "}
-                      (spouse, before next season)
-                    </span>
-                  ) : null}
-                </p>
-              </div>
-            )}
-          </div>
-        ) : null}
+        <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid var(--border)" }}>
+          <h3 style={{ margin: "0 0 0.5rem", fontSize: "1rem" }}>Liquidity (before next pre-season)</h3>
+          <p
+            style={{
+              margin: 0,
+              fontWeight: 700,
+              fontSize: "0.92rem",
+              color: hasLayoffPressure(save) ? "#dc2626" : "#16a34a",
+            }}
+          >
+            {hasLayoffPressure(save) ? "Layoff pressure" : "No layoff pressure"}
+          </p>
+          <p className="muted" style={{ margin: "0.45rem 0 0", fontSize: "0.88rem", lineHeight: 1.5 }}>
+            Liquidity {fmtEur(liquidityEur(save))} · Payables {fmtEur(totalPayables(save))} · Receivables{" "}
+            {fmtEur(getPendingReceivablesEur(save))}
+          </p>
+        </div>
       </section>
 
       <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
@@ -402,7 +376,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
               <strong>Future receivables:</strong> {fmtEur(futureReceivables)}
             </p>
             <p className="muted" style={{ margin: "0.65rem 0 0", fontSize: "0.88rem", lineHeight: 1.5 }}>
-              <strong>Next Season Payroll:</strong> {fmtEur(payrollHeadsUp?.upcomingSeasonPayroll ?? 0)}
+              <strong>Payables (wages &amp; other):</strong> {fmtEur(totalPayables(save))}
             </p>
           </div>
         ) : null}

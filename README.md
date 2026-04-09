@@ -130,7 +130,7 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 
 ## Current implementation snapshot
 
-- Implemented UI loop: `Home → New Game → Pre-season → Season hub → Client cases → Post-season hub → Post-season results (per client) → Season summary → Pre-season N+1`. **Home** (with a save) shows **phase**, **agency stats / employees / breakdowns** (client + post-season ledger lines), and **Case log — Season 1** where applicable.
+- Implemented UI loop: `Home → New Game → Pre-season → Season hub → Client cases → Post-season hub → Post-season results (per client) → Season summary → (if payroll shortfall) Payroll checkpoint → Pre-season N+1`. **Home** (with a save) shows **phase**, **agency stats / employees / breakdowns** (client + post-season ledger lines), and **Case log — Season 1** where applicable.
 - `Continue` is enabled and routes to saved `preseason/season/postseason` path.
 - Save system is single-slot local (`localStorage` + `sessionStorage`) via `dma-save-slot`.
 - Pre-season has one-time activity focus (`Strategy workshop` or `Network`) and an `Agency stats` panel.
@@ -147,7 +147,7 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 - In-season client economy and loop state: `web/lib/seasonClientLoop.ts`, `web/lib/clientEconomyMath.ts`, `web/lib/scenarios.ts`; save field `seasonLoopBySeason` on `NewGamePayload`.
 - Reputation is initialized at `5` and treated as derived (not directly purchasable at start).
 - Metric bands/labels are data-driven in `web/lib/metricScales.ts`.
-- **Payroll & layoffs (design):** per-season payroll coverage, forced/voluntary layoffs, warnings when spending, progression gates, and `Fire` on Employees — specified in `docs/PAYROLL_AND_LAYOFF_RULES.md` (implementation pending pre-season 2+ checkpoint UI).
+- **Payroll & employees (implemented for Season 2+):** mandatory **payroll checkpoint** (`/game/preseason/[season]/payroll`) when entering pre-season from summary if cash cannot cover roster payroll; **mandatory layoffs** (no severance, no rep hit) until affordable; **voluntary fire** on pre-season 2+ (severance + rep, same-pre-season hire protection); **pre-hire modals** and inline payroll-risk copy on Talent Bazaar; **payroll deducted** when starting a season from pre-season (season 2+), tracked via `payrollPaidBySeason` so season routes cannot be entered unpaid; **interns** expire when leaving post-season (removed from roster, stat gains reversed). See `docs/PAYROLL_AND_LAYOFF_RULES.md` for full rules; remaining polish (e.g. persistent payroll chip everywhere) is optional.
 
 ## Documentation index
 
@@ -157,7 +157,7 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 | `docs/CLIENT_ECONOMY_MATH.md` | In-season client pricing and Season 1 liquid math |
 | `docs/SCENARIO_CREATIVE_GUIDELINES.md` | Writing / merging scenario JSON |
 | `docs/DEPLOYMENT.md` | Supabase + Vercel |
-| `docs/PAYROLL_AND_LAYOFF_RULES.md` | **Design spec (not fully in UI yet):** per-season payroll, layoffs, warnings, Fire, progression gates |
+| `docs/PAYROLL_AND_LAYOFF_RULES.md` | Payroll, layoffs, gates — **design + what is wired in the web app** |
 | `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md` | Metric anchors for solution / outcome balancing |
 
 For agent handoff and economy notes, start with `docs/AGENT_HANDOFF.md` and `docs/CLIENT_ECONOMY_MATH.md`.

@@ -1,12 +1,11 @@
-import { PayrollCheckpointScreen } from "@/components/PayrollCheckpointScreen";
+import { redirect } from "next/navigation";
 
+/** Mandatory payroll checkpoint removed — resolve roster on main pre-season screen. */
 export default async function PreSeasonPayrollPage({
   params,
 }: {
   params: Promise<{ season: string }>;
 }) {
   const { season } = await params;
-  const seasonNumber = Number.parseInt(season, 10);
-  return <PayrollCheckpointScreen season={Number.isFinite(seasonNumber) ? seasonNumber : 1} />;
+  redirect(`/game/preseason/${season}`);
 }
-
