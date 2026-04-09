@@ -2,7 +2,7 @@
 
 When adding **new** characters (founders, co-owners, executives, named staff), **do not reuse** first names already on this list. **Brand / company** `client_name` values are listed separately—they can sound similar to a person name but are orgs, not people.
 
-**Pool snapshot:** 29 scenarios total (Apr 2026) — 13 Individual, 10 Small Company, 6 Corporate. Source: `web/data/scenarios_*.json`.
+**Pool snapshot:** 31 scenarios total (Apr 2026) — 15 Individual, 10 Small Company, 6 Corporate. Source: `web/data/scenarios_*.json`.
 
 Last full pass: scenario JSON in `web/data/scenarios_*.json`. Update this file when you introduce a new **speaking** name in any scenario field.
 
@@ -22,6 +22,7 @@ These are the lead **client** identities; treat as taken for any new individual 
 - Mila  
 - Nathan  
 - Nina  
+- Ronan  
 - Rory  
 - Sienna  
 - Zoe  
@@ -34,6 +35,7 @@ Includes co-founders, partners, execs, and recurring side characters in `problem
 
 - Ali  
 - Alex  
+- Arjun  
 - Avery  
 - Dana  
 - Dean  

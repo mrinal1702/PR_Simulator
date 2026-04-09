@@ -899,6 +899,142 @@
           "convincing": "He turns it into a narrow reputation: reliable load-in, handshake first, joke last. His last interview of the year ends with 'I still hate our old mix, but I say it after the gig now,' and the host laughs once, carefully."
         }
       }
+    },
+    {
+      "scenario_id": "ind-mid-face-value-drop",
+      "client_name": "Ronan",
+      "client_type": "Individual",
+      "budget_tier": "Mid",
+      "client_subtype": "Anonymous Niche Video Essay Creator",
+      "scenario_title": "Face Value Drop",
+      "problem_summary": "Ronan, a faceless niche video essay creator, built a devoted audience on voice, editing, and mystery; fan pages treated him like an idea more than a person. Last week he finally did a face reveal on stream, expecting a milestone moment, but the reaction came in flat and weirdly mean: not a cancel wave, just thousands of comments reducing his work to his looks and saying the channel 'lost its aura.' Within days, shares dropped, watch time softened, and returning viewers started stalling out early. Ronan reached out to you through a panicked late-night intake form after two brand leads quietly paused talks, saying he is not in a scandal but feels like he lost the character that made people care.",
+      "flavor_tone_note": "No single explosion, just algorithmic gravity and identity whiplash; Ronan is articulate on script, shaky off script.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Soft Reset Statement",
+          "solution_brief": "Brief acknowledgment and tighter moderation; reduce noise and buy time without escalating the reveal discourse."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Substance-First Editorial Run",
+          "solution_brief": "Structured content sprint focused on research quality and format consistency to re-anchor loyal viewers."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Meta Reveal Meme Campaign",
+          "solution_brief": "Lean into the discourse with high-visibility jokes and collabs to reclaim narrative volume quickly."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Persona Architecture Relaunch",
+          "solution_brief": "Full channel repositioning: visual language, on-camera training, partner comms, and controlled second reveal arc."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The backlash quiets, but engagement keeps leaking; mystery is gone, trust is not rebuilt.",
+        "low_visibility_high_effectiveness": "Noise stays contained; core viewers return for the work, not the reveal.",
+        "high_visibility_low_effectiveness": "The face-reveal discourse outruns the channel; clips get views, essays do not.",
+        "high_visibility_high_effectiveness": "Attention spikes, then stabilizes; audiences start treating the reveal as a transition, not a collapse."
+      },
+      "arc_2": {
+        "options": [
+          "Boundary-Setting Follow-Up",
+          "Editorial Discipline Sprint",
+          "Aura Funeral World Tour",
+          "Second-Act Identity Rebuild",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Ronan promises to 'focus on the craft,' then posts a defensive community tab novella at 2:11 a.m. arguing with three profile pictures and one obvious burner. Few people see it, but the screenshots circulate in exactly the circles he wanted to calm.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Ronan sticks to the plan: predictable upload cadence, tighter edits, no appearance discourse, and one clean boundary post. Returning viewers stop litigating his face and start debating his thesis again.",
+        "high_visibility_low_effectiveness": "During a polished comeback livestream, he jokes about the reveal, then over-explains the joke for six minutes and accidentally confirms every insecurity thread. The clip spreads wider than the episode and brands pause a second time.",
+        "high_visibility_high_effectiveness": "The conversation goes wide, but Ronan keeps one message: he is a creator, not a character reveal event. He lands one self-aware line, avoids spirals, and delivers a strong run of videos that shifts commentary from appearance to output."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The situation never becomes a headline, but his momentum keeps thinning; each upload feels like damage control in better lighting. Ronan keeps asking whether he should 'go faceless again somehow.'",
+          "good": "Only a slice of the audience ever cared, and enough of his core base reconnects with the work that the channel finds a smaller, stable floor. He sounds less haunted in check-ins and stops reading every comment before bed.",
+          "convincing": "In his niche, he becomes the creator who survived an awkward transition and came back sharper. The reveal becomes a footnote, and the essays become the main event again."
+        },
+        "medium": {
+          "poor": "The flat reveal becomes recurring discourse bait; every new upload gets split between critique and appearance commentary. Ronan starts editing around potential screenshots instead of around ideas.",
+          "good": "People still remember the reveal wobble, but they also remember the disciplined content streak that followed. He regains enough trust to restart partner conversations with stricter creative terms.",
+          "convincing": "He earns a credible second-act identity: on-camera when useful, off-camera when strategic, always substance-first. Audience sentiment shifts from 'he changed' to 'he evolved.'"
+        },
+        "high": {
+          "poor": "The internet turns him into a reusable reaction template for 'face reveal regret,' and the channel gets trapped in commentary gravity. He keeps posting, but the work is overshadowed by the persona discourse loop.",
+          "good": "He is widely known for a reveal that misfired, but he avoids full reputational collapse by setting boundaries and publishing consistently strong work. Brands return cautiously with tighter briefs and less hype language.",
+          "convincing": "He turns a public anti-climax into a textbook creator pivot: clear boundaries, stronger editorial identity, and a controlled relationship with visibility. What began as 'aura loss' ends as a maturity arc audiences actually respect."
+        }
+      }
+    },
+    {
+      "scenario_id": "ind-low-easy-to-understand-backfire",
+      "client_name": "Arjun",
+      "client_type": "Individual",
+      "budget_tier": "Low",
+      "client_subtype": "Beginner-Focused Tech Explainer",
+      "scenario_title": "Easy to Understand, Hard to Undo",
+      "problem_summary": "Arjun, a rising tech explainer known for turning complex apps into clean one-minute beginner guides, hit your inbox after a tutorial backfired. In a viral video about setting up two-factor authentication, he told viewers to save their one-time recovery codes in a public cloud note and called it 'the easiest safe method.' Security folks immediately flagged it, beginners copied it, and comment threads filled with 'my account got locked' and 'this is not safe' replies. Instead of correcting quickly, Arjun posted a follow-up saying he was 'simplifying for normal people,' which made the criticism spread even faster. He is not canceled, but his credibility just dropped hard, and now his own catchphrase, 'easy to understand,' is being used as the punchline under every clip.",
+      "flavor_tone_note": "Clear voice, messy correction; Arjun teaches fast and apologizes slower.",
+      "solutions": [
+        {
+          "solution_archetype_id": 1,
+          "solution_name": "Quick Safety Clarifier",
+          "solution_brief": "Issue a plain correction, pin safer steps, and stop debating intent in comments."
+        },
+        {
+          "solution_archetype_id": 2,
+          "solution_name": "Beginner Security Bootcamp",
+          "solution_brief": "Run a focused correction series with practical examples and expert-reviewed guardrails."
+        },
+        {
+          "solution_archetype_id": 3,
+          "solution_name": "Meme-First Damage Tour",
+          "solution_brief": "Reclaim reach with self-aware clips and collabs before the mockery fully hardens."
+        },
+        {
+          "solution_archetype_id": 4,
+          "solution_name": "Trust Rebuild & Expert Co-Sign",
+          "solution_brief": "Full reset: expert collaborations, stricter fact-check workflow, and a controlled credibility relaunch."
+        }
+      ],
+      "arc_1": {
+        "low_visibility_low_effectiveness": "The correction reaches only a small circle; trust stays shaky and tutorials get side-eye.",
+        "low_visibility_high_effectiveness": "The drama stays niche; core followers accept the fix and keep watching.",
+        "high_visibility_low_effectiveness": "The bad advice clip spreads faster than the correction; he becomes a cautionary meme.",
+        "high_visibility_high_effectiveness": "The mistake goes wide, but a clear correction lands and credibility stabilizes."
+      },
+      "arc_2": {
+        "options": [
+          "Quick Safety Clarifier",
+          "Beginner Security Bootcamp",
+          "Meme-First Damage Tour",
+          "Trust Rebuild & Expert Co-Sign",
+          "do nothing"
+        ],
+        "low_visibility_low_effectiveness": "Arjun promises a clean fix, then posts a new 'super simple security stack' graphic that includes password123! as an example nobody would actually use. Only a small audience sees it, but one cybersecurity student makes a duet titled 'please stop helping,' and that duet gets more likes than his original correction.",
+        "low_visibility_high_effectiveness": "Reach stays modest, but Arjun follows the plan: clear retraction, pinned safer workflow, and short beginner-friendly corrections with no ego monologues. Comments shift from 'this is dangerous' to 'okay this finally makes sense.'",
+        "high_visibility_low_effectiveness": "During a livestream titled 'I fixed the confusion,' Arjun accidentally screen-shares a note called FINAL_SECURITY_TIPS_USE_THIS_REAL that still recommends storing backups in a shared folder named familystuff. The clip spreads instantly, and 'easy to understand' becomes a banner joke on tech meme pages.",
+        "high_visibility_high_effectiveness": "The discourse goes broad, but Arjun stays disciplined: one plain apology, one expert co-signed walkthrough, and consistent safer tutorials. People still tease the old clip, but they start citing his corrected guide instead of dunking on him."
+      },
+      "arc_resolution": {
+        "low": {
+          "poor": "The crisis stays relatively small, but the trust gap lingers; each upload gets a few 'is this safe though?' comments. Arjun keeps over-explaining basic steps like he is negotiating with the algorithm.",
+          "good": "Only a limited audience follows the issue, and enough of them accept the correction that his channel finds stable footing again. He speaks slower, checks facts first, and finally stops defending the old video.",
+          "convincing": "In a smaller niche, he becomes the creator who messed up, owned it, and got better at teaching responsibly. 'Easy to understand' comes back as a compliment instead of a punchline."
+        },
+        "medium": {
+          "poor": "The clip resurfaces every few weeks in comment threads, and his credibility keeps taking small hits. He starts editing around anticipated backlash instead of around clarity.",
+          "good": "People remember the mistake, but they also remember the structured correction streak. His audience trust recovers enough that tutorials perform normally again.",
+          "convincing": "He earns a reliable beginner-translator reputation after proving he can correct publicly and teach cleanly. The incident becomes part of his origin story, not his identity."
+        },
+        "high": {
+          "poor": "The internet locks him into the bad-security-tips archetype, and every new video gets framed as risky before people even watch it. His catchphrase survives, but mostly as satire.",
+          "good": "He stays widely known for the mistake, yet avoids a full collapse by publishing strong, safer guides consistently. Brand interest returns cautiously with tighter review expectations.",
+          "convincing": "He turns a viral credibility hit into a mature second act: expert-reviewed explainers, clearer guardrails, and better teaching discipline. The same phrase that mocked him, 'easy to understand,' becomes his rebuilt brand promise."
+        }
+      }
     }
   ]
 }
