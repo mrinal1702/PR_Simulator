@@ -309,12 +309,24 @@ h3 {
   gap: 0.45rem;
 }
 
-.game-modal-stats span {
+.game-modal-stats > span {
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.03);
   border-radius: 999px;
   padding: 0.32rem 0.58rem;
   font-size: 0.86rem;
+}
+
+.game-modal-stats .game-modal-stat-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.game-modal-stats .game-modal-stat-icon {
+  display: inline-flex;
+  color: var(--accent);
+  flex-shrink: 0;
 }
 
 /* Pre-season: compact sticky resource bar (symbols + values; hover = full names on desktop) */

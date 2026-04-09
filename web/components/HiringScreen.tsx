@@ -401,9 +401,30 @@ export function HiringScreen({ season }: { season: number }) {
           <div className="game-modal-stats">
             <span>Productivity: {hireReport.productivity}%</span>
             <span>Skill: +{hireReport.skill}</span>
-            <span>Capacity: +{hireReport.capGain}</span>
-            <span>Competence: +{hireReport.competenceGain}</span>
-            <span>Visibility: +{hireReport.visibilityGain}</span>
+            <span className="game-modal-stat-with-icon">
+              <span className="game-modal-stat-icon" aria-hidden>
+                <ResourceSymbol id="capacity" size={15} />
+              </span>
+              <span>
+                Capacity: +{hireReport.capGain}
+              </span>
+            </span>
+            <span className="game-modal-stat-with-icon">
+              <span className="game-modal-stat-icon" aria-hidden>
+                <ResourceSymbol id="competence" size={15} />
+              </span>
+              <span>
+                Competence: +{hireReport.competenceGain}
+              </span>
+            </span>
+            <span className="game-modal-stat-with-icon">
+              <span className="game-modal-stat-icon" aria-hidden>
+                <ResourceSymbol id="visibility" size={15} />
+              </span>
+              <span>
+                Visibility: +{hireReport.visibilityGain}
+              </span>
+            </span>
           </div>
           <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end" }}>
             <button type="button" className="btn btn-primary" onClick={() => setHireReport(null)}>
