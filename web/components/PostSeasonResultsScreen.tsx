@@ -17,6 +17,8 @@ import {
   postSeasonScenarioCompletenessPercent,
 } from "@/lib/postSeasonResults";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
+import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import { ResourceSymbol } from "@/components/resourceSymbols";
 
 export function PostSeasonResultsScreen({ season }: { season: number }) {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
@@ -73,11 +75,16 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
   if (!loop) {
     return (
       <div className="shell shell-wide">
-        <p className="muted">
-          <Link href="/">← {GAME_TITLE}</Link>
-        </p>
-        <h1>Post-season {season} · Results</h1>
-        <p className="muted">No season data for this year. Return to the season hub.</p>
+        <header style={{ marginBottom: "1.25rem" }}>
+          <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+            <Link href="/">← {GAME_TITLE}</Link>
+          </p>
+          <h1 style={{ margin: 0 }}>Post-season {season} · Results</h1>
+          <p className="muted" style={{ marginTop: "0.5rem" }}>
+            No season data for this year. Return to the season hub.
+          </p>
+        </header>
+        <AgencyResourceStrip save={save} />
         <Link href={`/game/season/${season}`} className="btn btn-secondary" style={{ textDecoration: "none", width: "fit-content" }}>
           Back to season hub
         </Link>
@@ -88,11 +95,16 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
   if (total === 0) {
     return (
       <div className="shell shell-wide">
-        <p className="muted">
-          <Link href="/">← {GAME_TITLE}</Link>
-        </p>
-        <h1>Post-season {season} · Results</h1>
-        <p className="muted">There are no completed campaigns to review (every client was rejected or has no outcome).</p>
+        <header style={{ marginBottom: "1.25rem" }}>
+          <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+            <Link href="/">← {GAME_TITLE}</Link>
+          </p>
+          <h1 style={{ margin: 0 }}>Post-season {season} · Results</h1>
+          <p className="muted" style={{ marginTop: "0.5rem" }}>
+            There are no completed campaigns to review (every client was rejected or has no outcome).
+          </p>
+        </header>
+        <AgencyResourceStrip save={save} />
         <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none", width: "fit-content" }}>
           Back to post-season
         </Link>
@@ -103,11 +115,16 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
   if (done) {
     return (
       <div className="shell shell-wide">
-        <p className="muted">
-          <Link href="/">← {GAME_TITLE}</Link>
-        </p>
-        <h1>Post-season {season} · Results complete</h1>
-        <p className="muted">You have reviewed every campaign from this season in order.</p>
+        <header style={{ marginBottom: "1.25rem" }}>
+          <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+            <Link href="/">← {GAME_TITLE}</Link>
+          </p>
+          <h1 style={{ margin: 0 }}>Post-season {season} · Results complete</h1>
+          <p className="muted" style={{ marginTop: "0.5rem" }}>
+            You have reviewed every campaign from this season in order.
+          </p>
+        </header>
+        <AgencyResourceStrip save={save} />
         <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none", width: "fit-content" }}>
           Back to post-season
         </Link>
@@ -118,10 +135,14 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
   if (!currentRun?.outcome || !currentClient) {
     return (
       <div className="shell shell-wide">
-        <p className="muted">
-          <Link href="/">← {GAME_TITLE}</Link>
-        </p>
-        <p className="muted">Missing client data for this step.</p>
+        <header style={{ marginBottom: "1.25rem" }}>
+          <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+            <Link href="/">← {GAME_TITLE}</Link>
+          </p>
+          <h1 style={{ margin: 0 }}>Post-season {season} · Results</h1>
+          <p className="muted" style={{ marginTop: "0.5rem" }}>Missing client data for this step.</p>
+        </header>
+        <AgencyResourceStrip save={save} />
         <button type="button" className="btn btn-secondary" onClick={() => setSave(loadSave())}>
           Refresh
         </button>
@@ -150,6 +171,8 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
           Scenario {completed + 1} of {total}
         </p>
       </header>
+
+      <AgencyResourceStrip save={save} />
 
       <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
         <p className="muted" style={{ margin: "0 0 0.25rem", fontSize: "0.82rem", textTransform: "uppercase", letterSpacing: "0.06em" }}>
@@ -186,10 +209,13 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
             className="btn btn-primary"
             disabled={busy || !affordReach}
             onClick={() => commitChoice("reach")}
-            style={{ justifyContent: "space-between", textAlign: "left" }}
+            style={{ justifyContent: "flex-start", textAlign: "left" }}
           >
-            <span>
-              Increase reach (up to 5%) — costs EUR {POST_SEASON_REACH_BOOST_COST_EUR.toLocaleString("en-GB")}
+            <span className="postseason-boost-cost-line">
+              Increase reach (up to 5%) — costs{" "}
+              <ResourceSymbol id="eur" size={16} />
+              {" "}
+              {POST_SEASON_REACH_BOOST_COST_EUR.toLocaleString("en-GB")}
             </span>
           </button>
           <button
@@ -197,10 +223,13 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
             className="btn btn-primary"
             disabled={busy || !affordEff}
             onClick={() => commitChoice("effectiveness")}
-            style={{ justifyContent: "space-between", textAlign: "left" }}
+            style={{ justifyContent: "flex-start", textAlign: "left" }}
           >
-            <span>
-              Increase effectiveness (up to 5%) — costs {POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY} capacity
+            <span className="postseason-boost-cost-line">
+              Increase effectiveness (up to 5%) — costs{" "}
+              <ResourceSymbol id="capacity" size={16} />
+              {" "}
+              {POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY} capacity
             </span>
           </button>
           <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => commitChoice("none")}>
@@ -208,14 +237,24 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
           </button>
         </div>
         {!affordReach ? (
-          <p className="muted" style={{ margin: "0.5rem 0 0", fontSize: "0.88rem" }}>
-            Reach boost is unavailable: need EUR {POST_SEASON_REACH_BOOST_COST_EUR.toLocaleString("en-GB")} (you have{" "}
+          <p className="muted postseason-boost-unavailable" style={{ margin: "0.5rem 0 0", fontSize: "0.88rem" }}>
+            Reach boost is unavailable: need{" "}
+            <ResourceSymbol id="eur" size={15} />
+            {" "}
+            {POST_SEASON_REACH_BOOST_COST_EUR.toLocaleString("en-GB")} (you have{" "}
+            <ResourceSymbol id="eur" size={15} />
+            {" "}
             {save.resources.eur.toLocaleString("en-GB")}).
           </p>
         ) : null}
         {!affordEff ? (
-          <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.88rem" }}>
-            Effectiveness boost is unavailable: need {POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY} capacity (you have{" "}
+          <p className="muted postseason-boost-unavailable" style={{ margin: "0.35rem 0 0", fontSize: "0.88rem" }}>
+            Effectiveness boost is unavailable: need{" "}
+            <ResourceSymbol id="capacity" size={15} />
+            {" "}
+            {POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY} capacity (you have{" "}
+            <ResourceSymbol id="capacity" size={15} />
+            {" "}
             {save.resources.firmCapacity}).
           </p>
         ) : null}

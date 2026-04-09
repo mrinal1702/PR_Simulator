@@ -17,6 +17,8 @@ import {
   type BreakdownMetric,
 } from "@/lib/metricBreakdown";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
+import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
+import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 
 /** Post-season hub: agency snapshot (like season hub) + entry into mandatory results flow. */
 export function PostSeasonHubScreen({ season }: { season: number }) {
@@ -72,6 +74,8 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
           Review outcomes and optional boosts. Visibility and competence are unchanged from the end of the season; capacity reflects campaigns you ran.
         </p>
       </header>
+
+      <AgencyResourceStrip save={save} />
 
       <section>
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
@@ -168,7 +172,7 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
                         Salary: EUR {e.salary.toLocaleString("en-GB")}
                         {e.visibilityGain > 0 ? ` · Visibility +${e.visibilityGain}` : ""}
                         {e.competenceGain > 0 ? ` · Competence +${e.competenceGain}` : ""}
-                        {e.capacityGain > 0 ? ` · Capacity +${e.capacityGain}` : ""}
+                        {formatEmployeeCapacitySuffix(e)}
                       </p>
                     </div>
                   ))}
@@ -247,13 +251,6 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
         </div>
 
         {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
-
-        <div style={{ marginTop: "1.25rem" }}>
-          <p className="muted" style={{ margin: 0 }}>
-            Current resources: EUR {save.resources.eur.toLocaleString("en-GB")} · Competence {save.resources.competence} · Visibility{" "}
-            {save.resources.visibility} · Capacity {save.resources.firmCapacity} · Reputation {save.reputation ?? 5}
-          </p>
-        </div>
 
       </section>
 
