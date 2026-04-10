@@ -86,6 +86,14 @@ export type NewGamePayload = {
   /** Voluntary layoffs taken in a given season number (string key), max 1 per season. */
   voluntaryLayoffsBySeason?: Partial<Record<string, number>>;
   /**
+   * Talent Bazaar: full names permanently removed (fired employees, hired interns who must not return).
+   */
+  talentBazaarBannedNames?: string[];
+  /**
+   * Junior-tier names already offered in any salary band this playthrough; cannot repeat in another band.
+   */
+  talentBazaarJuniorNamesUsed?: string[];
+  /**
    * Accrued payables (wages, severance, future categories). Settled to cash at “Go to season”.
    * Legacy saves omit this; load migrates from employees + EUR refund.
    */

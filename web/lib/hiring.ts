@@ -1,4 +1,5 @@
-import { getHiringNamePoolStrings } from "@/lib/hiringNamesPool";
+import type { NewGamePayload } from "@/components/NewGameWizard";
+import { getHiringNamePoolStrings, getHireBlurbForCandidate } from "@/lib/hiringNamesPool";
 
 export type HiringRole = "data_analyst" | "campaign_manager" | "sales_representative";
 export type HiringTier = "intern" | "junior" | "mid" | "senior";
@@ -62,6 +63,59 @@ export function normalizeSalary(tier: HiringTier, salaryInput: number): number {
   return Math.floor(clamped / 5000) * 5000;
 }
 
+/** Talent Bazaar cards per tier: 3 interns / 3 juniors / 2 mid / 1 senior. */
+export function talentBazaarSlotCount(tier: HiringTier): number {
+  switch (tier) {
+    case "intern":
+      return 3;
+    case "junior":
+      return 3;
+    case "mid":
+      return 2;
+    case "senior":
+      return 1;
+  }
+}
+
+/**
+ * Names that must not appear as Talent Bazaar candidates: banned (fired / hired intern),
+ * current payroll, and (for junior only) names already shown in any junior salary band.
+ */
+export function getTalentBazaarExcludedNames(
+  save: Pick<
+    NewGamePayload,
+    "talentBazaarBannedNames" | "talentBazaarJuniorNamesUsed" | "employees"
+  >,
+  tier: HiringTier
+): string[] {
+  const banned = new Set(save.talentBazaarBannedNames ?? []);
+  const payroll = new Set((save.employees ?? []).map((e) => e.name));
+  const juniorUsed = new Set(save.talentBazaarJuniorNamesUsed ?? []);
+  const out = new Set<string>();
+  for (const n of banned) out.add(n);
+  for (const n of payroll) out.add(n);
+  if (tier === "junior") {
+    for (const n of juniorUsed) out.add(n);
+  }
+  return [...out];
+}
+
+/** After showing a junior candidate list, those names cannot appear again at another junior salary band. */
+export function mergeTalentBazaarJuniorConsumed(save: NewGamePayload, displayedNames: string[]): NewGamePayload {
+  if (displayedNames.length === 0) return save;
+  const prev = new Set(save.talentBazaarJuniorNamesUsed ?? []);
+  for (const n of displayedNames) prev.add(n);
+  return { ...save, talentBazaarJuniorNamesUsed: [...prev] };
+}
+
+/** Fired employees and hired interns never return to the Bazaar. */
+export function banTalentBazaarName(save: NewGamePayload, name: string): NewGamePayload {
+  const prev = new Set(save.talentBazaarBannedNames ?? []);
+  if (prev.has(name)) return save;
+  prev.add(name);
+  return { ...save, talentBazaarBannedNames: [...prev] };
+}
+
 export function generateCandidates(args: {
   seedBase: string;
   season: number;
@@ -70,17 +124,25 @@ export function generateCandidates(args: {
   salary: number;
   reputation: number;
   visibility: number;
+  /** Full names to skip (payroll, bans, junior cross-band consumption, etc.). */
+  excludedNames?: string[];
 }): Candidate[] {
   const bucketSeed = `${args.seedBase}|s${args.season}|${args.role}|${args.tier}|${args.salary}`;
   // Names: pool is role + seniority only; pick seed excludes salary so anchors do not swap which roster names appear.
   const namePickSeed = `${args.seedBase}|s${args.season}|${args.role}|${args.tier}`;
   const allNames = getHiringNamePoolStrings(args.role, args.tier);
-  const uniqueNames = deterministicPickUnique(allNames, 3, `${namePickSeed}|names`);
+  const excluded = new Set(args.excludedNames ?? []);
+  const pool = allNames.filter((n) => !excluded.has(n));
+  const slotCount = talentBazaarSlotCount(args.tier);
+  const uniqueNames = deterministicPickUnique(pool, slotCount, `${namePickSeed}|names`);
   const descriptionPool = getDescriptionPool(args.role, args.tier, args.salary);
-  const uniqueDescriptions = deterministicPickUnique(descriptionPool, 3, `${bucketSeed}|descriptions`);
-  return [0, 1, 2].map((idx) => {
+  const uniqueDescriptions = deterministicPickUnique(
+    descriptionPool,
+    uniqueNames.length,
+    `${bucketSeed}|descriptions`
+  );
+  return uniqueNames.map((name, idx) => {
     const seed = `${bucketSeed}|c${idx}`;
-    const name = uniqueNames[idx];
     const productivity = resolveProductivity(seed);
     const skill = resolveSkill({
       seed,
@@ -90,13 +152,14 @@ export function generateCandidates(args: {
       visibility: args.visibility,
       role: args.role,
     });
+    const fixedHireBlurb = getHireBlurbForCandidate(args.role, args.tier, name);
     return {
       id: `cand-${hash32(seed)}`,
       name,
       role: args.role,
       tier: args.tier,
       salary: args.salary,
-      description: uniqueDescriptions[idx],
+      description: fixedHireBlurb ?? uniqueDescriptions[idx]!,
       hiddenProductivityPct: productivity,
       hiddenSkillScore: skill,
     };

@@ -5,10 +5,13 @@ import { useEffect, useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import {
+  banTalentBazaarName,
   capacityGainFromProductivity,
   generateCandidates,
   getHireCapForSeason,
   getSalaryBands,
+  getTalentBazaarExcludedNames,
+  mergeTalentBazaarJuniorConsumed,
   roleLabel,
   splitBalancedSkill,
   type Candidate,
@@ -115,6 +118,7 @@ export function HiringScreen({ season }: { season: number }) {
     const selectionTier: HiringTier = mode === "intern" ? "intern" : tier;
     const selectionRole: HiringRole = mode === "intern" ? "campaign_manager" : (role as HiringRole);
     const selectedSalary = mode === "intern" ? 10_000 : salary;
+    const excluded = getTalentBazaarExcludedNames(save, selectionTier);
     const next = generateCandidates({
       seedBase: `${save.createdAt}|${save.playerName}`,
       season,
@@ -123,9 +127,26 @@ export function HiringScreen({ season }: { season: number }) {
       salary: selectedSalary,
       reputation: save.reputation ?? 5,
       visibility: save.resources.visibility,
+      excludedNames: excluded,
     });
+    let saveAfterPool = save;
+    if (selectionTier === "junior" && next.length > 0) {
+      saveAfterPool = mergeTalentBazaarJuniorConsumed(
+        save,
+        next.map((c) => c.name)
+      );
+    }
+    if (saveAfterPool !== save) {
+      setSave(saveAfterPool);
+      persistSave(saveAfterPool);
+    }
     setCandidates(next);
     setStage("results");
+    if (next.length === 0) {
+      setNotice("No candidates left in the Talent Bazaar for this role and seniority.");
+    } else {
+      setNotice("");
+    }
   };
 
   const finalizeHireCandidate = (candidate: Candidate) => {
@@ -153,7 +174,7 @@ export function HiringScreen({ season }: { season: number }) {
     }
 
     const newEmployeeId = `${candidate.id}-${season}-${hiredThisSeason + 1}`;
-    const updated: NewGamePayload = {
+    let baseSave: NewGamePayload = {
       ...save,
       resources: {
         ...save.resources,
@@ -188,6 +209,10 @@ export function HiringScreen({ season }: { season: number }) {
         },
       ],
     };
+    if (mode === "intern") {
+      baseSave = banTalentBazaarName(baseSave, candidate.name);
+    }
+    const updated = baseSave;
     setSave(updated);
     persistSave(updated);
     setNotice(`Hired ${candidate.name}. Autosaved.`);
@@ -390,8 +415,20 @@ export function HiringScreen({ season }: { season: number }) {
         </section>
       ) : (
         <section>
-          <h2 style={{ marginTop: 0, fontSize: "1.15rem" }}>Choose one of 3 candidates</h2>
-          <div className="card-grid cols-3" style={{ marginTop: "0.75rem" }}>
+          <h2 style={{ marginTop: 0, fontSize: "1.15rem" }}>
+            {candidates.length === 0
+              ? "No candidates available"
+              : candidates.length === 1
+                ? "Choose your candidate"
+                : `Choose one of ${candidates.length} candidates`}
+          </h2>
+          {candidates.length === 0 ? (
+            <p className="muted">Everyone matching this search is already on your team, excluded, or the roster is exhausted.</p>
+          ) : (
+          <div
+            className={`card-grid${candidates.length >= 3 ? " cols-3" : candidates.length === 2 ? " cols-2" : ""}`}
+            style={{ marginTop: "0.75rem" }}
+          >
             {candidates.map((c) => (
               <div key={c.id} className="choice-card" style={{ textAlign: "left" }}>
                 <h3 style={{ margin: "0 0 0.35rem", fontSize: "1.02rem" }}>{c.name}</h3>
@@ -405,6 +442,7 @@ export function HiringScreen({ season }: { season: number }) {
               </div>
             ))}
           </div>
+          )}
         </section>
       )}
     </div>

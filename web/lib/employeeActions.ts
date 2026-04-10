@@ -1,4 +1,5 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import { banTalentBazaarName } from "@/lib/hiring";
 import { METRIC_SCALES, clampToScale } from "@/lib/metricScales";
 import { employeeTotalCapacityContribution } from "@/lib/tenureCapacity";
 import { severanceLineId, wageLineId } from "@/lib/payablesReceivables";
@@ -50,22 +51,25 @@ export function fireEmployeeVoluntary(
   const newEmployees = (save.employees ?? []).filter((e) => e.id !== employeeId);
   const newRep = clampToScale((save.reputation ?? 5) - VOLUNTARY_REP_PENALTY, METRIC_SCALES.reputation);
 
-  const next: NewGamePayload = {
-    ...save,
-    employees: newEmployees,
-    reputation: newRep,
-    payablesLines: lines,
-    voluntaryLayoffsBySeason: {
-      ...(save.voluntaryLayoffsBySeason ?? {}),
-      [sk]: used + 1,
+  const next: NewGamePayload = banTalentBazaarName(
+    {
+      ...save,
+      employees: newEmployees,
+      reputation: newRep,
+      payablesLines: lines,
+      voluntaryLayoffsBySeason: {
+        ...(save.voluntaryLayoffsBySeason ?? {}),
+        [sk]: used + 1,
+      },
+      resources: {
+        ...save.resources,
+        competence: clampToScale(save.resources.competence - emp.competenceGain, METRIC_SCALES.competence),
+        visibility: clampToScale(save.resources.visibility - emp.visibilityGain, METRIC_SCALES.visibility),
+        firmCapacity: Math.max(0, save.resources.firmCapacity - employeeTotalCapacityContribution(emp)),
+      },
     },
-    resources: {
-      ...save.resources,
-      competence: clampToScale(save.resources.competence - emp.competenceGain, METRIC_SCALES.competence),
-      visibility: clampToScale(save.resources.visibility - emp.visibilityGain, METRIC_SCALES.visibility),
-      firmCapacity: Math.max(0, save.resources.firmCapacity - employeeTotalCapacityContribution(emp)),
-    },
-  };
+    emp.name
+  );
   return { ok: true, save: next };
 }
 
@@ -81,22 +85,25 @@ export function fireEmployeeForPayrollShortfall(
   const wid = wageLineId(emp.id);
   const lines = (save.payablesLines ?? []).filter((l) => l.id !== wid);
   const newEmployees = (save.employees ?? []).filter((e) => e.id !== employeeId);
-  const next: NewGamePayload = {
-    ...save,
-    employees: newEmployees,
-    payablesLines: lines,
-    resources: {
-      ...save.resources,
-      competence: clampToScale(
-        save.resources.competence - emp.competenceGain,
-        METRIC_SCALES.competence
-      ),
-      visibility: clampToScale(
-        save.resources.visibility - emp.visibilityGain,
-        METRIC_SCALES.visibility
-      ),
-      firmCapacity: Math.max(0, save.resources.firmCapacity - employeeTotalCapacityContribution(emp)),
+  const next: NewGamePayload = banTalentBazaarName(
+    {
+      ...save,
+      employees: newEmployees,
+      payablesLines: lines,
+      resources: {
+        ...save.resources,
+        competence: clampToScale(
+          save.resources.competence - emp.competenceGain,
+          METRIC_SCALES.competence
+        ),
+        visibility: clampToScale(
+          save.resources.visibility - emp.visibilityGain,
+          METRIC_SCALES.visibility
+        ),
+        firmCapacity: Math.max(0, save.resources.firmCapacity - employeeTotalCapacityContribution(emp)),
+      },
     },
-  };
+    emp.name
+  );
   return { ok: true, save: next };
 }
