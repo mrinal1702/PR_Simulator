@@ -36,14 +36,16 @@ Weights come from `typeSkewWeights` → `typeSkewProbabilities`, **branching by 
 - **Roll**: **visibility only** — `rollClientBudgetTotalInTier`.
 - **Season split**: `splitBudgetBySeason(total)` in `seasonClientLoop.ts` (~70% / remainder, whole thousands).
 
-## Season client count (visibility)
+## Season client count (2 or 3 only)
 
 - **Season 1**: **2** or **3** clients. Third slot probability: `season1ThirdClientProbability(visibility)` — **piecewise linear**:
   - ~**8%** at visibility ≤ 20
   - ~**30%** at visibility **60** (mid / “normal” investment)
   - ~**92%** by visibility **115+** (strong visibility investment only)
 - **Deterministic** per save: `plannedClientCountForSeason(season, visibility, seed)` with seed e.g. `createdAt|playerName`.
-- **Other seasons** (placeholder): same bands as before for `season > 1`.
+- **Season 2+**: **2** or **3** only. Third-slot probability uses **entry V_score** (frozen at pre-season → season transition) against benchmark quantiles from `web/scripts/results/season2-preseason-end-190.json` — see `season2PlusThirdClientProbabilityFromVScore` and `SEASON2_REFERENCE_V_SCORE_P50` / `SEASON2_REFERENCE_V_SCORE_P75` in `clientEconomyMath.ts`. Hub passes `save.seasonEntryScoresBySeason[season].vScore` when present.
+
+Full Season 2 structural notes (rollover, dual C/V knots, carry-over math): **`docs/SEASON2_STRUCTURE.md`**.
 
 ## Tuning
 

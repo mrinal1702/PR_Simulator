@@ -8,7 +8,8 @@ Use this file as the fastest context for a fresh agent.
 |------|----------|
 | `README.md` | Design brief + implementation snapshot + doc index |
 | `docs/AGENCY_FINANCE.md` | **Cash, payables, receivables, liquidity, hiring, layoffs** — authoritative |
-| `docs/CLIENT_ECONOMY_MATH.md` | Client / Season 1 liquid math |
+| `docs/CLIENT_ECONOMY_MATH.md` | Client economy + Season 1 liquid math |
+| `docs/SEASON2_STRUCTURE.md` | Season 2+ entry scores, client count, C/V knots, rollover carry-over |
 | `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md` | Visibility/competence anchors for solution balancing |
 | `docs/SCENARIO_CREATIVE_GUIDELINES.md` | Scenario JSON authoring |
 | `docs/DEPLOYMENT.md` | Supabase + Vercel |
@@ -20,7 +21,7 @@ Authoritative spec: **`docs/AGENCY_FINANCE.md`**.
 **Implemented:**
 
 - **Payables / receivables / liquidity:** `web/lib/payablesReceivables.ts` — wage and severance lines, guaranteed receivables from accepted clients, `liquidityEur`, `hasLayoffPressure`, `settlePreseasonAndEnterSeason`.
-- **Pre-season 2+** (`PreSeasonScreen`): **Employees** with **Fire** — voluntary (severance payable + rep; caps) vs mandatory when **liquidity &lt; 0** (no severance, no rep). **Start season** settles `receivables − payables`, clears payables, sets `payrollPaidBySeason[season]` for season ≥ 2.
+- **Pre-season 2+** (`PreSeasonScreen`): **Employees** with **Fire** — voluntary (severance payable + rep; caps) vs mandatory when **liquidity &lt; 0** (no severance, no rep). **Start season** settles `receivables − payables`, clears payables, sets `payrollPaidBySeason[season]` for season ≥ 2, and writes **`seasonEntryScoresBySeason[seasonKey]`** (frozen **V_score** / **C_score** for that year — Season 1 knots for season 1, Season 2 knots for season ≥ 2; see `docs/SEASON2_STRUCTURE.md`).
 - **Season route guard:** `SeasonHubScreen` and `SeasonClientCaseScreen` redirect to **`/game/preseason/[season]`** if season ≥ 2 and that season is not yet marked settled — blocks direct URL entry to season until pre-season is completed.
 - **Hiring** (`HiringScreen`): adds **wage** payable; hire allowed when liquidity supports salary; confirmation modals on hire.
 - **Resource strip:** `AgencyResourceStrip` — payables (red), receivables (green), liquidity.
@@ -37,7 +38,7 @@ Authoritative spec: **`docs/AGENCY_FINANCE.md`**.
 
 - Deployed web app with onboarding, pre-season flow, **season hub**, **in-season client cases**, **home dashboard** (phase + case log), and **post-season** (hub, mandatory results flow, season summary with financials + liquidity / layoff pressure when relevant).
 - Single local save slot is active (`dma-save-slot`) with Continue routing.
-- Seasons are planned through season 7; **Season 1–style client queue** (roll → sequential cases → solutions) is implemented; deeper multi-season / round-2 campaign logic can build on `seasonLoopBySeason`.
+- Seasons are planned through season 7; **client queue** (roll → sequential cases → solutions) is implemented on `seasonLoopBySeason`. **Season 2+**: **Season 1 rollover** (carry-over scenarios, build-shifted metrics, Arc 2, fixed EUR/capacity, outcome math) must be completed before rolling **new** Season 2 clients (`SeasonHubScreen` / `SeasonClientCaseScreen`). See **`docs/SEASON2_STRUCTURE.md`**.
 - **Post-season 1 (Season 1)** is feature-complete for: outcome review, optional reach/effectiveness boosts, reputation/visibility rewards, ledger breakdown lines, **Season summary** (`/game/postseason/[season]/summary`) with scenario overview, operating P&amp;L + cash bridge, future-receivables footnote, and liquidity panel. **Enter pre-season N+1** applies spouse grant + capacity reset + intern expiry and routes to **`/game/preseason/[n]`**. **Pre-season 2+** uses the same `PreSeasonScreen` with upgraded focus cards, **Fire**, simplified ledgers when `seasonNumber >= 2` and `phase === "preseason"`, and **Start season** settlement (receivables − payables, clear payables) for season 2+.
 
 ## Implemented flow
@@ -95,12 +96,14 @@ Authoritative spec: **`docs/AGENCY_FINANCE.md`**.
    - Agency stats, employees, save (same patterns as pre-season).
    - Season **≥ 2**: if `payrollPaidBySeason[season]` is false, **redirect** to pre-season — season entry blocked until pre-season is completed and **Start season** has run for that year.
    - No Talent Bazaar (pre-season only).
-   - **`Roll season clients`**: deterministic queue for that season (`plannedClientCount`, `clientsQueue`, `runs`, `currentClientIndex`) stored under `save.seasonLoopBySeason[season]`.
+   - **`Roll season clients`**: deterministic queue for that season (`plannedClientCount`, `clientsQueue`, `runs`, `currentClientIndex`) stored under `save.seasonLoopBySeason[season]`. **Season 2+** client count is **2 or 3** from **entry V_score** vs benchmark curve (`plannedClientCountForSeason` + `seasonEntryScoresBySeason`).
    - **`Open current client case`**: navigates to `/game/season/[season]/client` while the queue is not finished.
    - When **`runs.length === plannedClientCount`** and **`currentClientIndex >= plannedClientCount`**, season client work is **done**; **`Continue to post-season`** appears. It sets `phase: "postseason"` and navigates to `/game/postseason/[season]` — **no** “are you sure” modal (unlike pre-season → season).
 6. Client case (`/game/season/[season]/client`)
    - Component: `SeasonClientCaseScreen`.
    - **Season 1 economy**: Season 1 liquid is **not** credited on page load. **Reject client** = no EUR/capacity change. **Execute a campaign** applies `+budgetSeason1 − costBudget` to EUR and subtracts capacity in one step; run records optional `costBudget`, `costCapacity`, `solutionTitle` for ledger/history.
+   - **Season 2+ in-season campaigns** use **Season 2** C/V knot normalization for outcomes (`resolveClientOutcome` with `outcomeScoreSeason: 2`).
+   - **Season 2+ before new clients**: **Season 1 carry-over** UI (rollover queue, Arc 2, priced options, `applySeason2CarryoverChoice`) — see `docs/SEASON2_STRUCTURE.md`.
    - Four priced archetypes + reject; creative copy from merged `web/data/scenarios_*.json` via `pickScenarioForClient` (unique `scenario_id` per playthrough via `usedScenarioIds`).
 7. Post-season (`/game/postseason/[season]`)
    - **`PostSeasonHubScreen`**: agency stats, case log (Season 1), **Season summary** link, **View results** (mandatory one-by-one review of accepted campaigns in queue order).
@@ -123,7 +126,9 @@ Persisted fields:
 - pre-season settlement: `payrollPaidBySeason` — per season key, set when pre-season **Start season** runs settlement for season 2+; used to block season hub / client case until pre-season is completed for that year
 - payables: `payablesLines` — wage and severance lines (see `docs/AGENCY_FINANCE.md`)
 - transitions: `preseasonEntrySpouseGrantSeasons`, `voluntaryLayoffsBySeason`
-- **in-season client loop**: `seasonLoopBySeason` — optional map keyed by season string → `SeasonLoopState` (`plannedClientCount`, `currentClientIndex`, `clientsQueue`, `runs`, `lastOutcome`). Each `SeasonClientRun` may include **`postSeason`** after the post-season results flow. See `web/lib/seasonClientLoop.ts`.
+- **season entry scores**: `seasonEntryScoresBySeason` — per season key, `{ vScore, cScore }` frozen at **Start season** (see `settlePreseasonAndEnterSeason`, `docs/SEASON2_STRUCTURE.md`)
+- **rollover progress**: `rolloverReviewProgressBySeason` — Season 2+ carry-over step index before new clients can roll
+- **in-season client loop**: `seasonLoopBySeason` — optional map keyed by season string → `SeasonLoopState` (`plannedClientCount`, `currentClientIndex`, `clientsQueue`, `runs`, `lastOutcome`). Each `SeasonClientRun` may include **`postSeason`** after the post-season results flow, and **`season2CarryoverResolution`** after a Season 2 carry-over choice on that client. See `web/lib/seasonClientLoop.ts`.
 - **used scenario IDs**: `usedScenarioIds` — list of `scenario_id` values already assigned to a client this playthrough. `pickScenarioForClient` excludes these (widening pool as needed); rolling clients updates the list. Load merges with IDs found in existing `clientsQueue` for older saves. If the DB runs out of unused scenarios, the roll fails with a user-facing message.
 - metadata: `createdAt`
 
@@ -195,7 +200,7 @@ UI behavior:
 - `web/components/HomeMenu.tsx`: Continue/New game entry buttons
 - `web/components/HomeDashboard.tsx`: phase, stats, breakdowns, Season 1 case log
 - `web/lib/metricBreakdown.ts`: agency ledger lines for breakdown modals (pre-season, home, Season 1 client deltas, post-season rep/vis/EUR/capacity)
-- `web/lib/solutionOutcomeMath.ts`: Season 1 campaign reach/effectiveness (archetype base + additive signed force; score-level jitter)
+- `web/lib/solutionOutcomeMath.ts`: campaign reach/effectiveness (archetype base + additive signed force; score-level jitter); **Season 1 vs Season 2** knot tables; carry-over variance helper (`computeCarryoverVarianceDeltasSeason2`)
 - `web/lib/postSeasonResults.ts`: post-season boosts, rewards, `collectPostSeasonLedger`
 - `web/lib/payablesReceivables.ts`: payables, receivables, liquidity, pre-season settlement
 - `web/lib/seasonFinancials.ts`: season summary cash bridge, future receivables loop sum; legacy `computePayrollHeadsUp` (not used for gates)
