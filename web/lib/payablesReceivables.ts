@@ -1,4 +1,10 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import {
+  competenceScoreForVariance,
+  competenceScoreForVarianceSeason2,
+  visibilityScoreForVariance,
+  visibilityScoreForVarianceSeason2,
+} from "@/lib/solutionOutcomeMath";
 
 /** Accrued obligations (wages, severance, future line items). Amounts are positive numbers. */
 export type PayableLine = {
@@ -25,12 +31,11 @@ export function sumReceivablesFromLoop(save: NewGamePayload, seasonLoopKey: stri
 }
 
 /**
- * Receivables shown in UI: not in pre-season 1; after that, from the last completed season's queue.
- */
-/**
- * Season loop key for pending receivables, or null if none shown (e.g. pre-season 1 only).
- * During **in-season** play, uses the **current** season’s queue so receivables update as soon as
- * a client is accepted (non-reject). Post-season and pre-season 2+ use the same loop rules as before.
+ * Which `seasonLoopBySeason` key backs pending receivables, or null (e.g. pre-season 1 only).
+ * - **Pre-season N (N≥2):** previous season’s loop — follow-up tranches (`budgetSeason2`) from clients you
+ *   already accepted count **before** you open any new-season case.
+ * - **In-season:** current season’s loop — receivables update when a campaign is **committed** (non-reject).
+ * - **Post-season:** current season’s loop.
  */
 export function getReceivableLoopKey(save: NewGamePayload): string | null {
   if (save.seasonNumber <= 1 && save.phase === "preseason") return null;
@@ -99,15 +104,25 @@ export function settlePreseasonAndEnterSeason(save: NewGamePayload, seasonKey: s
       ? { ...(save.payrollPaidBySeason ?? {}), [seasonKey]: true }
       : save.payrollPaidBySeason;
 
+  const seasonNum = Number.parseInt(seasonKey, 10);
+  const vis = save.resources.visibility;
+  const comp = save.resources.competence;
+  const vScore = seasonNum >= 2 ? visibilityScoreForVarianceSeason2(vis) : visibilityScoreForVariance(vis);
+  const cScore = seasonNum >= 2 ? competenceScoreForVarianceSeason2(comp) : competenceScoreForVariance(comp);
+
   return {
     ...save,
     phase: "season",
-    seasonNumber: Number.parseInt(seasonKey, 10),
+    seasonNumber: seasonNum,
     resources: {
       ...save.resources,
       eur: Math.max(0, nextEur),
     },
     payablesLines: [],
     payrollPaidBySeason,
+    seasonEntryScoresBySeason: {
+      ...(save.seasonEntryScoresBySeason ?? {}),
+      [seasonKey]: { vScore, cScore },
+    },
   };
 }

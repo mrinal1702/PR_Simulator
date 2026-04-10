@@ -5,6 +5,7 @@
  */
 
 import { METRIC_SCALES } from "@/lib/metricScales";
+import { visibilityScoreForVarianceSeason2 } from "@/lib/solutionOutcomeMath";
 
 export type ClientKind = "individual" | "small_business" | "corporate";
 
@@ -190,6 +191,13 @@ export function rollClientBudgetTotalInTier(kind: ClientKind, tier: 1 | 2, visib
   return Math.round(raw / 1000) * 1000;
 }
 
+/**
+ * Reference distribution for Season 2+ V_score (end of Pre-season 2, before season start).
+ * Source: `web/scripts/results/season2-preseason-end-190.json` — use for “median vs 75th percentile” bands.
+ */
+export const SEASON2_REFERENCE_V_SCORE_P50 = 72.47058823529412;
+export const SEASON2_REFERENCE_V_SCORE_P75 = 83.64705882352942;
+
 /** Mid-game visibility anchor (~60): target ~30% chance of a third client in season 1. */
 const SEASON1_P3_VIS_MID = 60;
 const SEASON1_P3_AT_MID = 0.3;
@@ -219,19 +227,40 @@ export function season1ThirdClientProbability(visibility: number): number {
 }
 
 /**
- * How many clients appear in a season (visibility-driven).
- * Season 1: 2 or 3 clients; third slot is probabilistic (see {@link season1ThirdClientProbability}).
- * Other seasons: legacy bands until rebalanced globally.
+ * Probability of rolling **3** clients (vs 2) for Season 2+, from entry **V_score** vs benchmark quantiles.
+ * @see SEASON2_REFERENCE_V_SCORE_P50, SEASON2_REFERENCE_V_SCORE_P75
  */
-export function plannedClientCountForSeason(season: number, visibility: number, seed: string): number {
+export function season2PlusThirdClientProbabilityFromVScore(vScore: number): number {
+  if (vScore >= SEASON2_REFERENCE_V_SCORE_P75) return 0.8;
+  if (vScore >= SEASON2_REFERENCE_V_SCORE_P50) return 0.5;
+  return 0.25;
+}
+
+/**
+ * How many clients appear in a season.
+ * Season 1: 2 or 3; third slot is probabilistic from **raw visibility** (see {@link season1ThirdClientProbability}).
+ * Season 2+: always 2 or 3; third slot is probabilistic from **entry V_score** vs reference curve (see
+ * {@link season2PlusThirdClientProbabilityFromVScore}). Pass `entryVScore` from {@link seasonEntryScoresBySeason}
+ * when available; otherwise pass `undefined` to derive from current visibility (Season 2 knots).
+ */
+export function plannedClientCountForSeason(
+  season: number,
+  visibility: number,
+  seed: string,
+  entryVScore?: number
+): number {
   if (season === 1) {
     const p3 = season1ThirdClientProbability(visibility);
     const u = hash01(`${seed}|season1|slots`);
     return u < p3 ? 3 : 2;
   }
-  if (visibility >= 450) return 4;
-  if (visibility >= 150) return 3;
-  return 2;
+  const v =
+    entryVScore !== undefined && Number.isFinite(entryVScore)
+      ? entryVScore
+      : visibilityScoreForVarianceSeason2(visibility);
+  const p3 = season2PlusThirdClientProbabilityFromVScore(v);
+  const u = hash01(`${seed}|s${season}|slots`);
+  return u < p3 ? 3 : 2;
 }
 
 function hash01(seed: string): number {

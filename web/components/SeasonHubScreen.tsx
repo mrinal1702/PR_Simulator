@@ -122,7 +122,12 @@ export function SeasonHubScreen({ season }: { season: number }) {
       setNotice("Client arrivals are already rolled for this season.");
       return;
     }
-    const count = plannedClientCountForSeason(season, save.resources.visibility, `${save.createdAt}|${save.playerName}`);
+    const count = plannedClientCountForSeason(
+      season,
+      save.resources.visibility,
+      `${save.createdAt}|${save.playerName}`,
+      save.seasonEntryScoresBySeason?.[seasonKey]?.vScore
+    );
     let clients;
     let usedScenarioIds: string[];
     try {
