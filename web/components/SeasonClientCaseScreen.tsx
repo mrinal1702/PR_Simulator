@@ -7,6 +7,8 @@ import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import {
+  archetypeIdFromSolutionId,
+  buildCarryoverSolutionOptionsForClient,
   buildSolutionOptionsForClientWithScenario,
   canAffordSolution,
   getSatisfactionReachWeight,
@@ -79,6 +81,15 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
     }
     return opts;
   }, [currentClient, season]);
+
+  const carryoverSolutionOptions = useMemo(() => {
+    if (!save || season < 2) return [];
+    const entries = getSeasonCarryoverEntries(save, season);
+    const progress = getSeasonCarryoverProgress(save, season);
+    const cc = entries[progress];
+    if (!cc) return [];
+    return buildCarryoverSolutionOptionsForClient(cc.client);
+  }, [save, season]);
 
   if (!save) {
     return (
@@ -187,23 +198,33 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
 
         <section className="agency-stats-panel" style={{ marginTop: "1rem" }}>
           <h3 style={{ marginTop: 0, marginBottom: "0.5rem" }}>Solution options and archetypes</h3>
+          <p className="muted" style={{ margin: "0 0 0.65rem", fontSize: "0.88rem" }}>
+            Carry-over pricing is fixed (not scaled by client budget): minimal 1k / 5 cap; effectiveness focus 3k / 10 cap;
+            reach focus 7k / 6 cap; full spectrum 10k / 15 cap.
+          </p>
           <div style={{ display: "grid", gap: "0.55rem" }}>
-            <div style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.65rem 0.75rem" }}>
-              <p style={{ margin: 0, fontWeight: 600 }}>
-                Archetype 0: Do nothing
-              </p>
-              <p className="muted" style={{ margin: "0.25rem 0 0" }}>
-                Take no new action in this follow-up step and continue to the next carryover scenario.
-              </p>
-            </div>
-            {currentCarryover.client.scenarioSolutions.map((s) => (
-              <div key={s.solution_archetype_id} style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.65rem 0.75rem" }}>
-                <p style={{ margin: 0, fontWeight: 600 }}>
-                  Archetype {s.solution_archetype_id}: {s.solution_name}
-                </p>
-                <p className="muted" style={{ margin: "0.25rem 0 0" }}>{s.solution_brief}</p>
-              </div>
-            ))}
+            {carryoverSolutionOptions.map((opt) => {
+              const archNum = opt.isRejectOption ? 0 : archetypeIdFromSolutionId(opt.id);
+              return (
+                <div key={opt.id} style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.65rem 0.75rem" }}>
+                  <p style={{ margin: 0, fontWeight: 600 }}>
+                    Archetype {archNum}: {opt.title}
+                  </p>
+                  <p className="muted" style={{ margin: "0.25rem 0 0" }}>{opt.description}</p>
+                  <p className="muted" style={{ margin: "0.35rem 0 0", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.5rem" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                      <ResourceSymbol id="eur" size={16} />
+                      EUR {opt.costBudget.toLocaleString("en-GB")}
+                    </span>
+                    <span aria-hidden>·</span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                      <ResourceSymbol id="capacity" size={16} />
+                      {opt.costCapacity} capacity
+                    </span>
+                  </p>
+                </div>
+              );
+            })}
           </div>
           <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end", gap: "0.6rem" }}>
             <button type="button" className="btn btn-primary" onClick={onContinueCarryover}>

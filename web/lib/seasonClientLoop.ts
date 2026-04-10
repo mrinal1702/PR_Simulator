@@ -247,7 +247,48 @@ export function buildSolutionOptionsForClient(client: SeasonClient): SolutionOpt
   return [...executable, REJECT_OPTION];
 }
 
-function archetypeIdFromSolutionId(id: SolutionId): number | null {
+/**
+ * Season 2 carry-over follow-ups: fixed EUR + capacity (not scaled by client budget).
+ * Archetype 1 = minimal, 2 = high effectiveness / low reach, 3 = high reach / low effectiveness, 4 = both high.
+ * Reach-only costs more cash and less capacity than effectiveness-only.
+ */
+export const CARRYOVER_SOLUTION_FIXED_COSTS: Record<
+  Exclude<SolutionId, "reject" | "pending">,
+  { eur: number; capacity: number }
+> = {
+  solution_1: { eur: 1000, capacity: 5 },
+  solution_2: { eur: 3000, capacity: 10 },
+  solution_3: { eur: 7000, capacity: 6 },
+  solution_4: { eur: 10000, capacity: 15 },
+};
+
+const CARRYOVER_DO_NOTHING_OPTION: SolutionOption = {
+  ...REJECT_OPTION,
+  title: "Do nothing",
+  description: "Take no new campaign action for this carry-over step.",
+};
+
+/** Priced options for Season 2 rollover UI / execution (scenario copy merged from client). */
+export function buildCarryoverSolutionOptionsForClient(client: SeasonClient): SolutionOption[] {
+  const executable: SolutionOption[] = EXECUTABLE_SOLUTION_DEFS.map((def) => {
+    const { eur, capacity } = CARRYOVER_SOLUTION_FIXED_COSTS[def.id as keyof typeof CARRYOVER_SOLUTION_FIXED_COSTS];
+    return {
+      id: def.id,
+      archetype: def.archetype,
+      title: def.title,
+      description: def.description,
+      costBudget: eur,
+      costCapacity: capacity,
+      baseSpread: def.baseSpread,
+      baseEffectiveness: def.baseEffectiveness,
+      isRejectOption: false,
+    };
+  });
+  const merged = mergeScenarioSolutionCopy(client, executable);
+  return [CARRYOVER_DO_NOTHING_OPTION, ...merged];
+}
+
+export function archetypeIdFromSolutionId(id: SolutionId): number | null {
   if (id === "reject") return null;
   const n = Number.parseInt(id.replace("solution_", ""), 10);
   return Number.isFinite(n) ? n : null;
