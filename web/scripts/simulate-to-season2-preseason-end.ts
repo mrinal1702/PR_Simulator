@@ -52,7 +52,10 @@ import {
 import { wageLineId } from "../lib/payablesReceivables";
 import { enterNextPreseason } from "../lib/preseasonTransition";
 import { getPreseasonFocusDeltaForSeason, type PreseasonFocusId } from "../lib/preseasonFocus";
-import { competenceScoreForVariance, visibilityScoreForVariance } from "../lib/solutionOutcomeMath";
+import {
+  competenceScoreForVarianceSeason2,
+  visibilityScoreForVarianceSeason2,
+} from "../lib/solutionOutcomeMath";
 import {
   maxExecutionsPossible,
   mulberry32,
@@ -712,8 +715,8 @@ function runOneGame(args: {
   return {
     competence,
     visibility,
-    cScore: competenceScoreForVariance(competence),
-    vScore: visibilityScoreForVariance(visibility),
+    cScore: competenceScoreForVarianceSeason2(competence),
+    vScore: visibilityScoreForVarianceSeason2(visibility),
   };
 }
 

@@ -7,8 +7,10 @@
  * - Optional **larger** boost in Season 2 main.
  * - Final values then feed **client satisfaction** and **reputation** deltas.
  *
- * Normalization knots are aligned with `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md`
- * (empirical Q1/median/Q3, ~80 benchmark, stacked pre-season ceilings).
+ * **Season 1** C/V knots match `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md` (empirical
+ * Q1/median/Q3, ~80 benchmark, stacked ceilings). **Season 2** uses the same piecewise
+ * + jitter + force math with recalibrated knots (median raw C/V at end of Pre-season 2
+ * → ~50 pre-jitter).
  */
 
 /** Reach driver core: 60% visibility + 35% competence (score jitter applied to V/C). */
@@ -36,11 +38,8 @@ const FORCE_CURVE_K = 1.8;
 const C_SCORE_JITTER_MAX = 3.5;
 const V_SCORE_JITTER_MAX = 5.5;
 
-/**
- * Map raw visibility → 0–100 “agency strength” for reach variance.
- * Knots: empirical Q1/median/Q3, benchmark ~80, stacked ceiling ~127, soft cap toward design max.
- */
-const VISIBILITY_SCORE_KNOTS: [number, number][] = [
+/** Season 1: empirical Q1/median/Q3, benchmark ~80, stacked ceiling ~127, soft cap toward design max. */
+const VISIBILITY_SCORE_KNOTS_SEASON1: [number, number][] = [
   [0, 3],
   [40, 22],
   [61.5, 48],
@@ -51,16 +50,38 @@ const VISIBILITY_SCORE_KNOTS: [number, number][] = [
   [1000, 100],
 ];
 
-/**
- * Map raw competence → 0–100 for both reach (secondary) and effectiveness (primary) variance.
- */
-const COMPETENCE_SCORE_KNOTS: [number, number][] = [
+/** Season 2: median raw visibility ~94 (end of Pre-season 2) → 50 pre-jitter. */
+const VISIBILITY_SCORE_KNOTS_SEASON2: [number, number][] = [
+  [0, 3],
+  [40, 22],
+  [61.5, 38],
+  [80, 45],
+  [94, 50],
+  [127, 85],
+  [300, 96],
+  [1000, 100],
+];
+
+/** Season 1: same references as visibility (stacked pre-season ceilings). */
+const COMPETENCE_SCORE_KNOTS_SEASON1: [number, number][] = [
   [0, 3],
   [38.8, 22],
   [54, 48],
   [80, 62],
   [90, 71],
   [124, 87],
+  [300, 96],
+  [1000, 100],
+];
+
+/** Season 2: median raw competence ~85.5 (end of Pre-season 2) → 50 pre-jitter. */
+const COMPETENCE_SCORE_KNOTS_SEASON2: [number, number][] = [
+  [0, 3],
+  [38.8, 22],
+  [54, 35],
+  [80, 45.11],
+  [90, 54],
+  [124, 82],
   [300, 96],
   [1000, 100],
 ];
@@ -110,40 +131,52 @@ function jitterScore(seed: string, salt: string, baseScore: number, maxAbsDelta:
   return Math.max(0, Math.min(100, out));
 }
 
+/** Raw visibility → 0–100 for reach variance (**Season 1** knots). */
 export function visibilityScoreForVariance(visibility: number): number {
-  return piecewiseLinear(VISIBILITY_SCORE_KNOTS, Math.max(0, visibility));
+  return piecewiseLinear(VISIBILITY_SCORE_KNOTS_SEASON1, Math.max(0, visibility));
 }
 
+/** Raw visibility → 0–100 (**Season 2** recalibrated knots). */
+export function visibilityScoreForVarianceSeason2(visibility: number): number {
+  return piecewiseLinear(VISIBILITY_SCORE_KNOTS_SEASON2, Math.max(0, visibility));
+}
+
+/** Raw competence → 0–100 for reach + effectiveness variance (**Season 1** knots). */
 export function competenceScoreForVariance(competence: number): number {
-  return piecewiseLinear(COMPETENCE_SCORE_KNOTS, Math.max(0, competence));
+  return piecewiseLinear(COMPETENCE_SCORE_KNOTS_SEASON1, Math.max(0, competence));
+}
+
+/** Raw competence → 0–100 (**Season 2** recalibrated knots). */
+export function competenceScoreForVarianceSeason2(competence: number): number {
+  return piecewiseLinear(COMPETENCE_SCORE_KNOTS_SEASON2, Math.max(0, competence));
 }
 
 export function disciplineScoreForVariance(discipline: number): number {
   return piecewiseLinear(DISCIPLINE_SCORE_KNOTS, Math.max(0, discipline));
 }
 
-/**
- * Season 1 solution metrics (additive-force):
- * keep archetype base as midpoint; stat-driven driver applies a signed force around it.
- */
-export function computeSeason1SolutionMetrics(input: {
+type SolutionMetricsInput = {
   baseReach: number;
   baseEffectiveness: number;
   visibility: number;
   competence: number;
   discipline: number;
   seed: string;
-}): { reach: number; effectiveness: number } {
-  const vVisBase = visibilityScoreForVariance(input.visibility);
-  const vCompBase = competenceScoreForVariance(input.competence);
+};
+
+function computeSolutionMetricsWithKnots(
+  input: SolutionMetricsInput,
+  visKnots: [number, number][],
+  compKnots: [number, number][]
+): { reach: number; effectiveness: number } {
+  const vVisBase = piecewiseLinear(visKnots, Math.max(0, input.visibility));
+  const vCompBase = piecewiseLinear(compKnots, Math.max(0, input.competence));
   const vVis = jitterScore(input.seed, "v-score-jitter", vVisBase, V_SCORE_JITTER_MAX);
   const vComp = jitterScore(input.seed, "c-score-jitter", vCompBase, C_SCORE_JITTER_MAX);
   const vDisc = disciplineScoreForVariance(input.discipline);
 
-  const reachDriver =
-    REACH_W_VIS * vVis + REACH_W_COMP * vComp;
-  const effectivenessDriver =
-    EFF_W_COMP * vComp + EFF_W_DISC * vDisc;
+  const reachDriver = REACH_W_VIS * vVis + REACH_W_COMP * vComp;
+  const effectivenessDriver = EFF_W_COMP * vComp + EFF_W_DISC * vDisc;
 
   const centerNorm = (score: number) => (Math.max(0, Math.min(100, score)) - 50) / 50;
   const forceFromDriver = (driver: number, maxAbs: number) =>
@@ -161,4 +194,32 @@ export function computeSeason1SolutionMetrics(input: {
     reach: Math.max(0, Math.min(100, reach)),
     effectiveness: Math.max(0, Math.min(100, effectiveness)),
   };
+}
+
+/**
+ * Season 1 campaign outcomes (additive-force): **Season 1** C/V normalization knots.
+ */
+export function computeSeason1SolutionMetrics(input: SolutionMetricsInput): {
+  reach: number;
+  effectiveness: number;
+} {
+  return computeSolutionMetricsWithKnots(
+    input,
+    VISIBILITY_SCORE_KNOTS_SEASON1,
+    COMPETENCE_SCORE_KNOTS_SEASON1
+  );
+}
+
+/**
+ * Season 2+ campaign outcomes: same force model; **Season 2** C/V knots (median-recalibrated).
+ */
+export function computeSeason2SolutionMetrics(input: SolutionMetricsInput): {
+  reach: number;
+  effectiveness: number;
+} {
+  return computeSolutionMetricsWithKnots(
+    input,
+    VISIBILITY_SCORE_KNOTS_SEASON2,
+    COMPETENCE_SCORE_KNOTS_SEASON2
+  );
 }

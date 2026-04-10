@@ -67,6 +67,8 @@ export type NewGamePayload = {
     tenureCapacityBonus?: number;
   }>;
   seasonLoopBySeason?: Partial<Record<string, SeasonLoopState>>;
+  /** Season -> number of prior-season rollover scenarios reviewed on season entry. */
+  rolloverReviewProgressBySeason?: Partial<Record<string, number>>;
   /** `scenario_id` values already assigned to a client this playthrough (no repeats). */
   usedScenarioIds?: string[];
   /**

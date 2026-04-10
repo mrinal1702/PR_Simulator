@@ -15,6 +15,11 @@ import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 import { AgencyFinanceBreakdownHost } from "@/components/AgencyFinanceBreakdownHost";
 import { AgencyFinanceSnapshot } from "@/components/AgencyFinanceSnapshot";
 import type { BreakdownMetric } from "@/lib/metricBreakdown";
+import {
+  getSeasonCarryoverEntries,
+  getSeasonCarryoverProgress,
+  isSeasonCarryoverComplete,
+} from "@/lib/seasonCarryover";
 
 /** Season hub: roll queue, stats, link into the dedicated client-case screen. */
 export function SeasonHubScreen({ season }: { season: number }) {
@@ -68,6 +73,10 @@ export function SeasonHubScreen({ season }: { season: number }) {
   }
 
   const loop = save.seasonLoopBySeason?.[seasonKey];
+  const rolloverEntries = season >= 2 ? getSeasonCarryoverEntries(save, season) : [];
+  const rolloverProgress = season >= 2 ? getSeasonCarryoverProgress(save, season) : 0;
+  const rolloverComplete = season < 2 || isSeasonCarryoverComplete(save, season);
+  const showRolloverGate = season >= 2 && rolloverEntries.length > 0 && !rolloverComplete;
   const currentClient = loop?.clientsQueue[loop.currentClientIndex] ?? null;
   const showClientCaseLink = Boolean(
     loop && loop.currentClientIndex < loop.plannedClientCount && currentClient
@@ -246,9 +255,32 @@ export function SeasonHubScreen({ season }: { season: number }) {
           </div>
         ) : null}
 
+        {showRolloverGate ? (
+          <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
+            <h3 style={{ marginTop: 0, marginBottom: "0.35rem", fontSize: "1.05rem" }}>Season 1 client follow-ups</h3>
+            <p className="muted" style={{ margin: 0 }}>
+              Complete these first before rolling new Season {season} clients.
+            </p>
+            <p className="muted" style={{ margin: "0.4rem 0 0" }}>
+              Progress: {Math.min(rolloverProgress + 1, rolloverEntries.length)} / {rolloverEntries.length}
+            </p>
+            <div style={{ marginTop: "0.85rem" }}>
+              <Link href={`/game/season/${season}/client`} className="btn btn-primary" style={{ textDecoration: "none" }}>
+                Tackle Season 1 clients
+              </Link>
+            </div>
+          </div>
+        ) : null}
+
         {!loop ? (
           <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end" }}>
-            <button type="button" className="btn btn-primary" onClick={startSeasonClientRoll}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={startSeasonClientRoll}
+              disabled={!rolloverComplete}
+              title={!rolloverComplete ? "Finish Season 1 client follow-ups first." : undefined}
+            >
               Roll season clients
             </button>
           </div>

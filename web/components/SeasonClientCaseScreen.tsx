@@ -18,6 +18,13 @@ import { AgencyFinanceBreakdownHost } from "@/components/AgencyFinanceBreakdownH
 import { AgencyFinanceSnapshot } from "@/components/AgencyFinanceSnapshot";
 import { ResourceSymbol } from "@/components/resourceSymbols";
 import type { BreakdownMetric } from "@/lib/metricBreakdown";
+import {
+  advanceSeasonCarryoverProgress,
+  applyBuildOutcomeShift,
+  getSeasonCarryoverEntries,
+  getSeasonCarryoverProgress,
+  highLowLabelsFromThreshold,
+} from "@/lib/seasonCarryover";
 
 export function SeasonClientCaseScreen({ season }: { season: number }) {
   const router = useRouter();
@@ -26,6 +33,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
   const [blockedByPayroll, setBlockedByPayroll] = useState(false);
   const [pendingSolution, setPendingSolution] = useState<SolutionOption | null>(null);
   const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
+  const [showCarryoverDetails, setShowCarryoverDetails] = useState(false);
 
   const seasonKey = String(season);
   const payrollPaidForSeason = save?.payrollPaidBySeason?.[seasonKey] === true;
@@ -86,6 +94,133 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
     );
   }
 
+  const rolloverEntries = season >= 2 ? getSeasonCarryoverEntries(save, season) : [];
+  const rolloverProgress = season >= 2 ? getSeasonCarryoverProgress(save, season) : 0;
+  const currentCarryover = rolloverEntries[rolloverProgress] ?? null;
+
+  if (season >= 2 && currentCarryover) {
+    const shifted = applyBuildOutcomeShift(
+      save.buildId,
+      currentCarryover.run.outcome.messageSpread,
+      currentCarryover.run.outcome.messageEffectiveness
+    );
+    const labels = highLowLabelsFromThreshold(shifted.reach, shifted.effectiveness);
+    const arcKey = `${labels.reach}_visibility_${labels.effectiveness}_effectiveness` as const;
+    const arcText = currentCarryover.client.postSeasonArcOutcomes?.[arcKey]
+      ?? "No scenario arc text found for this branch.";
+
+    const onContinueCarryover = () => {
+      const updated = advanceSeasonCarryoverProgress(save, season);
+      setSave(updated);
+      persistSave(updated);
+      setShowCarryoverDetails(false);
+      setNotice(
+        rolloverProgress + 1 >= rolloverEntries.length
+          ? "All Season 1 client follow-ups complete. You can now roll Season 2 clients."
+          : "Moved to the next Season 1 client follow-up."
+      );
+    };
+
+    return (
+      <>
+      <div className="shell shell-wide">
+        <header style={{ marginBottom: "1.5rem" }}>
+          <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+            <Link href={`/game/season/${season}`}>← Season {season} hub</Link>
+          </p>
+          <h1 style={{ margin: 0 }}>Season 1 client follow-up</h1>
+          <p className="muted" style={{ marginTop: "0.5rem" }}>
+            Scenario {rolloverProgress + 1} of {rolloverEntries.length} (original Season 1 order).
+          </p>
+        </header>
+
+        <AgencyResourceStrip save={save} />
+        <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
+
+        <section className="agency-stats-panel">
+          <h2 style={{ margin: "0 0 0.45rem", fontFamily: "var(--font-display)" }}>
+            {currentCarryover.client.scenarioTitle}
+          </h2>
+          <p className="muted" style={{ marginTop: 0 }}>
+            <strong>{currentCarryover.client.displayName}</strong>
+          </p>
+
+          <SimpleBwPercentBar label="Solution effectiveness" value={shifted.effectiveness} />
+          <SimpleBwPercentBar label="Solution reach" value={shifted.reach} />
+
+          <p className="muted" style={{ marginTop: "0.75rem" }}>
+            Build modifier applied: {buildShiftBlurb(save.buildId)}
+          </p>
+
+          <button
+            type="button"
+            className="btn btn-secondary"
+            style={{ marginTop: "0.4rem" }}
+            onClick={() => setShowCarryoverDetails((v) => !v)}
+          >
+            {showCarryoverDetails ? "Hide details" : "See more"}
+          </button>
+
+          {showCarryoverDetails ? (
+            <div style={{ marginTop: "0.85rem", display: "grid", gap: "0.85rem" }}>
+              <div>
+                <h4 style={{ margin: "0 0 0.3rem" }}>Season 1 scenario description</h4>
+                <p className="muted" style={{ margin: 0, lineHeight: 1.55 }}>{currentCarryover.client.problem}</p>
+              </div>
+              <div>
+                <h4 style={{ margin: "0 0 0.3rem" }}>Action taken in Season 1</h4>
+                <p className="muted" style={{ margin: 0 }}>
+                  {currentCarryover.run.solutionTitle ?? "No recorded solution title."}
+                </p>
+              </div>
+            </div>
+          ) : null}
+        </section>
+
+        <section className="agency-stats-panel" style={{ marginTop: "1rem" }}>
+          <h3 style={{ marginTop: 0, marginBottom: "0.35rem" }}>Arc 2 (Season 2 branch)</h3>
+          <p className="muted" style={{ margin: "0 0 0.55rem" }}>
+            Branch key: {labels.reach} reach / {labels.effectiveness} effectiveness (50% threshold).
+          </p>
+          <p style={{ margin: 0, lineHeight: 1.55 }}>{arcText}</p>
+        </section>
+
+        <section className="agency-stats-panel" style={{ marginTop: "1rem" }}>
+          <h3 style={{ marginTop: 0, marginBottom: "0.5rem" }}>Solution options and archetypes</h3>
+          <div style={{ display: "grid", gap: "0.55rem" }}>
+            <div style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.65rem 0.75rem" }}>
+              <p style={{ margin: 0, fontWeight: 600 }}>
+                Archetype 0: Do nothing
+              </p>
+              <p className="muted" style={{ margin: "0.25rem 0 0" }}>
+                Take no new action in this follow-up step and continue to the next carryover scenario.
+              </p>
+            </div>
+            {currentCarryover.client.scenarioSolutions.map((s) => (
+              <div key={s.solution_archetype_id} style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.65rem 0.75rem" }}>
+                <p style={{ margin: 0, fontWeight: 600 }}>
+                  Archetype {s.solution_archetype_id}: {s.solution_name}
+                </p>
+                <p className="muted" style={{ margin: "0.25rem 0 0" }}>{s.solution_brief}</p>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: "0.9rem", display: "flex", justifyContent: "flex-end", gap: "0.6rem" }}>
+            <button type="button" className="btn btn-primary" onClick={onContinueCarryover}>
+              {rolloverProgress + 1 >= rolloverEntries.length ? "Finish Season 1 follow-ups" : "Next Season 1 client"}
+            </button>
+          </div>
+        </section>
+
+        {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
+      </div>
+      {breakdownMetric ? (
+        <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
+      ) : null}
+      </>
+    );
+  }
+
   const advanceToNextClient = (nextRuns: NonNullable<typeof loop>["runs"], nextSave?: NewGamePayload) => {
     if (!save || !loop) return;
     const nextIndex = Math.min(loop.currentClientIndex + 1, loop.plannedClientCount);
@@ -129,6 +264,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       competence: save.resources.competence,
       discipline: currentClient.hiddenDiscipline,
       satisfactionReachWeight: getSatisfactionReachWeight(currentClient),
+      outcomeScoreSeason: season >= 2 ? 2 : 1,
     });
 
     const eurAfter = save.resources.eur + currentClient.budgetSeason1 - solution.costBudget;
@@ -374,5 +510,28 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
     ) : null}
     </>
+  );
+}
+
+function buildShiftBlurb(buildId: NewGamePayload["buildId"]): string {
+  if (buildId === "summa_cum_basement") {
+    return "Reach -5%, effectiveness +5% (absolute points).";
+  }
+  if (buildId === "velvet_rolodex") {
+    return "Reach +5%, effectiveness -5% (absolute points).";
+  }
+  return "No change to reach or effectiveness.";
+}
+
+function SimpleBwPercentBar({ label, value }: { label: string; value: number }) {
+  return (
+    <div style={{ marginTop: "0.55rem" }}>
+      <p style={{ margin: "0 0 0.2rem", fontSize: "0.92rem" }}>
+        <strong>{label}:</strong> {value}%
+      </p>
+      <div style={{ border: "1px solid #1a1a1a", background: "#101010", height: "12px", borderRadius: "999px", overflow: "hidden" }}>
+        <div style={{ width: `${value}%`, background: "#ffffff", height: "100%" }} />
+      </div>
+    </div>
   );
 }

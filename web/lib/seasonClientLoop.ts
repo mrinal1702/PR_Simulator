@@ -5,7 +5,10 @@ import {
   type ClientKind,
 } from "@/lib/clientEconomyMath";
 import { pickScenarioForClient } from "@/lib/scenarios";
-import { computeSeason1SolutionMetrics } from "@/lib/solutionOutcomeMath";
+import {
+  computeSeason1SolutionMetrics,
+  computeSeason2SolutionMetrics,
+} from "@/lib/solutionOutcomeMath";
 
 export type { ClientKind };
 export type ClientPreferenceMotive = "spread_first" | "effectiveness_first" | "balanced";
@@ -71,7 +74,8 @@ export type ArchetypeBasePct = {
 
 /**
  * Pre-variance base profile per archetype (0–100% each).
- * Final scores use 40% this + 60% variance (`computeSeason1SolutionMetrics`).
+ * Final scores use 40% this + 60% variance (`computeSeason1SolutionMetrics` for Season 1,
+ * `computeSeason2SolutionMetrics` for Season 2+ via `resolveClientOutcome`).
  * Uniform random archetype → E[reach] = E[effectiveness] = 50 before variance.
  *
  * | Archetype           | Role                          |
@@ -406,15 +410,24 @@ export function resolveClientOutcome(args: {
   discipline: number;
   /** Weight on reach in satisfaction (0–1); effectiveness uses `1 − this`. Set at client creation with jitter around motive baseline. */
   satisfactionReachWeight: number;
+  /**
+   * Which C/V knot tables to use for the additive-force model. Season 1 keeps legacy
+   * normalization; Season 2+ uses median-recalibrated knots.
+   */
+  outcomeScoreSeason?: 1 | 2;
 }): ClientOutcome {
-  const { reach: messageSpread, effectiveness: messageEffectiveness } = computeSeason1SolutionMetrics({
+  const metricsInput = {
     baseReach: args.solution.baseSpread,
     baseEffectiveness: args.solution.baseEffectiveness,
     visibility: args.visibility,
     competence: args.competence,
     discipline: args.discipline,
     seed: args.seed,
-  });
+  };
+  const { reach: messageSpread, effectiveness: messageEffectiveness } =
+    (args.outcomeScoreSeason ?? 1) === 2
+      ? computeSeason2SolutionMetrics(metricsInput)
+      : computeSeason1SolutionMetrics(metricsInput);
 
   const satisfaction = computeSatisfactionFromWeights(
     messageSpread,
