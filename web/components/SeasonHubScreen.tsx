@@ -138,8 +138,10 @@ export function SeasonHubScreen({ season }: { season: number }) {
         {
           reputation: save.reputation ?? 5,
           visibility: save.resources.visibility,
+          competence: save.resources.competence,
         },
-        save.usedScenarioIds ?? []
+        save.usedScenarioIds ?? [],
+        save.seasonEntryScoresBySeason?.[seasonKey]
       );
       clients = built.clients;
       usedScenarioIds = built.usedScenarioIds;

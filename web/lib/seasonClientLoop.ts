@@ -1,7 +1,10 @@
 import {
   computeBudgetTierDeterministic,
   rollClientBudgetTotalInTier,
+  rollSeason2ClientBudget,
   sampleClientKindDeterministic,
+  season2EntryScoresFromRawStats,
+  season2RollClientKindAndTier,
   type ClientKind,
 } from "@/lib/clientEconomyMath";
 import { pickScenarioForClient } from "@/lib/scenarios";
@@ -371,26 +374,61 @@ export function buildSeasonClients(
   seedBase: string,
   season: number,
   count: number,
-  agency: { reputation: number; visibility: number },
-  usedScenarioIds: readonly string[] = []
+  agency: { reputation: number; visibility: number; competence?: number },
+  usedScenarioIds: readonly string[] = [],
+  seasonEntryScores?: { vScore?: number; cScore?: number }
 ): { clients: SeasonClient[]; usedScenarioIds: string[] } {
   const clients: SeasonClient[] = [];
   const exclude = new Set(usedScenarioIds);
 
   const rep = agency.reputation;
+  const competence = agency.competence ?? 0;
+  const entryV =
+    seasonEntryScores?.vScore !== undefined && Number.isFinite(seasonEntryScores.vScore)
+      ? seasonEntryScores.vScore
+      : season2EntryScoresFromRawStats(agency.visibility, competence).vScore;
+  const entryC =
+    seasonEntryScores?.cScore !== undefined && Number.isFinite(seasonEntryScores.cScore)
+      ? seasonEntryScores.cScore
+      : season2EntryScoresFromRawStats(agency.visibility, competence).cScore;
+
+  let hadCorporate = false;
+  let hadTier2 = false;
 
   for (let i = 0; i < count; i += 1) {
     const h = hashNumber(`${seedBase}-season-${season}-client-${i}`);
     const kindSeed = `${seedBase}|s${season}|c${i}|${rep}|${agency.visibility}`;
-    const kind = sampleClientKindDeterministic(kindSeed, rep, agency.visibility, season);
+    let kind: ClientKind;
+    let tier: 1 | 2;
+    let total: number;
+
+    if (season === 2) {
+      const roll = season2RollClientKindAndTier({
+        seedBase: kindSeed,
+        reputation: rep,
+        entryVScore: entryV,
+        entryCScore: entryC,
+        slotIndex: i,
+        plannedClientCount: count,
+        hadCorporateBeforeSlot: hadCorporate,
+        hadTier2BeforeSlot: hadTier2,
+      });
+      kind = roll.kind;
+      tier = roll.tier;
+      total = rollSeason2ClientBudget(kind, tier, kindSeed, i, entryV);
+      if (kind === "corporate") hadCorporate = true;
+      if (tier === 2) hadTier2 = true;
+    } else {
+      kind = sampleClientKindDeterministic(kindSeed, rep, agency.visibility, season);
+      tier = computeBudgetTierDeterministic(`${kindSeed}|tier`, season, agency.visibility, rep);
+      total = rollClientBudgetTotalInTier(kind, tier, agency.visibility);
+    }
     const motive: ClientPreferenceMotive =
       kind === "corporate"
         ? (["effectiveness_first", "balanced", "effectiveness_first"] as const)[h % 3]
         : kind === "small_business"
           ? (["balanced", "spread_first", "effectiveness_first"] as const)[h % 3]
           : (["spread_first", "balanced", "spread_first"] as const)[h % 3];
-    const tier = computeBudgetTierDeterministic(`${kindSeed}|tier`, season, agency.visibility, rep);
-    const total = rollClientBudgetTotalInTier(kind, tier, agency.visibility);
     const split = splitBudgetBySeason(total);
     const scenario = pickScenarioForClient(kind, tier, `${kindSeed}|scn|${tier}`, exclude);
     exclude.add(scenario.scenario_id);

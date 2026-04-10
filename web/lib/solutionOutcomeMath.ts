@@ -8,10 +8,14 @@
  * - Final values then feed **client satisfaction** and **reputation** deltas.
  *
  * **Season 1** C/V knots match `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md` (empirical
- * Q1/median/Q3, ~80 benchmark, stacked ceilings). **Season 2** uses the same piecewise
- * + jitter + force math with recalibrated knots (median raw C/V at end of Pre-season 2
- * → ~50 pre-jitter).
+ * Q1/median/Q3, ~80 benchmark, stacked ceilings). **Season 2+** uses benchmark-normalized
+ * raw C/V (see `benchmarkSeason2Scores.ts`) before jitter + force.
  */
+
+import {
+  benchmarkRawCompetenceToScore,
+  benchmarkRawVisibilityToScore,
+} from "@/lib/benchmarkSeason2Scores";
 
 /** Reach driver core: 60% visibility + 35% competence (score jitter applied to V/C). */
 const REACH_W_VIS = 0.6;
@@ -52,18 +56,6 @@ const VISIBILITY_SCORE_KNOTS_SEASON1: [number, number][] = [
   [1000, 100],
 ];
 
-/** Season 2: median raw visibility ~94 (end of Pre-season 2) → 50 pre-jitter. */
-const VISIBILITY_SCORE_KNOTS_SEASON2: [number, number][] = [
-  [0, 3],
-  [40, 22],
-  [61.5, 38],
-  [80, 45],
-  [94, 50],
-  [127, 85],
-  [300, 96],
-  [1000, 100],
-];
-
 /** Season 1: same references as visibility (stacked pre-season ceilings). */
 const COMPETENCE_SCORE_KNOTS_SEASON1: [number, number][] = [
   [0, 3],
@@ -72,18 +64,6 @@ const COMPETENCE_SCORE_KNOTS_SEASON1: [number, number][] = [
   [80, 62],
   [90, 71],
   [124, 87],
-  [300, 96],
-  [1000, 100],
-];
-
-/** Season 2: median raw competence ~85.5 (end of Pre-season 2) → 50 pre-jitter. */
-const COMPETENCE_SCORE_KNOTS_SEASON2: [number, number][] = [
-  [0, 3],
-  [38.8, 22],
-  [54, 35],
-  [80, 45.11],
-  [90, 54],
-  [124, 82],
   [300, 96],
   [1000, 100],
 ];
@@ -138,9 +118,9 @@ export function visibilityScoreForVariance(visibility: number): number {
   return piecewiseLinear(VISIBILITY_SCORE_KNOTS_SEASON1, Math.max(0, visibility));
 }
 
-/** Raw visibility → 0–100 (**Season 2** recalibrated knots). */
+/** Raw visibility → 0–100 (**Season 2+** benchmark vs Season 2 entry grid). */
 export function visibilityScoreForVarianceSeason2(visibility: number): number {
-  return piecewiseLinear(VISIBILITY_SCORE_KNOTS_SEASON2, Math.max(0, visibility));
+  return benchmarkRawVisibilityToScore(visibility);
 }
 
 /** Raw competence → 0–100 for reach + effectiveness variance (**Season 1** knots). */
@@ -148,9 +128,9 @@ export function competenceScoreForVariance(competence: number): number {
   return piecewiseLinear(COMPETENCE_SCORE_KNOTS_SEASON1, Math.max(0, competence));
 }
 
-/** Raw competence → 0–100 (**Season 2** recalibrated knots). */
+/** Raw competence → 0–100 (**Season 2+** benchmark vs Season 2 entry grid). */
 export function competenceScoreForVarianceSeason2(competence: number): number {
-  return piecewiseLinear(COMPETENCE_SCORE_KNOTS_SEASON2, Math.max(0, competence));
+  return benchmarkRawCompetenceToScore(competence);
 }
 
 export function disciplineScoreForVariance(discipline: number): number {
@@ -166,13 +146,11 @@ type SolutionMetricsInput = {
   seed: string;
 };
 
-function computeSolutionMetricsWithKnots(
+function computeSolutionMetricsCore(
   input: SolutionMetricsInput,
-  visKnots: [number, number][],
-  compKnots: [number, number][]
+  vVisBase: number,
+  vCompBase: number
 ): { reach: number; effectiveness: number } {
-  const vVisBase = piecewiseLinear(visKnots, Math.max(0, input.visibility));
-  const vCompBase = piecewiseLinear(compKnots, Math.max(0, input.competence));
   const vVis = jitterScore(input.seed, "v-score-jitter", vVisBase, V_SCORE_JITTER_MAX);
   const vComp = jitterScore(input.seed, "c-score-jitter", vCompBase, C_SCORE_JITTER_MAX);
   const vDisc = disciplineScoreForVariance(input.discipline);
@@ -198,6 +176,16 @@ function computeSolutionMetricsWithKnots(
   };
 }
 
+function computeSolutionMetricsWithKnots(
+  input: SolutionMetricsInput,
+  visKnots: [number, number][],
+  compKnots: [number, number][]
+): { reach: number; effectiveness: number } {
+  const vVisBase = piecewiseLinear(visKnots, Math.max(0, input.visibility));
+  const vCompBase = piecewiseLinear(compKnots, Math.max(0, input.competence));
+  return computeSolutionMetricsCore(input, vVisBase, vCompBase);
+}
+
 /**
  * Season 1 campaign outcomes (additive-force): **Season 1** C/V normalization knots.
  */
@@ -213,22 +201,20 @@ export function computeSeason1SolutionMetrics(input: SolutionMetricsInput): {
 }
 
 /**
- * Season 2+ campaign outcomes: same force model; **Season 2** C/V knots (median-recalibrated).
+ * Season 2+ campaign outcomes: same force model; benchmark-normalized C/V before jitter.
  */
 export function computeSeason2SolutionMetrics(input: SolutionMetricsInput): {
   reach: number;
   effectiveness: number;
 } {
-  return computeSolutionMetricsWithKnots(
-    input,
-    VISIBILITY_SCORE_KNOTS_SEASON2,
-    COMPETENCE_SCORE_KNOTS_SEASON2
-  );
+  const vVisBase = benchmarkRawVisibilityToScore(input.visibility);
+  const vCompBase = benchmarkRawCompetenceToScore(input.competence);
+  return computeSolutionMetricsCore(input, vVisBase, vCompBase);
 }
 
 /**
- * Reach/effectiveness variance deltas for Season 2 carry-over (same drivers, Season 2 C/V knots,
- * jitter, discipline mapping as full metrics) with force span ±10 percentage points each.
+ * Reach/effectiveness variance deltas for Season 2 carry-over (benchmark C/V, jitter, discipline)
+ * with force span ±10 percentage points each.
  */
 export function computeCarryoverVarianceDeltasSeason2(input: {
   visibility: number;
@@ -236,8 +222,8 @@ export function computeCarryoverVarianceDeltasSeason2(input: {
   discipline: number;
   seed: string;
 }): { reachVarianceDelta: number; effectivenessVarianceDelta: number } {
-  const vVisBase = piecewiseLinear(VISIBILITY_SCORE_KNOTS_SEASON2, Math.max(0, input.visibility));
-  const vCompBase = piecewiseLinear(COMPETENCE_SCORE_KNOTS_SEASON2, Math.max(0, input.competence));
+  const vVisBase = benchmarkRawVisibilityToScore(input.visibility);
+  const vCompBase = benchmarkRawCompetenceToScore(input.competence);
   const vVis = jitterScore(input.seed, "v-score-jitter", vVisBase, V_SCORE_JITTER_MAX);
   const vComp = jitterScore(input.seed, "c-score-jitter", vCompBase, C_SCORE_JITTER_MAX);
   const vDisc = disciplineScoreForVariance(input.discipline);
