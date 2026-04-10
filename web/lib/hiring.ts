@@ -1,3 +1,5 @@
+import { getHiringNamePoolStrings } from "@/lib/hiringNamesPool";
+
 export type HiringRole = "data_analyst" | "campaign_manager" | "sales_representative";
 export type HiringTier = "intern" | "junior" | "mid" | "senior";
 
@@ -11,31 +13,6 @@ export type Candidate = {
   hiddenProductivityPct: number;
   hiddenSkillScore: number;
 };
-
-const MALE_NAMES = [
-  "Liam Carter",
-  "Arjun Rao",
-  "Mateo Alvarez",
-  "Noah Kim",
-  "Omar Rahman",
-  "Nikolai Sokolov",
-  "Kwame Boateng",
-  "Thiago Lima",
-  "Haruto Sato",
-  "Tariq Khalil",
-];
-const FEMALE_NAMES = [
-  "Ava Nguyen",
-  "Mia Chen",
-  "Ananya Rao",
-  "Fatima Diallo",
-  "Lucia Vega",
-  "Elena Bianchi",
-  "Thandi Moyo",
-  "Yuna Sato",
-  "Camila Cruz",
-  "Noor Siddiqui",
-];
 
 const ROLE_LABELS: Record<HiringRole, string> = {
   data_analyst: "Data Analyst",
@@ -95,8 +72,10 @@ export function generateCandidates(args: {
   visibility: number;
 }): Candidate[] {
   const bucketSeed = `${args.seedBase}|s${args.season}|${args.role}|${args.tier}|${args.salary}`;
-  const allNames = [...MALE_NAMES, ...FEMALE_NAMES];
-  const uniqueNames = deterministicPickUnique(allNames, 3, `${bucketSeed}|names`);
+  // Names: pool is role + seniority only; pick seed excludes salary so anchors do not swap which roster names appear.
+  const namePickSeed = `${args.seedBase}|s${args.season}|${args.role}|${args.tier}`;
+  const allNames = getHiringNamePoolStrings(args.role, args.tier);
+  const uniqueNames = deterministicPickUnique(allNames, 3, `${namePickSeed}|names`);
   const descriptionPool = getDescriptionPool(args.role, args.tier, args.salary);
   const uniqueDescriptions = deterministicPickUnique(descriptionPool, 3, `${bucketSeed}|descriptions`);
   return [0, 1, 2].map((idx) => {
