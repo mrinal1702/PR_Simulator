@@ -153,7 +153,7 @@ export function applySeason2CarryoverChoice(
   seed: string
 ): NewGamePayload | null {
   if (currentSeason < 2) return null;
-  const previousSeasonKey = "1";
+  const previousSeasonKey = String(currentSeason - 1);
   const loop = save.seasonLoopBySeason?.[previousSeasonKey];
   if (!loop) return null;
   const client = loop.clientsQueue.find((c) => c.id === clientId);
@@ -177,14 +177,15 @@ export function applySeason2CarryoverChoice(
     satisfactionReachWeight,
   });
 
+  // Season N carryover spends agency cash only. The client's `budgetSeason1` was already credited
+  // during that season's campaign; `budgetSeason2` was credited at Start season N+1 settlement.
   if (!solution.isRejectOption) {
-    const liquid = save.resources.eur + client.budgetSeason1;
-    if (!canAffordSolution(solution, liquid, save.resources.firmCapacity)) return null;
+    if (!canAffordSolution(solution, save.resources.eur, save.resources.firmCapacity)) return null;
   }
 
   const eurCost = solution.isRejectOption ? 0 : solution.costBudget;
   const capCost = solution.isRejectOption ? 0 : solution.costCapacity;
-  const eurAfter = save.resources.eur + client.budgetSeason1 - eurCost;
+  const eurAfter = save.resources.eur - eurCost;
 
   const newRuns: SeasonClientRun[] = loop.runs.map((r) =>
     r.clientId === clientId

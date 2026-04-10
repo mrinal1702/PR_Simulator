@@ -121,7 +121,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
     const arcText = currentCarryover.client.postSeasonArcOutcomes?.[arcKey]
       ?? "No scenario arc text found for this branch.";
 
-    const liquidForCarryover = save.resources.eur + currentCarryover.client.budgetSeason1;
+    const liquidForCarryover = save.resources.eur;
 
     const confirmCarryoverChoice = () => {
       if (!pendingCarryoverSolution) return;
@@ -131,7 +131,9 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         setNotice("Could not apply that choice (check EUR and capacity).");
         return;
       }
-      const resolution = next.seasonLoopBySeason?.["1"]?.runs.find((r) => r.clientId === currentCarryover.client.id)
+      const resolution = next.seasonLoopBySeason?.[String(season - 1)]?.runs.find(
+        (r) => r.clientId === currentCarryover.client.id
+      )
         ?.season2CarryoverResolution;
       setSave(next);
       persistSave(next);

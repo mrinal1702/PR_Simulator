@@ -47,17 +47,120 @@ const HIRING_ROLE_OPTIONS: {
   },
 ];
 
-type EmploymentMode = "intern" | "full_time";
-type HireReport = {
-  title: string;
-  productivityLine: string;
-  skillLine: string;
-  productivity: number;
-  skill: number;
-  capGain: number;
-  competenceGain: number;
-  visibilityGain: number;
+/** 0–25% productivity (name-interpolated): tier flavor — intern vs junior vs mid vs senior. */
+function hiringReportLowProductivityIntern(name: string): string {
+  return `${name} has optimized the reaction-emoji pipeline and filed the real work under "Phase 2 (TBD)."`;
+}
+
+function hiringReportLowProductivityJunior(name: string): string {
+  return `${name} is still in the "how to look busy without a body double" bootcamp—capacity exists, output is in beta.`;
+}
+
+function hiringReportLowProductivityMid(name: string): string {
+  return `${name} has enough years on the badge to calendar-block "deep work" and still spend it in a meeting about meetings.`;
+}
+
+function hiringReportLowProductivitySenior(name: string): string {
+  return `${name} has ascended to strategic presence: the deck is mostly implied, like a pension you can feel.`;
+}
+
+type FTNonInternTier = Exclude<HiringTier, "intern">;
+
+function hiringReportLowProductivityForTier(tier: FTNonInternTier, name: string): string {
+  switch (tier) {
+    case "junior":
+      return hiringReportLowProductivityJunior(name);
+    case "mid":
+      return hiringReportLowProductivityMid(name);
+    case "senior":
+      return hiringReportLowProductivitySenior(name);
+  }
+}
+
+/** Lowest skill tier (≤25% of band), full-time — by role and by seniority tier. */
+const HIRING_LOW_SKILL_JUNIOR: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} thinks a heat map is weather and "clean the data" means alphabetizing the tab names.`,
+  sales_representative: (name) =>
+    `${name} could circle back to a circle back—closing is mostly a season-finale cliffhanger.`,
+  campaign_manager: (name) =>
+    `${name} thinks the brief is a vibe check and the RACI chart is modern art.`,
 };
+
+const HIRING_LOW_SKILL_MID: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} hides columns instead of fixing them—mid-level Excel, junior-level courage, veteran-level denial.`,
+  sales_representative: (name) =>
+    `${name} calls it "relationship farming" when the pipeline is last year's leads wearing a new LinkedIn banner.`,
+  campaign_manager: (name) =>
+    `${name} says "alignment" on slide 47 and still hasn't admitted what the product is called.`,
+};
+
+const HIRING_LOW_SKILL_SENIOR: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} cites "industry benchmarks" while the model is mostly gut feel in a tie.`,
+  sales_representative: (name) =>
+    `${name} could filibuster a forecast—closing moved to "when the stars align (FY27)."`,
+  campaign_manager: (name) =>
+    `${name} holds the wheel on the brand wagon; the roadmap is a mood board and the GPS is prayer.`,
+};
+
+function hiringReportLowSkillLineForTier(
+  tier: FTNonInternTier,
+  role: HiringRole,
+  name: string
+): string {
+  const table =
+    tier === "junior"
+      ? HIRING_LOW_SKILL_JUNIOR
+      : tier === "mid"
+        ? HIRING_LOW_SKILL_MID
+        : HIRING_LOW_SKILL_SENIOR;
+  return table[role](name);
+}
+
+/**
+ * Productivity 26–50%: same line for interns and junior full-time (humor + mitigating);
+ * mid/senior keep the shorter generic line below.
+ */
+function hiringReportProductivity26to50InternJunior(name: string): string {
+  return `${name} still treats "tomorrow" like a renewable resource, but work actually ships—late, loud, and eventually labeled final_final.`;
+}
+
+/** Skill 26–50% of band: junior full-time only — role callout, joke + silver lining. */
+const HIRING_SKILL_26_50_JUNIOR: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} is not winning a forecasting Nobel yet, but the joins line up, totals reconcile, and obvious junk gets flagged before it reaches a slide deck.`,
+  sales_representative: (name) =>
+    `${name} still says "circling back" like a catchphrase, but people answer, notes exist, and the pipeline has more reality than vibes.`,
+  campaign_manager: (name) =>
+    `${name} color-codes chaos first and the plan second, but stakeholders get answers, creatives get a brief, and launch day shows up on the calendar.`,
+};
+
+type EmploymentMode = "intern" | "full_time";
+
+/** Interns: productivity narrative only (fixed +3/+3 competence and visibility; no skill copy). */
+type HireReport =
+  | {
+      hireKind: "intern";
+      title: string;
+      productivityLine: string;
+      productivity: number;
+      capGain: number;
+      competenceGain: number;
+      visibilityGain: number;
+    }
+  | {
+      hireKind: "full_time";
+      title: string;
+      productivityLine: string;
+      skillLine: string;
+      productivity: number;
+      skill: number;
+      capGain: number;
+      competenceGain: number;
+      visibilityGain: number;
+    };
 
 export function HiringScreen({ season }: { season: number }) {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
@@ -219,35 +322,54 @@ export function HiringScreen({ season }: { season: number }) {
 
     const prodLine =
       productivity <= 25
-        ? "Mostly decorative this cycle, but technically on payroll."
+        ? mode === "intern"
+          ? hiringReportLowProductivityIntern(candidate.name)
+          : hiringReportLowProductivityForTier(tier, candidate.name)
         : productivity <= 50
-        ? "Some sparks of effort, but still warming up to agency speed."
+        ? mode === "intern" || tier === "junior"
+          ? hiringReportProductivity26to50InternJunior(candidate.name)
+          : "Some sparks of effort, but still warming up to agency speed."
         : productivity <= 75
         ? "Solid contributor: dependable output with room to sharpen."
         : "Absolute engine this cycle, quietly carrying real workload.";
-    const skillPct =
-      mode === "intern"
-        ? 60
-        : Math.round((skill / (tier === "junior" ? 20 : tier === "mid" ? 40 : 80)) * 100);
-    const skillLine =
-      skillPct <= 25
-        ? "You found the budget mystery box version of this salary band."
-        : skillPct <= 50
-        ? "Serviceable hire: not a steal, not a disaster, just workable."
-        : skillPct <= 75
-        ? "Strong value pickup for this band, strategy team approves."
-        : "Elite value hit: this salary band just overdelivered hard.";
 
-    setHireReport({
-      title: `${candidate.name} joined the agency`,
-      productivityLine: prodLine,
-      skillLine,
-      productivity,
-      skill,
-      capGain,
-      competenceGain,
-      visibilityGain,
-    });
+    if (mode === "intern") {
+      setHireReport({
+        hireKind: "intern",
+        title: `${candidate.name} joined the agency`,
+        productivityLine: prodLine,
+        productivity,
+        capGain,
+        competenceGain,
+        visibilityGain,
+      });
+    } else {
+      const skillPct = Math.round(
+        (skill / (tier === "junior" ? 20 : tier === "mid" ? 40 : 80)) * 100
+      );
+      const skillLine =
+        skillPct <= 25
+          ? hiringReportLowSkillLineForTier(tier, candidate.role, candidate.name)
+          : skillPct <= 50
+          ? tier === "junior"
+            ? HIRING_SKILL_26_50_JUNIOR[candidate.role](candidate.name)
+            : "Serviceable hire: not a steal, not a disaster, just workable."
+          : skillPct <= 75
+          ? "Strong value pickup for this band, strategy team approves."
+          : "Elite value hit: this salary band just overdelivered hard.";
+
+      setHireReport({
+        hireKind: "full_time",
+        title: `${candidate.name} joined the agency`,
+        productivityLine: prodLine,
+        skillLine,
+        productivity,
+        skill,
+        capGain,
+        competenceGain,
+        visibilityGain,
+      });
+    }
 
     setStage("home");
     setMode("intern");
@@ -452,10 +574,12 @@ export function HiringScreen({ season }: { season: number }) {
           <p className="game-modal-kicker">Hiring report</p>
           <h2 style={{ marginTop: 0 }}>{hireReport.title}</h2>
           <p style={{ marginBottom: "0.4rem" }}>{hireReport.productivityLine}</p>
-          <p style={{ marginTop: 0 }}>{hireReport.skillLine}</p>
+          {hireReport.hireKind === "full_time" ? (
+            <p style={{ marginTop: 0 }}>{hireReport.skillLine}</p>
+          ) : null}
           <div className="game-modal-stats">
             <span>Productivity: {hireReport.productivity}%</span>
-            <span>Skill: +{hireReport.skill}</span>
+            {hireReport.hireKind === "full_time" ? <span>Skill: +{hireReport.skill}</span> : null}
             <span className="game-modal-stat-with-icon">
               <span className="game-modal-stat-icon" aria-hidden>
                 <ResourceSymbol id="capacity" size={15} />
