@@ -125,6 +125,16 @@ export type PostSeasonRunRecord = {
   visibilityGain: number;
 };
 
+/** Season 2 carry-over resolution for a prior-season client run (stored on the original season’s run). */
+export type Season2CarryoverResolution = {
+  messageSpread: number;
+  messageEffectiveness: number;
+  satisfaction: number;
+  solutionId: SolutionId;
+  costBudget: number;
+  costCapacity: number;
+};
+
 export type SeasonClientRun = {
   clientId: string;
   accepted: boolean;
@@ -136,6 +146,8 @@ export type SeasonClientRun = {
   solutionTitle?: string;
   /** Filled after the player completes this scenario in the post-season results flow. */
   postSeason?: PostSeasonRunRecord;
+  /** Season 2 follow-up on this client: new metrics after base + variance improvement (or do-nothing decay). */
+  season2CarryoverResolution?: Season2CarryoverResolution;
 };
 
 export type SeasonLoopState = {
@@ -265,7 +277,8 @@ export const CARRYOVER_SOLUTION_FIXED_COSTS: Record<
 const CARRYOVER_DO_NOTHING_OPTION: SolutionOption = {
   ...REJECT_OPTION,
   title: "Do nothing",
-  description: "Take no new campaign action for this carry-over step.",
+  description:
+    "Take no new campaign action. Reach and effectiveness each decay by 5 percentage points from the values shown above.",
 };
 
 /** Priced options for Season 2 rollover UI / execution (scenario copy merged from client). */

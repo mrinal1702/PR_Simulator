@@ -1,6 +1,15 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
-import type { SeasonClient, SeasonClientRun } from "@/lib/seasonClientLoop";
+import {
+  canAffordSolution,
+  computeSatisfactionFromWeights,
+  getSatisfactionReachWeight,
+  type SeasonClient,
+  type SeasonClientRun,
+  type SolutionId,
+  type SolutionOption,
+} from "@/lib/seasonClientLoop";
 import type { BuildId } from "@/lib/gameEconomy";
+import { computeCarryoverVarianceDeltasSeason2 } from "@/lib/solutionOutcomeMath";
 
 export type CarryoverEntry = {
   client: SeasonClient;
@@ -53,6 +62,164 @@ export function advanceSeasonCarryoverProgress(save: NewGamePayload, season: num
       [key]: next,
     },
   };
+}
+
+/** Base change (percentage points) from carry-over archetype, before Season 2 variance. */
+export const CARRYOVER_BASE_DELTA_BY_SOLUTION_ID = {
+  solution_1: { reach: 1, effectiveness: 1 },
+  solution_2: { reach: 2, effectiveness: 6 },
+  solution_3: { reach: 6, effectiveness: 2 },
+  solution_4: { reach: 8, effectiveness: 8 },
+} as const;
+
+const CARRYOVER_DO_NOTHING_DECAY_PCT = 5;
+
+/**
+ * New reach/effectiveness after carry-over choice: EM (after build shift) + (base + variance),
+ * or −5 / −5 on each for do nothing. Variance uses Season 2 c/v scoring and ±10 max per metric.
+ */
+export function computeCarryoverOutcomeAfterChoice(args: {
+  existingAfterBuildShift: { reach: number; effectiveness: number };
+  solutionId: SolutionId;
+  visibility: number;
+  competence: number;
+  discipline: number;
+  seed: string;
+  satisfactionReachWeight: number;
+}): { messageSpread: number; messageEffectiveness: number; satisfaction: number } {
+  if (args.solutionId === "reject" || args.solutionId === "pending") {
+    const messageSpread = clampPercent(args.existingAfterBuildShift.reach - CARRYOVER_DO_NOTHING_DECAY_PCT);
+    const messageEffectiveness = clampPercent(
+      args.existingAfterBuildShift.effectiveness - CARRYOVER_DO_NOTHING_DECAY_PCT
+    );
+    return {
+      messageSpread,
+      messageEffectiveness,
+      satisfaction: computeSatisfactionFromWeights(
+        messageSpread,
+        messageEffectiveness,
+        args.satisfactionReachWeight
+      ),
+    };
+  }
+
+  const base = CARRYOVER_BASE_DELTA_BY_SOLUTION_ID[args.solutionId as keyof typeof CARRYOVER_BASE_DELTA_BY_SOLUTION_ID];
+  if (!base) {
+    const messageSpread = clampPercent(args.existingAfterBuildShift.reach);
+    const messageEffectiveness = clampPercent(args.existingAfterBuildShift.effectiveness);
+    return {
+      messageSpread,
+      messageEffectiveness,
+      satisfaction: computeSatisfactionFromWeights(
+        messageSpread,
+        messageEffectiveness,
+        args.satisfactionReachWeight
+      ),
+    };
+  }
+
+  const { reachVarianceDelta, effectivenessVarianceDelta } = computeCarryoverVarianceDeltasSeason2({
+    visibility: args.visibility,
+    competence: args.competence,
+    discipline: args.discipline,
+    seed: args.seed,
+  });
+
+  const changeReach = base.reach + reachVarianceDelta;
+  const changeEffectiveness = base.effectiveness + effectivenessVarianceDelta;
+
+  const messageSpread = clampPercent(args.existingAfterBuildShift.reach + changeReach);
+  const messageEffectiveness = clampPercent(args.existingAfterBuildShift.effectiveness + changeEffectiveness);
+
+  return {
+    messageSpread,
+    messageEffectiveness,
+    satisfaction: computeSatisfactionFromWeights(
+      messageSpread,
+      messageEffectiveness,
+      args.satisfactionReachWeight
+    ),
+  };
+}
+
+/**
+ * Apply carry-over choice: spend EUR/capacity (except do nothing), write resolution on Season 1 run, advance rollover progress.
+ */
+export function applySeason2CarryoverChoice(
+  save: NewGamePayload,
+  currentSeason: number,
+  clientId: string,
+  solution: SolutionOption,
+  seed: string
+): NewGamePayload | null {
+  if (currentSeason < 2) return null;
+  const previousSeasonKey = "1";
+  const loop = save.seasonLoopBySeason?.[previousSeasonKey];
+  if (!loop) return null;
+  const client = loop.clientsQueue.find((c) => c.id === clientId);
+  const run = loop.runs.find((r) => r.clientId === clientId);
+  if (!client || !run?.outcome) return null;
+
+  const afterShift = applyBuildOutcomeShift(
+    save.buildId,
+    run.outcome.messageSpread,
+    run.outcome.messageEffectiveness
+  );
+  const satisfactionReachWeight = getSatisfactionReachWeight(client);
+
+  const resolved = computeCarryoverOutcomeAfterChoice({
+    existingAfterBuildShift: afterShift,
+    solutionId: solution.id,
+    visibility: save.resources.visibility,
+    competence: save.resources.competence,
+    discipline: client.hiddenDiscipline,
+    seed,
+    satisfactionReachWeight,
+  });
+
+  if (!solution.isRejectOption) {
+    const liquid = save.resources.eur + client.budgetSeason1;
+    if (!canAffordSolution(solution, liquid, save.resources.firmCapacity)) return null;
+  }
+
+  const eurCost = solution.isRejectOption ? 0 : solution.costBudget;
+  const capCost = solution.isRejectOption ? 0 : solution.costCapacity;
+  const eurAfter = save.resources.eur + client.budgetSeason1 - eurCost;
+
+  const newRuns: SeasonClientRun[] = loop.runs.map((r) =>
+    r.clientId === clientId
+      ? {
+          ...r,
+          season2CarryoverResolution: {
+            messageSpread: resolved.messageSpread,
+            messageEffectiveness: resolved.messageEffectiveness,
+            satisfaction: resolved.satisfaction,
+            solutionId: solution.id,
+            costBudget: eurCost,
+            costCapacity: capCost,
+          },
+        }
+      : r
+  );
+
+  let nextSave: NewGamePayload = {
+    ...save,
+    resources: {
+      ...save.resources,
+      eur: Math.max(0, eurAfter),
+      firmCapacity: Math.max(0, save.resources.firmCapacity - capCost),
+    },
+    seasonLoopBySeason: {
+      ...save.seasonLoopBySeason,
+      [previousSeasonKey]: {
+        ...loop,
+        runs: newRuns,
+      },
+    },
+  };
+
+  nextSave = advanceSeasonCarryoverProgress(nextSave, currentSeason);
+  return nextSave;
 }
 
 export function applyBuildOutcomeShift(

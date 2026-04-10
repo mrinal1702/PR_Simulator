@@ -29,6 +29,8 @@ const EFF_W_DISC = 0.25;
  * total span = 40 points => force range [-20, +20] before clamp/round.
  */
 const VARIANCE_HALF_SPAN_ABS = 20;
+/** Season 2 carry-over improvement step: variance-only contribution is ±10 points (vs ±20 on full campaigns). */
+const CARRYOVER_VARIANCE_HALF_SPAN_ABS = 10;
 const FORCE_CURVE_K = 1.8;
 
 /**
@@ -222,4 +224,35 @@ export function computeSeason2SolutionMetrics(input: SolutionMetricsInput): {
     VISIBILITY_SCORE_KNOTS_SEASON2,
     COMPETENCE_SCORE_KNOTS_SEASON2
   );
+}
+
+/**
+ * Reach/effectiveness variance deltas for Season 2 carry-over (same drivers, Season 2 C/V knots,
+ * jitter, discipline mapping as full metrics) with force span ±10 percentage points each.
+ */
+export function computeCarryoverVarianceDeltasSeason2(input: {
+  visibility: number;
+  competence: number;
+  discipline: number;
+  seed: string;
+}): { reachVarianceDelta: number; effectivenessVarianceDelta: number } {
+  const vVisBase = piecewiseLinear(VISIBILITY_SCORE_KNOTS_SEASON2, Math.max(0, input.visibility));
+  const vCompBase = piecewiseLinear(COMPETENCE_SCORE_KNOTS_SEASON2, Math.max(0, input.competence));
+  const vVis = jitterScore(input.seed, "v-score-jitter", vVisBase, V_SCORE_JITTER_MAX);
+  const vComp = jitterScore(input.seed, "c-score-jitter", vCompBase, C_SCORE_JITTER_MAX);
+  const vDisc = disciplineScoreForVariance(input.discipline);
+
+  const reachDriver = REACH_W_VIS * vVis + REACH_W_COMP * vComp;
+  const effectivenessDriver = EFF_W_COMP * vComp + EFF_W_DISC * vDisc;
+
+  const centerNorm = (score: number) => (Math.max(0, Math.min(100, score)) - 50) / 50;
+  const forceFromDriver = (driver: number, maxAbs: number) =>
+    Math.tanh(FORCE_CURVE_K * centerNorm(driver)) * maxAbs;
+
+  const reachVarianceDelta = Math.round(forceFromDriver(reachDriver, CARRYOVER_VARIANCE_HALF_SPAN_ABS));
+  const effectivenessVarianceDelta = Math.round(
+    forceFromDriver(effectivenessDriver, CARRYOVER_VARIANCE_HALF_SPAN_ABS)
+  );
+
+  return { reachVarianceDelta, effectivenessVarianceDelta };
 }
