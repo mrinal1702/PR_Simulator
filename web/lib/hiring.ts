@@ -1,5 +1,9 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
-import { getHiringNamePoolStrings, getHireBlurbForCandidate } from "@/lib/hiringNamesPool";
+import {
+  getHiringNamePoolStrings,
+  HIRING_NAME_ROWS,
+  type HiringNameSeniority,
+} from "@/lib/hiringNamesPool";
 
 export type HiringRole = "data_analyst" | "campaign_manager" | "sales_representative";
 export type HiringTier = "intern" | "junior" | "mid" | "senior";
@@ -14,6 +18,19 @@ export type Candidate = {
   hiddenProductivityPct: number;
   hiddenSkillScore: number;
 };
+
+/** Roster blurb for this exact role + tier + name (optional per row in `HIRING_NAME_ROWS`). */
+function getHireBlurbForCandidate(
+  role: HiringRole,
+  tier: HiringTier,
+  fullName: string
+): string | undefined {
+  const seniority: HiringNameSeniority = tier === "intern" ? "intern" : tier;
+  const row = HIRING_NAME_ROWS.find(
+    (r) => r.employeeType === role && r.seniority === seniority && r.fullName === fullName
+  );
+  return row?.hireBlurb;
+}
 
 const ROLE_LABELS: Record<HiringRole, string> = {
   data_analyst: "Data Analyst",
