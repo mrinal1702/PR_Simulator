@@ -225,7 +225,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
                   key={opt.id}
                   type="button"
                   className="choice-card"
-                  onClick={() => opt.isRejectOption ? setPendingCarryoverSolution(opt) : applyCarryoverChoice(opt)}
+                  onClick={() => setPendingCarryoverSolution(opt)}
                   disabled={!opt.isRejectOption && (forceDoNothingOnly || !affordable)}
                   style={{ textAlign: "left" }}
                 >
