@@ -20,6 +20,7 @@ import {
   getSeasonCarryoverProgress,
   isSeasonCarryoverComplete,
 } from "@/lib/seasonCarryover";
+import { wageLineId } from "@/lib/payablesReceivables";
 
 /** Season hub: roll queue, stats, link into the dedicated client-case screen. */
 export function SeasonHubScreen({ season }: { season: number }) {
@@ -91,10 +92,17 @@ export function SeasonHubScreen({ season }: { season: number }) {
 
   const continueToPostSeason = () => {
     if (!save || !seasonQueueComplete) return;
+    // Rebuild wage payables for surviving full-time employees so the post-season hub,
+    // results, and summary screens show the correct liquidityEur / hasLayoffPressure.
+    // Interns expire at pre-season entry, so they are excluded here too.
+    const rolloverWageLines = (save.employees ?? [])
+      .filter((e) => e.role !== "Intern")
+      .map((e) => ({ id: wageLineId(e.id), label: `${e.name} wage`, amount: e.salary }));
     const updated: NewGamePayload = {
       ...save,
       seasonNumber: season,
       phase: "postseason",
+      payablesLines: rolloverWageLines,
     };
     setSave(updated);
     persistSave(updated);
