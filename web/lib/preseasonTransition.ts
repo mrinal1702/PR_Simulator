@@ -7,6 +7,7 @@ import {
   employeeTotalCapacityContribution,
   tenureCapacityIncrementFromProductivity,
 } from "@/lib/tenureCapacity";
+import { wageLineId } from "@/lib/payablesReceivables";
 
 /**
  * Leaving post-season → next pre-season: apply end-of-season spouse support, reset firm capacity
@@ -38,6 +39,13 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
   const capFromEmployees = employeesWithTenure.reduce((s, e) => s + employeeTotalCapacityContribution(e), 0);
   const baseCap = save.initialResources?.firmCapacity ?? 50;
   const newCapacity = baseCap + capFromEmployees;
+
+  // Rebuild wage payables for all surviving full-time employees. These were cleared by
+  // settlePreseasonAndEnterSeason at season start; we re-accrue them now so they are visible
+  // (and deducted) when the player starts the next season.
+  const rolloverWageLines = employeesWithTenure
+    .filter((e) => e.role !== "Intern")
+    .map((e) => ({ id: wageLineId(e.id), label: `${e.name} wage`, amount: e.salary }));
 
   const employeeCapacityChanges: PreseasonEntryRevealPending["employeeCapacityChanges"] = [];
   for (const e of employees) {
@@ -77,12 +85,18 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
       : undefined;
 
   if (already) {
+    // Idempotent path: spouse grant already applied. Payables may already contain new-hire
+    // wage lines from this pre-season — don't overwrite them. Only ensure rollover wages exist
+    // (they should; this guards against stale saves where they were cleared).
+    const existingIds = new Set((saveWithoutReveal.payablesLines ?? []).map((l) => l.id));
+    const missingRolloverLines = rolloverWageLines.filter((l) => !existingIds.has(l.id));
     return {
       ...saveWithoutReveal,
       seasonNumber: nextSeason,
       phase: "preseason",
       activityFocusUsedInPreseason: false,
       employees: employeesWithTenure,
+      payablesLines: [...(saveWithoutReveal.payablesLines ?? []), ...missingRolloverLines],
       preseasonEntryRevealPending,
       resources: {
         ...saveWithoutReveal.resources,
@@ -105,6 +119,7 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
     phase: "preseason",
     activityFocusUsedInPreseason: false,
     employees: employeesWithTenure,
+    payablesLines: rolloverWageLines,
     preseasonEntrySpouseGrantSeasons: [...(saveWithoutReveal.preseasonEntrySpouseGrantSeasons ?? []), key],
     preseasonEntryRevealPending,
     resources: {
