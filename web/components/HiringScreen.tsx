@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import {
@@ -46,6 +46,42 @@ const HIRING_ROLE_OPTIONS: {
     symbols: ["competence", "visibility"],
   },
 ];
+
+/**
+ * Hire modal: band labels instead of raw % (same label for every role and seniority).
+ * Clarity first, light humor.
+ */
+function hiringReportProductivityBandLabel(productivityPct: number): string {
+  if (productivityPct <= 25) return "Slacker";
+  if (productivityPct <= 50) return "Okay-ish";
+  if (productivityPct <= 75) return "Workhorse";
+  return "Machine";
+}
+
+function hiringReportSkillBandLabel(skillPct: number): string {
+  if (skillPct <= 25) return "Still learning";
+  if (skillPct <= 50) return "Capable enough";
+  if (skillPct <= 75) return "Sharp";
+  return "Elite";
+}
+
+/** 0–3 worst→best; same breakpoints as labels (hire modal colors only, no effect on hire math). */
+type HiringReportBandTier = 0 | 1 | 2 | 3;
+
+function hiringReportBandTierFromPct(pct: number): HiringReportBandTier {
+  if (pct <= 25) return 0;
+  if (pct <= 50) return 1;
+  if (pct <= 75) return 2;
+  return 3;
+}
+
+/** Red → yellow → light green → dark green (worse → better). */
+const HIRING_REPORT_BAND_LABEL_STYLE: Record<HiringReportBandTier, CSSProperties> = {
+  0: { color: "#b91c1c", fontWeight: 600 },
+  1: { color: "#ca8a04", fontWeight: 600 },
+  2: { color: "#65a30d", fontWeight: 600 },
+  3: { color: "#14532d", fontWeight: 600 },
+};
 
 /** 0–25% productivity (name-interpolated): tier flavor — intern vs junior vs mid vs senior. */
 function hiringReportLowProductivityIntern(name: string): string {
@@ -120,14 +156,84 @@ function hiringReportLowSkillLineForTier(
 }
 
 /**
- * Productivity 26–50%: same line for interns and junior full-time (humor + mitigating);
- * mid/senior keep the shorter generic line below.
+ * Hire report — productivity lines by band (name-interpolated where marked “custom”).
+ *
+ * | Band   | Intern           | Junior FT        | Mid FT           | Senior FT        |
+ * |--------|------------------|------------------|------------------|------------------|
+ * | 0–25   | custom           | custom           | custom           | custom           |
+ * | 26–50  | custom (w/ jnr)  | same as intern   | custom           | custom           |
+ * | 51–75  | custom           | custom           | custom           | custom           |
+ * | 76–100 | custom           | custom           | custom           | custom           |
  */
 function hiringReportProductivity26to50InternJunior(name: string): string {
   return `${name} still treats "tomorrow" like a renewable resource, but work actually ships—late, loud, and eventually labeled final_final.`;
 }
 
-/** Skill 26–50% of band: junior full-time only — role callout, joke + silver lining. */
+function hiringReportProductivity26to50Mid(name: string): string {
+  return `${name} can look fully booked all week—then real work still slips through: uneven, last-minute, but not imaginary.`;
+}
+
+function hiringReportProductivity26to50Senior(name: string): string {
+  return `${name} could have floated the cycle on hand-wavy updates, but something solid still hit your inbox—rough, behind schedule, and not a paragraph you have to invent yourself.`;
+}
+
+/** 51–75%: strong output, but one persistent annoyance — tier flavor. */
+function hiringReportProductivity51to75Intern(name: string): string {
+  return `${name} throws real energy at whatever you point at—then misses the small polish: the file saved where nobody looks, or half the context in the wrong thread.`;
+}
+
+function hiringReportProductivity51to75Junior(name: string): string {
+  return `${name} hits real deadlines, does the actual work, and takes direction well—but every status note reads like a chapter and the one-line ask hides under three friendly paragraphs.`;
+}
+
+function hiringReportProductivity51to75Mid(name: string): string {
+  return `${name} carries the heavy lifting without drama on quality—but still banks half the calls for a meeting, including the bits everyone already nodded to in writing.`;
+}
+
+function hiringReportProductivity51to75Senior(name: string): string {
+  return `${name} pulls weight when it matters and keeps pointless churn off the team—then burns a little of that time back reopening settled questions "for clarity," or narrating a doc you already signed off.`;
+}
+
+function hiringReportProductivity51to75ForTier(tier: FTNonInternTier, name: string): string {
+  switch (tier) {
+    case "junior":
+      return hiringReportProductivity51to75Junior(name);
+    case "mid":
+      return hiringReportProductivity51to75Mid(name);
+    case "senior":
+      return hiringReportProductivity51to75Senior(name);
+  }
+}
+
+/** 76–100%: star output + classic high-performer annoyance (short lines). */
+function hiringReportProductivity76to100Intern(name: string): string {
+  return `${name} ships scary-fast—and still skips the pub because "this tab is almost done."`;
+}
+
+function hiringReportProductivity76to100Junior(name: string): string {
+  return `${name} is a workhorse all cycle—and treats Sunday Slack like bonus points nobody signed up for.`;
+}
+
+function hiringReportProductivity76to100Mid(name: string): string {
+  return `${name} blasts through the heavy lifting—then books a Friday "quick sync" nobody asked for.`;
+}
+
+function hiringReportProductivity76to100Senior(name: string): string {
+  return `${name} quietly saves the quarter—then drops "one tiny thing" in the thread after dinner.`;
+}
+
+function hiringReportProductivity76to100ForTier(tier: FTNonInternTier, name: string): string {
+  switch (tier) {
+    case "junior":
+      return hiringReportProductivity76to100Junior(name);
+    case "mid":
+      return hiringReportProductivity76to100Mid(name);
+    case "senior":
+      return hiringReportProductivity76to100Senior(name);
+  }
+}
+
+/** Skill 26–50% of band: full-time by role + tier — roast, then "but" competence. */
 const HIRING_SKILL_26_50_JUNIOR: Record<HiringRole, (name: string) => string> = {
   data_analyst: (name) =>
     `${name} is not winning a forecasting Nobel yet, but the joins line up, totals reconcile, and obvious junk gets flagged before it reaches a slide deck.`,
@@ -137,6 +243,110 @@ const HIRING_SKILL_26_50_JUNIOR: Record<HiringRole, (name: string) => string> = 
     `${name} color-codes chaos first and the plan second, but stakeholders get answers, creatives get a brief, and launch day shows up on the calendar.`,
 };
 
+const HIRING_SKILL_26_50_MID: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} is not anyone's thesis advisor yet, but the numbers tie out, assumptions carry names, and wild spikes get questioned before they become a headline.`,
+  sales_representative: (name) =>
+    `${name} still smooth-talks a wobbly quarter, but calls get returned, the pipeline isn't mostly ghosts, and a few deals actually close on purpose.`,
+  campaign_manager: (name) =>
+    `${name} still builds part of the plan mid-air, but owners are clear, deadlines mean something, and legal sees the work before the customer does.`,
+};
+
+const HIRING_SKILL_26_50_SENIOR: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} is not publishing methods papers, but executives read one version of the truth, caveats land where they belong, and nobody re-derives the baseline from scratch every Monday.`,
+  sales_representative: (name) =>
+    `${name} is not clubbing quotas in Q1, but rooms stay calm, stuck deals move, and leadership can repeat the forecast without improvising.`,
+  campaign_manager: (name) =>
+    `${name} won't trend for the case study, but the client hears one story, spend stays vaguely sane, and someone finally owns the ugly cross-team threads.`,
+};
+
+function hiringReportSkill26to50Line(tier: FTNonInternTier, role: HiringRole, name: string): string {
+  const table =
+    tier === "junior"
+      ? HIRING_SKILL_26_50_JUNIOR
+      : tier === "mid"
+        ? HIRING_SKILL_26_50_MID
+        : HIRING_SKILL_26_50_SENIOR;
+  return table[role](name);
+}
+
+/** Skill 51–75%: solid value + one "but" — shorter lines, by role and tier. */
+const HIRING_SKILL_51_75_JUNIOR: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} turns messy inputs into calls people act on—but still slides the laptop over for a last-second sanity check.`,
+  sales_representative: (name) =>
+    `${name} closes real revenue without drama—but every update lands with exclamation points and screenshots.`,
+  campaign_manager: (name) =>
+    `${name} keeps launches upright without midnight heroics—but the "final" timeline is never quite final.`,
+};
+
+const HIRING_SKILL_51_75_MID: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} anchors the numbers execs quote—but "one quick sanity pass" quietly means a deep dive nobody scheduled.`,
+  sales_representative: (name) =>
+    `${name} patches ugly territories and posts real numbers—but victory laps always need you in the audience.`,
+  campaign_manager: (name) =>
+    `${name} herds cross-team chaos into shipped work—but "quick clarity" still eats another calendar block.`,
+};
+
+const HIRING_SKILL_51_75_SENIOR: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} sets how truth is counted here—but a "tiny tweak" still rewrites half a workbook after hours.`,
+  sales_representative: (name) =>
+    `${name} drags bad quarters back with receipts—but the debrief always runs like a friendly interrogation.`,
+  campaign_manager: (name) =>
+    `${name} calms clients when the room gets hot—but copies half the company just so nobody is surprised.`,
+};
+
+function hiringReportSkill51to75Line(tier: FTNonInternTier, role: HiringRole, name: string): string {
+  const table =
+    tier === "junior"
+      ? HIRING_SKILL_51_75_JUNIOR
+      : tier === "mid"
+        ? HIRING_SKILL_51_75_MID
+        : HIRING_SKILL_51_75_SENIOR;
+  return table[role](name);
+}
+
+/** Skill 76–100%: pure praise, role + tier — no "but". */
+const HIRING_SKILL_76_100_JUNIOR: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} pulls signal from messy inputs fast, explains it in plain language, and leaders forward the work without tacking on nervous caveats.`,
+  sales_representative: (name) =>
+    `${name} builds trust quickly, runs the pipeline like clockwork, and lands wins that quietly lift the whole team's quarter.`,
+  campaign_manager: (name) =>
+    `${name} turns fuzzy asks into plans the room actually follows, keeps every stream visible, and earns goodwill from creatives and clients alike.`,
+};
+
+const HIRING_SKILL_76_100_MID: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} is who the numbers review waits on: forecasts survive scrutiny, edge cases carry labels, and the headline still reads true in daylight.`,
+  sales_representative: (name) =>
+    `${name} unsticks accounts that have gone cold, steers long cycles with calm notes, and hands off relationships healthier than they arrived.`,
+  campaign_manager: (name) =>
+    `${name} runs complex programs with runway to spare—partners align early, risks surface before they become drama, and launch lands clean without heroics.`,
+};
+
+const HIRING_SKILL_76_100_SENIOR: Record<HiringRole, (name: string) => string> = {
+  data_analyst: (name) =>
+    `${name} sets the bar for how truth is counted here: frameworks stick, new hires learn from their files, and finance actually relaxes in reviews.`,
+  sales_representative: (name) =>
+    `${name} moves brutal quarters with calm authority—big rooms listen, stuck elephants shift, and revenue lands on the sheet with real names attached.`,
+  campaign_manager: (name) =>
+    `${name} is who leadership puts forward when stakes spike: clients steady, teams breathe again, and the work ships with pride intact all around.`,
+};
+
+function hiringReportSkill76to100Line(tier: FTNonInternTier, role: HiringRole, name: string): string {
+  const table =
+    tier === "junior"
+      ? HIRING_SKILL_76_100_JUNIOR
+      : tier === "mid"
+        ? HIRING_SKILL_76_100_MID
+        : HIRING_SKILL_76_100_SENIOR;
+  return table[role](name);
+}
+
 type EmploymentMode = "intern" | "full_time";
 
 /** Interns: productivity narrative only (fixed +3/+3 competence and visibility; no skill copy). */
@@ -144,8 +354,9 @@ type HireReport =
   | {
       hireKind: "intern";
       title: string;
+      productivityBandLabel: string;
+      productivityBandTier: HiringReportBandTier;
       productivityLine: string;
-      productivity: number;
       capGain: number;
       competenceGain: number;
       visibilityGain: number;
@@ -153,10 +364,12 @@ type HireReport =
   | {
       hireKind: "full_time";
       title: string;
+      productivityBandLabel: string;
+      productivityBandTier: HiringReportBandTier;
       productivityLine: string;
+      skillBandLabel: string;
+      skillBandTier: HiringReportBandTier;
       skillLine: string;
-      productivity: number;
-      skill: number;
       capGain: number;
       competenceGain: number;
       visibilityGain: number;
@@ -328,17 +541,24 @@ export function HiringScreen({ season }: { season: number }) {
         : productivity <= 50
         ? mode === "intern" || tier === "junior"
           ? hiringReportProductivity26to50InternJunior(candidate.name)
-          : "Some sparks of effort, but still warming up to agency speed."
+          : tier === "mid"
+            ? hiringReportProductivity26to50Mid(candidate.name)
+            : hiringReportProductivity26to50Senior(candidate.name)
         : productivity <= 75
-        ? "Solid contributor: dependable output with room to sharpen."
-        : "Absolute engine this cycle, quietly carrying real workload.";
+        ? mode === "intern"
+          ? hiringReportProductivity51to75Intern(candidate.name)
+          : hiringReportProductivity51to75ForTier(tier, candidate.name)
+        : mode === "intern"
+          ? hiringReportProductivity76to100Intern(candidate.name)
+          : hiringReportProductivity76to100ForTier(tier, candidate.name);
 
     if (mode === "intern") {
       setHireReport({
         hireKind: "intern",
         title: `${candidate.name} joined the agency`,
+        productivityBandLabel: hiringReportProductivityBandLabel(productivity),
+        productivityBandTier: hiringReportBandTierFromPct(productivity),
         productivityLine: prodLine,
-        productivity,
         capGain,
         competenceGain,
         visibilityGain,
@@ -351,20 +571,20 @@ export function HiringScreen({ season }: { season: number }) {
         skillPct <= 25
           ? hiringReportLowSkillLineForTier(tier, candidate.role, candidate.name)
           : skillPct <= 50
-          ? tier === "junior"
-            ? HIRING_SKILL_26_50_JUNIOR[candidate.role](candidate.name)
-            : "Serviceable hire: not a steal, not a disaster, just workable."
+          ? hiringReportSkill26to50Line(tier, candidate.role, candidate.name)
           : skillPct <= 75
-          ? "Strong value pickup for this band, strategy team approves."
-          : "Elite value hit: this salary band just overdelivered hard.";
+          ? hiringReportSkill51to75Line(tier, candidate.role, candidate.name)
+          : hiringReportSkill76to100Line(tier, candidate.role, candidate.name);
 
       setHireReport({
         hireKind: "full_time",
         title: `${candidate.name} joined the agency`,
+        productivityBandLabel: hiringReportProductivityBandLabel(productivity),
+        productivityBandTier: hiringReportBandTierFromPct(productivity),
         productivityLine: prodLine,
+        skillBandLabel: hiringReportSkillBandLabel(skillPct),
+        skillBandTier: hiringReportBandTierFromPct(skillPct),
         skillLine,
-        productivity,
-        skill,
         capGain,
         competenceGain,
         visibilityGain,
@@ -573,13 +793,25 @@ export function HiringScreen({ season }: { season: number }) {
         <div className="game-modal">
           <p className="game-modal-kicker">Hiring report</p>
           <h2 style={{ marginTop: 0 }}>{hireReport.title}</h2>
-          <p style={{ marginBottom: "0.4rem" }}>{hireReport.productivityLine}</p>
+          <p style={{ marginTop: 0, marginBottom: "0.5rem" }}>{hireReport.productivityLine}</p>
+          <p className="muted" style={{ marginTop: 0, marginBottom: "0.65rem" }}>
+            Productivity:{" "}
+            <span style={HIRING_REPORT_BAND_LABEL_STYLE[hireReport.productivityBandTier]}>
+              {hireReport.productivityBandLabel}
+            </span>
+          </p>
           {hireReport.hireKind === "full_time" ? (
-            <p style={{ marginTop: 0 }}>{hireReport.skillLine}</p>
+            <>
+              <p style={{ marginTop: 0, marginBottom: "0.5rem" }}>{hireReport.skillLine}</p>
+              <p className="muted" style={{ marginTop: 0, marginBottom: "0.65rem" }}>
+                Skill:{" "}
+                <span style={HIRING_REPORT_BAND_LABEL_STYLE[hireReport.skillBandTier]}>
+                  {hireReport.skillBandLabel}
+                </span>
+              </p>
+            </>
           ) : null}
           <div className="game-modal-stats">
-            <span>Productivity: {hireReport.productivity}%</span>
-            {hireReport.hireKind === "full_time" ? <span>Skill: +{hireReport.skill}</span> : null}
             <span className="game-modal-stat-with-icon">
               <span className="game-modal-stat-icon" aria-hidden>
                 <ResourceSymbol id="capacity" size={15} />
