@@ -197,29 +197,24 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         </section>
 
         <section className="agency-stats-panel" style={{ marginTop: "1rem" }}>
-          <h3 style={{ marginTop: 0, marginBottom: "0.35rem" }}>Arc 2 (Season 2 branch)</h3>
-          <p className="muted" style={{ margin: "0 0 0.55rem" }}>
-            Branch key: {labels.reach} reach / {labels.effectiveness} effectiveness (50% threshold).
-          </p>
+          <h3 style={{ marginTop: 0, marginBottom: "0.35rem", color: "var(--accent, #ca8a04)" }}>So what happened?</h3>
           <p style={{ margin: 0, lineHeight: 1.55 }}>{arcText}</p>
         </section>
 
         <section className="agency-stats-panel" style={{ marginTop: "1rem" }}>
-          <h3 style={{ marginTop: 0, marginBottom: "0.5rem" }}>Solution options and archetypes</h3>
-          <p className="muted" style={{ margin: "0 0 0.65rem", fontSize: "0.88rem" }}>
-            Carry-over pricing is fixed (not scaled by client budget): minimal 1k / 5 cap; effectiveness focus 3k / 10 cap;
-            reach focus 7k / 6 cap; full spectrum 10k / 15 cap. Improvement uses base points per archetype plus Season 2 variance
-            (same drivers as campaigns, ±10 points max per metric).
-          </p>
+          <h3 style={{ marginTop: 0, marginBottom: "0.5rem" }}>What should you do?</h3>
           <div style={{ display: "grid", gap: "0.55rem" }}>
             {carryoverSolutionOptions.map((opt) => {
-              const archNum = opt.isRejectOption ? 0 : archetypeIdFromSolutionId(opt.id);
               const affordable = canAffordSolution(opt, liquidForCarryover, save.resources.firmCapacity);
               const forceDoNothingOnly =
                 !opt.isRejectOption &&
                 carryoverSolutionOptions
                   .filter((s) => !s.isRejectOption)
                   .every((s) => !canAffordSolution(s, liquidForCarryover, save.resources.firmCapacity));
+              const displayTitle = opt.isRejectOption ? "Take no action" : opt.title;
+              const displayDesc = opt.isRejectOption
+                ? "Take no action. Reach and effectiveness might drop slightly."
+                : opt.description;
               return (
                 <button
                   key={opt.id}
@@ -230,9 +225,9 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
                   style={{ textAlign: "left" }}
                 >
                   <p style={{ margin: 0, fontWeight: 600 }}>
-                    Archetype {archNum}: {opt.title}
+                    {displayTitle}
                   </p>
-                  <p className="muted" style={{ margin: "0.25rem 0 0" }}>{opt.description}</p>
+                  <p className="muted" style={{ margin: "0.25rem 0 0" }}>{displayDesc}</p>
                   <p className="muted" style={{ margin: "0.35rem 0 0", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.5rem" }}>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
                       <ResourceSymbol id="eur" size={16} />
@@ -264,8 +259,8 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
             </h2>
             <p className="muted" style={{ marginTop: 0 }}>
               {pendingCarryoverSolution.isRejectOption
-                ? "Reach and effectiveness will each drop by 5 percentage points from the values shown above (after build shift)."
-                : "Apply base improvement plus Season 2 variance to reach and effectiveness, then spend the listed EUR and capacity."}
+                ? "Take no action. Reach and effectiveness might drop slightly."
+                : "Apply further effort to this client. Spend the listed EUR and capacity to continue the campaign."}
             </p>
             {!pendingCarryoverSolution.isRejectOption ? (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem 1.25rem", marginTop: "0.5rem" }}>
