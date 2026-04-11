@@ -23,6 +23,10 @@ import {
   liquidityEur,
   totalPayables,
 } from "@/lib/payablesReceivables";
+import {
+  getPostSeasonResolutionEntries,
+  isPostSeasonResolutionComplete,
+} from "@/lib/seasonCarryover";
 
 /** 0% dark red → 50% yellow → 100% dark green */
 function metricPercentGradientColor(pct: number): string {
@@ -77,6 +81,10 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
   const summaryReady = resultsDone || resultsTotal === 0;
 
   const caseLog = useMemo(() => (save && season === 1 ? buildSeason1CaseLog(save) : []), [save, season]);
+
+  // Season 2+ resolution tracking
+  const s2Entries = useMemo(() => (save && season >= 2 ? getPostSeasonResolutionEntries(save, season) : []), [save, season]);
+  const s2ResolutionsDone = useMemo(() => (save && season >= 2 ? isPostSeasonResolutionComplete(save, season) : true), [save, season]);
 
   const scenarioOverviewRows = useMemo(() => {
     if (!loop) return [];
@@ -286,43 +294,71 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
         ) : null}
 
         <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
-          <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Campaign results</h3>
-          <p className="muted" style={{ margin: 0 }}>
-            {resultsTotal === 0
-              ? "No completed campaigns to review (every client was rejected or has no outcome)."
-              : resultsDone
-                ? "You have finished reviewing every campaign for this season."
-                : "You must review each campaign in order — same order as during the season (rejected clients are skipped)."}
-          </p>
-          {resultsTotal > 0 ? (
-            <p className="muted" style={{ margin: "0.5rem 0 0" }}>
-              Progress: {resultsProgress}
-            </p>
-          ) : null}
-          <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: "0.65rem" }}>
-            {summaryReady ? (
-              <Link
-                href={`/game/postseason/${season}/summary`}
-                className="btn btn-next-hint"
-                style={{ textDecoration: "none" }}
-              >
-                Season summary
-              </Link>
-            ) : (
-              <button type="button" className="btn btn-secondary" disabled style={{ opacity: 0.55 }}>
-                Season summary
-              </button>
-            )}
-            {resultsTotal === 0 ? (
-              <button type="button" className="btn btn-primary" disabled style={{ opacity: 0.55 }}>
-                View results
-              </button>
-            ) : (
-              <Link href={`/game/postseason/${season}/results`} className="btn btn-primary" style={{ textDecoration: "none" }}>
-                View results
-              </Link>
-            )}
-          </div>
+          {season === 1 ? (
+            <>
+              <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Campaign results</h3>
+              <p className="muted" style={{ margin: 0 }}>
+                {resultsTotal === 0
+                  ? "No completed campaigns to review (every client was rejected or has no outcome)."
+                  : resultsDone
+                    ? "You have finished reviewing every campaign for this season."
+                    : "You must review each campaign in order — same order as during the season (rejected clients are skipped)."}
+              </p>
+              {resultsTotal > 0 ? (
+                <p className="muted" style={{ margin: "0.5rem 0 0" }}>
+                  Progress: {resultsProgress}
+                </p>
+              ) : null}
+              <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: "0.65rem" }}>
+                {summaryReady ? (
+                  <Link href={`/game/postseason/${season}/summary`} className="btn btn-next-hint" style={{ textDecoration: "none" }}>
+                    Season summary
+                  </Link>
+                ) : (
+                  <button type="button" className="btn btn-secondary" disabled style={{ opacity: 0.55 }}>Season summary</button>
+                )}
+                {resultsTotal === 0 ? (
+                  <button type="button" className="btn btn-primary" disabled style={{ opacity: 0.55 }}>View results</button>
+                ) : (
+                  <Link href={`/game/postseason/${season}/results`} className="btn btn-primary" style={{ textDecoration: "none" }}>
+                    View results
+                  </Link>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Completed scenarios</h3>
+              <p className="muted" style={{ margin: 0 }}>
+                {s2Entries.length === 0
+                  ? "No rollover scenarios to resolve for this season."
+                  : s2ResolutionsDone
+                    ? "All scenario resolutions reviewed."
+                    : `Review each resolved scenario in order. ${s2Entries.length} total.`}
+              </p>
+              <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: "0.65rem" }}>
+                {(s2ResolutionsDone || s2Entries.length === 0) ? (
+                  <Link href={`/game/postseason/${season}/summary`} className="btn btn-next-hint" style={{ textDecoration: "none" }}>
+                    Season summary
+                  </Link>
+                ) : (
+                  <button type="button" className="btn btn-secondary" disabled style={{ opacity: 0.55 }}>Season summary</button>
+                )}
+                {s2ResolutionsDone ? (
+                  <Link href={`/game/postseason/${season}/history`} className="btn btn-secondary" style={{ textDecoration: "none" }}>
+                    Scenario history
+                  </Link>
+                ) : null}
+                {s2Entries.length === 0 ? (
+                  <button type="button" className="btn btn-primary" disabled style={{ opacity: 0.55 }}>Completed scenarios</button>
+                ) : (
+                  <Link href={`/game/postseason/${season}/resolutions`} className="btn btn-primary" style={{ textDecoration: "none" }}>
+                    Completed scenarios
+                  </Link>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         {resultsDone && scenarioOverviewRows.length > 0 ? (

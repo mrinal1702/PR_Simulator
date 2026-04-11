@@ -256,3 +256,44 @@ export function highLowLabelsFromThreshold(
 function clampPercent(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)));
 }
+
+// ─── Season 2+ post-season resolution tracking ───────────────────────────────
+
+/** S1 runs that have a completed Season 2 carryover resolution (to show in Season 2 post-season). */
+export function getPostSeasonResolutionEntries(save: NewGamePayload, forSeason: number): CarryoverEntry[] {
+  if (forSeason <= 1) return [];
+  const prevKey = String(forSeason - 1);
+  const prevLoop = save.seasonLoopBySeason?.[prevKey];
+  if (!prevLoop) return [];
+  const out: CarryoverEntry[] = [];
+  for (const client of prevLoop.clientsQueue) {
+    const run = prevLoop.runs.find((r) => r.clientId === client.id);
+    if (!run?.accepted || run.solutionId === "reject" || !run.outcome || !run.season2CarryoverResolution) continue;
+    out.push({ client, run: { ...run, outcome: run.outcome } });
+  }
+  return out;
+}
+
+export function getPostSeasonResolutionProgress(save: NewGamePayload, season: number): number {
+  return Math.max(0, Math.floor(save.postSeasonResolutionProgressBySeason?.[String(season)] ?? 0));
+}
+
+export function isPostSeasonResolutionComplete(save: NewGamePayload, season: number): boolean {
+  const entries = getPostSeasonResolutionEntries(save, season);
+  if (entries.length === 0) return true;
+  return getPostSeasonResolutionProgress(save, season) >= entries.length;
+}
+
+export function advancePostSeasonResolutionProgress(save: NewGamePayload, season: number): NewGamePayload {
+  const key = String(season);
+  const entries = getPostSeasonResolutionEntries(save, season);
+  const current = getPostSeasonResolutionProgress(save, season);
+  const next = Math.min(entries.length, current + 1);
+  return {
+    ...save,
+    postSeasonResolutionProgressBySeason: {
+      ...(save.postSeasonResolutionProgressBySeason ?? {}),
+      [key]: next,
+    },
+  };
+}

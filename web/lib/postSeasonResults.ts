@@ -75,6 +75,39 @@ export function postSeasonScenarioCompletenessPercent(season: number): number {
   return 50;
 }
 
+// ─── Season 2 arc-resolution utilities ───────────────────────────────────────
+
+/** 3-bucket reach label for the arc_resolution 3×3 grid. ≤35 = low, 36–67 = medium, ≥68 = high. */
+export function arcResolutionReachLabel(reach: number): "low" | "medium" | "high" {
+  if (reach <= 35) return "low";
+  if (reach <= 67) return "medium";
+  return "high";
+}
+
+/** 3-bucket effectiveness label for the arc_resolution 3×3 grid. ≤35 = poor, 36–67 = good, ≥68 = convincing. */
+export function arcResolutionEffLabel(effectiveness: number): "poor" | "good" | "convincing" {
+  if (effectiveness <= 35) return "poor";
+  if (effectiveness <= 67) return "good";
+  return "convincing";
+}
+
+/** Pull the correct arc_resolution text from the scenario JSON object (accepts unknown for safety). */
+export function buildArcResolutionText(arcResolution: unknown, reach: number, effectiveness: number): string {
+  const reachLabel = arcResolutionReachLabel(reach);
+  const effLabel = arcResolutionEffLabel(effectiveness);
+  const arc = arcResolution as Record<string, Record<string, string>> | undefined;
+  return arc?.[reachLabel]?.[effLabel] ?? `Reach ${reach}% — Effectiveness ${effectiveness}%`;
+}
+
+/** Pull the correct arc_1 text from the scenario JSON object. Uses same 50% threshold as Season 1 arc_2. */
+export function buildArc1Text(arc1: unknown, reach: number, effectiveness: number): string {
+  const key = postSeasonArcKeyFromMetrics(reach, effectiveness);
+  const arc = arc1 as Record<string, string> | undefined;
+  return arc?.[key] ?? "";
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export function reachEffectivenessLabels(reach: number, effectiveness: number): { reach: "high" | "low"; effectiveness: "high" | "low" } {
   return {
     reach: reach > 50 ? "high" : "low",

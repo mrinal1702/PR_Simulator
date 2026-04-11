@@ -70,6 +70,8 @@ export type NewGamePayload = {
   seasonLoopBySeason?: Partial<Record<string, SeasonLoopState>>;
   /** Season -> number of prior-season rollover scenarios reviewed on season entry. */
   rolloverReviewProgressBySeason?: Partial<Record<string, number>>;
+  /** How many Season 2+ post-season resolution cards have been acknowledged, per season key. */
+  postSeasonResolutionProgressBySeason?: Partial<Record<string, number>>;
   /**
    * Frozen at “Go to season” after pre-season (before any in-season client resolution).
    * Season ≥2 uses Season 2 C/V knot normalization; Season 1 uses Season 1 knots.
