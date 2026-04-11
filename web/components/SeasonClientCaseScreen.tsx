@@ -167,9 +167,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           <SimpleBwPercentBar label="Solution effectiveness" value={shifted.effectiveness} />
           <SimpleBwPercentBar label="Solution reach" value={shifted.reach} />
 
-          <p className="muted" style={{ marginTop: "0.75rem" }}>
-            Build modifier applied: {buildShiftBlurb(save.buildId)}
-          </p>
+          <BuildShiftIndicator buildId={save.buildId} />
 
           <button
             type="button"
@@ -586,14 +584,36 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
   );
 }
 
-function buildShiftBlurb(buildId: NewGamePayload["buildId"]): string {
+function StatShiftTag({ label, delta }: { label: string; delta: number }) {
+  if (delta === 0) return null;
+  const isBoost = delta > 0;
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+      <span className="muted">{label}</span>
+      <span style={{ color: isBoost ? "#16a34a" : "#dc2626", fontWeight: 600 }}>
+        {isBoost ? `+${delta}%` : `${delta}%`} {isBoost ? "boost" : "decay"}
+      </span>
+    </span>
+  );
+}
+
+function BuildShiftIndicator({ buildId }: { buildId: NewGamePayload["buildId"] }) {
+  let reachDelta = 0;
+  let effectivenessDelta = 0;
   if (buildId === "summa_cum_basement") {
-    return "Reach -5%, effectiveness +5% (absolute points).";
+    reachDelta = -5;
+    effectivenessDelta = 5;
+  } else if (buildId === "velvet_rolodex") {
+    reachDelta = 5;
+    effectivenessDelta = -5;
   }
-  if (buildId === "velvet_rolodex") {
-    return "Reach +5%, effectiveness -5% (absolute points).";
-  }
-  return "No change to reach or effectiveness.";
+  if (reachDelta === 0 && effectivenessDelta === 0) return null;
+  return (
+    <p className="muted" style={{ marginTop: "0.75rem", display: "flex", flexWrap: "wrap", gap: "0.5rem 1rem" }}>
+      <StatShiftTag label="Reach" delta={reachDelta} />
+      <StatShiftTag label="Effectiveness" delta={effectivenessDelta} />
+    </p>
+  );
 }
 
 function SimpleBwPercentBar({ label, value }: { label: string; value: number }) {
