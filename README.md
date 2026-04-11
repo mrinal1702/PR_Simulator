@@ -142,7 +142,7 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 - Pre-season `Start season` confirmation: cannot return to pre-season; extra warning if no activity chosen; can still proceed.
 - **Season hub** (`/game/season/[season]`): **`Roll season clients`**, **`Open current client case`**, then **`Continue to post-season`** when the queue is fully resolved (`phase` → `postseason`).
 - **Post-season** (`/game/postseason/[season]`): hub with **Season summary**, **View results** (mandatory review + boosts), link to **next pre-season**. **`/game/postseason/[season]/summary`**: stats, scenario overview, company financials (P&amp;L-style + cash bridge), liquidity / layoff pressure when relevant, **Enter pre-season N+1**.
-- Outcome math is resolved in `web/lib/solutionOutcomeMath.ts`: archetype base plus a centered, additive force from visibility/competence/discipline drivers (with small score-level jitter); **Season 1 vs Season 2** use different C/V normalization knots for campaign outcomes. Post-season rewards apply after player action. **Season 2 structure** (entry V/C scores, client count roll, rollover carry-over): `docs/SEASON2_STRUCTURE.md`.
+- Outcome math is resolved in `web/lib/solutionOutcomeMath.ts`: archetype base plus a centered, additive force from visibility/competence/discipline drivers (with small score-level jitter); **Season 1 vs Season 2** use different C/V normalization knots for campaign outcomes. Post-season: Season 1 boosts + rep/vis; Season 2+ mandatory **completed scenarios** + history — `docs/POST_SEASON.md`. Metric ↔ arc mapping: `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md`. **Season 2 structure** (entry V/C scores, client count roll, rollover carry-over): `docs/SEASON2_STRUCTURE.md`.
 - **Client case** (`/game/season/[season]/client`): separate screen per client. **Season 1**: Season 1 liquid only applies if you **run a priced campaign** (`+budgetSeason1 − spend`); **Reject client** means **no** funds from them. Creative copy from `web/data/scenarios_*.json` (merged in code; see `docs/SCENARIO_CREATIVE_GUIDELINES.md`).
 - In-season client economy and loop state: `web/lib/seasonClientLoop.ts`, `web/lib/clientEconomyMath.ts`, `web/lib/scenarios.ts`; save field `seasonLoopBySeason` on `NewGamePayload`.
 - Reputation is initialized at `5` and treated as derived (not directly purchasable at start).
@@ -156,6 +156,7 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 | `docs/AGENT_HANDOFF.md` | Current product state, routes, save model, key files, manual QA |
 | `docs/CLIENT_ECONOMY_MATH.md` | In-season client pricing and Season 1 liquid math |
 | `docs/SEASON2_STRUCTURE.md` | Season 2+ entry scores, client count, C/V knots, rollover |
+| `docs/POST_SEASON.md` | Post-season routes, Season 1 vs 2+ UI, `arc_*` keys, scenario history |
 | `docs/SCENARIO_CREATIVE_GUIDELINES.md` | Writing / merging scenario JSON |
 | `docs/DEPLOYMENT.md` | Supabase + Vercel |
 | `docs/AGENCY_FINANCE.md` | Cash, payables, receivables, liquidity, hiring, layoffs — **authoritative** |

@@ -69,9 +69,10 @@ Implemented in `web/lib/seasonClientLoop.ts` (with client construction in `build
 
 6. **Post-season transition**: When every queued client has a resolved run, the season hub offers **Continue to post-season** (updates `phase` to `postseason`, no confirmation modal).
 
-## Post-season (Season 1 implemented)
+## Post-season
 
-Authoritative implementation: `web/lib/postSeasonResults.ts`, `web/lib/solutionOutcomeMath.ts` (in-season outcomes), `web/lib/seasonFinancials.ts` (summary financials), UI under `web/app/game/postseason/`.
+Authoritative implementation: `web/lib/postSeasonResults.ts`, `web/lib/solutionOutcomeMath.ts` (in-season outcomes), `web/lib/seasonFinancials.ts` (summary financials), `web/lib/seasonCarryover.ts` (Season 2+ resolution progress), UI under `web/app/game/postseason/`. **Routes, arc JSON keys, and Season 1 vs Season 2+ differences:** `docs/POST_SEASON.md`.
 
-- **Results flow**: Player reviews each accepted campaign in order; optional **reach** boost (EUR 5,000) or **effectiveness** boost (5 capacity), each up to 5% based on competence. **Reputation** (−2…+5 from effectiveness bands) and **visibility** (+1…10 from a 50/50 blend of final reach and final satisfaction) apply **after** the choice, using final metrics.
+- **Season 1 — Results flow**: Player reviews each accepted campaign in order; optional **reach** boost (EUR 5,000) or **effectiveness** boost (5 capacity), each up to 5% based on competence. **Reputation** (−2…+5 from effectiveness bands) and **visibility** (+1…10 from a 50/50 blend of final reach and final satisfaction) apply **after** the choice, using final metrics.
+- **Season ≥ 2 — Completed scenarios**: Mandatory `/resolutions` walkthrough for rollover runs; narrative from **`arc_resolution`** (no boost step). Rep/vis from that step **TBD** in sim math.
 - **Ledger**: `collectPostSeasonLedger` / `buildMetricBreakdown` include post-season lines. **Season summary** adds operating P&amp;L + cash bridge, future **receivables** footnote (`budgetSeason2` sum), and **liquidity / payables** context (see `docs/AGENCY_FINANCE.md`).
