@@ -206,7 +206,7 @@ export function ScenarioHistoryDetailScreen({ season, clientId }: { season: numb
       </Section>
 
       <div style={{ marginTop: "0.5rem" }}>
-        <Link href={`/game/postseason/${season}/resolutions`} className="btn btn-primary" style={{ textDecoration: "none" }}>
+        <Link href={`/game/postseason/${season}/history`} className="btn btn-primary" style={{ textDecoration: "none" }}>
           Back
         </Link>
       </div>

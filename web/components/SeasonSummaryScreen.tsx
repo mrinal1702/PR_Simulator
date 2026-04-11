@@ -24,6 +24,7 @@ import {
   totalPayables,
 } from "@/lib/payablesReceivables";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
+import { isPostSeasonResolutionComplete } from "@/lib/seasonCarryover";
 import { ResourceSymbol } from "@/components/resourceSymbols";
 
 function fmtEur(n: number): string {
@@ -88,6 +89,11 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
   const futureReceivables = useMemo(() => (loop ? computeFutureReceivablesForLoop(loop) : 0), [loop]);
   const acceptedForResults = useMemo(() => (loop ? acceptedRunsWithOutcomes(loop) : []), [loop]);
   const resultsDone = acceptedForResults.length === 0 || postSeasonNextRunIndex(acceptedForResults) >= acceptedForResults.length;
+  const resolutionsDone = useMemo(
+    () => (save && season >= 2 ? isPostSeasonResolutionComplete(save, season) : true),
+    [save, season]
+  );
+  const summaryUnlocked = season >= 2 ? resultsDone && resolutionsDone : resultsDone;
 
   /** Scenario overview tab: only clients the player accepted (not rejected). */
   const scenarioOverviewRows = useMemo(() => {
@@ -104,7 +110,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
 
   const enterNextSeason = () => {
     if (!save) return;
-    if (!resultsDone) return;
+    if (!summaryUnlocked) return;
     const next = enterNextPreseason(save, season);
     persistSave(next);
     setSave(next);
@@ -134,6 +140,25 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
         <h1>Season {season} summary</h1>
         <p className="muted">No season data for this year yet.</p>
         <Link href={`/game/postseason/${season}`} className="btn btn-secondary" style={{ textDecoration: "none" }}>
+          Back to post-season
+        </Link>
+      </div>
+    );
+  }
+
+  if (!summaryUnlocked) {
+    return (
+      <div className="shell shell-wide">
+        <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+          <Link href="/">← {GAME_TITLE}</Link>
+          {" · "}
+          <Link href={`/game/postseason/${season}`}>Post-season {season}</Link>
+        </p>
+        <h1>Season {season} summary locked</h1>
+        <p className="muted" style={{ lineHeight: 1.55 }}>
+          Complete all required post-season reviews before opening the summary.
+        </p>
+        <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none", width: "fit-content" }}>
           Back to post-season
         </Link>
       </div>
@@ -378,14 +403,14 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
         </Link>
         <button
           type="button"
-          className={resultsDone ? "btn btn-next-hint" : "btn btn-secondary"}
-          onClick={() => resultsDone && setConfirmAdvanceOpen(true)}
-          disabled={!resultsDone}
-          style={{ opacity: resultsDone ? 1 : 0.55 }}
+          className={summaryUnlocked ? "btn btn-next-hint" : "btn btn-secondary"}
+          onClick={() => summaryUnlocked && setConfirmAdvanceOpen(true)}
+          disabled={!summaryUnlocked}
+          style={{ opacity: summaryUnlocked ? 1 : 0.55 }}
         >
           Enter pre-season {nextPreseasonNum}
         </button>
-        {!resultsDone ? (
+        {!summaryUnlocked ? (
           <p className="muted" style={{ margin: 0, fontSize: "0.86rem" }}>
             Complete post-season results first, then continue.
           </p>

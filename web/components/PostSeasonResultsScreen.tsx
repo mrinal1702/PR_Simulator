@@ -7,15 +7,23 @@ import { GAME_TITLE } from "@/lib/onboardingContent";
 import {
   acceptedRunsWithOutcomes,
   applyPostSeasonChoice,
+  buildArc1Text,
   buildPostSeasonArcBlurb,
   canAffordEffectivenessBoost,
   canAffordReachBoost,
+  canAffordSeason2EffectivenessBoost,
+  canAffordSeason2ReachBoost,
+  getClientBudgetTier,
+  getSeason2EffectivenessBoostCostCapacity,
+  getSeason2ReachBoostCostEur,
   POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY,
   POST_SEASON_REACH_BOOST_COST_EUR,
   postSeasonCompletedCount,
   postSeasonNextRunIndex,
   postSeasonScenarioCompletenessPercent,
 } from "@/lib/postSeasonResults";
+import { isPostSeasonResolutionComplete } from "@/lib/seasonCarryover";
+import { getScenarioById } from "@/lib/scenarios";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 import { AgencyFinanceBreakdownHost } from "@/components/AgencyFinanceBreakdownHost";
@@ -31,6 +39,10 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
 
   const seasonKey = String(season);
   const loop = save?.seasonLoopBySeason?.[seasonKey];
+  const resolutionsDone = useMemo(
+    () => (save && season >= 2 ? isPostSeasonResolutionComplete(save, season) : true),
+    [save, season]
+  );
 
   const accepted = useMemo(() => (loop ? acceptedRunsWithOutcomes(loop) : []), [loop]);
   const nextIdx = useMemo(() => postSeasonNextRunIndex(accepted), [accepted]);
@@ -93,6 +105,32 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
           <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
           <Link href={`/game/season/${season}`} className="btn btn-secondary" style={{ textDecoration: "none", width: "fit-content" }}>
             Back to season hub
+          </Link>
+        </div>
+        {breakdownMetric ? (
+          <AgencyFinanceBreakdownHost save={save} metric={breakdownMetric} onClose={() => setBreakdownMetric(null)} />
+        ) : null}
+      </>
+    );
+  }
+
+  if (season >= 2 && !resolutionsDone) {
+    return (
+      <>
+        <div className="shell shell-wide">
+          <header style={{ marginBottom: "1.25rem" }}>
+            <p className="muted" style={{ margin: "0 0 0.25rem" }}>
+              <Link href="/">← {GAME_TITLE}</Link>
+            </p>
+            <h1 style={{ margin: 0 }}>Post-season {season} · Scenario review</h1>
+            <p className="muted" style={{ marginTop: "0.5rem" }}>
+              Review the completed rollover scenarios first, then return here for the fresh Season {season} scenarios.
+            </p>
+          </header>
+          <AgencyResourceStrip save={save} />
+          <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
+          <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none", width: "fit-content" }}>
+            Back to post-season
           </Link>
         </div>
         {breakdownMetric ? (
@@ -181,8 +219,22 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
   const reach = currentRun.outcome.messageSpread;
   const effectiveness = currentRun.outcome.messageEffectiveness;
   const completeness = postSeasonScenarioCompletenessPercent(season);
-  const affordReach = canAffordReachBoost(save.resources.eur);
-  const affordEff = canAffordEffectivenessBoost(save.resources.firmCapacity);
+  const season2Flow = season >= 2;
+  const scenario = currentClient ? getScenarioById(currentClient.scenarioId) : undefined;
+  const arc1Text = season2Flow
+    ? buildArc1Text((scenario as Record<string, unknown> | undefined)?.arc_1, reach, effectiveness)
+    : "";
+  const affordReach = season2Flow
+    ? canAffordSeason2ReachBoost(save.resources.eur, currentClient)
+    : canAffordReachBoost(save.resources.eur);
+  const affordEff = season2Flow
+    ? canAffordSeason2EffectivenessBoost(save.resources.firmCapacity, currentClient)
+    : canAffordEffectivenessBoost(save.resources.firmCapacity);
+  const reachCost = season2Flow ? getSeason2ReachBoostCostEur(currentClient) : POST_SEASON_REACH_BOOST_COST_EUR;
+  const effCost = season2Flow
+    ? getSeason2EffectivenessBoostCostCapacity(currentClient)
+    : POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY;
+  const budgetTier = season2Flow ? getClientBudgetTier(currentClient) : 1;
 
   return (
     <>
@@ -195,7 +247,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
             Post-season {season}
           </Link>
         </p>
-        <h1 style={{ margin: 0 }}>Campaign results</h1>
+        <h1 style={{ margin: 0 }}>{season2Flow ? "Scenario review" : "Campaign results"}</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
           Scenario {completed + 1} of {total}
         </p>
@@ -224,14 +276,17 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
         <p style={{ margin: "0.75rem 0 0" }}>
           <strong>Message reach:</strong> {reach}% · <strong>Message effectiveness:</strong> {effectiveness}%
         </p>
-        <p style={{ margin: "0.75rem 0 0", lineHeight: 1.55 }}>{buildPostSeasonArcBlurb(currentClient, reach, effectiveness)}</p>
+        <p style={{ margin: "0.75rem 0 0", lineHeight: 1.55 }}>
+          {season2Flow ? arc1Text || buildPostSeasonArcBlurb(currentClient, reach, effectiveness) : buildPostSeasonArcBlurb(currentClient, reach, effectiveness)}
+        </p>
       </section>
 
       <section className="agency-stats-panel">
         <h3 style={{ marginTop: 0, fontSize: "1.05rem" }}>Optional boost</h3>
         <p className="muted" style={{ marginTop: 0, fontSize: "0.92rem" }}>
-          Pick one: increase reach or increase effectiveness. You can only choose one per scenario. Each increase is
-          based on firm competence, up to 5%.
+          {season2Flow
+            ? `Pick one: increase reach or increase effectiveness. You can only choose one per scenario. Each increase is based on your Season ${season} competence score, up to 5%, with a small roll. This is a tier ${budgetTier} client.`
+            : "Pick one: increase reach or increase effectiveness. You can only choose one per scenario. Each increase is based on firm competence, up to 5%."}
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem", marginTop: "0.85rem" }}>
           <button
@@ -245,7 +300,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
               Increase reach (up to 5%) — costs{" "}
               <ResourceSymbol id="eur" size={16} />
               {" "}
-              {POST_SEASON_REACH_BOOST_COST_EUR.toLocaleString("en-GB")}
+              {reachCost.toLocaleString("en-GB")}
             </span>
           </button>
           <button
@@ -259,7 +314,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
               Increase effectiveness (up to 5%) — costs{" "}
               <ResourceSymbol id="capacity" size={16} />
               {" "}
-              {POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY} capacity
+              {effCost} capacity
             </span>
           </button>
           <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => commitChoice("none")}>
@@ -271,7 +326,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
             Reach boost is unavailable: need{" "}
             <ResourceSymbol id="eur" size={15} />
             {" "}
-            {POST_SEASON_REACH_BOOST_COST_EUR.toLocaleString("en-GB")} (you have{" "}
+            {reachCost.toLocaleString("en-GB")} (you have{" "}
             <ResourceSymbol id="eur" size={15} />
             {" "}
             {save.resources.eur.toLocaleString("en-GB")}).
@@ -282,7 +337,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
             Effectiveness boost is unavailable: need{" "}
             <ResourceSymbol id="capacity" size={15} />
             {" "}
-            {POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY} capacity (you have{" "}
+            {effCost} capacity (you have{" "}
             <ResourceSymbol id="capacity" size={15} />
             {" "}
             {save.resources.firmCapacity}).

@@ -12,6 +12,42 @@ import { competenceScoreForVariance } from "@/lib/solutionOutcomeMath";
 
 export const POST_SEASON_REACH_BOOST_COST_EUR = 5000;
 export const POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY = 5;
+export const POST_SEASON_SEASON2_REACH_BOOST_COST_EUR_TIER1 = 5000;
+export const POST_SEASON_SEASON2_REACH_BOOST_COST_EUR_TIER2 = 10000;
+export const POST_SEASON_SEASON2_EFFECTIVENESS_BOOST_COST_CAPACITY_TIER1 = 10;
+export const POST_SEASON_SEASON2_EFFECTIVENESS_BOOST_COST_CAPACITY_TIER2 = 15;
+
+const POST_SEASON_CURVE_STEEPNESS = 2.5;
+const POST_SEASON_SEASON2_BOOST_JITTER_MAX = 0.65;
+
+type PostSeasonCurveArgs = {
+  metricPercent: number;
+  min: number;
+  max: number;
+};
+
+function hashToUnit(seed: string): number {
+  let h = 0;
+  for (let i = 0; i < seed.length; i += 1) {
+    h = (h << 5) - h + seed.charCodeAt(i);
+    h |= 0;
+  }
+  return (Math.abs(h) % 10001) / 10000;
+}
+
+function jitterValue(seed: string, salt: string, maxAbsDelta: number): number {
+  const u = hashToUnit(`${seed}\0${salt}`);
+  return (u * 2 - 1) * maxAbsDelta;
+}
+
+function curvedPostSeasonValue({ metricPercent, min, max }: PostSeasonCurveArgs): number {
+  const clamped = Math.max(0, Math.min(100, metricPercent));
+  const midpoint = (max + min) / 2;
+  const halfSpan = (max - min) / 2;
+  const centered = (clamped - 50) / 50;
+  const curved = Math.tanh(POST_SEASON_CURVE_STEEPNESS * centered);
+  return midpoint + halfSpan * curved;
+}
 
 /**
  * Maps firm competence (same normalization as Season 1 solution variance) to an integer boost 1–5%.
@@ -19,6 +55,30 @@ export const POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY = 5;
 export function postSeasonBoostPointsFromCompetence(competence: number): number {
   const s = competenceScoreForVariance(competence);
   return Math.max(1, Math.min(5, Math.round(1 + (s / 100) * 4)));
+}
+
+export function getClientBudgetTier(client: SeasonClient): 1 | 2 {
+  if (client.budgetTier === 1 || client.budgetTier === 2) return client.budgetTier;
+  return client.budgetTotal >= 60000 ? 2 : 1;
+}
+
+export function postSeasonSeason2BoostPointsFromCScore(cScore: number, seed: string): number {
+  const clamped = Math.max(0, Math.min(100, cScore));
+  const baseBoost = 1 + (clamped / 100) * 4;
+  const jitteredBoost = baseBoost + jitterValue(seed, "season2-postseason-boost", POST_SEASON_SEASON2_BOOST_JITTER_MAX);
+  return Math.max(1, Math.min(5, Math.round(jitteredBoost)));
+}
+
+export function getSeason2ReachBoostCostEur(client: SeasonClient): number {
+  return getClientBudgetTier(client) === 2
+    ? POST_SEASON_SEASON2_REACH_BOOST_COST_EUR_TIER2
+    : POST_SEASON_SEASON2_REACH_BOOST_COST_EUR_TIER1;
+}
+
+export function getSeason2EffectivenessBoostCostCapacity(client: SeasonClient): number {
+  return getClientBudgetTier(client) === 2
+    ? POST_SEASON_SEASON2_EFFECTIVENESS_BOOST_COST_CAPACITY_TIER2
+    : POST_SEASON_SEASON2_EFFECTIVENESS_BOOST_COST_CAPACITY_TIER1;
 }
 
 /** Ledger rows for breakdown modals — one entry per completed post-season resolution. */
@@ -39,13 +99,26 @@ export function collectPostSeasonLedger(save: { seasonLoopBySeason?: Partial<Rec
       if (!r.postSeason) continue;
       const client = loop.clientsQueue.find((c) => c.id === r.clientId);
       const ps = r.postSeason;
+      const seasonNum = Number(seasonKey);
+      const eurReachCost =
+        ps.choice === "reach"
+          ? seasonNum >= 2 && client
+            ? getSeason2ReachBoostCostEur(client)
+            : POST_SEASON_REACH_BOOST_COST_EUR
+          : 0;
+      const effCapCost =
+        ps.choice === "effectiveness"
+          ? seasonNum >= 2 && client
+            ? getSeason2EffectivenessBoostCostCapacity(client)
+            : POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY
+          : 0;
       out.push({
         seasonKey,
         scenarioTitle: client?.scenarioTitle ?? r.clientId,
         reputationDelta: ps.reputationDelta ?? 0,
         visibilityGain: ps.visibilityGain ?? 0,
-        eurSpentOnReachBoost: ps.choice === "reach" ? POST_SEASON_REACH_BOOST_COST_EUR : 0,
-        capacitySpentOnEffectivenessBoost: ps.choice === "effectiveness" ? POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY : 0,
+        eurSpentOnReachBoost: eurReachCost,
+        capacitySpentOnEffectivenessBoost: effCapCost,
       });
     }
   }
@@ -149,6 +222,14 @@ export function canAffordEffectivenessBoost(currentCapacity: number): boolean {
   return currentCapacity >= POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY;
 }
 
+export function canAffordSeason2ReachBoost(currentEur: number, client: SeasonClient): boolean {
+  return canAfford(currentEur, getSeason2ReachBoostCostEur(client));
+}
+
+export function canAffordSeason2EffectivenessBoost(currentCapacity: number, client: SeasonClient): boolean {
+  return currentCapacity >= getSeason2EffectivenessBoostCostCapacity(client);
+}
+
 /**
  * Round 1, ~50% arc completeness: reputation from effectiveness only.
  * Eight bands of 12.5 points on 0–100 → −2 … +5.
@@ -172,6 +253,14 @@ export function visibilityGainFromReachAndClientSatisfaction(
   return Math.max(1, Math.min(10, Math.round(1 + (blended / 100) * 9)));
 }
 
+export function reputationDeltaFromEffectivenessCurve(effectivenessPercent: number): number {
+  return Math.round(curvedPostSeasonValue({ metricPercent: effectivenessPercent, min: -10, max: 40 }));
+}
+
+export function visibilityGainFromSatisfactionCurve(satisfactionPercent: number): number {
+  return Math.round(curvedPostSeasonValue({ metricPercent: satisfactionPercent, min: 0, max: 20 }));
+}
+
 /**
  * Apply post-season boost for one client run.
  * Reputation and visibility apply only here, using final effectiveness and satisfaction after boosts.
@@ -190,19 +279,33 @@ export function applyPostSeasonChoice(
   const run = loop.runs.find((r) => r.clientId === clientId);
   if (!client || !run?.outcome) return null;
 
-  const boost = postSeasonBoostPointsFromCompetence(save.resources.competence);
+  const seasonNum = Number(seasonKey);
+  const cScore =
+    seasonNum >= 2
+      ? (save.seasonEntryScoresBySeason?.[seasonKey]?.cScore ?? 50)
+      : undefined;
+  const boostSeed = `${save.createdAt}|postseason|${seasonKey}|${clientId}|${choice}`;
+  const boost =
+    seasonNum >= 2
+      ? postSeasonSeason2BoostPointsFromCScore(cScore ?? 50, boostSeed)
+      : postSeasonBoostPointsFromCompetence(save.resources.competence);
   let eur = save.resources.eur;
   let cap = save.resources.firmCapacity;
   let newReach = run.outcome.messageSpread;
   let newEff = run.outcome.messageEffectiveness;
 
   if (choice === "reach") {
-    if (!canAffordReachBoost(eur)) return null;
-    eur -= POST_SEASON_REACH_BOOST_COST_EUR;
+    const reachCost = seasonNum >= 2 ? getSeason2ReachBoostCostEur(client) : POST_SEASON_REACH_BOOST_COST_EUR;
+    if (eur < reachCost) return null;
+    eur -= reachCost;
     newReach = Math.min(100, newReach + boost);
   } else if (choice === "effectiveness") {
-    if (!canAffordEffectivenessBoost(cap)) return null;
-    cap -= POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY;
+    const effCost =
+      seasonNum >= 2
+        ? getSeason2EffectivenessBoostCostCapacity(client)
+        : POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY;
+    if (cap < effCost) return null;
+    cap -= effCost;
     newEff = Math.min(100, newEff + boost);
   }
 
@@ -211,7 +314,10 @@ export function applyPostSeasonChoice(
   const arcCompleteness = postSeasonScenarioCompletenessPercent(seasonNumber);
   let reputationDelta = 0;
   let visibilityGain = 0;
-  if (arcCompleteness === 50) {
+  if (seasonNum >= 2) {
+    reputationDelta = reputationDeltaFromEffectivenessCurve(newEff);
+    visibilityGain = visibilityGainFromSatisfactionCurve(satisfaction);
+  } else if (arcCompleteness === 50) {
     reputationDelta = reputationDeltaHalfArcFromEffectiveness(newEff);
     visibilityGain = visibilityGainFromReachAndClientSatisfaction(newReach, satisfaction);
   }

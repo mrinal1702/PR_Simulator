@@ -74,11 +74,11 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
   const acceptedForResults = useMemo(() => (loop ? acceptedRunsWithOutcomes(loop) : []), [loop]);
   const resultsTotal = acceptedForResults.length;
   const resultsDone =
-    resultsTotal > 0 && postSeasonNextRunIndex(acceptedForResults) >= resultsTotal;
+    resultsTotal === 0 || postSeasonNextRunIndex(acceptedForResults) >= resultsTotal;
   const resultsProgress =
     resultsTotal > 0 ? `${postSeasonCompletedCount(acceptedForResults)} / ${resultsTotal} reviewed` : "—";
   /** Summary is available and is the forward path (reviews done, or nothing to review). */
-  const summaryReady = resultsDone || resultsTotal === 0;
+  const summaryReady = resultsDone;
 
   const caseLog = useMemo(() => (save && season === 1 ? buildSeason1CaseLog(save) : []), [save, season]);
 
@@ -337,7 +337,7 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
                     : `Review each resolved scenario in order. ${s2Entries.length} total.`}
               </p>
               <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: "0.65rem" }}>
-                {(s2ResolutionsDone || s2Entries.length === 0) ? (
+                {resultsDone ? (
                   <Link href={`/game/postseason/${season}/summary`} className="btn btn-next-hint" style={{ textDecoration: "none" }}>
                     Season summary
                   </Link>
@@ -349,6 +349,13 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
                     Scenario history
                   </Link>
                 ) : null}
+                {resultsTotal === 0 ? (
+                  <button type="button" className="btn btn-secondary" disabled style={{ opacity: 0.55 }}>Season 2 scenarios</button>
+                ) : (
+                  <Link href={`/game/postseason/${season}/results`} className="btn btn-secondary" style={{ textDecoration: "none" }}>
+                    Season 2 scenarios
+                  </Link>
+                )}
                 {s2Entries.length === 0 ? (
                   <button type="button" className="btn btn-primary" disabled style={{ opacity: 0.55 }}>Completed scenarios</button>
                 ) : (
@@ -361,7 +368,7 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
           )}
         </div>
 
-        {resultsDone && scenarioOverviewRows.length > 0 ? (
+        {season === 1 && resultsDone && scenarioOverviewRows.length > 0 ? (
           <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
             <h3 style={{ marginTop: 0, marginBottom: "0.35rem", fontSize: "1.05rem" }}>Campaign overview</h3>
             <p className="muted" style={{ margin: "0 0 0.75rem", fontSize: "0.92rem" }}>Here's how your campaigns performed this season.</p>

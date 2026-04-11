@@ -33,6 +33,7 @@ export type SeasonClient = {
   id: string;
   displayName: string;
   clientKind: ClientKind;
+  budgetTier?: 1 | 2;
   problem: string;
   budgetTotal: number;
   budgetSeason1: number;
@@ -608,6 +609,7 @@ export function buildSeasonClients(
       id: `s${season}-c${i + 1}`,
       displayName: scenario.client_name ?? scenario.client_subtype,
       clientKind: kind,
+      budgetTier: tier,
       problem: scenario.problem_summary,
       budgetTotal: total,
       budgetSeason1: split.season1,

@@ -62,8 +62,8 @@ export function ScenarioHistoryListScreen({ season }: { season: number }) {
       )}
 
       <div style={{ marginTop: "1.25rem" }}>
-        <Link href={`/game/postseason/${season}/resolutions`} className="btn btn-primary" style={{ textDecoration: "none" }}>
-          Back to resolutions
+        <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none" }}>
+          Back to post-season
         </Link>
       </div>
     </div>
