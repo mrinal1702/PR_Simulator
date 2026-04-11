@@ -24,6 +24,7 @@ import {
   totalPayables,
 } from "@/lib/payablesReceivables";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
+import { ResourceSymbol } from "@/components/resourceSymbols";
 
 function fmtEur(n: number): string {
   return `EUR ${n.toLocaleString("en-GB")}`;
@@ -84,7 +85,6 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
     () => (save ? computeSeasonPostSeasonStatGains(save, seasonKey) : { reputation: 0, visibility: 0 }),
     [save, seasonKey]
   );
-  const averages = useMemo(() => computeSeasonScenarioAverages(loop), [loop]);
   const futureReceivables = useMemo(() => (loop ? computeFutureReceivablesForLoop(loop) : 0), [loop]);
   const acceptedForResults = useMemo(() => (loop ? acceptedRunsWithOutcomes(loop) : []), [loop]);
   const resultsDone = acceptedForResults.length === 0 || postSeasonNextRunIndex(acceptedForResults) >= acceptedForResults.length;
@@ -99,6 +99,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
     });
   }, [loop]);
 
+  const averages = useMemo(() => computeSeasonScenarioAverages(loop), [loop]);
   const nextPreseasonNum = Math.min(season + 1, 7);
 
   const enterNextSeason = () => {
@@ -155,28 +156,15 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
 
       <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
         <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>Agency outcomes</h2>
-        <p style={{ margin: "0.35rem 0" }}>
-          <strong>Reputation from post-season resolutions:</strong> {statGains.reputation >= 0 ? "+" : ""}
-          {statGains.reputation}
+        <p style={{ margin: "0.35rem 0", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <ResourceSymbol id="reputation" size={16} />
+          <strong>{statGains.reputation < 0 ? "Reputation Loss" : "Reputation Gain"}:</strong>
+          {" "}{statGains.reputation >= 0 ? "+" : ""}{statGains.reputation}
         </p>
-        <p style={{ margin: "0.35rem 0" }}>
-          <strong>Visibility from post-season resolutions:</strong> +{statGains.visibility}
+        <p style={{ margin: "0.35rem 0", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <ResourceSymbol id="visibility" size={16} />
+          <strong>Visibility Gain:</strong> +{statGains.visibility}
         </p>
-        {averages.count > 0 ? (
-          <>
-            <p className="muted" style={{ margin: "0.75rem 0 0.35rem", fontSize: "0.88rem" }}>
-              Averages across accepted campaigns with outcomes ({averages.count}):
-            </p>
-            <p style={{ margin: "0.25rem 0" }}>
-              <strong>Avg message reach:</strong> {averages.avgReach}% · <strong>Avg effectiveness:</strong> {averages.avgEffectiveness}% ·{" "}
-              <strong>Avg satisfaction:</strong> {averages.avgSatisfaction}
-            </p>
-          </>
-        ) : (
-          <p className="muted" style={{ margin: "0.75rem 0 0" }}>
-            No completed campaign outcomes to average (all rejected or pending).
-          </p>
-        )}
 
         <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid var(--border)" }}>
           <h3 style={{ margin: "0 0 0.5rem", fontSize: "1rem" }}>Liquidity (before next pre-season)</h3>
@@ -200,7 +188,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
       <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
         <h2 style={{ marginTop: 0, fontSize: "1.1rem" }}>Scenario overview</h2>
         <p className="muted" style={{ marginTop: 0, fontSize: "0.92rem" }}>
-          Clients you accepted and ran a campaign for, in arrival order. Rejected clients are not listed. Expand to read more of the brief.
+          Here's how your campaigns performed this season.
         </p>
         <button type="button" className="btn btn-secondary" onClick={() => setShowScenarios((v) => !v)} style={{ marginTop: "0.5rem" }}>
           {showScenarios ? "Hide scenario list" : "Scenario overview"}

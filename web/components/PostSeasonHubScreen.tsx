@@ -24,6 +24,36 @@ import {
   totalPayables,
 } from "@/lib/payablesReceivables";
 
+/** 0% dark red → 50% yellow → 100% dark green */
+function metricPercentGradientColor(pct: number): string {
+  const p = Math.max(0, Math.min(100, pct)) / 100;
+  const darkRed = { r: 127, g: 29, b: 29 };
+  const yellow = { r: 234, g: 179, b: 8 };
+  const darkGreen = { r: 22, g: 101, b: 52 };
+  let r: number, g: number, b: number;
+  if (p <= 0.5) {
+    const t = p * 2;
+    r = darkRed.r + (yellow.r - darkRed.r) * t;
+    g = darkRed.g + (yellow.g - darkRed.g) * t;
+    b = darkRed.b + (yellow.b - darkRed.b) * t;
+  } else {
+    const t = (p - 0.5) * 2;
+    r = yellow.r + (darkGreen.r - yellow.r) * t;
+    g = yellow.g + (darkGreen.g - yellow.g) * t;
+    b = yellow.b + (darkGreen.b - yellow.b) * t;
+  }
+  return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+}
+
+function ScenarioMetricBar({ pct }: { pct: number }) {
+  const w = Math.max(0, Math.min(100, pct));
+  return (
+    <span className="scenario-summary-metric-bar" role="img" aria-label={`${w} percent`}>
+      <span className="scenario-summary-metric-bar-fill" style={{ width: `${w}%`, display: "block" }} />
+    </span>
+  );
+}
+
 /** Post-season hub: agency snapshot (like season hub) + entry into mandatory results flow. */
 export function PostSeasonHubScreen({ season }: { season: number }) {
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
@@ -36,6 +66,7 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
   const seasonKey = String(season);
   const loop = save?.seasonLoopBySeason?.[seasonKey];
 
+  const [expandedScenario, setExpandedScenario] = useState<Record<string, boolean>>({});
   const acceptedForResults = useMemo(() => (loop ? acceptedRunsWithOutcomes(loop) : []), [loop]);
   const resultsTotal = acceptedForResults.length;
   const resultsDone =
@@ -46,6 +77,15 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
   const summaryReady = resultsDone || resultsTotal === 0;
 
   const caseLog = useMemo(() => (save && season === 1 ? buildSeason1CaseLog(save) : []), [save, season]);
+
+  const scenarioOverviewRows = useMemo(() => {
+    if (!loop) return [];
+    return loop.clientsQueue.flatMap((client) => {
+      const run = loop.runs.find((r) => r.clientId === client.id);
+      if (!run || !run.accepted || run.solutionId === "reject") return [];
+      return [{ client, run }];
+    });
+  }, [loop]);
 
   const saveNow = () => {
     if (!save) return;
@@ -284,6 +324,90 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
             )}
           </div>
         </div>
+
+        {resultsDone && scenarioOverviewRows.length > 0 ? (
+          <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
+            <h3 style={{ marginTop: 0, marginBottom: "0.35rem", fontSize: "1.05rem" }}>Campaign overview</h3>
+            <p className="muted" style={{ margin: "0 0 0.75rem", fontSize: "0.92rem" }}>Here's how your campaigns performed this season.</p>
+            <div style={{ display: "grid", gap: "0.75rem" }}>
+              {scenarioOverviewRows.map(({ client, run }) => {
+                const expanded = expandedScenario[client.id] ?? false;
+                const toggle = () => setExpandedScenario((m) => ({ ...m, [client.id]: !expanded }));
+                const outcome = run.outcome;
+                const repDelta = run.postSeason?.reputationDelta ?? 0;
+                const visGain = run.postSeason?.visibilityGain ?? 0;
+                return (
+                  <div
+                    key={client.id}
+                    style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.85rem 1rem", textAlign: "left" }}
+                  >
+                    <p style={{ margin: "0 0 0.35rem", fontWeight: 600 }}>{client.scenarioTitle}</p>
+                    <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.9rem" }}>{client.displayName}</p>
+                    {!expanded ? (
+                      <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.88rem", lineHeight: 1.45 }}>
+                        {client.problem.length > 160 ? `${client.problem.slice(0, 160)}…` : client.problem}
+                      </p>
+                    ) : (
+                      <p style={{ margin: "0 0 0.5rem", fontSize: "0.92rem", lineHeight: 1.5 }}>{client.problem}</p>
+                    )}
+                    <button type="button" className="btn btn-secondary" style={{ padding: "0.35rem 0.65rem", fontSize: "0.82rem" }} onClick={toggle}>
+                      {expanded ? "Show less" : "Show more"}
+                    </button>
+
+                    <p style={{ margin: "0.65rem 0 0.25rem", fontSize: "0.92rem" }}>
+                      <strong>Decision:</strong> {run.solutionTitle ?? run.solutionId}
+                    </p>
+
+                    <p className="scenario-campaign-results-kicker">Campaign Results</p>
+
+                    {outcome ? (
+                      <>
+                        <div className="scenario-summary-metric-row">
+                          <span style={{ color: metricPercentGradientColor(outcome.messageSpread) }}>
+                            Reach — {outcome.messageSpread}%
+                          </span>
+                          <ScenarioMetricBar pct={outcome.messageSpread} />
+                        </div>
+                        <div className="scenario-summary-metric-row">
+                          <span style={{ color: metricPercentGradientColor(outcome.messageEffectiveness) }}>
+                            Effectiveness — {outcome.messageEffectiveness}%
+                          </span>
+                          <ScenarioMetricBar pct={outcome.messageEffectiveness} />
+                        </div>
+                      </>
+                    ) : (
+                      <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.88rem" }}>
+                        No campaign outcome recorded for this run.
+                      </p>
+                    )}
+
+                    {run.postSeason ? (
+                      <>
+                        <p
+                          style={{
+                            margin: "0.45rem 0 0",
+                            fontSize: "0.92rem",
+                            fontWeight: 600,
+                            color: repDelta < 0 ? "#dc2626" : repDelta === 0 ? "#fbbf24" : "#22c55e",
+                          }}
+                        >
+                          {repDelta < 0 ? `Reputation Loss: ${repDelta}` : `Reputation Gain: ${repDelta > 0 ? "+" : ""}${repDelta}`}
+                        </p>
+                        <p style={{ margin: "0.35rem 0 0", fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" }}>
+                          Visibility Gain: {visGain >= 0 ? "+" : ""}{visGain}
+                        </p>
+                      </>
+                    ) : (
+                      <p className="muted" style={{ margin: "0.45rem 0 0", fontSize: "0.85rem" }}>
+                        Post-season review not completed for this campaign.
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
 
         {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
 
