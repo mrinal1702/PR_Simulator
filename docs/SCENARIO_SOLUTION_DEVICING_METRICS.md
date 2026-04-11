@@ -89,30 +89,16 @@ Do **not** treat these as “average good” — they are **stacked** optima. Sc
 
 ## Tie-in to in-season outcomes
 
-`resolveClientOutcome` in `web/lib/seasonClientLoop.ts` uses **current** `visibility` and `competence` from the save when a solution is executed. It routes to **`computeSeason1SolutionMetrics`** or **`computeSeason2SolutionMetrics`** depending on whether the campaign uses Season 1 or Season 2 **normalized** C/V scores (piecewise knots differ; see `docs/SEASON2_STRUCTURE.md`). Scenario text and difficulty should stay **consistent** with the same agency stats this document uses as references. Post-season boosts and summary screens read **final** `outcome` values after post-season resolution.
-
-**Narrative arcs (scenario JSON vs displayed %):**
-
-| Key | When selected | Metric basis |
-|-----|----------------|--------------|
-| **`arc_1`** | Season 1 in-season (and history detail) | Four-way grid: reach &gt; 50%, effectiveness &gt; 50% ⇒ `high_visibility_high_effectiveness`, etc. (`postSeasonArcKeyFromMetrics` in `postSeasonResults.ts`). Uses **initial** campaign reach/effectiveness for `arc_1` copy. |
-| **`arc_2`** | Season 1 post-season results screen | Same 50% grid on **initial** S1 metrics (pre-boost), via `buildPostSeasonArcBlurb`. |
-| **`arc_resolution`** | Season ≥ 2 post-season **resolutions** screen only | **3×3** grid: reach buckets ≤35 / 36–67 / ≥68 × effectiveness ≤35 / 36–67 / ≥68; keys `low`/`medium`/`high` × `poor`/`good`/`convincing`. See `docs/POST_SEASON.md`. |
-
-Carry-over **Season 2** in-season choice uses **`computeCarryoverVarianceDeltasSeason2`** (±10 per metric on top of archetype deltas); stored on the run as **`season2CarryoverResolution`**.
+`resolveClientOutcome` in `web/lib/seasonClientLoop.ts` uses **current** `visibility` and `competence` from the save when a solution is executed. It routes to **`computeSeason1SolutionMetrics`** or **`computeSeason2SolutionMetrics`** by season: **Season 1** uses legacy **piecewise** C/V knots; **Season 2+** uses **benchmark-normalized** raw C/V (`benchmarkSeason2Scores.ts`) before the same jitter + force path — see `docs/SEASON2_STRUCTURE.md`. Post-season boosts and summary screens read **final** `outcome` values after post-season resolution.
 
 Current resolver note (`solutionOutcomeMath.ts`):
-- Reach/effectiveness start from archetype base and use an **additive signed force** from centered driver scores (rather than blending base toward a variance layer).
-- Current tuning uses a fixed full span of **40 points** around base: **±20** before clamp/round.
-- Explicit random term was removed from reach/effectiveness variance; instead, small deterministic jitter is applied to `V_score` / `C_score` (visibility jitter wider than competence jitter).
-- **Two knot tables** for mapping raw stats to scores: **Season 1** (legacy calibration) and **Season 2** (median-recalibrated for late pre-season); **carry-over** improvement uses Season 2 variance with a **±10** span per metric.
+- Reach/effectiveness start from archetype base and use an **additive signed force** from centered driver scores.
+- Full campaign span **±20** per metric before clamp/round; small deterministic jitter on the mapped V/C scores (visibility jitter wider than competence).
+- **Carry-over** improvement uses Season 2+ variance drivers with **±10** span per metric.
 
 ---
 
 ## Changelog
 
-- 2026-04-08: Initial snapshot (metric bands, benchmark 80, random-save quartiles, pre-season ceilings).
-- 2026-04-09: Noted `solutionOutcomeMath` / post-season final metrics.
-- 2026-04-09: Updated for additive-force resolver, ±30% half-span interpretation, and score-level jitter.
-- 2026-04-09: Updated resolver tuning to fixed ±20 force span around base.
-- 2026-04-11: Table for `arc_1` / `arc_2` / `arc_resolution` vs metrics; carry-over pointer; cross-ref `docs/POST_SEASON.md`.
+- 2026-04-11: Season 2+ outcomes use benchmark C/V mapping (not a second piecewise knot table).
+- Earlier: additive-force resolver, ±20 span, jitter on mapped scores.

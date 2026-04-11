@@ -134,7 +134,7 @@ Playable **local-save** loop: **Home → New game / Continue → Pre-season** (f
 
 **UI:** Sticky **`AgencyResourceStrip`** on major screens; **client fees** labels on the client case (uppercase “CLIENT FEES …” — not “budget”); **yellow `btn-next-hint`** for post-season **Season summary** when ready and for **Enter pre-season** on the summary (with **Are you sure?** before advancing); **pre-season entry reveal** modal after `enterNextPreseason` (rotating spouse flavor lines in `web/lib/preseasonEntrySpouseCopy.ts` + tenure capacity before/after). **Season summary** scenario tab: accepted clients only, campaign results bars, colored rep / white visibility lines.
 
-**Money & hiring rules:** `docs/AGENCY_FINANCE.md`. **Season 2+ structure:** `docs/SEASON2_STRUCTURE.md`. **Engineering onboarding:** `docs/AGENT_CONTEXT.md`.
+**Money & hiring rules:** `docs/AGENCY_FINANCE.md`. **Season 2+** (entry scores, client rolls, 70/30 contract split, main-case pricing, rollover screen copy, benchmark C/V for outcomes): `docs/SEASON2_STRUCTURE.md`. **Engineering onboarding:** `docs/AGENT_CONTEXT.md`.
 
 ## Documentation
 
