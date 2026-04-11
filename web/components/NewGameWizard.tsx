@@ -20,6 +20,7 @@ import {
 import type { SeasonLoopState } from "@/lib/seasonClientLoop";
 import { persistSave } from "@/lib/saveGameStorage";
 import type { PayableLine } from "@/lib/payablesReceivables";
+import type { PreseasonEntryRevealPending } from "@/lib/preseasonEntryReveal";
 import {
   BUILD_SPECIALTY_SYMBOLS,
   ResourceSymbol,
@@ -81,6 +82,8 @@ export type NewGamePayload = {
    * Used for ledger display and grant application from post-season → pre-season transition.
    */
   preseasonEntrySpouseGrantSeasons?: string[];
+  /** One-shot modal on the matching pre-season screen after post-season rollover. */
+  preseasonEntryRevealPending?: PreseasonEntryRevealPending;
   /** Whether payroll for a given season key has already been paid before entering that season hub. */
   payrollPaidBySeason?: Partial<Record<string, boolean>>;
   /** Voluntary layoffs taken in a given season number (string key), max 1 per season. */

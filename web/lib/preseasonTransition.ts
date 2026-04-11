@@ -1,6 +1,8 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { seasonSpouseGrants } from "@/lib/gameEconomy";
 import { METRIC_SCALES, clampToScale } from "@/lib/metricScales";
+import { pickPreseasonEntrySpouseFlavorLine } from "@/lib/preseasonEntrySpouseCopy";
+import type { PreseasonEntryRevealPending } from "@/lib/preseasonEntryReveal";
 import {
   employeeTotalCapacityContribution,
   tenureCapacityIncrementFromProductivity,
@@ -11,14 +13,15 @@ import {
  * to base + employees, advance season and phase. Idempotent per target pre-season season key.
  */
 export function enterNextPreseason(save: NewGamePayload, completedPostSeason: number): NewGamePayload {
+  const { preseasonEntryRevealPending: _previousEntryReveal, ...saveWithoutReveal } = save;
   const nextSeason = completedPostSeason + 1;
   const key = String(nextSeason);
-  const already = save.preseasonEntrySpouseGrantSeasons?.includes(key);
+  const already = saveWithoutReveal.preseasonEntrySpouseGrantSeasons?.includes(key);
   const previousSeason = completedPostSeason;
-  const employees = (save.employees ?? []).filter(
+  const employees = (saveWithoutReveal.employees ?? []).filter(
     (e) => !(e.role === "Intern" && e.seasonHired <= previousSeason)
   );
-  const removedInterns = (save.employees ?? []).filter(
+  const removedInterns = (saveWithoutReveal.employees ?? []).filter(
     (e) => e.role === "Intern" && e.seasonHired <= previousSeason
   );
   const removedInternComp = removedInterns.reduce((s, e) => s + e.competenceGain, 0);
@@ -36,21 +39,59 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
   const baseCap = save.initialResources?.firmCapacity ?? 50;
   const newCapacity = baseCap + capFromEmployees;
 
+  const employeeCapacityChanges: PreseasonEntryRevealPending["employeeCapacityChanges"] = [];
+  for (const e of employees) {
+    if (e.role === "Intern") continue;
+    const before = employeeTotalCapacityContribution(e);
+    const e2 = employeesWithTenure.find((x) => x.id === e.id);
+    if (!e2) continue;
+    const after = employeeTotalCapacityContribution(e2);
+    if (before !== after) {
+      employeeCapacityChanges.push({ employeeId: e.id, name: e.name, before, after });
+    }
+  }
+
+  const spouseDisplayName = saveWithoutReveal.spouseName?.trim() || "Your spouse";
+  const spouseFlavorLine = !already
+    ? pickPreseasonEntrySpouseFlavorLine(saveWithoutReveal.spouseType, nextSeason, spouseDisplayName)
+    : null;
+  const g = seasonSpouseGrants(saveWithoutReveal.spouseType);
+  const spouseGrantStats: PreseasonEntryRevealPending["spouseGrantStats"] = !already
+    ? { eur: g.eur, competence: g.competence, visibility: g.visibility }
+    : null;
+
+  const hasSpouseBlock =
+    Boolean(spouseFlavorLine) &&
+    spouseGrantStats != null &&
+    (spouseGrantStats.eur > 0 || spouseGrantStats.competence > 0 || spouseGrantStats.visibility > 0);
+
+  const preseasonEntryRevealPending: PreseasonEntryRevealPending | undefined =
+    hasSpouseBlock || employeeCapacityChanges.length > 0
+      ? {
+          preseasonSeasonKey: key,
+          spouseGrantApplied: !already,
+          spouseFlavorLine: hasSpouseBlock ? spouseFlavorLine : null,
+          spouseGrantStats: hasSpouseBlock ? spouseGrantStats : null,
+          employeeCapacityChanges,
+        }
+      : undefined;
+
   if (already) {
     return {
-      ...save,
+      ...saveWithoutReveal,
       seasonNumber: nextSeason,
       phase: "preseason",
       activityFocusUsedInPreseason: false,
       employees: employeesWithTenure,
+      preseasonEntryRevealPending,
       resources: {
-        ...save.resources,
+        ...saveWithoutReveal.resources,
         competence: clampToScale(
-          save.resources.competence - removedInternComp,
+          saveWithoutReveal.resources.competence - removedInternComp,
           METRIC_SCALES.competence
         ),
         visibility: clampToScale(
-          save.resources.visibility - removedInternVis,
+          saveWithoutReveal.resources.visibility - removedInternVis,
           METRIC_SCALES.visibility
         ),
         firmCapacity: newCapacity,
@@ -58,24 +99,23 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
     };
   }
 
-  const g = seasonSpouseGrants(save.spouseType);
-
   return {
-    ...save,
+    ...saveWithoutReveal,
     seasonNumber: nextSeason,
     phase: "preseason",
     activityFocusUsedInPreseason: false,
     employees: employeesWithTenure,
-    preseasonEntrySpouseGrantSeasons: [...(save.preseasonEntrySpouseGrantSeasons ?? []), key],
+    preseasonEntrySpouseGrantSeasons: [...(saveWithoutReveal.preseasonEntrySpouseGrantSeasons ?? []), key],
+    preseasonEntryRevealPending,
     resources: {
-      ...save.resources,
-      eur: save.resources.eur + g.eur,
+      ...saveWithoutReveal.resources,
+      eur: saveWithoutReveal.resources.eur + g.eur,
       competence: clampToScale(
-        save.resources.competence - removedInternComp + g.competence,
+        saveWithoutReveal.resources.competence - removedInternComp + g.competence,
         METRIC_SCALES.competence
       ),
       visibility: clampToScale(
-        save.resources.visibility - removedInternVis + g.visibility,
+        saveWithoutReveal.resources.visibility - removedInternVis + g.visibility,
         METRIC_SCALES.visibility
       ),
       firmCapacity: newCapacity,

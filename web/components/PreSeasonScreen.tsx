@@ -26,6 +26,7 @@ import {
   settlePreseasonAndEnterSeason,
   totalPayables,
 } from "@/lib/payablesReceivables";
+import { PreseasonEntryRevealModal } from "@/components/PreseasonEntryRevealModal";
 
 export function PreSeasonScreen({ season }: { season: number }) {
   const router = useRouter();
@@ -140,6 +141,9 @@ export function PreSeasonScreen({ season }: { season: number }) {
 
   const workshopCard = getPreseasonFocusCardCopy(season, "strategy_workshop", save);
   const networkCard = getPreseasonFocusCardCopy(season, "network", save);
+
+  const entryReveal = save.preseasonEntryRevealPending;
+  const showEntryRevealModal = entryReveal != null && entryReveal.preseasonSeasonKey === seasonKey;
 
   return (
     <div className="shell shell-wide">
@@ -417,6 +421,18 @@ export function PreSeasonScreen({ season }: { season: number }) {
           payrollBlocked={payrollBlocked}
           onCancel={() => setFireTargetId(null)}
           onConfirm={confirmFire}
+        />
+      ) : null}
+      {showEntryRevealModal && entryReveal ? (
+        <PreseasonEntryRevealModal
+          preseasonSeasonNumber={season}
+          reveal={entryReveal}
+          onDismiss={() => {
+            const { preseasonEntryRevealPending: _, ...rest } = save;
+            const updated = { ...rest };
+            setSave(updated);
+            persistSave(updated);
+          }}
         />
       ) : null}
     </div>
