@@ -164,8 +164,8 @@ export type SeasonLoopState = {
 /**
  * Costs are derived from this season’s allocated budget (`budgetSeason1`) and client type.
  * **Season 1:** worst 10%/30 cap, high-effectiveness 30%/45, high-reach 40%/35, best 50%/50 (legacy shares).
- * **Season 2+:** see {@link buildSolutionOptionsSeason2Plus} — best = 70% of current tranche + 50 cap (individual baseline);
- * other options are % of that cash cost + fixed caps (tunable template).
+ * **Season 2+:** see {@link buildSolutionOptionsSeason2Plus} — EUR = % of `budgetSeason1` (current tranche only);
+ * capacities are baselines × {@link SOLUTION_COST_SCALE}.capacity. Subject to change as player capacity grows.
  */
 const SOLUTION_COST_SCALE: Record<ClientKind, { budget: number; capacity: number }> = {
   individual: { budget: 1, capacity: 1 },
@@ -176,30 +176,49 @@ const SOLUTION_COST_SCALE: Record<ClientKind, { budget: number; capacity: number
 /** Share of total contract paid in the “current execution” tranche (`budgetSeason1`); remainder is follow-up (`budgetSeason2`). */
 export const CURRENT_TRANCHE_SHARE_OF_TOTAL = 0.7;
 
-/** Season 2+ main campaign: full-spectrum (best) option cash = this × `budgetSeason1` × type scale (before rounding). */
-export const SEASON2_PLUS_BEST_OPTION_FEE_SHARE_OF_CURRENT_TRANCHE = 0.7;
-
-/** Season 2+ main campaign: capacity for best option (individual baseline; scaled by {@link SOLUTION_COST_SCALE}). */
-export const SEASON2_PLUS_BEST_BASE_CAPACITY = 50;
-
-/** Relative to best option’s *target* EUR (before per-option rounding), for high reach / high eff / minimal. */
-export const SEASON2_PLUS_OPTION_BUDGET_FRACTION_OF_BEST: Record<
-  "high_reach" | "high_effectiveness" | "minimal",
-  number
+/**
+ * Season 2+ main-campaign solution fees: each `budgetFractionOfB1` is a share of {@link SeasonClient.budgetSeason1} only
+ * (not `budgetTotal`). Corporate non–best options use `fractionOfBestTarget` × (0.7 × b1) pre-round anchor.
+ */
+export const SEASON2_PLUS_SOLUTION_PRICING: Record<
+  ClientKind,
+  {
+    best: { budgetFractionOfB1: number; capacityBase: number };
+    high_reach: {
+      budgetFractionOfB1?: number;
+      fractionOfBestTarget?: number;
+      capacityBase: number;
+    };
+    high_effectiveness: {
+      budgetFractionOfB1?: number;
+      fractionOfBestTarget?: number;
+      capacityBase: number;
+    };
+    minimal: {
+      budgetFractionOfB1?: number;
+      fractionOfBestTarget?: number;
+      capacityBase: number;
+    };
+  }
 > = {
-  high_reach: 0.6,
-  high_effectiveness: 0.3,
-  minimal: 0.15,
-};
-
-/** Season 2+ capacity baselines (individual); scaled by type. */
-export const SEASON2_PLUS_BASE_CAPACITY: Record<
-  "high_reach" | "high_effectiveness" | "minimal",
-  number
-> = {
-  high_reach: 20,
-  high_effectiveness: 40,
-  minimal: 15,
+  individual: {
+    best: { budgetFractionOfB1: 0.5, capacityBase: 40 },
+    high_reach: { budgetFractionOfB1: 0.4, capacityBase: 15 },
+    high_effectiveness: { budgetFractionOfB1: 0.2, capacityBase: 30 },
+    minimal: { budgetFractionOfB1: 0.1, capacityBase: 10 },
+  },
+  small_business: {
+    best: { budgetFractionOfB1: 0.6, capacityBase: 40 },
+    high_reach: { budgetFractionOfB1: 0.5, capacityBase: 15 },
+    high_effectiveness: { budgetFractionOfB1: 0.25, capacityBase: 30 },
+    minimal: { budgetFractionOfB1: 0.1, capacityBase: 10 },
+  },
+  corporate: {
+    best: { budgetFractionOfB1: 0.7, capacityBase: 50 },
+    high_reach: { fractionOfBestTarget: 0.6, capacityBase: 20 },
+    high_effectiveness: { fractionOfBestTarget: 0.3, capacityBase: 40 },
+    minimal: { fractionOfBestTarget: 0.15, capacityBase: 15 },
+  },
 };
 
 type ExecutableSolutionDef = {
@@ -281,17 +300,18 @@ export function parseSeasonNumberFromClientId(clientId: string): number | undefi
 }
 
 /**
- * Tentative Season 2+ template: best option = {@link SEASON2_PLUS_BEST_OPTION_FEE_SHARE_OF_CURRENT_TRANCHE} of the
- * current-season tranche (`budgetSeason1`) + {@link SEASON2_PLUS_BEST_BASE_CAPACITY} (individual baseline, scaled);
- * other options use the same reach/effectiveness bases as Season 1 with EUR = fraction of the **best target EUR**
- * and fixed capacity baselines. Reject unchanged.
+ * Season 2+ main-campaign pricing: {@link SEASON2_PLUS_SOLUTION_PRICING} (EUR = % of `budgetSeason1` only;
+ * corporate secondary options are % of corporate best’s pre-round EUR anchor). Same archetype reach/effectiveness
+ * bases as Season 1. Reject unchanged.
  */
 export function buildSolutionOptionsSeason2Plus(client: SeasonClient): SolutionOption[] {
   const scale = SOLUTION_COST_SCALE[client.clientKind];
   const b1 = Math.max(0, client.budgetSeason1);
-  const bestEurTarget = b1 * SEASON2_PLUS_BEST_OPTION_FEE_SHARE_OF_CURRENT_TRANCHE * scale.budget;
-  const bestEur = Math.round(bestEurTarget);
-  const bestCap = Math.max(1, Math.round(SEASON2_PLUS_BEST_BASE_CAPACITY * scale.capacity));
+  const p = SEASON2_PLUS_SOLUTION_PRICING[client.clientKind];
+
+  const bestTarget = b1 * p.best.budgetFractionOfB1;
+  const bestEur = Math.round(bestTarget);
+  const bestCap = Math.max(1, Math.round(p.best.capacityBase * scale.capacity));
 
   const defFor = (archetype: ExecutableSolutionDef["archetype"]): ExecutableSolutionDef =>
     EXECUTABLE_SOLUTION_DEFS.find((d) => d.archetype === archetype)!;
@@ -301,13 +321,22 @@ export function buildSolutionOptionsSeason2Plus(client: SeasonClient): SolutionO
   const hrDef = defFor("high_reach");
   const bestDef = defFor("best");
 
-  const minEur = Math.round(bestEurTarget * SEASON2_PLUS_OPTION_BUDGET_FRACTION_OF_BEST.minimal);
-  const heEur = Math.round(bestEurTarget * SEASON2_PLUS_OPTION_BUDGET_FRACTION_OF_BEST.high_effectiveness);
-  const hrEur = Math.round(bestEurTarget * SEASON2_PLUS_OPTION_BUDGET_FRACTION_OF_BEST.high_reach);
+  let hrEur: number;
+  let heEur: number;
+  let minEur: number;
+  if (client.clientKind === "corporate") {
+    hrEur = Math.round(bestTarget * (p.high_reach.fractionOfBestTarget ?? 0));
+    heEur = Math.round(bestTarget * (p.high_effectiveness.fractionOfBestTarget ?? 0));
+    minEur = Math.round(bestTarget * (p.minimal.fractionOfBestTarget ?? 0));
+  } else {
+    hrEur = Math.round(b1 * (p.high_reach.budgetFractionOfB1 ?? 0));
+    heEur = Math.round(b1 * (p.high_effectiveness.budgetFractionOfB1 ?? 0));
+    minEur = Math.round(b1 * (p.minimal.budgetFractionOfB1 ?? 0));
+  }
 
-  const minCap = Math.max(1, Math.round(SEASON2_PLUS_BASE_CAPACITY.minimal * scale.capacity));
-  const heCap = Math.max(1, Math.round(SEASON2_PLUS_BASE_CAPACITY.high_effectiveness * scale.capacity));
-  const hrCap = Math.max(1, Math.round(SEASON2_PLUS_BASE_CAPACITY.high_reach * scale.capacity));
+  const hrCap = Math.max(1, Math.round(p.high_reach.capacityBase * scale.capacity));
+  const heCap = Math.max(1, Math.round(p.high_effectiveness.capacityBase * scale.capacity));
+  const minCap = Math.max(1, Math.round(p.minimal.capacityBase * scale.capacity));
 
   const executable: SolutionOption[] = [
     {
@@ -604,8 +633,8 @@ export function buildSeasonClients(
 /**
  * Split total contract into current-tranche vs follow-up (`budgetSeason1` / `budgetSeason2` on {@link SeasonClient}).
  * Uses {@link CURRENT_TRANCHE_SHARE_OF_TOTAL} (~70%): whole-thousands rounding on the first tranche; remainder is the second.
- * Same rule for Season 1 and Season 2+; Season 2+ solution cash for the “best” option keys off `budgetSeason1`
- * (see {@link SEASON2_PLUS_BEST_OPTION_FEE_SHARE_OF_CURRENT_TRANCHE}).
+ * Same rule for Season 1 and Season 2+; Season 2+ per-option EUR uses % of `budgetSeason1` (see
+ * {@link SEASON2_PLUS_SOLUTION_PRICING}).
  */
 export function splitBudgetBySeason(total: number): { season1: number; season2: number } {
   if (total <= 0) return { season1: 0, season2: 0 };
