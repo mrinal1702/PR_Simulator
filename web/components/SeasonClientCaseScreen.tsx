@@ -270,8 +270,8 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
             </h2>
             <p className="muted" style={{ marginTop: 0 }}>
               {pendingCarryoverSolution.isRejectOption
-                ? "Reach and effectiveness will each drop by 5 percentage points from the values shown above (after build shift)."
-                : "Apply base improvement plus Season 2 variance to reach and effectiveness, then spend the listed EUR and capacity."}
+                ? "Take no action. Reach and effectiveness might drop slightly."
+                : "Apply further effort to this client. Spend the listed EUR and capacity to continue the campaign."}
             </p>
             {!pendingCarryoverSolution.isRejectOption ? (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem 1.25rem", marginTop: "0.5rem" }}>
