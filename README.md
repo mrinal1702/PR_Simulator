@@ -59,9 +59,9 @@ Builds affect starting stats, client types, discipline tendencies, and playstyle
 
 ## Game loop (high level)
 
-1. **Pre-season** — hire (competence / visibility / capacity), market positioning, optional spending.
-2. **In-season (core)** — clients arrive **in a fixed order** (no choosing which client next). For each client you see the brief, pick a **solution archetype** (priced from that client’s Season 1 tranche), or **do nothing** to walk away with **no net cash change** (the tranche that was credited for the engagement is refunded). Post-season and round-2 client work are still to be expanded.
-3. **Post-season** — milestone / wrap-up between seasons; may include results UI and transitions to the next pre-season (see `/game/postseason/` routes in the app).
+1. **Pre-season** — one activity focus, Talent Bazaar hiring, roster management (Season 2+), then **Start season** (settlement when applicable).
+2. **In-season** — clients arrive **in a fixed order**; each case is a priced solution or reject. Season 2+ can include **carry-over** scenarios before new clients roll (see `docs/SEASON2_STRUCTURE.md`).
+3. **Post-season** — mandatory reviews, optional boosts (Season 1-style campaigns), **Season summary**, transition to the next pre-season (`/game/postseason/` routes).
 
 ---
 
@@ -128,38 +128,14 @@ Do not overcomplicate currencies, chase full realism, or turn the game into a sp
 
 ---
 
-## Current implementation snapshot
+## Current build (short)
 
-- Implemented UI loop: `Home → New Game → Pre-season → Season hub → Client cases → Post-season hub → Post-season results (per client) → Season summary → Pre-season N+1`. **Home** (with a save) shows **phase**, **agency stats / employees / breakdowns** (client + post-season ledger lines), and **Case log — Season 1** where applicable.
-- `Continue` is enabled and routes to saved `preseason/season/postseason` path.
-- Save system is single-slot local (`localStorage` + `sessionStorage`) via `dma-save-slot`.
-- Pre-season has one-time activity focus (`Strategy workshop` or `Network`) and an `Agency stats` panel.
-- Pre-season activity buttons disappear after the activity is used for that pre-season.
-- Dedicated hiring route: `/game/preseason/[season]/hiring` (Talent Bazaar).
-- Hiring supports intern vs full-time, role-first full-time flow, salary bands, deterministic candidate pools, irreversible hire + autosave, themed modal, and **liquidity**-based affordability (payables model; see `docs/AGENCY_FINANCE.md`).
-- Employees persist; roster is salary-sorted with non-zero contribution lines only.
-- Per-metric breakdown modals on agency stats (zero-value lines hidden for non-base contributors).
-- Pre-season `Start season` confirmation: cannot return to pre-season; extra warning if no activity chosen; can still proceed.
-- **Season hub** (`/game/season/[season]`): **`Roll season clients`**, **`Open current client case`**, then **`Continue to post-season`** when the queue is fully resolved (`phase` → `postseason`).
-- **Post-season** (`/game/postseason/[season]`): hub with **Season summary**, **View results** (mandatory review + boosts), link to **next pre-season**. **`/game/postseason/[season]/summary`**: stats, scenario overview, company financials (P&amp;L-style + cash bridge), liquidity / layoff pressure when relevant, **Enter pre-season N+1**.
-- Outcome math is resolved in `web/lib/solutionOutcomeMath.ts`: archetype base plus a centered, additive force from visibility/competence/discipline drivers (with small score-level jitter); **Season 1 vs Season 2** use different C/V normalization knots for campaign outcomes. Post-season: Season 1 boosts + rep/vis; Season 2+ mandatory **completed scenarios** + history — `docs/POST_SEASON.md`. Metric ↔ arc mapping: `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md`. **Season 2 structure** (entry V/C scores, client count roll, rollover carry-over): `docs/SEASON2_STRUCTURE.md`.
-- **Client case** (`/game/season/[season]/client`): separate screen per client. **Season 1**: Season 1 liquid only applies if you **run a priced campaign** (`+budgetSeason1 − spend`); **Reject client** means **no** funds from them. Creative copy from `web/data/scenarios_*.json` (merged in code; see `docs/SCENARIO_CREATIVE_GUIDELINES.md`).
-- In-season client economy and loop state: `web/lib/seasonClientLoop.ts`, `web/lib/clientEconomyMath.ts`, `web/lib/scenarios.ts`; save field `seasonLoopBySeason` on `NewGamePayload`.
-- Reputation is initialized at `5` and treated as derived (not directly purchasable at start).
-- Metric bands/labels are data-driven in `web/lib/metricScales.ts`.
-- **Agency finance & employees (Season 2+):** **Payables** (wages, severance—positive amounts, red in UI) and **receivables** (guaranteed client follow-up fees—green) feed **liquidity** = cash + receivables − payables. **Layoff pressure** when liquidity &lt; 0: player must fix roster on **main pre-season** (Employees highlighted); **voluntary** fire (severance payable + rep hit; limits apply) vs **mandatory** fire in crisis (no severance, no rep hit). **Hiring** adds wage payables (no full salary deducted from cash at hire); affordability uses liquidity. **Start season** settles receivables minus payables and clears payables; `payrollPaidBySeason` gates season entry. **Interns** expire on year transition (removed from roster, stats reversed). Canonical rules: `docs/AGENCY_FINANCE.md`. Legacy path `/game/preseason/[season]/payroll` redirects to main pre-season.
+Playable **local-save** loop: **Home → New game / Continue → Pre-season** (focus + hiring + layoffs when needed) **→ Season** (roll queue, client cases) **→ Post-season** (mandatory reviews; S1 optional boosts; S2+ resolution queue) **→ Season summary → Next pre-season**. Save key `dma-save-slot`; type **`NewGamePayload`** in `web/components/NewGameWizard.tsx`.
 
-## Documentation index
+**UI:** Sticky **`AgencyResourceStrip`** on major screens; **client fees** labels on the client case (uppercase “CLIENT FEES …” — not “budget”); **yellow `btn-next-hint`** for post-season **Season summary** when ready and for **Enter pre-season** on the summary (with **Are you sure?** before advancing); **pre-season entry reveal** modal after `enterNextPreseason` (rotating spouse flavor lines in `web/lib/preseasonEntrySpouseCopy.ts` + tenure capacity before/after). **Season summary** scenario tab: accepted clients only, campaign results bars, colored rep / white visibility lines.
 
-| Doc | Purpose |
-|-----|---------|
-| `docs/AGENT_HANDOFF.md` | Current product state, routes, save model, key files, manual QA |
-| `docs/CLIENT_ECONOMY_MATH.md` | In-season client pricing and Season 1 liquid math |
-| `docs/SEASON2_STRUCTURE.md` | Season 2+ entry scores, client count, C/V knots, rollover |
-| `docs/POST_SEASON.md` | Post-season routes, Season 1 vs 2+ UI, `arc_*` keys, scenario history |
-| `docs/SCENARIO_CREATIVE_GUIDELINES.md` | Writing / merging scenario JSON |
-| `docs/DEPLOYMENT.md` | Supabase + Vercel |
-| `docs/AGENCY_FINANCE.md` | Cash, payables, receivables, liquidity, hiring, layoffs — **authoritative** |
-| `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md` | Metric anchors for solution / outcome balancing |
+**Money & hiring rules:** `docs/AGENCY_FINANCE.md`. **Season 2+ structure:** `docs/SEASON2_STRUCTURE.md`. **Engineering onboarding:** `docs/AGENT_CONTEXT.md`.
 
-For agent handoff and economy notes, start with `docs/AGENT_HANDOFF.md`, `docs/AGENCY_FINANCE.md`, and `docs/CLIENT_ECONOMY_MATH.md`.
+## Documentation
+
+Full table: **`docs/README.md`**. Start with **`docs/AGENT_CONTEXT.md`** (routes, save shape, UI patterns) and **`docs/AGENCY_FINANCE.md`** for any cash or payables work.

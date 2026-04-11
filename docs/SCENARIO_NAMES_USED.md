@@ -1,5 +1,7 @@
 # Names used in scenarios (do not repeat)
 
+Editor / content checklist — not required reading for pure UI work. See **`docs/README.md`** for the full doc map.
+
 When adding **new** characters (founders, co-owners, executives, named staff), **do not reuse** first names already on this list. **Brand / company** `client_name` values are listed separately—they can sound similar to a person name but are orgs, not people.
 
 **Pool snapshot:** 40 scenarios total (Apr 2026) — 19 Individual, 13 Small Company, 8 Corporate. Source: `web/data/scenarios_*.json`.

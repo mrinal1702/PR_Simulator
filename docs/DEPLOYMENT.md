@@ -119,13 +119,11 @@ You do **not** need to connect Supabase to Git for the app to work. You **do** c
 
 ---
 
-## 4. What you still need to do
+## 4. Product vs cloud (current)
 
-- [ ] Run the SQL migration in Supabase.
-- [ ] Add `profiles` creation on first login (Supabase Auth + insert).
-- [ ] Implement onboarding UI (name, gender, build, spouse) and insert `game_runs`.
-- [ ] Apply `season_grants` at end of each season (server action or Edge Function with service role).
-- [ ] Tune spouse numbers (currently 20 / 20k) in `web/lib/gameEconomy.ts` and design docs.
+- **Shipped:** Full onboarding + pre-season through season + post-season loop in the **Next.js** app with **localStorage** persistence (`dma-save-slot`). No Supabase dependency for gameplay.
+- **Supabase:** Schema and RLS in `supabase/migrations/` are ready for a future **cloud save / profiles / game_runs** layer. Until that is wired, agents should treat DB work as **optional infrastructure**, not required for local QA.
+- **Follow-up when enabling cloud:** Auth → `profiles` row per user → `game_runs` linked to profile; migrate or mirror `NewGamePayload` to stored JSON; keep local slot as fallback if desired.
 
 ---
 
@@ -134,7 +132,7 @@ You do **not** need to connect Supabase to Git for the app to work. You **do** c
 | Path | Purpose |
 |------|---------|
 | `supabase/migrations/20260407120000_initial_schema.sql` | Schema + seed builds + RLS |
-| `web/lib/gameEconomy.ts` | Spouse math + `totalV()` |
-| `data/build_value_budget.txt` | Equal-build Total_V explanation (repo root; design reference) |
-| `web/data/scenarios_*.json`, `web/data/scenario_database.json` | Scenario content imported by Next.js (must live under `web/` when Vercel root is `web`) |
-| `web/.env.local.example` | Env template for Vercel |
+| `web/lib/gameEconomy.ts` | Spouse / build stats, `seasonSpouseGrants`, `totalV()` |
+| `web/data/scenarios_*.json`, `web/data/scenario_database.json` | Scenario content (must live under `web/` when Vercel root is `web`) |
+| `web/.env.local.example` | Env template for local / Vercel |
+| `docs/AGENT_CONTEXT.md` | Engineering onboarding for the web app |

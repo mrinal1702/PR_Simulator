@@ -23,7 +23,7 @@ One scenario at a time in **queue order** (same order as in-season). For each ac
 **Summary:** `/game/postseason/1/summary` — `SeasonSummaryScreen.tsx`  
 Agency outcomes, scenario overview (expandable), company financials (operating summary + cash flow), footnotes. **Enter pre-season 2** only after post-season results are done.
 
-**Transition:** `enterNextPreseason` in `web/lib/preseasonTransition.ts` (spouse grant, capacity reset, intern expiry).
+**Finance on these screens:** After **Continue to post-season** (`SeasonHubScreen`), **`payablesLines`** is rebuilt with **wage lines** for surviving non-intern staff so **payables**, **`liquidityEur`**, and **`hasLayoffPressure`** match the next year’s payroll obligation (see `docs/AGENCY_FINANCE.md` §5.2). **Enter pre-season N+1** (`enterNextPreseason`) applies spouse grant, capacity reset, intern expiry, and **merges/rebuilds** rollover wages for the new pre-season.
 
 ---
 
@@ -45,7 +45,7 @@ Same queue order as **Season 1 clients who now have** `season2CarryoverResolutio
 - **OK** advances to the next scenario; progress is stored in **`postSeasonResolutionProgressBySeason`** on the save (`NewGamePayload`).
 - **Scenario history** links to the detail page for that client.
 
-**Reputation / visibility** for Season 2 resolution: **not yet applied** in code; UI may show a placeholder until design is finalized.
+**Mechanics note:** Carry-over **EUR / capacity** spends and final **reach / effectiveness / satisfaction** for the arc are applied **in-season** when the player picks a carry-over option (`applySeason2CarryoverChoice` in `seasonCarryover.ts`). The post-season **resolutions** screen is a **mandatory narrative recap** of those outcomes (plus progress tracking), not a second spend step.
 
 **Scenario history (reference):**
 
@@ -108,9 +108,3 @@ Cutoffs are **not** shown to the player; they only see the chosen resolution par
 | S2+ resolutions | `web/components/PostSeasonResolutionScreen.tsx` |
 | History list / detail | `ScenarioHistoryListScreen.tsx`, `ScenarioHistoryDetailScreen.tsx` |
 | Summary | `web/components/SeasonSummaryScreen.tsx` |
-
----
-
-## Changelog
-
-- 2026-04-11: Initial doc — Season 1 vs Season 2+ flows, routes, `arc_resolution` 3×3, `postSeasonResolutionProgressBySeason`, scenario history pages.
