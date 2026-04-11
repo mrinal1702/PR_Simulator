@@ -45,6 +45,11 @@ function hashPickIndex(seed: string, modulo: number): number {
 export const SCENARIO_POOL_EXHAUSTED_MESSAGE =
   "PR_SIMULATOR_NO_SCENARIOS_LEFT: Every scenario has been used this playthrough.";
 
+/** Lookup helper for rollover/history screens that need source scenario arc keys. */
+export function getScenarioById(scenarioId: string): ScenarioRecord | undefined {
+  return scenarioDatabase.scenarios.find((scenario) => scenario.scenario_id === scenarioId);
+}
+
 /**
  * Pick a creative scenario matching client kind and budget tier; deterministic from seed.
  * Never returns a scenario whose `scenario_id` is in `excludeIds` while any unused scenario remains
