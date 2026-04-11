@@ -58,7 +58,7 @@ Omit fields not listed; many are optional for legacy loads.
 | Post-season boosts & ledger | `web/lib/postSeasonResults.ts` |
 | Outcomes (S1 knots vs S2+ benchmark C/V) | `web/lib/solutionOutcomeMath.ts`, `benchmarkSeason2Scores.ts`, `resolveClientOutcome` in `seasonClientLoop.ts` |
 | Payables, receivables, liquidity, season start settlement | `web/lib/payablesReceivables.ts` |
-| Season 2 carry-over in-season | `web/lib/seasonCarryover.ts` |
+| Season 2 carry-over in-season | `web/lib/seasonCarryover.ts`; rollover **player copy** in `SeasonClientCaseScreen` (“So what happened?”, “What should you do?”, coloured reach/effect boost or decay) |
 | Metric breakdown lines | `web/lib/metricBreakdown.ts` |
 | Scenarios merge / pick | `web/lib/scenarios.ts`, `web/data/scenarios_*.json` |
 
@@ -70,6 +70,7 @@ Omit fields not listed; many are optional for legacy loads.
 - **“Next step” CTA** — **`btn-next-hint`** (yellow gradient) for post-season **Season summary** when results are complete, and **Enter pre-season N+1** on the summary screen. Summary → next season uses an **“Are you sure?”** modal before calling `enterNextPreseason`.
 - **Modals** — Overlay `game-modal-overlay` + `game-modal`; keep focus and copy concise.
 - **Client case — client money** — Labels are **client fees** (uppercase in UI): *CLIENT FEES THIS SEASON / NEXT SEASON / TOTAL CLIENT FEES* — not “budget,” to avoid confusion with agency cash (`SeasonClientCaseScreen` + `globals.css`).
+- **Season 2 rollover branch** — Same screen: no dev-facing “Arc 2” / branch-key labels; confirm modal on all carry-over choices.
 - **Post-season results — optional boost** — Buttons show **ResourceSymbol** next to EUR / capacity costs (`PostSeasonResultsScreen`).
 - **Season summary — scenario tab** — Only **accepted** clients; **Show more** / **Show less**; **CAMPAIGN RESULTS** block with gradient reach/effectiveness + B/W bars; reputation gain/loss coloring; visibility line in body color (`SeasonSummaryScreen` + `globals.css`).
 - **Pre-season entry reveal** — After `enterNextPreseason`, first visit to that pre-season shows **`PreseasonEntryRevealModal`**: rotating spouse flavor line + grant row with symbols; per-employee **capacity before → after** for tenure bumps.
