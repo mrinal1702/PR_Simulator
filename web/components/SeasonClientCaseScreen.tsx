@@ -156,7 +156,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         <AgencyResourceStrip save={save} />
         <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
 
-        <section className="agency-stats-panel">
+        <section className="agency-stats-panel scenario-client-card">
           <h2 style={{ margin: "0 0 0.45rem", fontFamily: "var(--font-display)" }}>
             {currentCarryover.client.scenarioTitle}
           </h2>
@@ -424,7 +424,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
 
       <section>
-        <div className="agency-stats-panel">
+        <div className="agency-stats-panel scenario-client-card">
           <h2
             style={{
               margin: "0 0 0.5rem",

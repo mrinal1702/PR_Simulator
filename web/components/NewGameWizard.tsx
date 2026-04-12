@@ -333,18 +333,7 @@ export function NewGameWizard() {
                     </span>
                   ) : null}
                 </h3>
-                <button
-                  type="button"
-                  onClick={() => setShowBuildPreview(false)}
-                  style={{
-                    border: "none",
-                    background: "transparent",
-                    color: "var(--text-muted)",
-                    fontSize: "0.7rem",
-                    cursor: "pointer",
-                    padding: 0,
-                  }}
-                >
+                <button type="button" className="btn-minimal" onClick={() => setShowBuildPreview(false)}>
                   Show less
                 </button>
               </div>

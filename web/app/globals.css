@@ -13,6 +13,51 @@
   --radius-sm: 8px;
   --font-sans: var(--font-dm-sans), system-ui, sans-serif;
   --font-display: var(--font-fraunces), Georgia, serif;
+  /** Motion: default UI transitions (200–300ms) */
+  --ui-duration: 260ms;
+  --ui-duration-fast: 75ms;
+  --ui-duration-slow: 300ms;
+  --ui-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+@keyframes ui-btn-primary-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(240, 180, 41, 0), 0 2px 10px rgba(0, 0, 0, 0.18);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(240, 180, 41, 0.28), 0 0 36px rgba(240, 180, 41, 0.1);
+    filter: brightness(1.05);
+  }
+}
+
+@keyframes ui-btn-next-hint-pulse {
+  0%,
+  100% {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(234, 179, 8, 0.35), 0 0 40px rgba(250, 204, 21, 0.12);
+    filter: brightness(1.04);
+  }
+}
+
+@keyframes ui-scenario-client-card-glow {
+  0%,
+  100% {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+  }
+  50% {
+    border-color: rgba(240, 180, 41, 0.26);
+    box-shadow:
+      0 6px 28px rgba(0, 0, 0, 0.32),
+      0 0 0 1px rgba(240, 180, 41, 0.12),
+      0 0 26px rgba(240, 180, 41, 0.09);
+  }
 }
 
 *,
@@ -39,8 +84,16 @@ a {
   color: var(--accent);
   text-decoration: none;
 }
+
+a:not(.btn) {
+  transition: color var(--ui-duration) ease, opacity var(--ui-duration) ease;
+}
+
 a:hover {
   text-decoration: underline;
+}
+a.btn:hover {
+  text-decoration: none;
 }
 
 .shell {
@@ -82,15 +135,57 @@ h3 {
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+  transform: scale(1);
+  transform-origin: center;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  transition:
+    transform var(--ui-duration) var(--ui-ease),
+    box-shadow var(--ui-duration) var(--ui-ease-out),
+    background var(--ui-duration) ease,
+    border-color var(--ui-duration) ease,
+    filter var(--ui-duration) ease,
+    opacity var(--ui-duration) ease,
+    color var(--ui-duration) ease;
+}
+
+.btn:hover:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(1.025);
+}
+
+.btn:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.97);
+  transition:
+    transform var(--ui-duration-fast) ease-out,
+    box-shadow var(--ui-duration-fast) ease-out,
+    background var(--ui-duration-fast) ease,
+    border-color var(--ui-duration-fast) ease,
+    filter var(--ui-duration-fast) ease,
+    opacity var(--ui-duration-fast) ease,
+    color var(--ui-duration-fast) ease;
+}
+
+.btn:focus-visible {
+  outline: 2px solid rgba(240, 180, 41, 0.55);
+  outline-offset: 2px;
 }
 
 .btn-primary {
   background: var(--accent);
   color: var(--accent-text);
+  animation: ui-btn-primary-pulse 2.75s ease-in-out infinite;
 }
-.btn-primary:hover:not(:disabled) {
-  filter: brightness(1.06);
+
+.btn-primary:hover:not(:disabled):not([aria-disabled="true"]) {
+  animation: none;
+  filter: brightness(1.08);
+  box-shadow:
+    0 6px 22px rgba(240, 180, 41, 0.35),
+    0 0 0 1px rgba(252, 211, 77, 0.35);
+}
+
+.btn-primary:active:not(:disabled):not([aria-disabled="true"]) {
+  animation: none;
+  filter: brightness(0.94);
 }
 
 .btn-secondary {
@@ -98,9 +193,12 @@ h3 {
   color: var(--text);
   border-color: var(--border);
 }
-.btn-secondary:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.18);
-  background: #1c2430;
+.btn-secondary:hover:not(:disabled):not([aria-disabled="true"]) {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: #1f2836;
+  box-shadow:
+    0 6px 22px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.07);
 }
 
 /** Primary “next step” CTA (post-season → summary → next season) */
@@ -109,17 +207,107 @@ h3 {
   color: #171717;
   border-color: #ca8a04;
   font-weight: 700;
+  animation: ui-btn-next-hint-pulse 2.6s ease-in-out infinite;
 }
 
-.btn-next-hint:hover:not(:disabled) {
-  filter: brightness(1.06);
-  border-color: #fbbf24;
+.btn-next-hint:hover:not(:disabled):not([aria-disabled="true"]) {
+  animation: none;
+  filter: brightness(1.07);
+  border-color: #fde047;
+  box-shadow:
+    0 8px 26px rgba(234, 179, 8, 0.42),
+    0 0 0 1px rgba(253, 224, 71, 0.38);
+}
+
+.btn-next-hint:active:not(:disabled):not([aria-disabled="true"]) {
+  animation: none;
+  filter: brightness(0.93);
 }
 
 .btn:disabled,
 .btn[aria-disabled="true"] {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"],
+.btn-next-hint:disabled,
+.btn-next-hint[aria-disabled="true"] {
+  animation: none;
+}
+
+/** Bare text/icon control (e.g. wizard “Show less”) */
+.btn-minimal {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 0.15rem 0.25rem;
+  margin: -0.15rem -0.25rem;
+  border-radius: 6px;
+  transform: scale(1);
+  transform-origin: center;
+  transition:
+    transform var(--ui-duration) var(--ui-ease),
+    color var(--ui-duration) ease,
+    background var(--ui-duration) ease,
+    box-shadow var(--ui-duration) ease;
+}
+
+.btn-minimal:hover:not(:disabled) {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  transform: scale(1.06);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.btn-minimal:active:not(:disabled) {
+  transform: scale(0.97);
+  transition: transform var(--ui-duration-fast) ease-out, color var(--ui-duration-fast) ease,
+    background var(--ui-duration-fast) ease, box-shadow var(--ui-duration-fast) ease;
+}
+
+.btn-minimal:focus-visible {
+  outline: 2px solid rgba(240, 180, 41, 0.45);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn-minimal,
+  .choice-card,
+  .hiring-role-option,
+  .agency-stats-panel,
+  .game-modal,
+  .game-modal-overlay,
+  .preseason-resource-strip,
+  .field input[type="text"],
+  .gender-row label,
+  a:not(.btn),
+  .metric-fill,
+  .step-dots span,
+  .game-modal-stats > span {
+    transition-duration: 0.01ms !important;
+  }
+
+  .btn-primary,
+  .btn-next-hint,
+  .scenario-client-card {
+    animation: none !important;
+  }
+
+  .btn:hover:not(:disabled):not([aria-disabled="true"]),
+  .btn:active:not(:disabled):not([aria-disabled="true"]),
+  .btn-minimal:hover:not(:disabled),
+  .btn-minimal:active:not(:disabled),
+  .choice-card:hover,
+  .choice-card:active,
+  .hiring-role-option:hover:not(:disabled),
+  .hiring-role-option:active:not(:disabled) {
+    transform: none;
+  }
 }
 
 .card-grid {
@@ -153,18 +341,47 @@ h3 {
   color: inherit;
   font: inherit;
   cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  transform: scale(1);
+  transform-origin: center;
+  transition:
+    transform var(--ui-duration) var(--ui-ease),
+    border-color var(--ui-duration) ease,
+    box-shadow var(--ui-duration) var(--ui-ease-out),
+    background var(--ui-duration) ease;
 }
 
 .choice-card:hover {
   border-color: rgba(240, 180, 41, 0.35);
   background: #1e2733;
+  transform: scale(1.012);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(240, 180, 41, 0.12);
+}
+
+.choice-card:active {
+  transform: scale(0.97);
+  transition:
+    transform var(--ui-duration-fast) ease-out,
+    border-color var(--ui-duration-fast) ease,
+    box-shadow var(--ui-duration-fast) ease-out,
+    background var(--ui-duration-fast) ease;
+}
+
+.choice-card:focus-visible {
+  outline: 2px solid rgba(240, 180, 41, 0.45);
+  outline-offset: 2px;
 }
 
 .choice-card.selected {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px var(--accent);
   background: var(--accent-dim);
+}
+
+.choice-card.selected:hover {
+  box-shadow:
+    0 8px 26px rgba(0, 0, 0, 0.35),
+    0 0 0 1px var(--accent),
+    0 0 22px rgba(240, 180, 41, 0.14);
 }
 
 .field {
@@ -188,6 +405,10 @@ h3 {
   color: var(--text);
   font-size: 1rem;
   font-family: var(--font-sans);
+  transition:
+    border-color var(--ui-duration) ease,
+    background var(--ui-duration) ease,
+    box-shadow var(--ui-duration) ease;
 }
 .field input:focus {
   outline: none;
@@ -212,6 +433,11 @@ h3 {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text);
+  transition:
+    border-color var(--ui-duration) ease,
+    background var(--ui-duration) ease,
+    color var(--ui-duration) ease,
+    box-shadow var(--ui-duration) ease;
 }
 
 .gender-row input {
@@ -234,9 +460,14 @@ h3 {
   height: 8px;
   border-radius: 50%;
   background: var(--border);
+  transition:
+    background var(--ui-duration) ease,
+    transform var(--ui-duration) var(--ui-ease),
+    box-shadow var(--ui-duration) ease;
 }
 .step-dots span.active {
   background: var(--accent);
+  transform: scale(1.15);
 }
 
 .agency-stats-panel {
@@ -245,6 +476,15 @@ h3 {
   background: var(--bg-card);
   padding: 1rem 1rem 0.9rem;
   margin-bottom: 1rem;
+  transition:
+    border-color var(--ui-duration) var(--ui-ease),
+    box-shadow var(--ui-duration) var(--ui-ease-out),
+    background var(--ui-duration) ease;
+}
+
+/** Client case: main scenario + client summary panel (subtle ambient pulse) */
+.scenario-client-card {
+  animation: ui-scenario-client-card-glow 3.2s ease-in-out infinite;
 }
 
 .metric-row {
@@ -272,6 +512,7 @@ h3 {
   height: 100%;
   border-radius: inherit;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
+  transition: width var(--ui-duration-slow) var(--ui-ease-out);
 }
 
 .metric-marker {
@@ -296,6 +537,7 @@ h3 {
   justify-content: center;
   padding: 1rem;
   z-index: 1000;
+  transition: background var(--ui-duration) ease, opacity var(--ui-duration) ease;
 }
 
 .game-modal {
@@ -305,6 +547,11 @@ h3 {
   border-radius: var(--radius);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(240, 180, 41, 0.2) inset;
   padding: 1rem 1.1rem 1rem;
+  transition:
+    border-color var(--ui-duration) var(--ui-ease),
+    box-shadow var(--ui-duration) var(--ui-ease-out),
+    transform var(--ui-duration) var(--ui-ease),
+    opacity var(--ui-duration) ease;
 }
 
 .game-modal-kicker {
@@ -328,6 +575,11 @@ h3 {
   border-radius: 999px;
   padding: 0.32rem 0.58rem;
   font-size: 0.86rem;
+  transition:
+    border-color var(--ui-duration) ease,
+    background var(--ui-duration) ease,
+    color var(--ui-duration) ease,
+    box-shadow var(--ui-duration) ease;
 }
 
 .game-modal-stats .game-modal-stat-with-icon {
@@ -358,6 +610,10 @@ h3 {
   background: color-mix(in srgb, var(--bg-elevated) 94%, transparent);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(10px);
+  transition:
+    border-color var(--ui-duration) ease,
+    background var(--ui-duration) ease,
+    box-shadow var(--ui-duration) var(--ui-ease-out);
 }
 
 .preseason-resource-strip__pair {
@@ -374,6 +630,7 @@ h3 {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   line-height: 1;
+  transition: color var(--ui-duration) ease;
 }
 
 .preseason-resource-strip__val--payables {
@@ -438,7 +695,7 @@ h3 {
   height: 100%;
   background: #fafafa;
   min-width: 0;
-  transition: width 0.2s ease;
+  transition: width var(--ui-duration-slow) var(--ui-ease-out);
 }
 
 /* Talent Bazaar: full-time role picker (SVG icons; native <option> cannot render them) */
@@ -464,18 +721,47 @@ h3 {
   font: inherit;
   color: inherit;
   width: 100%;
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  transform: scale(1);
+  transform-origin: center;
+  transition:
+    transform var(--ui-duration) var(--ui-ease),
+    border-color var(--ui-duration) ease,
+    box-shadow var(--ui-duration) var(--ui-ease-out),
+    background var(--ui-duration) ease;
 }
 
 .hiring-role-option:hover:not(:disabled) {
   border-color: rgba(240, 180, 41, 0.35);
   background: #1e2733;
+  transform: scale(1.01);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(240, 180, 41, 0.1);
+}
+
+.hiring-role-option:active:not(:disabled) {
+  transform: scale(0.97);
+  transition:
+    transform var(--ui-duration-fast) ease-out,
+    border-color var(--ui-duration-fast) ease,
+    box-shadow var(--ui-duration-fast) ease-out,
+    background var(--ui-duration-fast) ease;
+}
+
+.hiring-role-option:focus-visible {
+  outline: 2px solid rgba(240, 180, 41, 0.45);
+  outline-offset: 2px;
 }
 
 .hiring-role-option.selected {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px var(--accent);
   background: var(--accent-dim);
+}
+
+.hiring-role-option.selected:hover:not(:disabled) {
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.35),
+    0 0 0 1px var(--accent),
+    0 0 18px rgba(240, 180, 41, 0.12);
 }
 
 .hiring-role-option:disabled {
