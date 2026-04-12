@@ -31,6 +31,12 @@ function fmtEur(n: number): string {
   return `EUR ${n.toLocaleString("en-GB")}`;
 }
 
+function accountingColor(kind: "neutral" | "danger" | "success"): string {
+  if (kind === "danger") return "#dc2626";
+  if (kind === "success") return "#16a34a";
+  return "var(--text)";
+}
+
 /** 0% dark red → 50% yellow → 100% dark green (for reach / effectiveness display). */
 function metricPercentGradientColor(pct: number): string {
   const p = Math.max(0, Math.min(100, pct)) / 100;
@@ -60,6 +66,46 @@ function ScenarioMetricBar({ pct }: { pct: number }) {
     <span className="scenario-summary-metric-bar" role="img" aria-label={`${w} percent`}>
       <span className="scenario-summary-metric-bar-fill" style={{ width: `${w}%`, display: "block" }} />
     </span>
+  );
+}
+
+function AccountingRow({
+  prefix,
+  operator,
+  symbol,
+  label,
+  amount,
+  amountColor,
+}: {
+  prefix?: string;
+  operator?: "+" | "−";
+  symbol?: "payables" | "receivables";
+  label?: string;
+  amount: number;
+  amountColor: "neutral" | "danger" | "success";
+}) {
+  const color = accountingColor(amountColor);
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 1fr) auto",
+        gap: "0.75rem",
+        alignItems: "center",
+      }}
+    >
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.4rem" }}>
+        {prefix ? <span>{prefix}</span> : null}
+        {operator ? <span style={{ color, fontWeight: 700 }}>{operator}</span> : null}
+        {symbol ? (
+          <span style={{ display: "inline-flex", color }} aria-hidden>
+            <ResourceSymbol id={symbol} size={15} />
+          </span>
+        ) : null}
+        {label ? <span style={{ color, fontWeight: 600 }}>{label}</span> : null}
+      </div>
+      <span style={{ color, fontWeight: 600 }}>{fmtEur(amount)}</span>
+    </div>
   );
 }
 
@@ -165,6 +211,12 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
     );
   }
 
+  const payables = totalPayables(save);
+  const receivables = getPendingReceivablesEur(save);
+  const liquidity = liquidityEur(save);
+  const layoffPressure = hasLayoffPressure(save);
+  const liquidityColor = !layoffPressure && liquidity >= 0 ? "#16a34a" : layoffPressure && liquidity < 0 ? "#dc2626" : "var(--text)";
+
   return (
     <div className="shell shell-wide">
       <header style={{ marginBottom: "1.25rem" }}>
@@ -201,12 +253,51 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
               color: hasLayoffPressure(save) ? "#dc2626" : "#16a34a",
             }}
           >
-            {hasLayoffPressure(save) ? "Layoff pressure" : "No layoff pressure"}
+            {layoffPressure ? "Layoff pressure" : "No layoff pressure"}
           </p>
-          <p className="muted" style={{ margin: "0.45rem 0 0", fontSize: "0.88rem", lineHeight: 1.5 }}>
-            Liquidity {fmtEur(liquidityEur(save))} · Payables {fmtEur(totalPayables(save))} · Receivables{" "}
-            {fmtEur(getPendingReceivablesEur(save))}
-          </p>
+          <div
+            style={{
+              marginTop: "0.6rem",
+              display: "grid",
+              gap: "0.45rem",
+              fontSize: "0.92rem",
+            }}
+          >
+            <AccountingRow
+              prefix="Cash"
+              amount={save.resources.eur}
+              amountColor="neutral"
+            />
+            <AccountingRow
+              operator="−"
+              symbol="payables"
+              label="Payables"
+              amount={payables}
+              amountColor="danger"
+            />
+            <AccountingRow
+              operator="+"
+              symbol="receivables"
+              label="Receivables"
+              amount={receivables}
+              amountColor="success"
+            />
+            <div
+              style={{
+                marginTop: "0.1rem",
+                paddingTop: "0.6rem",
+                borderTop: "1px solid var(--border)",
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                gap: "0.6rem",
+                alignItems: "center",
+              }}
+            >
+              <strong style={{ color: liquidityColor }}>Liquidity</strong>
+              <strong style={{ color: liquidityColor }}>{fmtEur(liquidity)}</strong>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -328,25 +419,25 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
                   <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>{fmtEur(cash.revenue)}</td>
                 </tr>
                 <tr>
-                  <td style={{ padding: "0.35rem 0" }}>Campaign cost</td>
-                  <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
+                  <td style={{ padding: "0.35rem 0", color: "#dc2626" }}>Campaign cost</td>
+                  <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600, color: "#dc2626" }}>
                     {cash.campaignCost > 0 ? `−${fmtEur(cash.campaignCost)}` : fmtEur(0)}
                   </td>
                 </tr>
                 {cash.extraCampaignCost > 0 ? (
                   <tr>
-                    <td style={{ padding: "0.35rem 0" }}>Extra campaign cost</td>
-                    <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
+                    <td style={{ padding: "0.35rem 0", color: "#dc2626" }}>Extra campaign cost</td>
+                    <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600, color: "#dc2626" }}>
                       −{fmtEur(cash.extraCampaignCost)}
                     </td>
                   </tr>
                 ) : null}
                 <tr style={{ borderTop: "1px solid var(--border)" }}>
                   <td style={{ padding: "0.5rem 0 0.35rem" }}>
-                    <strong>Net operating cash</strong>
+                    <strong style={{ color: "#16a34a" }}>Net operating cash</strong>
                   </td>
                   <td style={{ padding: "0.5rem 0 0.35rem", textAlign: "right" }}>
-                    <strong>{fmtEur(cash.netOperatingCash)}</strong>
+                    <strong style={{ color: "#16a34a" }}>{fmtEur(cash.netOperatingCash)}</strong>
                   </td>
                 </tr>
               </tbody>
@@ -360,8 +451,8 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
                   <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>{fmtEur(cashFlow.openingCash)}</td>
                 </tr>
                 <tr>
-                  <td style={{ padding: "0.35rem 0" }}>Wages</td>
-                  <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
+                  <td style={{ padding: "0.35rem 0", color: "#dc2626" }}>Wages</td>
+                  <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600, color: "#dc2626" }}>
                     {cashFlow.wagesPaid > 0 ? `−${fmtEur(cashFlow.wagesPaid)}` : fmtEur(0)}
                   </td>
                 </tr>

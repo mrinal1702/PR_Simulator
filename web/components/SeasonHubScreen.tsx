@@ -10,10 +10,10 @@ import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { plannedClientCountForSeason } from "@/lib/clientEconomyMath";
 import { SCENARIO_POOL_EXHAUSTED_MESSAGE } from "@/lib/scenarios";
 import { buildSeasonClients } from "@/lib/seasonClientLoop";
-import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 import { AgencyFinanceBreakdownHost } from "@/components/AgencyFinanceBreakdownHost";
 import { AgencyFinanceSnapshot } from "@/components/AgencyFinanceSnapshot";
+import { EmployeeRosterList } from "@/components/EmployeeRosterList";
 import type { BreakdownMetric } from "@/lib/metricBreakdown";
 import {
   getSeasonCarryoverEntries,
@@ -244,29 +244,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
         {showEmployees ? (
           <div className="agency-stats-panel">
             <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Employees</h3>
-            {(save.employees ?? []).length === 0 ? (
-              <p className="muted" style={{ margin: 0 }}>
-                No employees hired yet.
-              </p>
-            ) : (
-              <div style={{ display: "grid", gap: "0.6rem" }}>
-                {[...(save.employees ?? [])]
-                  .sort((a, b) => b.salary - a.salary)
-                  .map((e) => (
-                    <div key={e.id} style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.7rem 0.8rem" }}>
-                      <p style={{ margin: 0, fontWeight: 600 }}>
-                        {e.name} · {e.role}
-                      </p>
-                      <p className="muted" style={{ margin: "0.25rem 0 0" }}>
-                        Salary: EUR {e.salary.toLocaleString("en-GB")}
-                        {e.visibilityGain > 0 ? ` · Visibility +${e.visibilityGain}` : ""}
-                        {e.competenceGain > 0 ? ` · Competence +${e.competenceGain}` : ""}
-                        {formatEmployeeCapacitySuffix(e)}
-                      </p>
-                    </div>
-                  ))}
-              </div>
-            )}
+            <EmployeeRosterList employees={save.employees ?? []} />
           </div>
         ) : null}
 

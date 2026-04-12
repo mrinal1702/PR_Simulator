@@ -9,7 +9,7 @@ import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { persistSave, loadSave } from "@/lib/saveGameStorage";
 import { type BreakdownMetric } from "@/lib/metricBreakdown";
 import { fireEmployeeForPayrollShortfall, fireEmployeeVoluntary } from "@/lib/employeeActions";
-import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
+import { type EmployeeRecord } from "@/lib/tenureCapacity";
 import {
   getPreseasonFocusCardCopy,
   getPreseasonFocusDeltaForSeason,
@@ -17,6 +17,7 @@ import {
 } from "@/lib/preseasonFocus";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 import { AgencyFinanceStatsRows } from "@/components/AgencyFinanceStatsRows";
+import { EmployeeRosterList } from "@/components/EmployeeRosterList";
 import { MetricBreakdownModalBody } from "@/components/MetricBreakdownModalBody";
 import { ResourceSymbol } from "@/components/resourceSymbols";
 import {
@@ -246,60 +247,31 @@ export function PreSeasonScreen({ season }: { season: number }) {
         {showEmployees ? (
           <div className="agency-stats-panel">
             <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Employees</h3>
-            {(save.employees ?? []).length === 0 ? (
-              <p className="muted" style={{ margin: 0 }}>
-                No employees hired yet.
+            {!payrollBlocked && showFireControls && (save.voluntaryLayoffsBySeason?.[seasonKey] ?? 0) >= 1 ? (
+              <p className="muted" style={{ margin: "0 0 0.6rem", fontSize: "0.88rem" }}>
+                Voluntary layoff already used this pre-season.
               </p>
-            ) : (
-              <div style={{ display: "grid", gap: "0.6rem" }}>
-                {!payrollBlocked && showFireControls && (save.voluntaryLayoffsBySeason?.[seasonKey] ?? 0) >= 1 ? (
-                  <p className="muted" style={{ margin: 0, fontSize: "0.88rem" }}>
-                    Voluntary layoff already used this pre-season.
+            ) : null}
+            <EmployeeRosterList
+              employees={save.employees ?? []}
+              renderActions={(employee) => (
+                <PreSeasonEmployeeActionButton
+                  employee={employee}
+                  season={season}
+                  payrollBlocked={payrollBlocked}
+                  showFireControls={showFireControls}
+                  voluntaryLayoffsUsed={save.voluntaryLayoffsBySeason?.[seasonKey] ?? 0}
+                  onFire={(id) => setFireTargetId(id)}
+                />
+              )}
+              renderFooter={(employee) =>
+                !payrollBlocked && showFireControls && employee.seasonHired === season ? (
+                  <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.82rem" }}>
+                    Cannot lay off in the same pre-season they were hired.
                   </p>
-                ) : null}
-                {[...(save.employees ?? [])]
-                  .sort((a, b) => b.salary - a.salary)
-                  .map((e) => {
-                    const canFire =
-                      showFireControls &&
-                      (payrollBlocked ||
-                        (e.seasonHired !== season && (save.voluntaryLayoffsBySeason?.[seasonKey] ?? 0) < 1));
-                    return (
-                      <div key={e.id} style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.7rem 0.8rem" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", gap: "0.5rem", flexWrap: "wrap", alignItems: "flex-start" }}>
-                          <div>
-                            <p style={{ margin: 0, fontWeight: 600 }}>
-                              {e.name} · {e.role}
-                            </p>
-                            <p className="muted" style={{ margin: "0.25rem 0 0" }}>
-                              Salary: EUR {e.salary.toLocaleString("en-GB")}
-                              {e.visibilityGain > 0 ? ` · Visibility +${e.visibilityGain}` : ""}
-                              {e.competenceGain > 0 ? ` · Competence +${e.competenceGain}` : ""}
-                              {formatEmployeeCapacitySuffix(e)}
-                            </p>
-                          </div>
-                          {showFireControls ? (
-                            <button
-                              type="button"
-                              className="btn btn-secondary"
-                              style={{ fontSize: "0.82rem" }}
-                              disabled={!canFire}
-                              onClick={() => canFire && setFireTargetId(e.id)}
-                            >
-                              {payrollBlocked ? "Mandatory layoff" : "Fire"}
-                            </button>
-                          ) : null}
-                        </div>
-                        {!payrollBlocked && showFireControls && e.seasonHired === season ? (
-                          <p className="muted" style={{ margin: "0.25rem 0 0", fontSize: "0.82rem" }}>
-                            Cannot lay off in the same pre-season they were hired.
-                          </p>
-                        ) : null}
-                      </div>
-                    );
-                  })}
-              </div>
-            )}
+                ) : null
+              }
+            />
           </div>
         ) : null}
 
@@ -436,6 +408,36 @@ export function PreSeasonScreen({ season }: { season: number }) {
         />
       ) : null}
     </div>
+  );
+}
+
+function PreSeasonEmployeeActionButton({
+  employee,
+  season,
+  payrollBlocked,
+  showFireControls,
+  voluntaryLayoffsUsed,
+  onFire,
+}: {
+  employee: EmployeeRecord;
+  season: number;
+  payrollBlocked: boolean;
+  showFireControls: boolean;
+  voluntaryLayoffsUsed: number;
+  onFire: (employeeId: string) => void;
+}) {
+  if (!showFireControls) return null;
+  const canFire = payrollBlocked || (employee.seasonHired !== season && voluntaryLayoffsUsed < 1);
+  return (
+    <button
+      type="button"
+      className="btn btn-secondary"
+      style={{ fontSize: "0.82rem" }}
+      disabled={!canFire}
+      onClick={() => canFire && onFire(employee.id)}
+    >
+      {payrollBlocked ? "Mandatory layoff" : "Fire"}
+    </button>
   );
 }
 
