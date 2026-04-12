@@ -447,7 +447,7 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
                   ? "No completed campaigns to review (every client was rejected or has no outcome)."
                   : resultsDone
                     ? "You have finished reviewing every campaign for this season."
-                    : "You must review each campaign in order — same order as during the season (rejected clients are skipped)."}
+                    : ""}
               </p>
               {resultsTotal > 0 ? (
                 <p className="muted" style={{ margin: "0.5rem 0 0" }}>
