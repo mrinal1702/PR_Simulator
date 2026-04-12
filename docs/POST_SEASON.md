@@ -18,6 +18,7 @@ One scenario at a time in **queue order** (same order as in-season). For each ac
 - Scenario title and brief; **post-season arc** text from scenario **`arc_1`** branches (see *Arc keys* below).
 - Message reach / effectiveness (from in-season resolution).
 - Player chooses **optional boost**: increase reach (EUR 5,000), increase effectiveness (5 capacity), or **do nothing** — competence maps to **1–5%** boost when applicable.
+- These boost buttons are generic gameplay choices; they do **not** come from scenario JSON `arc_2.options`.
 - **Reputation** (−2 … +5 from effectiveness octets) and **visibility** (+1 … +10 from 50% reach + 50% satisfaction) apply **after** the choice; stored on `run.postSeason` and in agency stats.
 
 **Summary:** `/game/postseason/1/summary` — `SeasonSummaryScreen.tsx`  
@@ -27,14 +28,14 @@ Agency outcomes, scenario overview (expandable), company financials (operating s
 
 ---
 
-## Season 2+ post-season (rollover resolution)
+## Season 2+ post-season (rollover resolution + fresh-scenario review)
 
 Rollover clients are resolved **in-season** (carry-over queue, `applySeason2CarryoverChoice`); outcomes are written on the **prior season’s** run as **`season2CarryoverResolution`** (`seasonClientLoop.ts`).
 
-There is **no** second boost step in post-season for these arcs — the scenario **ends** here for narrative purposes.
+There is **no** second boost step in post-season for these carry-over arcs — those scenarios **end** here for narrative purposes. After the player finishes reviewing those resolution cards, the hub unlocks a second mandatory pass over the **fresh scenarios from the current season**.
 
 **Hub:** `/game/postseason/[season]` for `season >= 2`  
-Shows **Completed scenarios** instead of Season 1’s “View results”. **Season summary** stays disabled until every resolution card is acknowledged.
+Shows **Completed scenarios** (rollover recap), **Season 2 scenarios** (fresh current-season review), and **Scenario history**. **Scenario history** unlocks once the rollover resolutions are acknowledged. **Season summary** stays disabled until the player has completed **both** mandatory tracks.
 
 **Completed scenarios (mandatory):** `/game/postseason/[season]/resolutions` — `PostSeasonResolutionScreen.tsx`  
 Same queue order as **Season 1 clients who now have** `season2CarryoverResolution` on their Season 1 run. For each:
@@ -46,6 +47,18 @@ Same queue order as **Season 1 clients who now have** `season2CarryoverResolutio
 - **Scenario history** links to the detail page for that client.
 
 **Mechanics note:** Carry-over **EUR / capacity** spends and final **reach / effectiveness / satisfaction** for the arc are applied **in-season** when the player picks a carry-over option (`applySeason2CarryoverChoice` in `seasonCarryover.ts`). The post-season **resolutions** screen is a **mandatory narrative recap** of those outcomes (plus progress tracking), not a second spend step.
+
+**Fresh Season 2 scenarios (mandatory after rollover recap):** `/game/postseason/[season]/results` — `PostSeasonResultsScreen.tsx`  
+Once rollover resolutions are complete, the player reviews the **current season’s accepted scenarios** one by one in queue order. For each:
+
+- Scenario title and brief.
+- **`arc_1`** outcome text keyed from the scenario’s initial reach/effectiveness result (same 50% reach/effectiveness split used elsewhere).
+- Optional boost choice: **reach**, **effectiveness**, or **do nothing**.
+- For `season >= 2`, the boost size uses the season’s frozen **Season 2 `cScore`** with a small deterministic jitter, then rounds to **1–5%**.
+- Costs are budget-tier based:
+  - **Tier 1:** reach boost **EUR 5,000**, effectiveness boost **10 capacity**
+  - **Tier 2:** reach boost **EUR 10,000**, effectiveness boost **15 capacity**
+- Reputation and visibility from these fresh-scenario reviews are stored on `run.postSeason` and feed the season summary.
 
 **Scenario history (reference):**
 
@@ -71,6 +84,7 @@ Used for:
 
 - **`arc_1`:** Season 1 **post-season** results screen blurb and the Season 1 outcome shown in history, both keyed from the **initial** reach/effectiveness result before any post-season boost.
 - **`arc_2`:** Season 2 carry-over follow-up blurb (`buildPostSeasonArcBlurb`) — same threshold, still keyed from the original Season 1 reach/effectiveness result.
+- **`arc_2.options`:** authoring/reference copy only in the current build. The live option buttons in Season 1 and carry-over flows come from the fixed solution-card system, not these strings.
 
 ### `arc_resolution` (nine branches — Season 2 post-season only)
 
@@ -100,11 +114,11 @@ Cutoffs are **not** shown to the player; they only see the chosen resolution par
 
 | Area | File |
 |------|------|
-| S1 boosts + ledger | `web/lib/postSeasonResults.ts` |
+| S1/S2 boosts + ledger | `web/lib/postSeasonResults.ts` |
 | S2+ resolution progress | `web/lib/seasonCarryover.ts` |
 | Run types (`postSeason`, `season2CarryoverResolution`) | `web/lib/seasonClientLoop.ts` |
 | Hub | `web/components/PostSeasonHubScreen.tsx` |
-| S1 results | `web/components/PostSeasonResultsScreen.tsx` |
+| S1 results / S2 fresh-scenario review | `web/components/PostSeasonResultsScreen.tsx` |
 | S2+ resolutions | `web/components/PostSeasonResolutionScreen.tsx` |
 | History list / detail | `ScenarioHistoryListScreen.tsx`, `ScenarioHistoryDetailScreen.tsx` |
 | Summary | `web/components/SeasonSummaryScreen.tsx` |

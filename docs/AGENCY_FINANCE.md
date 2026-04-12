@@ -2,7 +2,7 @@
 
 This document describes how **cash**, **payables**, **receivables**, and **liquidity** work in the web app. It is the single reference for contributors and agents—there is no separate “legacy payroll” model documented elsewhere.
 
-**Implementation:** `web/lib/payablesReceivables.ts` (math and settlement), `web/lib/employeeActions.ts` (fire), `web/components/PreSeasonScreen.tsx` (start season, warnings), `web/components/HiringScreen.tsx` (hire), `web/lib/saveGameStorage.ts` (migrations).
+**Implementation:** `web/lib/payablesReceivables.ts` (math and settlement), `web/lib/employeeActions.ts` (fire), `web/lib/preseasonTransition.ts` (post-season → next pre-season, **rollover wage payables**), `web/components/SeasonHubScreen.tsx` (**rebuild wage payables when entering post-season**), `web/components/PreSeasonScreen.tsx` (start season, layoff UI), `web/components/HiringScreen.tsx` (hire), `web/lib/saveGameStorage.ts` (migrations).
 
 ---
 
@@ -30,7 +30,7 @@ All of the following are defined only in **`payablesReceivables.ts`**:
 - **`hasLayoffPressure(save)`** — `liquidityEur(save) < 0`.
 - **`settlePreseasonAndEnterSeason`** — the **only** settlement primitive for pre-season → season: updates `resources.eur`, clears `payablesLines`, sets phase/season, sets `payrollPaidBySeason` when applicable.
 
-**Consumers that should stay aligned:** `PreSeasonScreen`, `HiringScreen`, `AgencyResourceStrip`, `AgencyFinanceStatsRows`, `PostSeasonHubScreen`, `SeasonSummaryScreen` (liquidity line), `metricBreakdown.ts` (breakdown totals).
+**Consumers that should stay aligned:** `PreSeasonScreen`, `HiringScreen`, `SeasonHubScreen` (post-season entry must refresh payables), `AgencyResourceStrip`, `AgencyFinanceStatsRows`, `PostSeasonHubScreen`, `SeasonSummaryScreen` (liquidity line), `metricBreakdown.ts` (breakdown totals).
 
 ### 0.3 In-season scenario spend (separate from agency liquidity)
 
@@ -38,7 +38,15 @@ All of the following are defined only in **`payablesReceivables.ts`**:
 
 ### 0.4 Season summary / cash-bridge screens (display narrative)
 
-**`computeSeasonCashBridge` / `computeSeasonCashFlow`** in **`web/lib/seasonFinancials.ts`** rebuild a **P&amp;L-style story** (opening → “wages paid” → operating cash) for **`SeasonSummaryScreen`**. Closing cash in the bridge is **`save.resources.eur`** at render time. The “wages paid” line uses **hire-time salaries and `payrollPaidBySeason`**, which can diverge from **`payablesLines`** (already cleared after settlement). Treat this block as **explanatory UI**, not a second solvency engine.
+**`computeSeasonCashBridge` / `computeSeasonCashFlow`** in **`web/lib/seasonFinancials.ts`** rebuild a season-summary story for **`SeasonSummaryScreen`**:
+
+- **Revenue** = accepted fresh-client current tranches for the season (`budgetSeason1`) **plus** prior-season rollover receivables that were paid into cash at season start.
+- **Campaign cost** = in-season EUR spend on fresh campaigns **plus** in-season EUR spend on rollover follow-up actions.
+- **Extra campaign cost** = post-season reach boosts (EUR only).
+- **Net operating cash** = revenue − campaign cost − extra campaign cost.
+- **Cash flow** = opening value − wages − optional severance + cash from operations = closing.
+
+Closing cash in the bridge is **`save.resources.eur`** at render time. This block is still a **summary narrative**, not the authoritative solvency engine — trust **`liquidityEur`**, `payablesLines`, and `settlePreseasonAndEnterSeason` for gameplay rules.
 
 ### 0.5 Not used for gameplay
 
@@ -77,7 +85,7 @@ The agency tracks **obligations** (what you owe staff and similar) and **guarant
 - **Pre-season 1:** New company—**no** promises and **no** guaranteed pipeline. **Receivables are 0** until the player accepts client work in play; the UI does not imply guaranteed money sitting off–balance-sheet.
 - **After you have accepted clients:** Receivables reflect guaranteed follow-up fees from those relationships, per the active save/phase rules in `getPendingReceivablesEur`.
 
-There is **no** “layoff pressure” copy on the first pre-season onboarding surface; **post-season hub** and **season summary** are where that language appears when relevant.
+There is **no** “layoff pressure” copy on the first pre-season onboarding surface. **Layoff pressure** (`hasLayoffPressure`) can appear on **post-season hub**, **post-season results**, **season summary**, and **pre-season 2+** whenever **`liquidityEur`** is negative — which requires **payables** to include upcoming wages (see §5).
 
 ### 4.1 Follow-up tranches (Season 2+ narrative)
 
@@ -93,11 +101,38 @@ So: **last year’s follow-up money** is in receivables (or becomes cash at the 
 
 ---
 
-## 5. In-season vs pre-season accrual
+## 5. Boundaries: settlement, receivables, wage payables, carryover
 
-- **Pre-season N → season N (golden rule):** On **Start season**, **always** settle: **cash** becomes `cash + receivables − payables`, then **`payablesLines` are cleared** (receivables for that settlement are whatever `getPendingReceivablesEur` returns in pre-season—typically **0** in pre-season 1). This applies to **season 1 and every later season**; there is no separate “cash-only” path for season 1. After settlement, new wage accruals only appear when you hire again in a **future** pre-season.
-- **During the season (`phase === "season"`):** Guaranteed receivables from **accepted** clients (non-reject) accrue against the **current season’s** client loop. The resource strip and liquidity use that total so receivables update as soon as a campaign is committed. Operating cash still moves with Season 1 tranches per client case.
-- **Rollover / carryover (Season 2+):** The “prior-season client follow-up” choices (`applySeason2CarryoverChoice` in `seasonCarryover.ts`) spend **only** **`resources.eur`** (and capacity). They **must not** re-add the prior run’s **`budgetSeason1`**—that tranche was already credited when the original campaign was executed; **`budgetSeason2`** was already converted to cash at **Start season** for this year. Otherwise cash would double-count contract money.
+### 5.1 Start season (pre-season → in-season)
+
+On **Start season** (`settlePreseasonAndEnterSeason`), **every** season:
+
+1. **Cash:** `resources.eur + getPendingReceivablesEur − totalPayables` (floored at 0).
+2. **`payablesLines`:** cleared to `[]` — all listed wages and severance for that transition are **paid from liquidity** (cash + receivables), not as a separate cash-only path.
+
+Receivables in pre-season are whatever `getPendingReceivablesEur` returns (typically **0** in pre-season 1 before any accepted work).
+
+### 5.2 Employee wage payables (when `payablesLines` is filled)
+
+After settlement, **`payablesLines` is empty during in-season play** — no wages accrue mid-season from client work.
+
+**Wage lines are written back** so the next year’s payroll obligation is visible and included in **`liquidityEur`**:
+
+| Moment | What happens |
+|--------|----------------|
+| **Hire** (pre-season, `HiringScreen`) | One **wage** line per hire (`wage-{employeeId}`). |
+| **Enter post-season** (`SeasonHubScreen` → **Continue to post-season**) | **Rebuild** wage lines for every surviving employee **except interns** (same rule as pre-season: interns have no wage payable line). |
+| **Enter next pre-season** (`enterNextPreseason` after season *Y* post-season) | **Rebuild** wage lines for surviving **non-intern** staff. Idempotent re-entry **merges** any missing rollover wage lines without wiping lines added if the player already hired in that pre-season. |
+
+So: **post-season *Y*** and **pre-season *Y*+1** both show **upcoming wages** in payables (and severance after a voluntary fire), and **`liquidityEur` / `hasLayoffPressure`** match the player’s expectations (e.g. cash 1k + receivables 13k − payables 15k &lt; 0 → mandatory layoff path in pre-season 2).
+
+### 5.3 In-season receivables
+
+During **`phase === "season"`**, guaranteed receivables from **accepted** clients (non-reject) use the **current** season’s loop. Receivables update when a campaign is **committed**. Operating cash still moves with Season 1 tranches per client case (`SeasonClientCaseScreen`).
+
+### 5.4 Rollover / carryover (Season 2+)
+
+`applySeason2CarryoverChoice` spends **only** **`resources.eur`** (and capacity). It does **not** re-credit **`budgetSeason1`** or touch **`budgetSeason2`** again (already settled at **Start season**).
 
 ---
 
@@ -129,11 +164,7 @@ So: **last year’s follow-up money** is in receivables (or becomes cash at the 
 
 ## 8. Starting a season (settlement)
 
-`settlePreseasonAndEnterSeason` (in `payablesReceivables.ts`) is invoked from **Pre-season** when the player confirms **Start season** — **every** season number:
-
-1. **Cash:** `resources.eur + getPendingReceivablesEur − sum(payablesLines)` (floored at 0).
-2. **`payablesLines`:** cleared to `[]`.
-3. **`payrollPaidBySeason[season]`:** set to `true` when **season ≥ 2** (route guard: season hub requires pre-season completed before play).
+Same as **§5.1**. **`payrollPaidBySeason[season]`** is set to `true` when **season ≥ 2** after settlement (route guard: season hub / client case require pre-season completed for that year).
 
 ---
 
@@ -155,6 +186,7 @@ On **post-season → next pre-season** (`enterNextPreseason`), interns whose sea
 - `payablesLines`: `{ id, label, amount }[]` — wage lines, severance lines, future types.
 - `payrollPaidBySeason`: season keys → `true` after **Start season** settlement for that season (season ≥ 2).
 - `voluntaryLayoffsBySeason`: counts voluntary fires per pre-season season.
+- `seasonCashAdjustmentsBySeason`: cash-flow-only season-start adjustments currently used for **voluntary-layoff severance** in summary screens.
 
 Older saves without `payablesLines` are migrated in `saveGameStorage.ts` (wage lines reconstructed; legacy “deduct salary at hire” cash is adjusted for consistency).
 
@@ -169,7 +201,9 @@ Older saves without `payablesLines` are migrated in `saveGameStorage.ts` (wage l
 | Pre-season UX, **Start season** | `web/components/PreSeasonScreen.tsx` |
 | Hiring and affordability | `web/components/HiringScreen.tsx` |
 | Resource strip (P / R / L) | `web/components/AgencyResourceStrip.tsx` |
+| Post-season entry (rebuild wages) | `web/components/SeasonHubScreen.tsx` |
 | Post-season / summary liquidity copy | `PostSeasonHubScreen.tsx`, `SeasonSummaryScreen.tsx` |
+| Post-season → next pre-season (spouse, interns, **rollover wages**) | `web/lib/preseasonTransition.ts` |
 | Season summary cash bridge / future receivables footnote | `web/lib/seasonFinancials.ts` |
 | In-season solution affordability (Season 1 tranche) | `SeasonClientCaseScreen.tsx` (main queue); carryover uses **cash only** (see §5) |
 | Metrics / breakdown | `web/lib/metricBreakdown.ts` |
@@ -184,7 +218,7 @@ These properties are what the implementation is designed to satisfy; if you chan
 
 1. **Single recognition of follow-up cash:** `budgetSeason2` is counted as a **receivable** only via `sumReceivablesFromLoop` / `getPendingReceivablesEur`. After **Start season**, that tranche is **credited to cash** and the receivable total for the **prior** loop is no longer used (`getReceivableLoopKey` moves to the new season). The old client rows in `seasonLoopBySeason` are **not** double-counted as both cash and receivable in the same phase.
 
-2. **No mid-season payables accrual:** `payablesLines` are cleared at every pre-season → season transition. New wage lines appear only from **hiring** (or severance from **fire**) in pre-season—not from operating client work.
+2. **Wage payables timing:** `payablesLines` are cleared at every **Start season**. During **in-season**, they stay empty (no wage accrual from client work). Wages reappear for the **next** year’s obligation via **Continue to post-season** (`SeasonHubScreen`), **`enterNextPreseason`**, and new **hires** / **fires** (severance) in pre-season — see **§5.2**.
 
 3. **Liquidity invariant:** `liquidityEur = cash + pendingReceivables − payables`. Hiring and **Start season** both respect this; you cannot **Start season** with negative liquidity (`hasLayoffPressure`).
 
