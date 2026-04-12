@@ -221,9 +221,6 @@ export function ScenarioHistoryDetailScreen({ season, clientId }: { season: numb
             Visibility Gain: +{finalVisGain}
           </p>
         </div>
-        <p className="muted" style={{ margin: "0.6rem 0 0", fontSize: "0.85rem" }}>
-          Reputation and visibility impact from this resolution will be shown on the post-season summary.
-        </p>
       </Section>
 
       <div style={{ marginTop: "0.5rem" }}>
