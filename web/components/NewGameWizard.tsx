@@ -90,6 +90,8 @@ export type NewGamePayload = {
   preseasonEntrySpouseGrantSeasons?: string[];
   /** One-shot modal on the matching pre-season screen after post-season rollover. */
   preseasonEntryRevealPending?: PreseasonEntryRevealPending;
+  /** Running total of wage payables settled at “Go to season” (excludes severance). */
+  cumulativeWagesPaidEur?: number;
   /** Whether payroll for a given season key has already been paid before entering that season hub. */
   payrollPaidBySeason?: Partial<Record<string, boolean>>;
   /** Voluntary layoffs taken in a given season number (string key), max 1 per season. */

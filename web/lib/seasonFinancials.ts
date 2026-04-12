@@ -241,3 +241,84 @@ export function computePayrollHeadsUp(save: NewGamePayload): PayrollHeadsUp {
     employeeCount: employees.length,
   };
 }
+
+/** End-of-Season-2 agency scorecard: cumulative cash revenue vs EUR campaign spend vs wages settled (Seasons 1–2). */
+export type AgencyProfitFlashcard = {
+  revenue: number;
+  campaignSpending: number;
+  wages: number;
+  profit: number;
+  /** `100 * profit / revenue`, two decimal places; null when revenue is zero. */
+  profitMarginPct: number | null;
+};
+
+function sumAcceptedBudgetSeason1ForLoop(save: NewGamePayload, seasonLoopKey: string): number {
+  const loop = save.seasonLoopBySeason?.[seasonLoopKey];
+  if (!loop) return 0;
+  let sum = 0;
+  for (const run of loop.runs) {
+    if (!run.accepted || run.solutionId === "reject") continue;
+    const client = loop.clientsQueue.find((c) => c.id === run.clientId);
+    if (client) sum += Math.max(0, client.budgetSeason1);
+  }
+  return sum;
+}
+
+function sumInLoopSolutionEurSpend(save: NewGamePayload, seasonLoopKey: string): number {
+  const loop = save.seasonLoopBySeason?.[seasonLoopKey];
+  if (!loop) return 0;
+  let sum = 0;
+  for (const run of loop.runs) {
+    if (!run.accepted || run.solutionId === "reject") continue;
+    sum += run.costBudget ?? 0;
+  }
+  return sum;
+}
+
+function sumSeason2RolloverSolutionEurSpend(save: NewGamePayload): number {
+  const loop = save.seasonLoopBySeason?.["1"];
+  if (!loop) return 0;
+  let sum = 0;
+  for (const run of loop.runs) {
+    if (!run.accepted || run.solutionId === "reject") continue;
+    if (!run.season2CarryoverResolution) continue;
+    sum += run.season2CarryoverResolution.costBudget ?? 0;
+  }
+  return sum;
+}
+
+function postSeasonReachEurForLoopSeasonKey(save: NewGamePayload, seasonKey: string): number {
+  return collectPostSeasonLedger(save)
+    .filter((e) => e.seasonKey === seasonKey)
+    .reduce((s, e) => s + e.eurSpentOnReachBoost, 0);
+}
+
+/**
+ * Revenue: Season 1 first-tranche cash, Season 1 follow-up tranche cash collected at Season 2 entry,
+ * Season 2 first-tranche cash only (excludes Season 2 follow-up receivable for Season 3).
+ * Campaign spending: solution EUR, Season 2 rollover execution EUR, post-season reach boosts (EUR).
+ * Wages: wage payables settled at season starts (`cumulativeWagesPaidEur`), with a legacy fallback from cash-flow roll-ups.
+ */
+export function computeAgencyProfitFlashcardEndOfSeason2(save: NewGamePayload): AgencyProfitFlashcard {
+  const season1ClientFees = sumAcceptedBudgetSeason1ForLoop(save, "1");
+  const season1RolloverRecognizedWithSeason2 = sumReceivablesFromLoop(save, "1");
+  const season2FreshClientFees = sumAcceptedBudgetSeason1ForLoop(save, "2");
+  const revenue = season1ClientFees + season1RolloverRecognizedWithSeason2 + season2FreshClientFees;
+
+  const season1CampaignEur = sumInLoopSolutionEurSpend(save, "1");
+  const season1PostReachEur = postSeasonReachEurForLoopSeasonKey(save, "1");
+  const season2RolloverCampaignEur = sumSeason2RolloverSolutionEurSpend(save);
+  const season2FreshCampaignEur = sumInLoopSolutionEurSpend(save, "2");
+  const season2PostReachEur = postSeasonReachEurForLoopSeasonKey(save, "2");
+  const campaignSpending =
+    season1CampaignEur + season1PostReachEur + season2RolloverCampaignEur + season2FreshCampaignEur + season2PostReachEur;
+
+  const wagesFallback =
+    computeSeasonCashFlow(save, "1").wagesPaid + computeSeasonCashFlow(save, "2").wagesPaid;
+  const wages = save.cumulativeWagesPaidEur ?? wagesFallback;
+
+  const profit = revenue - campaignSpending - wages;
+  const profitMarginPct = revenue > 0 ? Math.round((profit / revenue) * 10000) / 100 : null;
+
+  return { revenue, campaignSpending, wages, profit, profitMarginPct };
+}

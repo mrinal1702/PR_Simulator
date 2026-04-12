@@ -98,6 +98,9 @@ export function severanceLineId(employeeId: string): string {
 export function settlePreseasonAndEnterSeason(save: NewGamePayload, seasonKey: string): NewGamePayload {
   const r = getPendingReceivablesEur(save);
   const p = totalPayables(save);
+  const wagesSettledNow = (save.payablesLines ?? [])
+    .filter((l) => l.id.startsWith("wage-"))
+    .reduce((s, l) => s + l.amount, 0);
   const nextEur = save.resources.eur + r - p;
   const payrollPaidBySeason =
     Number.parseInt(seasonKey, 10) >= 2
@@ -119,6 +122,7 @@ export function settlePreseasonAndEnterSeason(save: NewGamePayload, seasonKey: s
       eur: Math.max(0, nextEur),
     },
     payablesLines: [],
+    cumulativeWagesPaidEur: (save.cumulativeWagesPaidEur ?? 0) + wagesSettledNow,
     payrollPaidBySeason,
     seasonEntryScoresBySeason: {
       ...(save.seasonEntryScoresBySeason ?? {}),

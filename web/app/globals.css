@@ -1149,3 +1149,159 @@ h3 {
   color: var(--cc-ice);
   font-size: 0.95rem;
 }
+
+/* End Season 2: light “flashcard” screen (outside main game shell vibe) */
+.end-season-profit-shell {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  max-width: 40rem;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  color: #0f172a;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.end-season-profit-shell a {
+  color: #0369a1;
+  text-decoration: none;
+}
+
+.end-season-profit-shell a:hover {
+  text-decoration: underline;
+}
+
+.end-season-profit-muted {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #64748b;
+}
+
+.end-season-profit-card {
+  margin-top: 0.5rem;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+}
+
+.end-season-profit-kicker {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.end-season-profit-headline {
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.35rem, 3.5vw, 1.65rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.end-season-profit-headline-pct {
+  color: #0d9488;
+}
+
+.end-season-profit-headline-pct--neg {
+  color: #b91c1c;
+}
+
+.end-season-profit-sub {
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #475569;
+}
+
+.end-season-profit-lines {
+  margin: 0;
+  padding: 0.75rem 0 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.end-season-profit-line {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.45rem 0;
+  font-size: 0.95rem;
+}
+
+.end-season-profit-line dt {
+  margin: 0;
+  font-weight: 600;
+  color: #334155;
+}
+
+.end-season-profit-line dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.end-season-profit-line--cost {
+  color: #b45309 !important;
+}
+
+.end-season-profit-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #cbd5e1;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.end-season-profit-total-pos {
+  color: #15803d;
+}
+
+.end-season-profit-total-neg {
+  color: #b91c1c;
+}
+
+.end-season-profit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.end-season-profit-btn--primary {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #0f172a;
+}
+
+.end-season-profit-btn--primary:hover {
+  background: #1e293b;
+  border-color: #1e293b;
+  text-decoration: none;
+}
+
+.end-season-profit-btn--secondary {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.end-season-profit-btn--secondary:hover {
+  background: #f8fafc;
+  text-decoration: none;
+}

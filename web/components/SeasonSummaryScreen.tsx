@@ -500,15 +500,33 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
         <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none" }}>
           Back to post-season
         </Link>
-        <button
-          type="button"
-          className={summaryUnlocked ? "btn btn-next-hint" : "btn btn-secondary"}
-          onClick={() => summaryUnlocked && setConfirmAdvanceOpen(true)}
-          disabled={!summaryUnlocked}
-          style={{ opacity: summaryUnlocked ? 1 : 0.55 }}
-        >
-          Enter pre-season {nextPreseasonNum}
-        </button>
+        {season === 2 ? (
+          <Link
+            href={summaryUnlocked ? `/game/postseason/${season}/end-season` : "#"}
+            className={summaryUnlocked ? "btn btn-next-hint" : "btn btn-secondary"}
+            aria-disabled={!summaryUnlocked}
+            style={{
+              textDecoration: "none",
+              opacity: summaryUnlocked ? 1 : 0.55,
+              pointerEvents: summaryUnlocked ? "auto" : "none",
+            }}
+            onClick={(e) => {
+              if (!summaryUnlocked) e.preventDefault();
+            }}
+          >
+            End Season
+          </Link>
+        ) : (
+          <button
+            type="button"
+            className={summaryUnlocked ? "btn btn-next-hint" : "btn btn-secondary"}
+            onClick={() => summaryUnlocked && setConfirmAdvanceOpen(true)}
+            disabled={!summaryUnlocked}
+            style={{ opacity: summaryUnlocked ? 1 : 0.55 }}
+          >
+            Enter pre-season {nextPreseasonNum}
+          </button>
+        )}
         {!summaryUnlocked ? (
           <p className="muted" style={{ margin: 0, fontSize: "0.86rem" }}>
             Complete post-season results first, then continue.
@@ -516,7 +534,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
         ) : null}
       </div>
 
-      {confirmAdvanceOpen ? (
+      {confirmAdvanceOpen && season !== 2 ? (
         <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="advance-season-title">
           <div className="game-modal">
             <h2 id="advance-season-title" style={{ marginTop: 0 }}>
