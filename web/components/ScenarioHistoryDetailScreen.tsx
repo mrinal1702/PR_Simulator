@@ -8,6 +8,8 @@ import {
   buildArc1Text,
   buildArcResolutionText,
   buildPostSeasonArcBlurb,
+  reputationDeltaFromEffectivenessCurve,
+  visibilityGainFromSatisfactionCurve,
 } from "@/lib/postSeasonResults";
 import { getPostSeasonResolutionEntries } from "@/lib/seasonCarryover";
 import { getScenarioById } from "@/lib/scenarios";
@@ -127,6 +129,8 @@ export function ScenarioHistoryDetailScreen({ season, clientId }: { season: numb
   const arc1Text = buildArc1Text(rawScenario?.arc_1, s1InitialReach, s1InitialEff);
   const arc2Text = buildPostSeasonArcBlurb(client, s1InitialReach, s1InitialEff);
   const arcResText = buildArcResolutionText(rawScenario?.arc_resolution, s2.messageSpread, s2.messageEffectiveness);
+  const finalRepDelta = reputationDeltaFromEffectivenessCurve(s2.messageEffectiveness);
+  const finalVisGain = visibilityGainFromSatisfactionCurve(s2.satisfaction);
 
   return (
     <div className="shell shell-wide">
@@ -200,6 +204,23 @@ export function ScenarioHistoryDetailScreen({ season, clientId }: { season: numb
       {/* Final metrics */}
       <Section label="Final metrics">
         <MetricRows reach={s2.messageSpread} effectiveness={s2.messageEffectiveness} />
+        <div style={{ marginTop: "0.6rem", display: "flex", gap: "1.25rem", flexWrap: "wrap" }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: "0.92rem",
+              fontWeight: 600,
+              color: finalRepDelta < 0 ? "#dc2626" : finalRepDelta === 0 ? "#fbbf24" : "#22c55e",
+            }}
+          >
+            {finalRepDelta < 0
+              ? `Projected Reputation Loss: ${finalRepDelta}`
+              : `Projected Reputation Gain: ${finalRepDelta > 0 ? "+" : ""}${finalRepDelta}`}
+          </p>
+          <p style={{ margin: 0, fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" }}>
+            Projected Visibility Gain: +{finalVisGain}
+          </p>
+        </div>
         <p className="muted" style={{ margin: "0.6rem 0 0", fontSize: "0.85rem" }}>
           Reputation and visibility impact from this resolution will be shown on the post-season summary.
         </p>

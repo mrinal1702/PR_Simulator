@@ -7,16 +7,20 @@ import { GAME_TITLE } from "@/lib/onboardingContent";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import {
   acceptedRunsWithOutcomes,
+  buildArc1Text,
+  getSeason2EffectivenessBoostCostCapacity,
+  getSeason2ReachBoostCostEur,
   postSeasonCompletedCount,
   postSeasonNextRunIndex,
 } from "@/lib/postSeasonResults";
-import { buildSeasonCaseLog, buildSeason1CaseLog, type BreakdownMetric } from "@/lib/metricBreakdown";
+import { buildSeason1CaseLog, type BreakdownMetric } from "@/lib/metricBreakdown";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 import { AgencyFinanceStatsRows } from "@/components/AgencyFinanceStatsRows";
 import { EmployeeRosterList } from "@/components/EmployeeRosterList";
 import { MetricBreakdownModalBody } from "@/components/MetricBreakdownModalBody";
 import { ResourceSymbol } from "@/components/resourceSymbols";
+import { getScenarioById } from "@/lib/scenarios";
 import {
   getPendingReceivablesEur,
   hasLayoffPressure,
@@ -71,24 +75,47 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
   const loop = save?.seasonLoopBySeason?.[seasonKey];
 
   const [expandedScenario, setExpandedScenario] = useState<Record<string, boolean>>({});
+  const [expandedActiveCases, setExpandedActiveCases] = useState<Record<string, boolean>>({});
   const acceptedForResults = useMemo(() => (loop ? acceptedRunsWithOutcomes(loop) : []), [loop]);
   const resultsTotal = acceptedForResults.length;
   const resultsDone =
     resultsTotal === 0 || postSeasonNextRunIndex(acceptedForResults) >= resultsTotal;
   const resultsProgress =
     resultsTotal > 0 ? `${postSeasonCompletedCount(acceptedForResults)} / ${resultsTotal} reviewed` : "—";
-  /** Summary is available and is the forward path (reviews done, or nothing to review). */
-  const summaryReady = resultsDone;
-
   const caseLog = useMemo(() => (save && season === 1 ? buildSeason1CaseLog(save) : []), [save, season]);
-  const activeCases = useMemo(
-    () => (save && season >= 2 ? buildSeasonCaseLog(save, seasonKey) : []),
-    [save, season, seasonKey]
-  );
 
   // Season 2+ resolution tracking
   const s2Entries = useMemo(() => (save && season >= 2 ? getPostSeasonResolutionEntries(save, season) : []), [save, season]);
   const s2ResolutionsDone = useMemo(() => (save && season >= 2 ? isPostSeasonResolutionComplete(save, season) : true), [save, season]);
+  const showHubControls = season === 1 || s2ResolutionsDone;
+  const showSeasonScenarioButton = season >= 2 && s2ResolutionsDone && !resultsDone && resultsTotal > 0;
+  const summaryReady = season >= 2 ? s2ResolutionsDone && resultsDone : resultsDone;
+
+  const activeCases = useMemo(() => {
+    if (season < 2 || !loop || !resultsDone) return [];
+    return loop.clientsQueue.flatMap((client) => {
+      const run = loop.runs.find((entry) => entry.clientId === client.id);
+      if (!run?.accepted || run.solutionId === "reject" || !run.postSeason) return [];
+      const scenario = getScenarioById(client.scenarioId) as Record<string, unknown> | undefined;
+      const boost = run.postSeason.boostPointsApplied ?? 0;
+      const initialReach =
+        run.postSeason.choice === "reach"
+          ? Math.max(0, run.postSeason.reachPercent - boost)
+          : run.postSeason.reachPercent;
+      const initialEffectiveness =
+        run.postSeason.choice === "effectiveness"
+          ? Math.max(0, run.postSeason.effectivenessPercent - boost)
+          : run.postSeason.effectivenessPercent;
+      return [
+        {
+          client,
+          run,
+          arc1Text: buildArc1Text(scenario?.arc_1, initialReach, initialEffectiveness),
+        },
+      ];
+    });
+  }, [season, loop, resultsDone]);
+  const showActiveCasesToggle = season >= 2 && resultsDone && activeCases.length > 0;
 
   const scenarioOverviewRows = useMemo(() => {
     if (!loop) return [];
@@ -152,30 +179,74 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
         </p>
       </div>
 
-      <section>
-        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
-          <button type="button" className="btn btn-secondary" onClick={() => setShowStats((v) => !v)}>
-            {showStats ? "Hide agency stats" : "Agency stats"}
-          </button>
-          <button type="button" className="btn btn-secondary" onClick={() => setShowEmployees((v) => !v)}>
-            {showEmployees ? "Hide employees" : "Employees"}
-          </button>
-          {season === 1 ? (
-            <button type="button" className="btn btn-secondary" onClick={() => setShowCaseLog((v) => !v)}>
-              {showCaseLog ? "Hide case log" : "Case log — Season 1"}
-            </button>
-          ) : season >= 2 ? (
-            <button type="button" className="btn btn-secondary" onClick={() => setShowCaseLog((v) => !v)}>
-              {showCaseLog ? "Hide active cases" : "Active Cases"}
-            </button>
-          ) : null}
-          <button type="button" className="btn btn-secondary" onClick={saveNow}>
-            Save
-          </button>
-          <button type="button" className="btn btn-secondary" style={{ fontSize: "0.85rem" }} onClick={refresh}>
-            Refresh
-          </button>
+      {season >= 2 ? (
+        <div className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
+          <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>Post-season checklist</h3>
+          <p className="muted" style={{ marginTop: 0, fontSize: "0.92rem" }}>
+            {!s2ResolutionsDone
+              ? "Start by acknowledging each completed scenario resolution."
+              : !resultsDone
+                ? `Completed scenarios are acknowledged. Next, review your fresh Season ${season} scenarios.`
+                : "All post-season scenario reviews are complete. You can inspect the finished cases or continue to the season summary."}
+          </p>
+          <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap" }}>
+            {s2Entries.length > 0 ? (
+              <Link
+                href={`/game/postseason/${season}/resolutions`}
+                className={`btn ${s2ResolutionsDone ? "btn-secondary" : "btn-primary"}`}
+                style={{ textDecoration: "none" }}
+              >
+                Completed scenarios
+              </Link>
+            ) : null}
+            {showSeasonScenarioButton ? (
+              <Link
+                href={`/game/postseason/${season}/results`}
+                className="btn btn-primary"
+                style={{ textDecoration: "none" }}
+              >
+                Season {season} scenarios
+              </Link>
+            ) : null}
+            {summaryReady ? (
+              <Link
+                href={`/game/postseason/${season}/summary`}
+                className="btn btn-next-hint"
+                style={{ textDecoration: "none" }}
+              >
+                Season summary
+              </Link>
+            ) : null}
+          </div>
         </div>
+      ) : null}
+
+      <section>
+        {showHubControls ? (
+          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
+            <button type="button" className="btn btn-secondary" onClick={() => setShowStats((v) => !v)}>
+              {showStats ? "Hide agency stats" : "Agency stats"}
+            </button>
+            <button type="button" className="btn btn-secondary" onClick={() => setShowEmployees((v) => !v)}>
+              {showEmployees ? "Hide employees" : "Employees"}
+            </button>
+            {season === 1 ? (
+              <button type="button" className="btn btn-secondary" onClick={() => setShowCaseLog((v) => !v)}>
+                {showCaseLog ? "Hide case log" : "Case log — Season 1"}
+              </button>
+            ) : showActiveCasesToggle ? (
+              <button type="button" className="btn btn-secondary" onClick={() => setShowCaseLog((v) => !v)}>
+                {showCaseLog ? "Hide active cases" : "Active Cases"}
+              </button>
+            ) : null}
+            <button type="button" className="btn btn-secondary" onClick={saveNow}>
+              Save
+            </button>
+            <button type="button" className="btn btn-secondary" style={{ fontSize: "0.85rem" }} onClick={refresh}>
+              Refresh
+            </button>
+          </div>
+        ) : null}
 
         {showStats ? (
           <div className="agency-stats-panel">
@@ -246,23 +317,18 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
           </div>
         ) : null}
 
-        {showCaseLog && (season === 1 || season >= 2) ? (
+        {showCaseLog && season === 1 ? (
           <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
             <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>
-              {season === 1 ? "Case log — Season 1" : `Active Cases — Season ${season}`}
+              Case log — Season 1
             </h3>
-            {season >= 2 ? (
-              <p className="muted" style={{ marginTop: 0, fontSize: "0.9rem" }}>
-                Fresh cases from Season {season} only. Prior-season rollover scenarios are not shown here.
-              </p>
-            ) : null}
-            {(season === 1 ? caseLog : activeCases).length === 0 ? (
+            {caseLog.length === 0 ? (
               <p className="muted" style={{ margin: 0 }}>
                 No cases logged.
               </p>
             ) : (
               <div style={{ display: "grid", gap: "0.75rem", marginTop: "0.65rem" }}>
-                {(season === 1 ? caseLog : activeCases).map((entry) => (
+                {caseLog.map((entry) => (
                   <div
                     key={entry.clientId}
                     style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.75rem 0.85rem", textAlign: "left" }}
@@ -286,8 +352,94 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
           </div>
         ) : null}
 
-        <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
-          {season === 1 ? (
+        {showCaseLog && season >= 2 && showActiveCasesToggle ? (
+          <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
+            <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>
+              Active Cases — Season {season}
+            </h3>
+            <p className="muted" style={{ marginTop: 0, fontSize: "0.9rem" }}>
+              Reviewed Season {season} scenarios now live here with your chosen post-season action and final metrics.
+            </p>
+            {activeCases.length === 0 ? (
+              <p className="muted" style={{ margin: 0 }}>
+                No active cases to show.
+              </p>
+            ) : (
+              <div style={{ display: "grid", gap: "0.75rem", marginTop: "0.65rem" }}>
+                {activeCases.map(({ client, run, arc1Text }) => {
+                  const expanded = expandedActiveCases[client.id] ?? false;
+                  const toggle = () => setExpandedActiveCases((m) => ({ ...m, [client.id]: !expanded }));
+                  return (
+                    <div
+                      key={client.id}
+                      style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.75rem 0.85rem", textAlign: "left" }}
+                    >
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={toggle}
+                        style={{
+                          width: "100%",
+                          justifyContent: "space-between",
+                          padding: "0.6rem 0.75rem",
+                          fontSize: "0.96rem",
+                        }}
+                      >
+                        <span>{client.scenarioTitle}</span>
+                        <span>{expanded ? "Hide" : "Open"}</span>
+                      </button>
+                      {expanded ? (
+                        <div style={{ marginTop: "0.85rem" }}>
+                          <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.92rem" }}>
+                            {client.problem}
+                          </p>
+                          <p style={{ margin: "0 0 0.4rem", fontSize: "0.92rem" }}>
+                            <strong>Your in-season decision:</strong> {run.solutionTitle ?? run.solutionId}
+                          </p>
+                          <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.9rem", lineHeight: 1.5 }}>
+                            <strong>First update:</strong> {arc1Text}
+                          </p>
+                          <p style={{ margin: "0 0 0.35rem", fontSize: "0.92rem" }}>
+                            <strong>Your action:</strong> {postSeasonChoiceLabel(run.postSeason?.choice ?? "none")}
+                          </p>
+                          <p className="muted" style={{ margin: "0 0 0.35rem", fontSize: "0.88rem" }}>
+                            <strong>In-season cost:</strong> EUR {(run.costBudget ?? 0).toLocaleString("en-GB")} · Capacity {run.costCapacity ?? 0}
+                          </p>
+                          <p className="muted" style={{ margin: "0 0 0.35rem", fontSize: "0.88rem" }}>
+                            <strong>Post-season action cost:</strong>{" "}
+                            {postSeasonChoiceCostLabel(run.postSeason?.choice ?? "none", client)}
+                          </p>
+                          <p className="muted" style={{ margin: "0 0 0.35rem", fontSize: "0.88rem" }}>
+                            <strong>Fees this season:</strong> EUR {client.budgetSeason1.toLocaleString("en-GB")}
+                          </p>
+                          <p className="muted" style={{ margin: "0 0 0.55rem", fontSize: "0.88rem" }}>
+                            <strong>Fees next season:</strong> EUR {client.budgetSeason2.toLocaleString("en-GB")}
+                          </p>
+                          <p className="scenario-campaign-results-kicker">Current Solution Metrics</p>
+                          <div className="scenario-summary-metric-row">
+                            <span style={{ color: metricPercentGradientColor(run.postSeason?.reachPercent ?? run.outcome?.messageSpread ?? 0) }}>
+                              Reach — {run.postSeason?.reachPercent ?? run.outcome?.messageSpread ?? 0}%
+                            </span>
+                            <ScenarioMetricBar pct={run.postSeason?.reachPercent ?? run.outcome?.messageSpread ?? 0} />
+                          </div>
+                          <div className="scenario-summary-metric-row">
+                            <span style={{ color: metricPercentGradientColor(run.postSeason?.effectivenessPercent ?? run.outcome?.messageEffectiveness ?? 0) }}>
+                              Effectiveness — {run.postSeason?.effectivenessPercent ?? run.outcome?.messageEffectiveness ?? 0}%
+                            </span>
+                            <ScenarioMetricBar pct={run.postSeason?.effectivenessPercent ?? run.outcome?.messageEffectiveness ?? 0} />
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ) : null}
+
+        {season === 1 ? (
+          <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
             <>
               <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Campaign results</h3>
               <p className="muted" style={{ margin: 0 }}>
@@ -319,47 +471,8 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
                 )}
               </div>
             </>
-          ) : (
-            <>
-              <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Completed scenarios</h3>
-              <p className="muted" style={{ margin: 0 }}>
-                {s2Entries.length === 0
-                  ? "No rollover scenarios to resolve for this season."
-                  : s2ResolutionsDone
-                    ? "All scenario resolutions reviewed."
-                    : `Review each resolved scenario in order. ${s2Entries.length} total.`}
-              </p>
-              <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: "0.65rem" }}>
-                {resultsDone ? (
-                  <Link href={`/game/postseason/${season}/summary`} className="btn btn-next-hint" style={{ textDecoration: "none" }}>
-                    Season summary
-                  </Link>
-                ) : (
-                  <button type="button" className="btn btn-secondary" disabled style={{ opacity: 0.55 }}>Season summary</button>
-                )}
-                {s2ResolutionsDone ? (
-                  <Link href={`/game/postseason/${season}/history`} className="btn btn-secondary" style={{ textDecoration: "none" }}>
-                    Scenario history
-                  </Link>
-                ) : null}
-                {resultsTotal === 0 ? (
-                  <button type="button" className="btn btn-secondary" disabled style={{ opacity: 0.55 }}>Season 2 scenarios</button>
-                ) : (
-                  <Link href={`/game/postseason/${season}/results`} className="btn btn-secondary" style={{ textDecoration: "none" }}>
-                    Season 2 scenarios
-                  </Link>
-                )}
-                {s2Entries.length === 0 ? (
-                  <button type="button" className="btn btn-primary" disabled style={{ opacity: 0.55 }}>Completed scenarios</button>
-                ) : (
-                  <Link href={`/game/postseason/${season}/resolutions`} className="btn btn-primary" style={{ textDecoration: "none" }}>
-                    Completed scenarios
-                  </Link>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+          </div>
+        ) : null}
 
         {season === 1 && resultsDone && scenarioOverviewRows.length > 0 ? (
           <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
@@ -463,6 +576,30 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
       ) : null}
     </div>
   );
+}
+
+function postSeasonChoiceLabel(choice: "reach" | "effectiveness" | "none"): string {
+  switch (choice) {
+    case "reach":
+      return "Increased Reach";
+    case "effectiveness":
+      return "Increased Effectiveness";
+    default:
+      return "Did Nothing";
+  }
+}
+
+function postSeasonChoiceCostLabel(
+  choice: "reach" | "effectiveness" | "none",
+  client: { budgetSeason1: number; budgetSeason2: number; budgetTier?: 1 | 2; scenarioTitle: string } & Parameters<typeof getSeason2ReachBoostCostEur>[0]
+): string {
+  if (choice === "reach") {
+    return `EUR ${getSeason2ReachBoostCostEur(client).toLocaleString("en-GB")}`;
+  }
+  if (choice === "effectiveness") {
+    return `${getSeason2EffectivenessBoostCostCapacity(client)} capacity`;
+  }
+  return "No extra cost";
 }
 
 function MetricRow({
