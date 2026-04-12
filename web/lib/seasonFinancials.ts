@@ -131,7 +131,9 @@ export function computeSeasonCashFlow(save: NewGamePayload, seasonKey: string): 
 
   if (seasonNum === 1) {
     openingCash = initialEndowmentEur(save);
-    wagesPaid = 0;
+    wagesPaid = (save.employees ?? [])
+      .filter((e) => e.seasonHired === 1 && e.role !== "Intern")
+      .reduce((s, e) => s + e.salary, 0);
   } else {
     const payrollPaid = save.payrollPaidBySeason?.[seasonKey] === true;
     const activeEmployees = (save.employees ?? []).filter((e) => e.seasonHired <= seasonNum);
