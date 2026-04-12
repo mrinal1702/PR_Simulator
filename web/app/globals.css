@@ -1211,6 +1211,37 @@ h3 {
   color: #b91c1c;
 }
 
+.end-season-profit-headline--loss {
+  color: #b91c1c;
+}
+
+.end-season-profit-cheer {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.end-season-profit-cheer--pos {
+  color: #0d9488;
+}
+
+.end-season-profit-cheer--neg {
+  color: #b91c1c;
+}
+
+.end-season-profit-cheer--neu {
+  color: #64748b;
+}
+
+.shopping-center-budget-hero {
+  margin: 0.35rem 0 0.5rem;
+  font-size: clamp(1.65rem, 5vw, 2.1rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+}
+
 .end-season-profit-sub {
   margin: 0 0 1.25rem;
   font-size: 0.9rem;

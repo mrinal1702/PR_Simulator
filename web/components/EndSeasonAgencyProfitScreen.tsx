@@ -42,14 +42,20 @@ export function EndSeasonAgencyProfitScreen({ season }: { season: number }) {
     );
   }
 
-  const pctLabel =
+  const agencyName = save.agencyName.trim() || "Your agency";
+  const playerName = save.playerName.trim() || "there";
+
+  const isLoss = metrics.profit < 0;
+  const isProfit = metrics.profit > 0;
+
+  const profitPctLabel =
     metrics.profitMarginPct == null ? "—" : `${metrics.profitMarginPct.toFixed(2)}%`;
-  const pctClass =
+  const lossPctLabel =
     metrics.profitMarginPct == null
-      ? "end-season-profit-headline-pct"
-      : metrics.profit < 0
-        ? "end-season-profit-headline-pct end-season-profit-headline-pct--neg"
-        : "end-season-profit-headline-pct";
+      ? null
+      : `${Math.abs(metrics.profitMarginPct).toFixed(2)}%`;
+
+  const headlineClass = isLoss ? "end-season-profit-headline end-season-profit-headline--loss" : "end-season-profit-headline";
 
   return (
     <div className="end-season-profit-shell">
@@ -61,8 +67,29 @@ export function EndSeasonAgencyProfitScreen({ season }: { season: number }) {
 
       <div className="end-season-profit-card">
         <p className="end-season-profit-kicker">Operating result · Seasons 1–2</p>
-        <h1 className="end-season-profit-headline">
-          Your agency made <span className={pctClass}>{pctLabel}</span> profit
+        {isProfit ? (
+          <p className="end-season-profit-cheer end-season-profit-cheer--pos">Congratulations {playerName}!</p>
+        ) : isLoss ? (
+          <p className="end-season-profit-cheer end-season-profit-cheer--neg">Buck up {playerName}!</p>
+        ) : (
+          <p className="end-season-profit-cheer end-season-profit-cheer--neu">Seasons 1–2 are in the books, {playerName}.</p>
+        )}
+        <h1 className={headlineClass}>
+          {isLoss ? (
+            lossPctLabel != null ? (
+              <>
+                {agencyName} took a{" "}
+                <span className="end-season-profit-headline-pct end-season-profit-headline-pct--neg">{lossPctLabel}</span>{" "}
+                loss
+              </>
+            ) : (
+              <>{agencyName} took an operating loss</>
+            )
+          ) : (
+            <>
+              {agencyName} made <span className="end-season-profit-headline-pct">{profitPctLabel}</span> profit
+            </>
+          )}
         </h1>
         <p className="end-season-profit-sub">
           Margin is profit divided by revenue, based on cash collected from client work through the end of Season 2.
