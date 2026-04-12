@@ -8,7 +8,6 @@ import {
   acceptedRunsWithOutcomes,
   applyPostSeasonChoice,
   buildArc1Text,
-  buildPostSeasonArcBlurb,
   canAffordEffectivenessBoost,
   canAffordReachBoost,
   canAffordSeason2EffectivenessBoost,
@@ -221,9 +220,11 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
   const completeness = postSeasonScenarioCompletenessPercent(season);
   const season2Flow = season >= 2;
   const scenario = currentClient ? getScenarioById(currentClient.scenarioId) : undefined;
-  const arc1Text = season2Flow
-    ? buildArc1Text((scenario as Record<string, unknown> | undefined)?.arc_1, reach, effectiveness)
-    : "";
+  const arc1Text = buildArc1Text(
+    (scenario as Record<string, unknown> | undefined)?.arc_1,
+    reach,
+    effectiveness
+  );
   const affordReach = season2Flow
     ? canAffordSeason2ReachBoost(save.resources.eur, currentClient)
     : canAffordReachBoost(save.resources.eur);
@@ -277,7 +278,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
           <strong>Message reach:</strong> {reach}% · <strong>Message effectiveness:</strong> {effectiveness}%
         </p>
         <p style={{ margin: "0.75rem 0 0", lineHeight: 1.55 }}>
-          {season2Flow ? arc1Text || buildPostSeasonArcBlurb(currentClient, reach, effectiveness) : buildPostSeasonArcBlurb(currentClient, reach, effectiveness)}
+          {arc1Text}
         </p>
       </section>
 

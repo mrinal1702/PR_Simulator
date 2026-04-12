@@ -15,7 +15,7 @@ Agency snapshot, optional stats/employees/case log, liquidity copy, **View resul
 One scenario at a time in **queue order** (same order as in-season). For each accepted run with an outcome:
 
 - Arc completeness bar (50% for Season 1 half-arc).
-- Scenario title and brief; **post-season arc** text from scenario **`arc_2`** branches (see *Arc keys* below).
+- Scenario title and brief; **post-season arc** text from scenario **`arc_1`** branches (see *Arc keys* below).
 - Message reach / effectiveness (from in-season resolution).
 - Player chooses **optional boost**: increase reach (EUR 5,000), increase effectiveness (5 capacity), or **do nothing** — competence maps to **1–5%** boost when applicable.
 - **Reputation** (−2 … +5 from effectiveness octets) and **visibility** (+1 … +10 from 50% reach + 50% satisfaction) apply **after** the choice; stored on `run.postSeason` and in agency stats.
@@ -51,7 +51,7 @@ Same queue order as **Season 1 clients who now have** `season2CarryoverResolutio
 
 - **List:** `/game/postseason/[season]/history` — `ScenarioHistoryListScreen.tsx` (scenario titles only).
 - **Detail:** `/game/postseason/[season]/history/[clientId]` — `ScenarioHistoryDetailScreen.tsx`  
-  Full brief, Season 1 solution, **`arc_1`** outcome (50% high/low grid on **initial** Season 1 reach/effectiveness), **midseason checkpoint** (Season 1 **final** metrics after post-season boost + S1 rep/vis), **`arc_2`** blurb (same 50% grid on **initial** S1 metrics — what the player saw in Season 1 post-season), Season 2 carry-over action summary, **`arc_resolution`** text (3×3 on **final** S2 metrics), final metrics. **Back** returns to resolutions (or list context as linked).
+  Full brief, Season 1 solution, **`arc_1`** outcome (50% high/low grid on **initial** Season 1 reach/effectiveness), **midseason checkpoint** (Season 1 **final** metrics after post-season boost + S1 rep/vis), **`arc_2`** blurb (same 50% grid on **initial** S1 metrics — what the player saw in the Season 2 carry-over case flow), Season 2 carry-over action summary, **`arc_resolution`** text (3×3 on **final** S2 metrics), final metrics. **Back** returns to resolutions (or list context as linked).
 
 Helpers: `getPostSeasonResolutionEntries`, `advancePostSeasonResolutionProgress`, `isPostSeasonResolutionComplete` in `web/lib/seasonCarryover.ts`.  
 Arc text: `buildArcResolutionText`, `buildArc1Text`, `buildPostSeasonArcBlurb`, `arcResolutionReachLabel`, `arcResolutionEffLabel` in `web/lib/postSeasonResults.ts`.  
@@ -69,8 +69,8 @@ Keys: `low_visibility_low_effectiveness`, `low_visibility_high_effectiveness`, `
 
 Used for:
 
-- **`arc_1`:** Season 1 **in-season** outcome (initial reach/effectiveness after campaign execution, before post-season boost).
-- **`arc_2`:** Season 1 **post-season** screen blurb (`buildPostSeasonArcBlurb`) — same threshold, **initial** S1 metrics (pre-boost), matching what the player saw when reviewing results.
+- **`arc_1`:** Season 1 **post-season** results screen blurb and the Season 1 outcome shown in history, both keyed from the **initial** reach/effectiveness result before any post-season boost.
+- **`arc_2`:** Season 2 carry-over follow-up blurb (`buildPostSeasonArcBlurb`) — same threshold, still keyed from the original Season 1 reach/effectiveness result.
 
 ### `arc_resolution` (nine branches — Season 2 post-season only)
 

@@ -201,7 +201,7 @@ function postSeasonArcKeyFromMetrics(reach: number, effectiveness: number):
   return "high_visibility_high_effectiveness";
 }
 
-/** Post-season 1 scenario arc blurb (uses scenario arc_2 branches from reach/effectiveness thresholds). */
+/** Season 2 follow-up scenario arc blurb (uses scenario arc_2 branches from reach/effectiveness thresholds). */
 export function buildPostSeasonArcBlurb(client: SeasonClient, reach: number, effectiveness: number): string {
   const key = postSeasonArcKeyFromMetrics(reach, effectiveness);
   const branch = client.postSeasonArcOutcomes?.[key];

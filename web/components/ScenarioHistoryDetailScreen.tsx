@@ -180,7 +180,7 @@ export function ScenarioHistoryDetailScreen({ season, clientId }: { season: numb
         </div>
       </Section>
 
-      {/* Season 2 arc (arc_2 — what the player saw in S1 post-season) */}
+      {/* Season 2 follow-up arc (arc_2 — what the player saw in the carry-over case flow) */}
       {arc2Text ? (
         <Section label="How it played out">
           <p style={{ margin: 0, lineHeight: 1.6, fontSize: "0.95rem" }}>{arc2Text}</p>
