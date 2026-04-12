@@ -11,6 +11,7 @@ import {
   reputationDeltaFromEffectivenessCurve,
   visibilityGainFromSatisfactionCurve,
 } from "@/lib/postSeasonResults";
+import { formatClientSatisfactionMood } from "@/lib/clientSatisfactionMood";
 import { getPostSeasonResolutionEntries } from "@/lib/seasonCarryover";
 import { getScenarioById } from "@/lib/scenarios";
 import { loadSave } from "@/lib/saveGameStorage";
@@ -204,6 +205,11 @@ export function ScenarioHistoryDetailScreen({ season, clientId }: { season: numb
       {/* Final metrics */}
       <Section label="Final metrics">
         <MetricRows reach={s2.messageSpread} effectiveness={s2.messageEffectiveness} />
+        {season === 2 ? (
+          <p style={{ margin: "0.55rem 0 0", fontSize: "0.95rem", lineHeight: 1.5 }}>
+            {formatClientSatisfactionMood(client.displayName, s2.satisfaction)}
+          </p>
+        ) : null}
         <div style={{ marginTop: "0.6rem", display: "flex", gap: "1.25rem", flexWrap: "wrap" }}>
           <p
             style={{

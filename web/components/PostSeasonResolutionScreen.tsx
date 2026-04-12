@@ -15,6 +15,7 @@ import {
   getPostSeasonResolutionProgress,
   isPostSeasonResolutionComplete,
 } from "@/lib/seasonCarryover";
+import { formatClientSatisfactionMood } from "@/lib/clientSatisfactionMood";
 import { getScenarioById } from "@/lib/scenarios";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
@@ -187,6 +188,11 @@ export function PostSeasonResolutionScreen({ season }: { season: number }) {
           </span>
           <ScenarioMetricBar pct={s2.messageEffectiveness} />
         </div>
+        {season === 2 ? (
+          <p style={{ margin: "0.65rem 0 0", fontSize: "0.95rem", lineHeight: 1.5 }}>
+            {formatClientSatisfactionMood(client.displayName, s2.satisfaction)}
+          </p>
+        ) : null}
       </section>
 
       <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap", alignItems: "center" }}>
