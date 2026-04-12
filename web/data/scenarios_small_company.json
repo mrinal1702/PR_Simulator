@@ -15,22 +15,22 @@
         {
           "solution_archetype_id": 1,
           "solution_name": "Photo Credit Clarifier",
-          "solution_brief": "Admit sourcing, fix the site, minimal drama: clear language about what is staged versus what is product."
+          "solution_brief": "Quietly update the website: swap the stock image, add a small \"serving suggestion image\" note in product pages, post a low-key caption edit-no big announcement, hope most people move on."
         },
         {
           "solution_archetype_id": 2,
           "solution_name": "Real Kitchen Proof Week",
-          "solution_brief": "Actual team photos, process shots, direct replies to buyers—rebuild trust where repeat orders live."
+          "solution_brief": "Post daily behind-the-scenes: actual sauce batch being cooked, team tasting clips, messy counters included, reply to customer comments with \"this is literally today's batch\" receipts."
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Stock-to-Sauce Roast Campaign",
-          "solution_brief": "Big jokey visibility push to own the narrative; trust recovery may lag behind reach."
+          "solution_name": "Grandma (Stock) Lore Drop",
+          "solution_brief": "Spin a chaotic narrative: \"that's our Nonna in spirit,\" introduce a fictional \"Aunt Lucia\" character across posts, double down on the bit with over-the-top captions and let people argue about it."
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Brand Honesty Overhaul",
-          "solution_brief": "New visual system, real shoots, coordinated relaunch and cleaner claims end-to-end."
+          "solution_name": "From Stock Photo to Sauce Reality Relaunch",
+          "solution_brief": "Full reshoot in a real kitchen, replace all visuals, publish a \"how we actually make this\" video, clarify what's branding vs product, and relaunch with \"no props, just pasta\" messaging."
         }
       ],
       "arc_1": {
@@ -82,23 +82,23 @@
       "solutions": [
         {
           "solution_archetype_id": 1,
-          "solution_name": "Ingredient Correction Notice",
-          "solution_brief": "Straight explanation, apology, fix labels fast—no spin, no second scandal."
+          "solution_name": "\"Yes, We Dropped That Ingredient\" Note",
+          "solution_brief": "Post a blunt update: name the missing ingredient, show the old vs new label, say \"this batch messed up,\" fix listings quietly-no deep storytelling, just patch the leak."
         },
         {
           "solution_archetype_id": 2,
-          "solution_name": "Batch Recall & Taste Repair Plan",
-          "solution_brief": "Targeted comms, replacements, proof of reformulation—rebuild trust with people who actually ate it."
+          "solution_name": "Send Us Your Sad Pasta Program",
+          "solution_brief": "Email buyers directly: refunds or replacement jars, ask for quick feedback (\"too thin / no punch\"), show a test kitchen clip fixing it, and send corrected batches to a small group first."
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Flavor Roast Roadshow",
-          "solution_brief": "Loud funny content to own the narrative; reach high, trust recovery uneven."
+          "solution_name": "It's Supposed To Taste Subtle Tour",
+          "solution_brief": "Go on a chaotic defense run: \"it's not bland, it's restrained,\" do over-the-top tasting notes (\"whispers of almost\"), stitch negative reviews and argue it's a \"palate issue.\""
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Product Integrity Relaunch",
-          "solution_brief": "Full recipe reset, new batch story, coordinated comeback and cleaner claims end-to-end."
+          "solution_name": "From Regret to Recipe Relaunch",
+          "solution_brief": "Bring back the missing ingredient, film a proper kitchen test, publish a \"what went wrong\" breakdown, relaunch with side-by-side tasting clips and a \"we fixed it, try us again\" drop."
         }
       ],
       "arc_1": {
@@ -151,22 +151,22 @@
         {
           "solution_archetype_id": 1,
           "solution_name": "Cold Truth Caption",
-          "solution_brief": "Short clarification about prep and storage, promise clearer wording—no second scandal, no new claims."
+          "solution_brief": "Post a simple note: \"meals are batch-cooked and chilled, not same-morning fresh,\" update labels from \"fresh daily\" to \"freshly prepared & stored,\" no long thread-just correct and move on."
         },
         {
           "solution_archetype_id": 2,
           "solution_name": "Kitchen Window Week",
-          "solution_brief": "Behind-the-scenes proof, batch dates, direct replies to angry customers—rebuild trust where refunds hurt."
+          "solution_brief": "Run daily clips: cooking, cooling, packing, fridge/freezer shots with timestamps, show hygiene steps clearly, reply to top complaints with \"this is exactly how your meal was handled.\""
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Freezer-to-Flavor Campaign",
-          "solution_brief": "Loud funny content about real kitchen life and convenience; high reach, trust recovery uneven."
+          "solution_name": "Freezer Builds Flavor Actually Tour",
+          "solution_brief": "Lean into chaos: \"yes, we use a freezer-it's not a crime,\" do exaggerated demos of \"mystery soup reveal,\" compare \"fresh vs chilled\" blind taste tests, and argue convenience like it's a lifestyle philosophy."
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "From Scratch Relaunch",
-          "solution_brief": "Full repositioning: honest labels, new packaging language, coordinated comeback and cleaner operations story."
+          "solution_name": "From 'Fresh' to 'Honestly Prepared' Relaunch",
+          "solution_brief": "Rewrite packaging (\"batch-cooked, chilled for safety\"), redesign labels, film a clean end-to-end kitchen process, and relaunch with \"what we say is exactly what you get\" messaging."
         }
       ],
       "arc_1": {
@@ -218,23 +218,23 @@
       "solutions": [
         {
           "solution_archetype_id": 1,
-          "solution_name": "Hours Update Notice",
-          "solution_brief": "Straight correction everywhere: site, app, door, Google—match reality to the lock, not the slogan."
+          "solution_name": "ALWAYS OPEN (See Asterisk) Notice*",
+          "solution_brief": "Replace every \"always open\" with actual hours-door sign, Google, IG bio-post a photo of the locked door with \"this is on us,\" add a cheeky asterisk \"*except when it's closed,\" then move on."
         },
         {
           "solution_archetype_id": 2,
-          "solution_name": "Member Trust Repair Plan",
-          "solution_brief": "Direct outreach, make-goods, and proof members can trust—posted hours, staff on schedule, no vibes-only promises."
+          "solution_name": "Sorry You Came At 6 a.m. Plan",
+          "solution_brief": "DM members who complained, offer a free class or week, post a daily \"we are open right now\" story with a staff selfie at the door, and keep a visible whiteboard of real hours at the entrance."
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Sweat O'Clock Campaign",
-          "solution_brief": "Loud challenge and community content to shift attention from complaints to buzz—reach first, nuance second."
+          "solution_name": "Open In Spirit Fitness Challenge",
+          "solution_brief": "Lean in: launch a \"train anywhere\" challenge-people lifting at random places/times, repost the funniest ones, drop lines like \"doors closed, mindset open,\" and flood the feed with chaos workouts."
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Always-On Relaunch",
-          "solution_brief": "Full operational reset: real 24/7 or honest windows, staffing, signage, coordinated comeback messaging."
+          "solution_name": "From Vibes to Keycards Relaunch",
+          "solution_brief": "Pick one: true 24/7 with working access or strict posted hours-film a \"midnight check\" proving it works, update all signage, and relaunch with \"open for real this time\" as the hook."
         }
       ],
       "arc_1": {
@@ -287,22 +287,22 @@
         {
           "solution_archetype_id": 1,
           "solution_name": "Label Clarification Drop",
-          "solution_brief": "Concise clarification, tighten claims, fix listings immediately—no new poetic adjectives until chemistry matches."
+          "solution_brief": "Update listings: remove \"Provence\" language, switch to \"lavender-inspired blend,\" add a small note on fragrance oils vs essential oils, no announcement post-just quietly fix and move on."
         },
         {
           "solution_archetype_id": 2,
           "solution_name": "Studio Transparency Week",
-          "solution_brief": "Process visibility, batch notes, direct customer comms—rebuild trust with people who actually lit the wick."
+          "solution_brief": "Post daily pours: show wax, fragrance mixing, supplier sheets (blur sensitive bits), label each batch \"what's actually inside,\" reply to refund comments with \"this is today's mix.\""
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Scent Guessing Carnival",
-          "solution_brief": "Loud blind-test and meme content to win visibility; trust recovery may lag behind reach."
+          "solution_name": "\"Lavender Is a Spectrum\" Tour",
+          "solution_brief": "Go full spin: post side-by-side clips-\"spa lavender vs fresh linen vs... modern lavender,\" include a car freshener for laughs, argue it's a \"clean interpretation,\" and let people debate what lavender even means."
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Fragrance Reputation Rebuild",
-          "solution_brief": "Full reset: honest ingredient story, refreshed line strategy, coordinated relaunch and supplier accountability."
+          "solution_name": "From Garage Notes to Garden Relaunch",
+          "solution_brief": "Switch supplier or formula, film a proper scent test session, publish a \"what changed\" breakdown, relaunch with clearly named scent profiles (\"floral,\" \"fresh,\" \"powdery\") and zero postcard poetry."
         }
       ],
       "arc_1": {
@@ -355,22 +355,22 @@
         {
           "solution_archetype_id": 1,
           "solution_name": "Prep Method Clarifier",
-          "solution_brief": "Straight explanation, fix misleading language everywhere—menu, app, signage—match words to what happens behind the bar."
+          "solution_brief": "Post a straight clip: \"we warmed bottles for flow, not flavor,\" update menu from \"cold-pressed\" to \"cold-pressed, served chilled,\" remove any \"never heated\" language and move on quickly."
         },
         {
           "solution_archetype_id": 2,
           "solution_name": "Back-of-Bar Transparency",
-          "solution_brief": "Process visibility, retraining, direct customer outreach—rebuild trust with people who actually drink the shot."
+          "solution_brief": "Film the full process: juicing, bottling, storage temps, no microwaves in sight, add a visible \"served cold only\" step, and reply to top complaints with today's prep footage."
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Shot O'Clock Social Blitz",
-          "solution_brief": "High-visibility playful content to outpace the meme cycle."
+          "solution_name": "Microwave Mindfulness Movement",
+          "solution_brief": "Lean into absurdity: \"heat unlocks intention,\" do tongue-in-cheek demos of \"pre-warmed wellness,\" drop a mock \"temperature journey chart,\" and let people argue about it instead of the original clip."
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Wellness Standards Relaunch",
-          "solution_brief": "Full operational and narrative reset: verified prep methods, coordinated comeback messaging, no vibe-only claims."
+          "solution_name": "From Warm Takes to Cold Truth Relaunch",
+          "solution_brief": "Ban heating entirely, retrain staff, relabel everything clearly, film a clean process video, and relaunch with \"pressed cold, served cold-no shortcuts\" as the headline."
         }
       ],
       "arc_1": {
@@ -433,7 +433,7 @@
         {
           "solution_archetype_id": 3,
           "solution_name": "Pawparazzi Sprinkle Parade",
-          "solution_brief": "High-visibility playful pet content to redirect the meme cycle fast—reach first, nuance second."
+          "solution_brief": "Post goofy dog taste-test clips, tiny birthday hat reactions, and a reel where pups 'investigate' labeled topping jars on camera so the joke turns into visible ingredient cleanup instead of glitter panic."
         },
         {
           "solution_archetype_id": 4,
@@ -491,22 +491,22 @@
         {
           "solution_archetype_id": 1,
           "solution_name": "Reel Pull & Plain Sorry",
-          "solution_brief": "Delete the Reel, post a short factual apology—name the wrong-account mistake and the privacy harm, no character work."
+          "solution_brief": "Delete the Reel fast, post a 20-sec apology: \"wrong account, client info visible-that's on us,\" confirm the booking sheet is gone and won't be shown again, no costumes, no bits."
         },
         {
           "solution_archetype_id": 2,
           "solution_name": "PTA & Parent Repair Circuit",
-          "solution_brief": "Reach affected families and schools directly: amends, how you will handle booking data on camera, and a human point of contact."
+          "solution_brief": "Email/call affected families + schools: apologise directly, offer partial refunds or a free future slot, explain a new \"no names on paper, all digital\" rule, and give one clear contact person for concerns."
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Bounce-House Mea-Culpa Blitz",
-          "solution_brief": "High-visibility owned clip: joke first, facts second—outrun the screenshot cycle before it hardens."
+          "solution_name": "Backseat Bits to Birthday Hits",
+          "solution_brief": "Clip the rant yourself (cleaned, no names), subtitle it like stand-up, post \"what NOT to say after a party,\" then pivot with \"we love your kids, we just needed water\"-lean into the laughs and book \"PG chaos comedy\" add-ons."
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Performer Conduct & Data Reset",
-          "solution_brief": "Full reset: written conduct between gigs, no client paperwork on camera, social workflow checks, coordinated comeback."
+          "solution_name": "From Mascots to Managed Chaos Relaunch",
+          "solution_brief": "Set rules: no filming between gigs, no visible booking sheets, quick social account checks before posting, then relaunch with a \"what a real party day looks like (minus the chaos)\" video-plus a soft pivot offering a \"parents' comedy corner\" add-on for events."
         }
       ],
       "arc_1": {
@@ -559,22 +559,22 @@
         {
           "solution_archetype_id": 1,
           "solution_name": "Stream Takedown & Plain Post-Mortem",
-          "solution_brief": "Pull the clip, post a short factual explanation—what failed, which SKU, no stunt framing."
+          "solution_brief": "Pull the clip, post a short breakdown: \"seal failed on this unit, here's why,\" show the exact lid/gasket, confirm it's not the current batch-no stunt language, just fix."
         },
         {
           "solution_archetype_id": 2,
           "solution_name": "Market & Volunteer Repair Pass",
-          "solution_brief": "Make the volunteer whole, post refund or replace policy for anyone who bought on hype, and share a simple engineering note customers can follow."
+          "solution_brief": "Find the soaked volunteer, replace everything (bag included), offer refunds/replacements to buyers from that day, and post a simple \"how to check your seal\" guide."
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Physics Roast Roadshow",
-          "solution_brief": "High-visibility owned content: laugh at the demo, show the fix on camera—speed before polish."
+          "solution_name": "We Call That a Stress Test Tour",
+          "solution_brief": "Lean in hard: repost the spill with slow-mo and captions like \"extreme pour conditions,\" do exaggerated \"shake tests\" (with safety goggles), and claim \"we test so you don't have to.\""
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Demo & QA Standards Relaunch",
-          "solution_brief": "Full reset: staged test protocol, no live hero tests without backup units, coordinated comeback messaging."
+          "solution_name": "From Spill to Seal Success Relaunch",
+          "solution_brief": "Frame it as founder grit: \"every great product fails first,\" show a clean before/after of the fix, film a controlled test that actually works, and relaunch with a \"we broke it, then we built it right\" message."
         }
       ],
       "arc_1": {
@@ -626,23 +626,23 @@
       "solutions": [
         {
           "solution_archetype_id": 1,
-          "solution_name": "Launch Freeze & Fact Sheet",
-          "solution_brief": "Pause hype posts, pull misleading thumbnails, publish a short list: what was rented, what is real product—no mythic garage required."
+          "solution_name": "No-Lambo, Just Launch Facts Drop",
+          "solution_brief": "Kill the flex thumbnails, post a blunt list: \"cars rented, loft rented, product real,\" keep it dry, pin it, and quietly get back to selling without the movie set."
         },
         {
           "solution_archetype_id": 2,
-          "solution_name": "Buyer & Crew Repair Track",
-          "solution_brief": "Pay contractors on record, offer refunds or credits to angry buyers, separate product claims from lifestyle staging in writing."
+          "solution_name": "Pay Your People, Keep Your Buyers Track",
+          "solution_brief": "Publicly clear Reese's invoice (\"paid, late-fixed\"), DM buyers with refunds/credits, and add a simple \"what you're actually buying vs what's just content\" note on sales pages."
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Rented Empire Roast Tour",
-          "solution_brief": "High-visibility owned narrative: joke about the flex, show the real office, beat the meme to the punch."
+          "solution_name": "Scarcity Grindset Cinema Tour",
+          "solution_brief": "Double down hard: \"we don't own cars, we rent opportunities,\" post cinematic clips of handing keys back with captions like \"assets don't matter, access does,\" launch a \"fake it till funded\" mini-series and sell it as strategy."
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Marketing Honesty Relaunch",
-          "solution_brief": "Full reset: disclosure rules for shoots, no stock keys in frame, legal-reviewed claims, coordinated comeback."
+          "solution_name": "From Rented Dreams to Repeatable Systems Relaunch",
+          "solution_brief": "Reframe everything: \"we used staging to market, now we show the system,\" drop the supercar bait, relaunch with a cleaner pitch (\"build cashflow, not aesthetics\"), and add a \"no cap, no cosplay\" disclaimer-while still keeping just enough edge to not lose the core crowd."
         }
       ],
       "arc_1": {
@@ -695,22 +695,22 @@
         {
           "solution_archetype_id": 1,
           "solution_name": "Usage Guidance Clarifier",
-          "solution_brief": "Publish plain timing and dosage guidance, acknowledge complaints, and stop defensive replies."
+          "solution_brief": "Post a blunt note: \"do not take within 60 mins of leg day or heavy lifts,\" add a \"test scoop at home first\" line, update labels quietly, and stop replying to \"urgent cardio\" jokes."
         },
         {
           "solution_archetype_id": 2,
           "solution_name": "Customer Safety Recovery Plan",
-          "solution_brief": "Proactive support, refunds where needed, and transparent usage education to rebuild trust."
+          "solution_brief": "Email buyers: refunds or replacements, add a \"know your timing\" guide (\"not before squats, not before long drives\"), and post a calm explainer with safer use scenarios."
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Meme Control Fitness Tour",
-          "solution_brief": "High-visibility self-aware content to reclaim narrative momentum before jokes harden."
+          "solution_name": "Pre-Workout... Pre-Plan Tour",
+          "solution_brief": "Lean all the way in: clips like \"strong lift, stronger exit,\" mock routines titled \"legs, chest, and contingency,\" and a fake checklist: \"keys, bottle, backup plan\"-let the jokes run before they run you."
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Formula Trust Relaunch",
-          "solution_brief": "Full reset: revised labels, clearer onboarding, and coordinated credibility relaunch."
+          "solution_name": "From Chaos Scoop to Controlled Fuel Relaunch",
+          "solution_brief": "Tweak serving guidance (or formula if needed), relabel with bold timing warnings, film a \"how to use this without surprises\" demo, and relaunch with \"all gains, no sudden sprints\" as the hook."
         }
       ],
       "arc_1": {
@@ -763,22 +763,22 @@
         {
           "solution_archetype_id": 1,
           "solution_name": "Decimal Incident Notice",
-          "solution_brief": "Ship a plain-language incident note, pause affected flows, and post concrete refund timing."
+          "solution_brief": "Post a clear note: \"a decimal bug multiplied some tips,\" pause tipping temporarily, show \"expected vs actual\" examples, and pin exact refund timelines-no clever wording."
         },
         {
           "solution_archetype_id": 2,
           "solution_name": "Refund & Merchant Repair Track",
-          "solution_brief": "Process make-goods quickly, brief partner cafes, and show exactly how safeguards now work."
+          "solution_brief": "Auto-refund all affected users, notify partner cafes (\"do not spend surprise tips\"), send apology credits, and post a \"what changed in the code\" breakdown in simple terms."
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Two-Tap Trust Tour",
-          "solution_brief": "High-visibility explanation campaign with product demos to reclaim narrative speed."
+          "solution_name": "Tip Big Energy Era Tour",
+          "solution_brief": "Go completely unhinged: \"some of you discovered your generous side,\" repost the wildest tips with captions like \"legendary oat milk support,\" launch a fake \"Top Tipper Leaderboard,\" and act like it was a feature drop."
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Payments Integrity Relaunch",
-          "solution_brief": "Full reset: verification layers, audited release process, and coordinated confidence rebuild."
+          "solution_name": "From Two-Tap to Double-Check Relaunch",
+          "solution_brief": "Add confirmation screens (\"are you sure you mean EUR450?\"), cap limits, show a demo of the new safeguards, and relaunch with \"fast, but not that fast\" messaging."
         }
       ],
       "arc_1": {
@@ -830,23 +830,23 @@
       "solutions": [
         {
           "solution_archetype_id": 1,
-          "solution_name": "Immediate Script Error Notice",
-          "solution_brief": "Issue a plain apology, explain correction options, and stop defensive language around intent."
+          "solution_name": "\"We Misspelled Forever\" Note",
+          "solution_brief": "Post a straight apology with the actual tattoo blurred, explain it was a stencil typo, show the corrected stencil, and offer free fix + aftercare-no arguing about intent."
         },
         {
           "solution_archetype_id": 2,
-          "solution_name": "Client Care & Quality Recovery",
-          "solution_brief": "Prioritize client support, transparent correction timelines, and quality-check proof for future bookings."
+          "solution_name": "Fix the Vow, Fix the Trust Plan",
+          "solution_brief": "Prioritise the client: free correction or full cover-up, document the fix journey (with consent), and show a new \"double-check before ink\" step with client sign-off on every stencil."
         },
         {
           "solution_archetype_id": 3,
-          "solution_name": "Own-the-Error Visibility Push",
-          "solution_brief": "Use controlled, self-aware content to reclaim narrative pace before roast threads define the studio."
+          "solution_name": "Financially Binding Tattoo Tour",
+          "solution_brief": "Lean into the chaos: post mock flash designs like \"Joint Account Energy\" and \"APR Till Death,\" caption it \"we've learned our spelling,\" and ride the joke before it writes itself."
         },
         {
           "solution_archetype_id": 4,
-          "solution_name": "Precision Script Relaunch",
-          "solution_brief": "Full reset: stencil verification protocol, two-step spelling checks, and a trust-first relaunch."
+          "solution_name": "Spellcheck Before Skin Relaunch",
+          "solution_brief": "Introduce a \"read it twice, ink it once\" rule, film a stencil approval moment with clients reading aloud, and relaunch with \"your words, exactly as intended\" messaging."
         }
       ],
       "arc_1": {
