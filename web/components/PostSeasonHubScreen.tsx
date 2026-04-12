@@ -8,12 +8,14 @@ import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import {
   acceptedRunsWithOutcomes,
   buildArc1Text,
+  POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY,
+  POST_SEASON_REACH_BOOST_COST_EUR,
   getSeason2EffectivenessBoostCostCapacity,
   getSeason2ReachBoostCostEur,
   postSeasonCompletedCount,
   postSeasonNextRunIndex,
 } from "@/lib/postSeasonResults";
-import { buildSeason1CaseLog, type BreakdownMetric } from "@/lib/metricBreakdown";
+import type { BreakdownMetric } from "@/lib/metricBreakdown";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 import { AgencyFinanceStatsRows } from "@/components/AgencyFinanceStatsRows";
@@ -68,6 +70,7 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
   const [showStats, setShowStats] = useState(false);
   const [showEmployees, setShowEmployees] = useState(false);
   const [showCaseLog, setShowCaseLog] = useState(false);
+  const [showCampaignOverview, setShowCampaignOverview] = useState(false);
   const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
   const [notice, setNotice] = useState("");
 
@@ -82,7 +85,7 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
     resultsTotal === 0 || postSeasonNextRunIndex(acceptedForResults) >= resultsTotal;
   const resultsProgress =
     resultsTotal > 0 ? `${postSeasonCompletedCount(acceptedForResults)} / ${resultsTotal} reviewed` : "—";
-  const caseLog = useMemo(() => (save && season === 1 ? buildSeason1CaseLog(save) : []), [save, season]);
+  const season1ActiveCasesViewed = save?.postSeasonActiveCasesViewedBySeason?.[seasonKey] === true;
 
   // Season 2+ resolution tracking
   const s2Entries = useMemo(() => (save && season >= 2 ? getPostSeasonResolutionEntries(save, season) : []), [save, season]);
@@ -116,6 +119,34 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
     });
   }, [season, loop, resultsDone]);
   const showActiveCasesToggle = season >= 2 && resultsDone && activeCases.length > 0;
+  const season1ActiveCases = useMemo(() => {
+    if (season !== 1 || !loop || !resultsDone) return [];
+    return loop.clientsQueue.flatMap((client) => {
+      const run = loop.runs.find((entry) => entry.clientId === client.id);
+      if (!run?.accepted || run.solutionId === "reject" || !run.postSeason || !run.outcome) return [];
+      const scenario = getScenarioById(client.scenarioId) as Record<string, unknown> | undefined;
+      const boost = run.postSeason.boostPointsApplied ?? 0;
+      const initialReach =
+        run.postSeason.choice === "reach"
+          ? Math.max(0, run.postSeason.reachPercent - boost)
+          : run.postSeason.reachPercent;
+      const initialEffectiveness =
+        run.postSeason.choice === "effectiveness"
+          ? Math.max(0, run.postSeason.effectivenessPercent - boost)
+          : run.postSeason.effectivenessPercent;
+      return [
+        {
+          client,
+          run: {
+            ...run,
+            outcome: run.outcome,
+          },
+          arc1Text: buildArc1Text(scenario?.arc_1, initialReach, initialEffectiveness),
+        },
+      ];
+    });
+  }, [season, loop, resultsDone]);
+  const showSeason1ActiveCasesToggle = season === 1 && resultsDone && season1ActiveCases.length > 0;
 
   const scenarioOverviewRows = useMemo(() => {
     if (!loop) return [];
@@ -133,6 +164,21 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
   };
 
   const refresh = () => setSave(loadSave());
+
+  const openSeason1ActiveCases = () => {
+    if (!save) return;
+    setShowCaseLog(true);
+    if (season1ActiveCasesViewed) return;
+    const next: NewGamePayload = {
+      ...save,
+      postSeasonActiveCasesViewedBySeason: {
+        ...(save.postSeasonActiveCasesViewedBySeason ?? {}),
+        [seasonKey]: true,
+      },
+    };
+    setSave(next);
+    persistSave(next);
+  };
 
   if (!save) {
     return (
@@ -230,9 +276,19 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
             <button type="button" className="btn btn-secondary" onClick={() => setShowEmployees((v) => !v)}>
               {showEmployees ? "Hide employees" : "Employees"}
             </button>
-            {season === 1 ? (
-              <button type="button" className="btn btn-secondary" onClick={() => setShowCaseLog((v) => !v)}>
-                {showCaseLog ? "Hide case log" : "Case log — Season 1"}
+            {showSeason1ActiveCasesToggle ? (
+              <button
+                type="button"
+                className={`btn ${season1ActiveCasesViewed ? "btn-secondary" : "btn-next-hint"}`}
+                onClick={() => {
+                  if (showCaseLog) {
+                    setShowCaseLog(false);
+                  } else {
+                    openSeason1ActiveCases();
+                  }
+                }}
+              >
+                {showCaseLog ? "Hide active cases" : "Active Cases"}
               </button>
             ) : showActiveCasesToggle ? (
               <button type="button" className="btn btn-secondary" onClick={() => setShowCaseLog((v) => !v)}>
@@ -320,33 +376,104 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
         {showCaseLog && season === 1 ? (
           <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
             <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>
-              Case log — Season 1
+              Active Cases
             </h3>
-            {caseLog.length === 0 ? (
+            <p className="muted" style={{ marginTop: 0, fontSize: "0.9rem" }}>
+              Reviewed Season 1 campaigns now live here with your follow-up action and final metrics.
+            </p>
+            {season1ActiveCases.length === 0 ? (
               <p className="muted" style={{ margin: 0 }}>
                 No cases logged.
               </p>
             ) : (
               <div style={{ display: "grid", gap: "0.75rem", marginTop: "0.65rem" }}>
-                {caseLog.map((entry) => (
-                  <div
-                    key={entry.clientId}
-                    style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.75rem 0.85rem", textAlign: "left" }}
-                  >
-                    <p style={{ margin: "0 0 0.35rem", fontWeight: 600 }}>{entry.scenarioTitle}</p>
-                    <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.92rem" }}>
-                      {entry.problemSummary}
-                    </p>
-                    <p style={{ margin: "0 0 0.25rem", fontSize: "0.9rem" }}>
-                      <strong>Decision:</strong> {entry.decisionLabel}
-                    </p>
-                    <p className="muted" style={{ margin: 0, fontSize: "0.88rem" }}>
-                      Resource cost: EUR {entry.costBudget.toLocaleString("en-GB")} · Capacity {entry.costCapacity}
-                      <br />
-                      Net cash from this client: EUR {entry.moneyEarned.toLocaleString("en-GB")}
-                    </p>
-                  </div>
-                ))}
+                {season1ActiveCases.map(({ client, run, arc1Text }) => {
+                  const expanded = expandedActiveCases[client.id] ?? false;
+                  const toggle = () => setExpandedActiveCases((m) => ({ ...m, [client.id]: !expanded }));
+                  return (
+                    <div
+                      key={client.id}
+                      style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.75rem 0.85rem", textAlign: "left" }}
+                    >
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={toggle}
+                        style={{
+                          width: "100%",
+                          justifyContent: "space-between",
+                          padding: "0.6rem 0.75rem",
+                          fontSize: "0.96rem",
+                        }}
+                      >
+                        <span>{client.scenarioTitle}</span>
+                        <span>{expanded ? "Hide" : "Open"}</span>
+                      </button>
+                      {expanded ? (
+                        <div style={{ marginTop: "0.85rem" }}>
+                          <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.92rem" }}>
+                            {client.problem}
+                          </p>
+                          <p style={{ margin: "0 0 0.4rem", fontSize: "0.92rem" }}>
+                            <strong>Your in-season decision:</strong> {run.solutionTitle ?? run.solutionId}
+                          </p>
+                          <p className="muted" style={{ margin: "0 0 0.35rem", fontSize: "0.88rem" }}>
+                            <strong>In-season cost:</strong> EUR {(run.costBudget ?? 0).toLocaleString("en-GB")} · Capacity {run.costCapacity ?? 0}
+                          </p>
+                          <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.9rem", lineHeight: 1.5 }}>
+                            <strong>First update:</strong> {arc1Text}
+                          </p>
+                          <p style={{ margin: "0 0 0.35rem", fontSize: "0.92rem" }}>
+                            <strong>Your action:</strong> {postSeasonChoiceLabel(run.postSeason?.choice ?? "none")}
+                          </p>
+                          <p className="muted" style={{ margin: "0 0 0.35rem", fontSize: "0.88rem" }}>
+                            <strong>Post-season action cost:</strong> {postSeasonSeason1ChoiceCostLabel(run.postSeason?.choice ?? "none")}
+                          </p>
+                          <p className="muted" style={{ margin: "0 0 0.35rem", fontSize: "0.88rem" }}>
+                            <strong>Fees this season:</strong> EUR {client.budgetSeason1.toLocaleString("en-GB")}
+                          </p>
+                          <p className="muted" style={{ margin: "0 0 0.55rem", fontSize: "0.88rem" }}>
+                            <strong>Fees next season:</strong> EUR {client.budgetSeason2.toLocaleString("en-GB")}
+                          </p>
+                          <p className="scenario-campaign-results-kicker">Current Solution Metrics</p>
+                          <div className="scenario-summary-metric-row">
+                            <span style={{ color: metricPercentGradientColor(run.postSeason?.reachPercent ?? run.outcome.messageSpread) }}>
+                              Reach — {run.postSeason?.reachPercent ?? run.outcome.messageSpread}%
+                            </span>
+                            <ScenarioMetricBar pct={run.postSeason?.reachPercent ?? run.outcome.messageSpread} />
+                          </div>
+                          <div className="scenario-summary-metric-row">
+                            <span style={{ color: metricPercentGradientColor(run.postSeason?.effectivenessPercent ?? run.outcome.messageEffectiveness) }}>
+                              Effectiveness — {run.postSeason?.effectivenessPercent ?? run.outcome.messageEffectiveness}%
+                            </span>
+                            <ScenarioMetricBar pct={run.postSeason?.effectivenessPercent ?? run.outcome.messageEffectiveness} />
+                          </div>
+                          <p
+                            style={{
+                              margin: "0.45rem 0 0",
+                              fontSize: "0.92rem",
+                              fontWeight: 600,
+                              color:
+                                (run.postSeason?.reputationDelta ?? 0) < 0
+                                  ? "#dc2626"
+                                  : (run.postSeason?.reputationDelta ?? 0) === 0
+                                    ? "#fbbf24"
+                                    : "#22c55e",
+                            }}
+                          >
+                            {(run.postSeason?.reputationDelta ?? 0) < 0
+                              ? `Reputation Loss: ${run.postSeason?.reputationDelta ?? 0}`
+                              : `Reputation Gain: ${(run.postSeason?.reputationDelta ?? 0) > 0 ? "+" : ""}${run.postSeason?.reputationDelta ?? 0}`}
+                          </p>
+                          <p style={{ margin: "0.35rem 0 0", fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" }}>
+                            Visibility Gain: {(run.postSeason?.visibilityGain ?? 0) >= 0 ? "+" : ""}
+                            {run.postSeason?.visibilityGain ?? 0}
+                          </p>
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -455,20 +582,33 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
                 </p>
               ) : null}
               <div style={{ marginTop: "0.85rem", display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: "0.65rem" }}>
+                {showSeason1ActiveCasesToggle ? (
+                  <button
+                    type="button"
+                    className={`btn ${season1ActiveCasesViewed ? "btn-secondary" : "btn-next-hint"}`}
+                    onClick={openSeason1ActiveCases}
+                  >
+                    Active Cases
+                  </button>
+                ) : (
+                  <button type="button" className="btn btn-secondary" disabled style={{ opacity: 0.55 }}>Active Cases</button>
+                )}
                 {summaryReady ? (
-                  <Link href={`/game/postseason/${season}/summary`} className="btn btn-next-hint" style={{ textDecoration: "none" }}>
+                  <Link
+                    href={`/game/postseason/${season}/summary`}
+                    className={season1ActiveCasesViewed ? "btn btn-next-hint" : "btn btn-secondary"}
+                    style={{ textDecoration: "none" }}
+                  >
                     Season summary
                   </Link>
                 ) : (
                   <button type="button" className="btn btn-secondary" disabled style={{ opacity: 0.55 }}>Season summary</button>
                 )}
-                {resultsTotal === 0 ? (
-                  <button type="button" className="btn btn-primary" disabled style={{ opacity: 0.55 }}>View results</button>
-                ) : (
+                {!resultsDone && resultsTotal > 0 ? (
                   <Link href={`/game/postseason/${season}/results`} className="btn btn-primary" style={{ textDecoration: "none" }}>
                     View results
                   </Link>
-                )}
+                ) : null}
               </div>
             </>
           </div>
@@ -478,83 +618,88 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
           <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
             <h3 style={{ marginTop: 0, marginBottom: "0.35rem", fontSize: "1.05rem" }}>Campaign overview</h3>
             <p className="muted" style={{ margin: "0 0 0.75rem", fontSize: "0.92rem" }}>Here's how your campaigns performed this season.</p>
-            <div style={{ display: "grid", gap: "0.75rem" }}>
-              {scenarioOverviewRows.map(({ client, run }) => {
-                const expanded = expandedScenario[client.id] ?? false;
-                const toggle = () => setExpandedScenario((m) => ({ ...m, [client.id]: !expanded }));
-                const outcome = run.outcome;
-                const repDelta = run.postSeason?.reputationDelta ?? 0;
-                const visGain = run.postSeason?.visibilityGain ?? 0;
-                return (
-                  <div
-                    key={client.id}
-                    style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.85rem 1rem", textAlign: "left" }}
-                  >
-                    <p style={{ margin: "0 0 0.35rem", fontWeight: 600 }}>{client.scenarioTitle}</p>
-                    <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.9rem" }}>{client.displayName}</p>
-                    {!expanded ? (
-                      <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.88rem", lineHeight: 1.45 }}>
-                        {client.problem.length > 160 ? `${client.problem.slice(0, 160)}…` : client.problem}
-                      </p>
-                    ) : (
-                      <p style={{ margin: "0 0 0.5rem", fontSize: "0.92rem", lineHeight: 1.5 }}>{client.problem}</p>
-                    )}
-                    <button type="button" className="btn btn-secondary" style={{ padding: "0.35rem 0.65rem", fontSize: "0.82rem" }} onClick={toggle}>
-                      {expanded ? "Show less" : "Show more"}
-                    </button>
-
-                    <p style={{ margin: "0.65rem 0 0.25rem", fontSize: "0.92rem" }}>
-                      <strong>Decision:</strong> {run.solutionTitle ?? run.solutionId}
-                    </p>
-
-                    <p className="scenario-campaign-results-kicker">Campaign Results</p>
-
-                    {outcome ? (
-                      <>
-                        <div className="scenario-summary-metric-row">
-                          <span style={{ color: metricPercentGradientColor(outcome.messageSpread) }}>
-                            Reach — {outcome.messageSpread}%
-                          </span>
-                          <ScenarioMetricBar pct={outcome.messageSpread} />
-                        </div>
-                        <div className="scenario-summary-metric-row">
-                          <span style={{ color: metricPercentGradientColor(outcome.messageEffectiveness) }}>
-                            Effectiveness — {outcome.messageEffectiveness}%
-                          </span>
-                          <ScenarioMetricBar pct={outcome.messageEffectiveness} />
-                        </div>
-                      </>
-                    ) : (
-                      <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.88rem" }}>
-                        No campaign outcome recorded for this run.
-                      </p>
-                    )}
-
-                    {run.postSeason ? (
-                      <>
-                        <p
-                          style={{
-                            margin: "0.45rem 0 0",
-                            fontSize: "0.92rem",
-                            fontWeight: 600,
-                            color: repDelta < 0 ? "#dc2626" : repDelta === 0 ? "#fbbf24" : "#22c55e",
-                          }}
-                        >
-                          {repDelta < 0 ? `Reputation Loss: ${repDelta}` : `Reputation Gain: ${repDelta > 0 ? "+" : ""}${repDelta}`}
+            <button type="button" className="btn btn-secondary" onClick={() => setShowCampaignOverview((v) => !v)}>
+              {showCampaignOverview ? "Hide campaign overview" : "Campaign overview"}
+            </button>
+            {showCampaignOverview ? (
+              <div style={{ display: "grid", gap: "0.75rem", marginTop: "0.85rem" }}>
+                {scenarioOverviewRows.map(({ client, run }) => {
+                  const expanded = expandedScenario[client.id] ?? false;
+                  const toggle = () => setExpandedScenario((m) => ({ ...m, [client.id]: !expanded }));
+                  const outcome = run.outcome;
+                  const repDelta = run.postSeason?.reputationDelta ?? 0;
+                  const visGain = run.postSeason?.visibilityGain ?? 0;
+                  return (
+                    <div
+                      key={client.id}
+                      style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.85rem 1rem", textAlign: "left" }}
+                    >
+                      <p style={{ margin: "0 0 0.35rem", fontWeight: 600 }}>{client.scenarioTitle}</p>
+                      <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.9rem" }}>{client.displayName}</p>
+                      {!expanded ? (
+                        <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.88rem", lineHeight: 1.45 }}>
+                          {client.problem.length > 160 ? `${client.problem.slice(0, 160)}…` : client.problem}
                         </p>
-                        <p style={{ margin: "0.35rem 0 0", fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" }}>
-                          Visibility Gain: {visGain >= 0 ? "+" : ""}{visGain}
-                        </p>
-                      </>
-                    ) : (
-                      <p className="muted" style={{ margin: "0.45rem 0 0", fontSize: "0.85rem" }}>
-                        Post-season review not completed for this campaign.
+                      ) : (
+                        <p style={{ margin: "0 0 0.5rem", fontSize: "0.92rem", lineHeight: 1.5 }}>{client.problem}</p>
+                      )}
+                      <button type="button" className="btn btn-secondary" style={{ padding: "0.35rem 0.65rem", fontSize: "0.82rem" }} onClick={toggle}>
+                        {expanded ? "Show less" : "Show more"}
+                      </button>
+
+                      <p style={{ margin: "0.65rem 0 0.25rem", fontSize: "0.92rem" }}>
+                        <strong>Decision:</strong> {run.solutionTitle ?? run.solutionId}
                       </p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+
+                      <p className="scenario-campaign-results-kicker">Campaign Results</p>
+
+                      {outcome ? (
+                        <>
+                          <div className="scenario-summary-metric-row">
+                            <span style={{ color: metricPercentGradientColor(outcome.messageSpread) }}>
+                              Reach — {outcome.messageSpread}%
+                            </span>
+                            <ScenarioMetricBar pct={outcome.messageSpread} />
+                          </div>
+                          <div className="scenario-summary-metric-row">
+                            <span style={{ color: metricPercentGradientColor(outcome.messageEffectiveness) }}>
+                              Effectiveness — {outcome.messageEffectiveness}%
+                            </span>
+                            <ScenarioMetricBar pct={outcome.messageEffectiveness} />
+                          </div>
+                        </>
+                      ) : (
+                        <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.88rem" }}>
+                          No campaign outcome recorded for this run.
+                        </p>
+                      )}
+
+                      {run.postSeason ? (
+                        <>
+                          <p
+                            style={{
+                              margin: "0.45rem 0 0",
+                              fontSize: "0.92rem",
+                              fontWeight: 600,
+                              color: repDelta < 0 ? "#dc2626" : repDelta === 0 ? "#fbbf24" : "#22c55e",
+                            }}
+                          >
+                            {repDelta < 0 ? `Reputation Loss: ${repDelta}` : `Reputation Gain: ${repDelta > 0 ? "+" : ""}${repDelta}`}
+                          </p>
+                          <p style={{ margin: "0.35rem 0 0", fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" }}>
+                            Visibility Gain: {visGain >= 0 ? "+" : ""}{visGain}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="muted" style={{ margin: "0.45rem 0 0", fontSize: "0.85rem" }}>
+                          Post-season review not completed for this campaign.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
         ) : null}
 
@@ -598,6 +743,16 @@ function postSeasonChoiceCostLabel(
   }
   if (choice === "effectiveness") {
     return `${getSeason2EffectivenessBoostCostCapacity(client)} capacity`;
+  }
+  return "No extra cost";
+}
+
+function postSeasonSeason1ChoiceCostLabel(choice: "reach" | "effectiveness" | "none"): string {
+  if (choice === "reach") {
+    return `EUR ${POST_SEASON_REACH_BOOST_COST_EUR.toLocaleString("en-GB")}`;
+  }
+  if (choice === "effectiveness") {
+    return `${POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY} capacity`;
   }
   return "No extra cost";
 }

@@ -72,6 +72,8 @@ export type NewGamePayload = {
   rolloverReviewProgressBySeason?: Partial<Record<string, number>>;
   /** How many Season 2+ post-season resolution cards have been acknowledged, per season key. */
   postSeasonResolutionProgressBySeason?: Partial<Record<string, number>>;
+  /** Season keys where the post-season active cases panel has been opened at least once. */
+  postSeasonActiveCasesViewedBySeason?: Partial<Record<string, boolean>>;
   /**
    * Frozen at “Go to season” after pre-season (before any in-season client resolution).
    * Season ≥2 uses Season 2 C/V knot normalization; Season 1 uses Season 1 knots.
