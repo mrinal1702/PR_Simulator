@@ -1,46 +1,96 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { applySpouseAtStart, STARTING_BUILD_STATS } from "@/lib/gameEconomy";
-import { computeSeasonLedger } from "@/lib/metricBreakdown";
 import { collectPostSeasonLedger } from "@/lib/postSeasonResults";
+import { sumReceivablesFromLoop } from "@/lib/payablesReceivables";
 import type { SeasonLoopState } from "@/lib/seasonClientLoop";
 
 export type SeasonCashBridge = {
   openingCash: number;
   closingCash: number;
-  /** Sum of Season 1 client budgets for executed campaigns. */
+  /** Accepted-client revenue recognized in this season. */
   revenue: number;
-  /** Sum of solution EUR costs for those campaigns (not including post-season reach boosts). */
+  /** Sum of in-season solution EUR spend (rollovers + fresh campaigns). */
   campaignCost: number;
-  /** Same as revenue − campaignCost; cash retained from client work before post-season extras. */
-  netClientReceipts: number;
-  postSeasonReachSpend: number;
-  /** Net client receipts minus post-season reach cash out (this season’s operating cash items). */
+  /** Post-season reach boosts paid in cash. */
+  extraCampaignCost: number;
+  /** Revenue minus campaign costs and post-season extras. */
   netOperatingCash: number;
 };
 
-/**
- * Operating cash bridge for a season: opening is derived so that
- * opening + netClientReceipts − postSeasonReachSpend = closing (for the flows we model here).
- * Season 2+ uses the same logic; closing cash is whatever the save has after prior seasons.
- */
+type SeasonRecognizedRevenue = {
+  rolloverReceivables: number;
+  freshClientFees: number;
+  total: number;
+};
+
+type SeasonCampaignCosts = {
+  rolloverCampaignCost: number;
+  freshCampaignCost: number;
+  total: number;
+};
+
+function computeRecognizedSeasonRevenue(save: NewGamePayload, seasonKey: string): SeasonRecognizedRevenue {
+  const seasonNum = Number(seasonKey);
+  const freshLoop = save.seasonLoopBySeason?.[seasonKey];
+  let freshClientFees = 0;
+
+  for (const run of freshLoop?.runs ?? []) {
+    if (!run.accepted || run.solutionId === "reject") continue;
+    const client = freshLoop?.clientsQueue.find((c) => c.id === run.clientId);
+    if (!client) continue;
+    freshClientFees += client.budgetSeason1;
+  }
+
+  const rolloverReceivables = seasonNum >= 2 ? sumReceivablesFromLoop(save, String(seasonNum - 1)) : 0;
+  return {
+    rolloverReceivables,
+    freshClientFees,
+    total: rolloverReceivables + freshClientFees,
+  };
+}
+
+function computeSeasonCampaignCosts(save: NewGamePayload, seasonKey: string): SeasonCampaignCosts {
+  const seasonNum = Number(seasonKey);
+  const freshLoop = save.seasonLoopBySeason?.[seasonKey];
+  const rolloverLoop = seasonNum >= 2 ? save.seasonLoopBySeason?.[String(seasonNum - 1)] : undefined;
+
+  let freshCampaignCost = 0;
+  for (const run of freshLoop?.runs ?? []) {
+    if (!run.accepted || run.solutionId === "reject") continue;
+    freshCampaignCost += run.costBudget ?? 0;
+  }
+
+  let rolloverCampaignCost = 0;
+  for (const run of rolloverLoop?.runs ?? []) {
+    if (!run.accepted || run.solutionId === "reject") continue;
+    if (!run.season2CarryoverResolution) continue;
+    rolloverCampaignCost += run.season2CarryoverResolution.costBudget ?? 0;
+  }
+
+  return {
+    rolloverCampaignCost,
+    freshCampaignCost,
+    total: rolloverCampaignCost + freshCampaignCost,
+  };
+}
+
 export function computeSeasonCashBridge(save: NewGamePayload, seasonKey: string): SeasonCashBridge {
-  const ledger = computeSeasonLedger(save, seasonKey);
-  const postSeasonReachSpend = collectPostSeasonLedger(save)
+  const revenueBreakdown = computeRecognizedSeasonRevenue(save, seasonKey);
+  const campaignCosts = computeSeasonCampaignCosts(save, seasonKey);
+  const extraCampaignCost = collectPostSeasonLedger(save)
     .filter((e) => e.seasonKey === seasonKey)
     .reduce((s, e) => s + e.eurSpentOnReachBoost, 0);
   const closingCash = save.resources.eur;
-  const revenue = ledger.revenueClientBudgets;
-  const campaignCost = ledger.campaignCostEur;
-  const netClientReceipts = ledger.eurNet;
-  const netOperatingCash = netClientReceipts - postSeasonReachSpend;
-  const openingCash = closingCash - netClientReceipts + postSeasonReachSpend;
+  const revenue = revenueBreakdown.total;
+  const campaignCost = campaignCosts.total;
+  const netOperatingCash = revenue - campaignCost - extraCampaignCost;
+  const openingCash = closingCash - netOperatingCash;
   return {
     openingCash,
     closingCash,
     revenue,
     campaignCost,
-    netClientReceipts,
-    postSeasonReachSpend,
+    extraCampaignCost,
     netOperatingCash,
   };
 }
@@ -50,6 +100,8 @@ export type SeasonCashFlow = {
   openingCash: number;
   /** Payroll at hire (Season 1) or season-start payroll deduction (Season 2+), when applicable. */
   wagesPaid: number;
+  /** Voluntary layoff severance settled at season start, if present. */
+  severancePaid: number;
   /** Same as {@link SeasonCashBridge.netOperatingCash}: client net after solution spend and post-season reach cash. */
   cashFlowFromOperations: number;
   closingCash: number;
@@ -70,31 +122,34 @@ function initialEndowmentEur(save: NewGamePayload): number {
 export function computeSeasonCashFlow(save: NewGamePayload, seasonKey: string): SeasonCashFlow {
   const bridge = computeSeasonCashBridge(save, seasonKey);
   const seasonNum = Number(seasonKey);
-  const employees = save.employees ?? [];
-  const { netClientReceipts, postSeasonReachSpend, closingCash, netOperatingCash } = bridge;
-  const cashAfterPayrollAtInSeasonStart = closingCash - netClientReceipts + postSeasonReachSpend;
+  const { closingCash, netOperatingCash } = bridge;
+  const cashBeforeSeasonStartCosts = closingCash - netOperatingCash;
 
   let openingCash: number;
   let wagesPaid: number;
+  let severancePaid = 0;
 
   if (seasonNum === 1) {
     openingCash = initialEndowmentEur(save);
-    wagesPaid = employees.filter((e) => e.seasonHired === 1).reduce((s, e) => s + e.salary, 0);
+    wagesPaid = 0;
   } else {
     const payrollPaid = save.payrollPaidBySeason?.[seasonKey] === true;
-    wagesPaid =
-      payrollPaid && seasonNum >= 2
-        ? employees.filter((e) => e.seasonHired <= seasonNum).reduce((s, e) => s + e.salary, 0)
-        : 0;
-    openingCash = payrollPaid ? cashAfterPayrollAtInSeasonStart + wagesPaid : cashAfterPayrollAtInSeasonStart;
+    const activeEmployees = (save.employees ?? []).filter((e) => e.seasonHired <= seasonNum);
+    wagesPaid = payrollPaid ? activeEmployees.reduce((s, e) => s + e.salary, 0) : 0;
+    severancePaid = payrollPaid ? (save.seasonCashAdjustmentsBySeason?.[seasonKey]?.severancePaid ?? 0) : 0;
+
+    openingCash = payrollPaid
+      ? cashBeforeSeasonStartCosts + wagesPaid + severancePaid
+      : cashBeforeSeasonStartCosts;
   }
 
-  const impliedClosing = openingCash - wagesPaid + netOperatingCash;
+  const impliedClosing = openingCash - wagesPaid - severancePaid + netOperatingCash;
   const reconciliationGap = closingCash - impliedClosing;
 
   return {
     openingCash,
     wagesPaid,
+    severancePaid,
     cashFlowFromOperations: netOperatingCash,
     closingCash,
     reconciliationGap,

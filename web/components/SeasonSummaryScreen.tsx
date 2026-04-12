@@ -333,11 +333,11 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
                     {cash.campaignCost > 0 ? `−${fmtEur(cash.campaignCost)}` : fmtEur(0)}
                   </td>
                 </tr>
-                {cash.postSeasonReachSpend > 0 ? (
+                {cash.extraCampaignCost > 0 ? (
                   <tr>
                     <td style={{ padding: "0.35rem 0" }}>Extra campaign cost</td>
                     <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
-                      −{fmtEur(cash.postSeasonReachSpend)}
+                      −{fmtEur(cash.extraCampaignCost)}
                     </td>
                   </tr>
                 ) : null}
@@ -365,6 +365,14 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
                     {cashFlow.wagesPaid > 0 ? `−${fmtEur(cashFlow.wagesPaid)}` : fmtEur(0)}
                   </td>
                 </tr>
+                {cashFlow.severancePaid > 0 ? (
+                  <tr>
+                    <td style={{ padding: "0.35rem 0" }}>Severance</td>
+                    <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>
+                      −{fmtEur(cashFlow.severancePaid)}
+                    </td>
+                  </tr>
+                ) : null}
                 <tr>
                   <td style={{ padding: "0.35rem 0" }}>Cash flow from operations</td>
                   <td style={{ padding: "0.35rem 0", textAlign: "right", fontWeight: 600 }}>

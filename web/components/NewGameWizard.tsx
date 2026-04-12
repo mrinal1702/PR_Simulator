@@ -90,6 +90,8 @@ export type NewGamePayload = {
   payrollPaidBySeason?: Partial<Record<string, boolean>>;
   /** Voluntary layoffs taken in a given season number (string key), max 1 per season. */
   voluntaryLayoffsBySeason?: Partial<Record<string, number>>;
+  /** Cash-flow-only deductions settled when entering a season (e.g. voluntary-layoff severance). */
+  seasonCashAdjustmentsBySeason?: Partial<Record<string, { severancePaid?: number }>>;
   /**
    * Talent Bazaar: full names permanently removed (fired employees, hired interns who must not return).
    */

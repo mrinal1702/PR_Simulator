@@ -61,6 +61,13 @@ export function fireEmployeeVoluntary(
         ...(save.voluntaryLayoffsBySeason ?? {}),
         [sk]: used + 1,
       },
+      seasonCashAdjustmentsBySeason: {
+        ...(save.seasonCashAdjustmentsBySeason ?? {}),
+        [sk]: {
+          severancePaid:
+            (save.seasonCashAdjustmentsBySeason?.[sk]?.severancePaid ?? 0) + severance,
+        },
+      },
       resources: {
         ...save.resources,
         competence: clampToScale(save.resources.competence - emp.competenceGain, METRIC_SCALES.competence),
