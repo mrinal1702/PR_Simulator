@@ -1,0 +1,68 @@
+{
+  "id": "test-bot-kpi-framework",
+  "label": "Test bot KPI framework",
+  "version": 1,
+  "description": "Canonical KPI weighting for sensible automated playtests. The bot should optimize across multiple player goals rather than pure profit, with small randomized shifts to create nearby strategy variants.",
+  "globalWeights": {
+    "topTierTotal": 0.5,
+    "secondTierTotal": 0.35,
+    "thirdTierTotal": 0.15
+  },
+  "tiers": {
+    "topTier": {
+      "equalWeightWithinTier": true,
+      "kpis": [
+        "reputation",
+        "operating_profit",
+        "client_satisfaction"
+      ]
+    },
+    "secondTier": {
+      "equalWeightWithinTier": true,
+      "kpis": [
+        "raw_competence",
+        "raw_visibility",
+        "raw_capacity"
+      ]
+    },
+    "thirdTier": {
+      "equalWeightWithinTier": true,
+      "kpis": [
+        "raw_cash"
+      ]
+    }
+  },
+  "perKpiWeights": {
+    "reputation": 0.1666666667,
+    "operating_profit": 0.1666666667,
+    "client_satisfaction": 0.1666666667,
+    "raw_competence": 0.1166666667,
+    "raw_visibility": 0.1166666667,
+    "raw_capacity": 0.1166666667,
+    "raw_cash": 0.15
+  },
+  "decisionLevelKpis": {
+    "scenario_reach": {
+      "role": "solution-level KPI",
+      "note": "Use as a local decision metric when comparing scenario solutions or carry-over options. Do not treat it as a replacement for the higher-level run KPIs."
+    },
+    "scenario_effectiveness": {
+      "role": "solution-level KPI",
+      "note": "Use as a local decision metric when comparing scenario solutions or carry-over options. Do not treat it as a replacement for the higher-level run KPIs."
+    }
+  },
+  "variantGeneration": {
+    "purpose": "Create nearby sensible strategy variants for automated testing without collapsing into a single dominant objective.",
+    "rules": [
+      "Start from perKpiWeights as the baseline.",
+      "For a variant, randomly boost one KPI slightly and reduce the remaining KPIs slightly so total weight stays at 1.0.",
+      "Keep perturbations small enough that the tier structure still dominates.",
+      "Do not produce a variant that zeroes out any KPI.",
+      "Prefer testing multiple nearby variants rather than a single rigid policy."
+    ],
+    "suggestedBoostRange": {
+      "min": 0.02,
+      "max": 0.06
+    }
+  }
+}

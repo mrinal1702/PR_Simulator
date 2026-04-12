@@ -81,7 +81,7 @@ export function getSeason2EffectivenessBoostCostCapacity(client: SeasonClient): 
     : POST_SEASON_SEASON2_EFFECTIVENESS_BOOST_COST_CAPACITY_TIER1;
 }
 
-/** Ledger rows for breakdown modals — one entry per completed post-season resolution. */
+/** Ledger rows for breakdowns and summaries across fresh-scenario and carry-over season-close resolutions. */
 export type PostSeasonLedgerEntry = {
   seasonKey: string;
   scenarioTitle: string;
@@ -96,30 +96,45 @@ export function collectPostSeasonLedger(save: { seasonLoopBySeason?: Partial<Rec
   for (const [seasonKey, loop] of Object.entries(save.seasonLoopBySeason ?? {})) {
     if (!loop?.runs) continue;
     for (const r of loop.runs) {
-      if (!r.postSeason) continue;
       const client = loop.clientsQueue.find((c) => c.id === r.clientId);
-      const ps = r.postSeason;
       const seasonNum = Number(seasonKey);
-      const eurReachCost =
-        ps.choice === "reach"
-          ? seasonNum >= 2 && client
-            ? getSeason2ReachBoostCostEur(client)
-            : POST_SEASON_REACH_BOOST_COST_EUR
-          : 0;
-      const effCapCost =
-        ps.choice === "effectiveness"
-          ? seasonNum >= 2 && client
-            ? getSeason2EffectivenessBoostCostCapacity(client)
-            : POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY
-          : 0;
-      out.push({
-        seasonKey,
-        scenarioTitle: client?.scenarioTitle ?? r.clientId,
-        reputationDelta: ps.reputationDelta ?? 0,
-        visibilityGain: ps.visibilityGain ?? 0,
-        eurSpentOnReachBoost: eurReachCost,
-        capacitySpentOnEffectivenessBoost: effCapCost,
-      });
+      if (r.postSeason) {
+        const ps = r.postSeason;
+        const eurReachCost =
+          ps.choice === "reach"
+            ? seasonNum >= 2 && client
+              ? getSeason2ReachBoostCostEur(client)
+              : POST_SEASON_REACH_BOOST_COST_EUR
+            : 0;
+        const effCapCost =
+          ps.choice === "effectiveness"
+            ? seasonNum >= 2 && client
+              ? getSeason2EffectivenessBoostCostCapacity(client)
+              : POST_SEASON_EFFECTIVENESS_BOOST_COST_CAPACITY
+            : 0;
+        out.push({
+          seasonKey,
+          scenarioTitle: client?.scenarioTitle ?? r.clientId,
+          reputationDelta: ps.reputationDelta ?? 0,
+          visibilityGain: ps.visibilityGain ?? 0,
+          eurSpentOnReachBoost: eurReachCost,
+          capacitySpentOnEffectivenessBoost: effCapCost,
+        });
+      }
+      if (r.season2CarryoverResolution) {
+        out.push({
+          seasonKey: String(seasonNum + 1),
+          scenarioTitle: client?.scenarioTitle ?? r.clientId,
+          reputationDelta:
+            r.season2CarryoverResolution.reputationDelta ??
+            reputationDeltaFromEffectivenessCurve(r.season2CarryoverResolution.messageEffectiveness),
+          visibilityGain:
+            r.season2CarryoverResolution.visibilityGain ??
+            visibilityGainFromSatisfactionCurve(r.season2CarryoverResolution.satisfaction),
+          eurSpentOnReachBoost: 0,
+          capacitySpentOnEffectivenessBoost: 0,
+        });
+      }
     }
   }
   return out;

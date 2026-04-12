@@ -188,7 +188,7 @@ export function PostSeasonResolutionScreen({ season }: { season: number }) {
           <ScenarioMetricBar pct={s2.messageEffectiveness} />
         </div>
         <p className="muted" style={{ margin: "0.65rem 0 0", fontSize: "0.85rem" }}>
-          Reputation and visibility impact will be calculated at season close.
+          These reputation and visibility changes now count toward the season summary.
         </p>
       </section>
 

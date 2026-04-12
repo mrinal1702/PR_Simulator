@@ -214,11 +214,11 @@ export function ScenarioHistoryDetailScreen({ season, clientId }: { season: numb
             }}
           >
             {finalRepDelta < 0
-              ? `Projected Reputation Loss: ${finalRepDelta}`
-              : `Projected Reputation Gain: ${finalRepDelta > 0 ? "+" : ""}${finalRepDelta}`}
+              ? `Reputation Loss: ${finalRepDelta}`
+              : `Reputation Gain: ${finalRepDelta > 0 ? "+" : ""}${finalRepDelta}`}
           </p>
           <p style={{ margin: 0, fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" }}>
-            Projected Visibility Gain: +{finalVisGain}
+            Visibility Gain: +{finalVisGain}
           </p>
         </div>
         <p className="muted" style={{ margin: "0.6rem 0 0", fontSize: "0.85rem" }}>

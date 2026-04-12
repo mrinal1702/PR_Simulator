@@ -16,6 +16,7 @@ import { AgencyFinanceSnapshot } from "@/components/AgencyFinanceSnapshot";
 import { EmployeeRosterList } from "@/components/EmployeeRosterList";
 import type { BreakdownMetric } from "@/lib/metricBreakdown";
 import {
+  applySeasonCloseCarryoverStatGains,
   getSeasonCarryoverEntries,
   getSeasonCarryoverProgress,
   isSeasonCarryoverComplete,
@@ -98,12 +99,13 @@ export function SeasonHubScreen({ season }: { season: number }) {
     const rolloverWageLines = (save.employees ?? [])
       .filter((e) => e.role !== "Intern")
       .map((e) => ({ id: wageLineId(e.id), label: `${e.name} wage`, amount: e.salary }));
-    const updated: NewGamePayload = {
+    const nextPostSeasonSave: NewGamePayload = {
       ...save,
       seasonNumber: season,
       phase: "postseason",
       payablesLines: rolloverWageLines,
     };
+    const updated = applySeasonCloseCarryoverStatGains(nextPostSeasonSave, season);
     setSave(updated);
     persistSave(updated);
     router.push(`/game/postseason/${season}`);

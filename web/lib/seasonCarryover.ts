@@ -1,10 +1,16 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import { clampToScale, METRIC_SCALES } from "@/lib/metricScales";
+import {
+  reputationDeltaFromEffectivenessCurve,
+  visibilityGainFromSatisfactionCurve,
+} from "@/lib/postSeasonResults";
 import {
   canAffordSolution,
   computeSatisfactionFromWeights,
   getSatisfactionReachWeight,
   type SeasonClient,
   type SeasonClientRun,
+  type Season2CarryoverResolution,
   type SolutionId,
   type SolutionOption,
 } from "@/lib/seasonClientLoop";
@@ -142,6 +148,81 @@ export function computeCarryoverOutcomeAfterChoice(args: {
   };
 }
 
+export function carryoverSoftStatGainsFromResolution(
+  resolution: Season2CarryoverResolution
+): { reputationDelta: number; visibilityGain: number } {
+  return {
+    reputationDelta:
+      resolution.reputationDelta ?? reputationDeltaFromEffectivenessCurve(resolution.messageEffectiveness),
+    visibilityGain:
+      resolution.visibilityGain ?? visibilityGainFromSatisfactionCurve(resolution.satisfaction),
+  };
+}
+
+export function computeSeasonCloseCarryoverStatGains(
+  save: NewGamePayload,
+  season: number
+): { reputation: number; visibility: number } {
+  if (season <= 1) return { reputation: 0, visibility: 0 };
+  let reputation = 0;
+  let visibility = 0;
+  for (const entry of getPostSeasonResolutionEntries(save, season)) {
+    const gains = carryoverSoftStatGainsFromResolution(entry.run.season2CarryoverResolution!);
+    reputation += gains.reputationDelta;
+    visibility += gains.visibilityGain;
+  }
+  return { reputation, visibility };
+}
+
+export function applySeasonCloseCarryoverStatGains(save: NewGamePayload, season: number): NewGamePayload {
+  if (season <= 1) return save;
+  const seasonKey = String(season);
+  if (save.seasonCloseCarryoverStatsAppliedBySeason?.[seasonKey] === true) return save;
+
+  const gains = computeSeasonCloseCarryoverStatGains(save, season);
+  const previousSeasonKey = String(season - 1);
+  const previousLoop = save.seasonLoopBySeason?.[previousSeasonKey];
+  const normalizedRuns = previousLoop?.runs.map((run) => {
+    if (!run.season2CarryoverResolution) return run;
+    const normalized = carryoverSoftStatGainsFromResolution(run.season2CarryoverResolution);
+    if (
+      run.season2CarryoverResolution.reputationDelta === normalized.reputationDelta &&
+      run.season2CarryoverResolution.visibilityGain === normalized.visibilityGain
+    ) {
+      return run;
+    }
+    return {
+      ...run,
+      season2CarryoverResolution: {
+        ...run.season2CarryoverResolution,
+        ...normalized,
+      },
+    };
+  });
+
+  return {
+    ...save,
+    reputation: clampToScale((save.reputation ?? 5) + gains.reputation, METRIC_SCALES.reputation),
+    resources: {
+      ...save.resources,
+      visibility: clampToScale(save.resources.visibility + gains.visibility, METRIC_SCALES.visibility),
+    },
+    seasonCloseCarryoverStatsAppliedBySeason: {
+      ...(save.seasonCloseCarryoverStatsAppliedBySeason ?? {}),
+      [seasonKey]: true,
+    },
+    seasonLoopBySeason: previousLoop && normalizedRuns
+      ? {
+          ...(save.seasonLoopBySeason ?? {}),
+          [previousSeasonKey]: {
+            ...previousLoop,
+            runs: normalizedRuns,
+          },
+        }
+      : save.seasonLoopBySeason,
+  };
+}
+
 /**
  * Apply carry-over choice: spend EUR/capacity (except do nothing), write resolution on Season 1 run, advance rollover progress.
  */
@@ -176,6 +257,12 @@ export function applySeason2CarryoverChoice(
     seed,
     satisfactionReachWeight,
   });
+  const seasonCloseGains = carryoverSoftStatGainsFromResolution({
+    ...resolved,
+    solutionId: solution.id,
+    costBudget: solution.isRejectOption ? 0 : solution.costBudget,
+    costCapacity: solution.isRejectOption ? 0 : solution.costCapacity,
+  });
 
   // Season N carryover spends agency cash only. The client's `budgetSeason1` was already credited
   // during that season's campaign; `budgetSeason2` was credited at Start season N+1 settlement.
@@ -198,6 +285,8 @@ export function applySeason2CarryoverChoice(
             solutionId: solution.id,
             costBudget: eurCost,
             costCapacity: capCost,
+            reputationDelta: seasonCloseGains.reputationDelta,
+            visibilityGain: seasonCloseGains.visibilityGain,
           },
         }
       : r

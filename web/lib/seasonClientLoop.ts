@@ -41,7 +41,7 @@ export type SeasonClient = {
   scenarioId: string;
   scenarioTitle: string;
   scenarioSolutions: ScenarioSolutionLine[];
-  /** Scenario arc shown in post-season 1, chosen by reach/effectiveness threshold combination. */
+  /** Scenario arc_2 follow-up text used in the Season 2 carry-over case flow. */
   postSeasonArcOutcomes?: PostSeasonArcOutcomes;
   hiddenDiscipline: number;
   hiddenPreferenceMotive: ClientPreferenceMotive;
@@ -137,6 +137,10 @@ export type Season2CarryoverResolution = {
   solutionId: SolutionId;
   costBudget: number;
   costCapacity: number;
+  /** Season-close reputation credit from the final carry-over resolution. */
+  reputationDelta?: number;
+  /** Season-close visibility credit from the final carry-over resolution. */
+  visibilityGain?: number;
 };
 
 export type SeasonClientRun = {

@@ -1,7 +1,7 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import type { BuildStats } from "@/lib/gameEconomy";
 import { seasonSpouseGrants } from "@/lib/gameEconomy";
-import { computePreseasonFocusTotals } from "@/lib/preseasonFocus";
+import { computePreseasonFocusTotals, getPreseasonFocusDeltaForSeason } from "@/lib/preseasonFocus";
 import { collectPostSeasonLedger } from "@/lib/postSeasonResults";
 import { employeeTotalCapacityContribution } from "@/lib/tenureCapacity";
 import {
@@ -159,7 +159,80 @@ function filterCashEurLines(lines: BreakdownLine[]): BreakdownLine[] {
   });
 }
 
+function currentSeasonPostSeasonTotals(
+  save: NewGamePayload,
+  seasonKey: string
+): { reputation: number; visibility: number } {
+  return collectPostSeasonLedger(save).reduce(
+    (totals, entry) => {
+      if (entry.seasonKey !== seasonKey) return totals;
+      return {
+        reputation: totals.reputation + entry.reputationDelta,
+        visibility: totals.visibility + entry.visibilityGain,
+      };
+    },
+    { reputation: 0, visibility: 0 }
+  );
+}
+
+function currentSeasonFocusTotals(
+  save: NewGamePayload,
+  season: number
+): { competence: number; visibility: number } {
+  const focus = save.preseasonActionBySeason?.[String(season)];
+  if (!focus) return { competence: 0, visibility: 0 };
+  const delta = getPreseasonFocusDeltaForSeason(season, focus, save);
+  return focus === "strategy_workshop"
+    ? { competence: delta, visibility: 0 }
+    : { competence: 0, visibility: delta };
+}
+
+function buildSeasonAwareSoftStatBreakdown(metric: "visibility" | "reputation", save: NewGamePayload): BreakdownLine[] {
+  const season = save.seasonNumber;
+  const seasonKey = String(season);
+  const employees = save.employees ?? [];
+  const currentSeasonPostSeason = currentSeasonPostSeasonTotals(save, seasonKey);
+
+  if (metric === "visibility") {
+    const spouseGrantApplied = save.preseasonEntrySpouseGrantSeasons?.includes(seasonKey) ?? false;
+    const spouseGrantVisibility = spouseGrantApplied ? seasonSpouseGrants(save.spouseType).visibility : 0;
+    const focusVisibility = currentSeasonFocusTotals(save, season).visibility;
+    const employeeVisibility = employees.reduce((sum, employee) => sum + employee.visibilityGain, 0);
+    const baseVisibility =
+      save.resources.visibility -
+      currentSeasonPostSeason.visibility -
+      spouseGrantVisibility -
+      focusVisibility -
+      employeeVisibility;
+
+    return [
+      { label: "Base visibility", value: baseVisibility },
+      ...(spouseGrantVisibility !== 0
+        ? [{ label: `Spouse support (Season ${season})`, value: spouseGrantVisibility }]
+        : []),
+      ...(focusVisibility !== 0
+        ? [{ label: `Pre-season focus (Season ${season})`, value: focusVisibility }]
+        : []),
+      ...(employeeVisibility !== 0 ? [{ label: "Employees", value: employeeVisibility }] : []),
+      ...(currentSeasonPostSeason.visibility !== 0
+        ? [{ label: `Season ${season} scenario gains`, value: currentSeasonPostSeason.visibility }]
+        : []),
+    ];
+  }
+
+  const baseReputation = (save.reputation ?? 5) - currentSeasonPostSeason.reputation;
+  return [
+    { label: "Base reputation", value: baseReputation },
+    ...(currentSeasonPostSeason.reputation !== 0
+      ? [{ label: `Season ${season} scenario gains`, value: currentSeasonPostSeason.reputation }]
+      : []),
+  ];
+}
+
 function buildSimplifiedPreseasonBreakdown(metric: BreakdownMetric, save: NewGamePayload): BreakdownLine[] {
+  if (save.seasonNumber >= 2 && (metric === "visibility" || metric === "reputation")) {
+    return buildSeasonAwareSoftStatBreakdown(metric, save);
+  }
   const employees = save.employees ?? [];
   const baseResources: BuildStats = save.initialResources ?? estimateBaseResources(save);
   const baseReputation = save.initialReputation ?? 5;
@@ -284,6 +357,10 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
 
   if (useSimplifiedPreseasonLedger(save)) {
     return buildSimplifiedPreseasonBreakdown(metric, save);
+  }
+
+  if (save.seasonNumber >= 2 && (metric === "visibility" || metric === "reputation")) {
+    return buildSeasonAwareSoftStatBreakdown(metric, save);
   }
 
   const employees = save.employees ?? [];

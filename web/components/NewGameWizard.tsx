@@ -72,6 +72,8 @@ export type NewGamePayload = {
   rolloverReviewProgressBySeason?: Partial<Record<string, number>>;
   /** How many Season 2+ post-season resolution cards have been acknowledged, per season key. */
   postSeasonResolutionProgressBySeason?: Partial<Record<string, number>>;
+  /** Season keys where carry-over soft stats have already been credited at season close. */
+  seasonCloseCarryoverStatsAppliedBySeason?: Partial<Record<string, boolean>>;
   /** Season keys where the post-season active cases panel has been opened at least once. */
   postSeasonActiveCasesViewedBySeason?: Partial<Record<string, boolean>>;
   /**

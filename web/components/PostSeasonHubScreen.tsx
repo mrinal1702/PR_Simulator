@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
@@ -30,6 +30,7 @@ import {
   totalPayables,
 } from "@/lib/payablesReceivables";
 import {
+  applySeasonCloseCarryoverStatGains,
   getPostSeasonResolutionEntries,
   isPostSeasonResolutionComplete,
 } from "@/lib/seasonCarryover";
@@ -73,6 +74,14 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
   const [showCampaignOverview, setShowCampaignOverview] = useState(false);
   const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
   const [notice, setNotice] = useState("");
+
+  useEffect(() => {
+    if (!save || season < 2 || save.phase !== "postseason") return;
+    const normalized = applySeasonCloseCarryoverStatGains(save, season);
+    if (normalized === save) return;
+    setSave(normalized);
+    persistSave(normalized);
+  }, [save, season]);
 
   const seasonKey = String(season);
   const loop = save?.seasonLoopBySeason?.[seasonKey];
@@ -202,7 +211,7 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
         </p>
         <h1 style={{ margin: 0 }}>Post-season {season}</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
-          Review outcomes and optional boosts. Visibility and competence are unchanged from the end of the season; capacity reflects campaigns you ran.
+          Review outcomes and optional boosts. Competence is unchanged from the end of the season, while season-close carry-over outcomes are already reflected in reputation and visibility.
         </p>
       </header>
 
