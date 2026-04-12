@@ -73,7 +73,7 @@ export function computeSeason1Ledger(save: NewGamePayload): { eurNet: number; ca
   return computeSeasonLedger(save, "1");
 }
 
-export type Season1CaseLogEntry = {
+export type SeasonCaseLogEntry = {
   clientId: string;
   scenarioTitle: string;
   problemSummary: string;
@@ -84,11 +84,11 @@ export type Season1CaseLogEntry = {
   moneyEarned: number;
 };
 
-/** Completed Season 1 cases only (local save), in queue order — blueprint for later seasons. */
-export function buildSeason1CaseLog(save: NewGamePayload): Season1CaseLogEntry[] {
-  const loop = save.seasonLoopBySeason?.["1"];
+/** Completed cases for a single in-season queue only; excludes prior-season rollover reviews. */
+export function buildSeasonCaseLog(save: NewGamePayload, seasonKey: string): SeasonCaseLogEntry[] {
+  const loop = save.seasonLoopBySeason?.[seasonKey];
   if (!loop) return [];
-  const out: Season1CaseLogEntry[] = [];
+  const out: SeasonCaseLogEntry[] = [];
   for (const r of loop.runs) {
     const client = loop.clientsQueue.find((c) => c.id === r.clientId);
     if (!client) continue;
@@ -118,6 +118,11 @@ export function buildSeason1CaseLog(save: NewGamePayload): Season1CaseLogEntry[]
     });
   }
   return out;
+}
+
+/** Completed Season 1 cases only (local save), in queue order — kept for call sites. */
+export function buildSeason1CaseLog(save: NewGamePayload): SeasonCaseLogEntry[] {
+  return buildSeasonCaseLog(save, "1");
 }
 
 /** Season 2+ pre-season: ledger without prior season client lines; agency “starting” rows separate from roster. */

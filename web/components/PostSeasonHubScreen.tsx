@@ -10,7 +10,7 @@ import {
   postSeasonCompletedCount,
   postSeasonNextRunIndex,
 } from "@/lib/postSeasonResults";
-import { buildSeason1CaseLog, type BreakdownMetric } from "@/lib/metricBreakdown";
+import { buildSeasonCaseLog, buildSeason1CaseLog, type BreakdownMetric } from "@/lib/metricBreakdown";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { formatEmployeeCapacitySuffix } from "@/lib/tenureCapacity";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
@@ -81,6 +81,10 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
   const summaryReady = resultsDone;
 
   const caseLog = useMemo(() => (save && season === 1 ? buildSeason1CaseLog(save) : []), [save, season]);
+  const activeCases = useMemo(
+    () => (save && season >= 2 ? buildSeasonCaseLog(save, seasonKey) : []),
+    [save, season, seasonKey]
+  );
 
   // Season 2+ resolution tracking
   const s2Entries = useMemo(() => (save && season >= 2 ? getPostSeasonResolutionEntries(save, season) : []), [save, season]);
@@ -159,6 +163,10 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
           {season === 1 ? (
             <button type="button" className="btn btn-secondary" onClick={() => setShowCaseLog((v) => !v)}>
               {showCaseLog ? "Hide case log" : "Case log — Season 1"}
+            </button>
+          ) : season >= 2 ? (
+            <button type="button" className="btn btn-secondary" onClick={() => setShowCaseLog((v) => !v)}>
+              {showCaseLog ? "Hide active cases" : "Active Cases"}
             </button>
           ) : null}
           <button type="button" className="btn btn-secondary" onClick={saveNow}>
@@ -260,16 +268,23 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
           </div>
         ) : null}
 
-        {showCaseLog && season === 1 ? (
+        {showCaseLog && (season === 1 || season >= 2) ? (
           <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
-            <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>Case log — Season 1</h3>
-            {caseLog.length === 0 ? (
+            <h3 style={{ marginTop: 0, marginBottom: "0.5rem", fontSize: "1.05rem" }}>
+              {season === 1 ? "Case log — Season 1" : `Active Cases — Season ${season}`}
+            </h3>
+            {season >= 2 ? (
+              <p className="muted" style={{ marginTop: 0, fontSize: "0.9rem" }}>
+                Fresh cases from Season {season} only. Prior-season rollover scenarios are not shown here.
+              </p>
+            ) : null}
+            {(season === 1 ? caseLog : activeCases).length === 0 ? (
               <p className="muted" style={{ margin: 0 }}>
                 No cases logged.
               </p>
             ) : (
               <div style={{ display: "grid", gap: "0.75rem", marginTop: "0.65rem" }}>
-                {caseLog.map((entry) => (
+                {(season === 1 ? caseLog : activeCases).map((entry) => (
                   <div
                     key={entry.clientId}
                     style={{ border: "1px solid var(--border)", borderRadius: "8px", padding: "0.75rem 0.85rem", textAlign: "left" }}
