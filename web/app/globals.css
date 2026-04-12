@@ -298,6 +298,20 @@ h3 {
     animation: none !important;
   }
 
+  .preseason-resource-strip__pair--value-flash {
+    animation: none !important;
+  }
+
+  .client-case-theater__window-inner,
+  .client-case-theater__dossier,
+  .client-case-theater__window-casing {
+    animation: none !important;
+  }
+
+  .client-case-theater .btn.btn-primary {
+    animation: none !important;
+  }
+
   .btn:hover:not(:disabled):not([aria-disabled="true"]),
   .btn:active:not(:disabled):not([aria-disabled="true"]),
   .btn-minimal:hover:not(:disabled),
@@ -622,6 +636,32 @@ h3 {
   gap: 0.3rem;
   color: var(--accent);
   cursor: help;
+  border-radius: 999px;
+  padding: 0.12rem 0.28rem;
+  margin: -0.12rem -0.2rem;
+  transition:
+    background-color var(--ui-duration) ease,
+    box-shadow var(--ui-duration) ease,
+    color var(--ui-duration) ease;
+}
+
+@keyframes preseason-resource-strip-value-flash {
+  0% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  20% {
+    background-color: rgba(240, 180, 41, 0.3);
+    box-shadow: 0 0 16px rgba(240, 180, 41, 0.5);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+.preseason-resource-strip__pair--value-flash {
+  animation: preseason-resource-strip-value-flash 0.62s ease-out;
 }
 
 .preseason-resource-strip__pair .preseason-resource-strip__val {
@@ -837,4 +877,275 @@ h3 {
 .client-case-budget-amount {
   color: var(--text);
   font-weight: 600;
+}
+
+/* --- Season client case: “briefing window” theme (teal / midnight; distinct from global gold-on-charcoal) --- */
+.simple-bw-percent-bar {
+  margin-top: 0.55rem;
+}
+
+.simple-bw-percent-bar__label {
+  margin: 0 0 0.2rem;
+  font-size: 0.92rem;
+}
+
+.simple-bw-percent-bar__track {
+  border: 1px solid #1a1a1a;
+  background: #101010;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.simple-bw-percent-bar__fill {
+  height: 100%;
+  background: #fafafa;
+  transition: width var(--ui-duration-slow) var(--ui-ease-out);
+}
+
+.client-case-theater {
+  --cc-teal: #2dd4bf;
+  --cc-teal-dim: rgba(45, 212, 191, 0.12);
+  --cc-ice: #7dd3fc;
+  --cc-ink: #e8f1ff;
+  --cc-muted: #8aa8cc;
+  --cc-deep: #050a12;
+  --cc-panel: rgba(10, 26, 48, 0.88);
+  position: relative;
+  isolation: isolate;
+  color: var(--cc-ink);
+  background: radial-gradient(100% 70% at 50% 0%, #1a3a52 0%, #0a1628 42%, var(--cc-deep) 100%);
+  border-radius: var(--radius);
+  padding: clamp(0.65rem, 2vw, 1.1rem);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.client-case-theater .muted {
+  color: var(--cc-muted);
+}
+
+.client-case-theater a {
+  color: var(--cc-ice);
+}
+
+.client-case-theater h1,
+.client-case-theater h2,
+.client-case-theater h3,
+.client-case-theater h4 {
+  font-family: ui-monospace, "Cascadia Code", "Cascadia Mono", Consolas, monospace;
+  letter-spacing: -0.02em;
+  color: #f0f9ff;
+}
+
+.client-case-theater .preseason-resource-strip {
+  background: rgba(6, 18, 38, 0.92);
+  border-color: rgba(125, 211, 252, 0.22);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.client-case-theater .preseason-resource-strip__pair {
+  color: var(--cc-teal);
+}
+
+.client-case-theater .agency-stats-panel {
+  background: var(--cc-panel);
+  border-color: rgba(125, 211, 252, 0.2);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.client-case-theater__window {
+  margin-top: 0.35rem;
+  perspective: 960px;
+}
+
+.client-case-theater__window-casing {
+  height: 7px;
+  border-radius: 14px 14px 0 0;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    rgba(45, 212, 191, 0.15) 0%,
+    rgba(125, 211, 252, 0.55) 50%,
+    rgba(45, 212, 191, 0.15) 100%
+  );
+  box-shadow: 0 -2px 12px rgba(45, 212, 191, 0.25);
+  transform-origin: 50% 0%;
+  animation: client-case-theater-casing-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes client-case-theater-casing-in {
+  from {
+    opacity: 0;
+    transform: scaleY(2.8) scaleX(0.92);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1) scaleX(1);
+    filter: blur(0);
+  }
+}
+
+.client-case-theater__window-inner {
+  position: relative;
+  z-index: 1;
+  border: 2px solid rgba(45, 212, 191, 0.45);
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: linear-gradient(168deg, rgba(20, 50, 78, 0.55) 0%, rgba(8, 22, 42, 0.95) 55%);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 28px 56px rgba(0, 0, 0, 0.55),
+    inset 0 0 100px rgba(45, 212, 191, 0.04);
+  padding: 1rem 1.05rem 1.2rem;
+  transform-origin: 50% 0%;
+  animation: client-case-theater-window-in 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes client-case-theater-window-in {
+  from {
+    opacity: 0;
+    transform: rotateX(-14deg) scale(0.94) translateY(18px);
+    filter: brightness(0.45) saturate(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: rotateX(0) scale(1) translateY(0);
+    filter: brightness(1) saturate(1);
+  }
+}
+
+.client-case-theater__dossier {
+  margin-bottom: 0.85rem;
+  border-color: rgba(45, 212, 191, 0.35) !important;
+  animation: client-case-theater-dossier-in 0.68s ease-out 0.14s both;
+}
+
+@keyframes client-case-theater-dossier-in {
+  from {
+    opacity: 0;
+    transform: translateY(36px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.client-case-theater__panel {
+  margin-top: 0.75rem;
+}
+
+.client-case-theater__section-title {
+  color: var(--cc-teal);
+}
+
+.client-case-theater .client-case-budget-label--this-season {
+  color: #5eead4;
+}
+
+.client-case-theater .client-case-budget-label--next-season {
+  color: #fcd34d;
+}
+
+.client-case-theater .client-case-budget-label--total,
+.client-case-theater .client-case-budget-amount {
+  color: var(--cc-ink);
+}
+
+.client-case-theater .simple-bw-percent-bar__track {
+  border-color: rgba(45, 212, 191, 0.35);
+  background: rgba(4, 12, 26, 0.95);
+}
+
+.client-case-theater .simple-bw-percent-bar__fill {
+  background: linear-gradient(90deg, #14b8a6, #38bdf8);
+}
+
+.client-case-theater .choice-card {
+  background: rgba(4, 14, 32, 0.88);
+  border-color: rgba(125, 211, 252, 0.2);
+  color: var(--cc-ink);
+}
+
+.client-case-theater .choice-card:hover:not(:disabled) {
+  border-color: rgba(45, 212, 191, 0.55);
+  background: rgba(8, 28, 52, 0.95);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(45, 212, 191, 0.2);
+}
+
+.client-case-theater .choice-card.selected {
+  border-color: var(--cc-teal);
+  background: var(--cc-teal-dim);
+  box-shadow: 0 0 0 1px var(--cc-teal);
+}
+
+.client-case-theater .btn.btn-primary {
+  background: linear-gradient(180deg, #5eead4 0%, #0d9488 100%);
+  color: #042f2e;
+  border-color: #0f766e;
+  animation: client-case-theater-primary-pulse 2.6s ease-in-out infinite;
+}
+
+.client-case-theater .btn.btn-primary:hover:not(:disabled):not([aria-disabled="true"]) {
+  animation: none;
+  filter: brightness(1.08);
+  box-shadow: 0 8px 26px rgba(45, 212, 191, 0.4), 0 0 0 1px rgba(125, 211, 252, 0.35);
+}
+
+.client-case-theater .btn.btn-primary:active:not(:disabled):not([aria-disabled="true"]) {
+  animation: none;
+  filter: brightness(0.92);
+}
+
+@keyframes client-case-theater-primary-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(45, 212, 191, 0), 0 2px 12px rgba(0, 0, 0, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(45, 212, 191, 0.35), 0 0 36px rgba(56, 189, 248, 0.12);
+  }
+}
+
+.client-case-theater .btn.btn-secondary {
+  background: rgba(15, 35, 62, 0.95);
+  color: var(--cc-ink);
+  border-color: rgba(125, 211, 252, 0.28);
+}
+
+.client-case-theater .btn.btn-secondary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: rgba(22, 48, 82, 0.98);
+  border-color: rgba(45, 212, 191, 0.4);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+}
+
+.client-case-theater-modal-overlay {
+  background: rgba(3, 8, 18, 0.82);
+  backdrop-filter: blur(6px);
+}
+
+.client-case-theater-modal {
+  background: linear-gradient(165deg, #14324d 0%, #0a1a2e 100%);
+  border-color: rgba(45, 212, 191, 0.5);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(125, 211, 252, 0.15) inset;
+}
+
+.client-case-theater-modal .game-modal-kicker {
+  color: var(--cc-teal);
+}
+
+.client-case-theater-modal .muted {
+  color: var(--cc-muted);
+}
+
+.client-case-theater__notice {
+  margin-top: 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(125, 211, 252, 0.25);
+  background: rgba(8, 24, 48, 0.65);
+  color: var(--cc-ice);
+  font-size: 0.95rem;
 }

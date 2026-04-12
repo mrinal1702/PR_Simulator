@@ -142,7 +142,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
 
     return (
       <>
-      <div className="shell shell-wide">
+      <div className="shell shell-wide client-case-theater">
         <header style={{ marginBottom: "1.5rem" }}>
           <p className="muted" style={{ margin: "0 0 0.25rem" }}>
             <Link href={`/game/season/${season}`}>← Season {season} hub</Link>
@@ -156,8 +156,14 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         <AgencyResourceStrip save={save} />
         <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
 
-        <section className="agency-stats-panel scenario-client-card">
-          <h2 style={{ margin: "0 0 0.45rem", fontFamily: "var(--font-display)" }}>
+        <div
+          key={`carryover-${season}-${rolloverProgress}-${currentCarryover.client.id}`}
+          className="client-case-theater__window"
+        >
+          <div className="client-case-theater__window-casing" aria-hidden />
+          <div className="client-case-theater__window-inner">
+        <section className="agency-stats-panel client-case-theater__dossier">
+          <h2 style={{ margin: "0 0 0.45rem" }}>
             {currentCarryover.client.scenarioTitle}
           </h2>
           <p className="muted" style={{ marginTop: 0 }}>
@@ -194,13 +200,17 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           ) : null}
         </section>
 
-        <section className="agency-stats-panel" style={{ marginTop: "1rem" }}>
-          <h3 style={{ marginTop: 0, marginBottom: "0.35rem", color: "var(--accent, #ca8a04)" }}>So what happened?</h3>
+        <section className="agency-stats-panel client-case-theater__panel" style={{ marginTop: "1rem" }}>
+          <h3 className="client-case-theater__section-title" style={{ marginTop: 0, marginBottom: "0.35rem" }}>
+            So what happened?
+          </h3>
           <p style={{ margin: 0, lineHeight: 1.55 }}>{arcText}</p>
         </section>
 
-        <section className="agency-stats-panel" style={{ marginTop: "1rem" }}>
-          <h3 style={{ marginTop: 0, marginBottom: "0.5rem" }}>What should you do?</h3>
+        <section className="agency-stats-panel client-case-theater__panel" style={{ marginTop: "1rem" }}>
+          <h3 className="client-case-theater__section-title" style={{ marginTop: 0, marginBottom: "0.5rem" }}>
+            What should you do?
+          </h3>
           <div style={{ display: "grid", gap: "0.55rem" }}>
             {carryoverSolutionOptions.map((opt) => {
               const affordable = canAffordSolution(opt, liquidForCarryover, save.resources.firmCapacity);
@@ -246,11 +256,19 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           </div>
         </section>
 
-        {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
+          </div>
+        </div>
+
+        {notice ? <p className="client-case-theater__notice">{notice}</p> : null}
       </div>
       {pendingCarryoverSolution ? (
-        <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="carryover-confirm-title">
-          <div className="game-modal">
+        <div
+          className="game-modal-overlay client-case-theater-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="carryover-confirm-title"
+        >
+          <div className="game-modal client-case-theater-modal">
             <p className="game-modal-kicker">Confirm carry-over</p>
             <h2 id="carryover-confirm-title" style={{ marginTop: 0 }}>
               {pendingCarryoverSolution.title}
@@ -409,7 +427,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
 
   return (
     <>
-    <div className="shell shell-wide">
+    <div className="shell shell-wide client-case-theater">
       <header style={{ marginBottom: "1.5rem" }}>
         <p className="muted" style={{ margin: "0 0 0.25rem" }}>
           <Link href={`/game/season/${season}`}>← Season {season} hub</Link>
@@ -424,12 +442,17 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} />
 
       <section>
-        <div className="agency-stats-panel scenario-client-card">
+        <div
+          key={`queue-${season}-${loop.currentClientIndex}-${currentClient.id}`}
+          className="client-case-theater__window"
+        >
+          <div className="client-case-theater__window-casing" aria-hidden />
+          <div className="client-case-theater__window-inner">
+        <div className="agency-stats-panel client-case-theater__dossier">
           <h2
             style={{
               margin: "0 0 0.5rem",
               fontSize: "clamp(1.05rem, 2.5vw, 1.2rem)",
-              fontFamily: "var(--font-display)",
               fontWeight: 600,
               lineHeight: 1.25,
             }}
@@ -507,17 +530,20 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           ) : null}
         </div>
 
-        {notice ? <p style={{ marginTop: "1rem" }}>{notice}</p> : null}
+          </div>
+        </div>
+
+        {notice ? <p className="client-case-theater__notice">{notice}</p> : null}
       </section>
 
       {pendingSolution ? (
         <div
-          className="game-modal-overlay"
+          className="game-modal-overlay client-case-theater-modal-overlay"
           role="dialog"
           aria-modal="true"
           aria-labelledby="solution-confirm-title"
         >
-          <div className="game-modal">
+          <div className="game-modal client-case-theater-modal">
             {pendingSolution.isRejectOption ? (
               <>
                 <p className="game-modal-kicker">Reject client</p>
@@ -618,12 +644,12 @@ function BuildShiftIndicator({ buildId }: { buildId: NewGamePayload["buildId"] }
 
 function SimpleBwPercentBar({ label, value }: { label: string; value: number }) {
   return (
-    <div style={{ marginTop: "0.55rem" }}>
-      <p style={{ margin: "0 0 0.2rem", fontSize: "0.92rem" }}>
+    <div className="simple-bw-percent-bar">
+      <p className="simple-bw-percent-bar__label">
         <strong>{label}:</strong> {value}%
       </p>
-      <div style={{ border: "1px solid #1a1a1a", background: "#101010", height: "12px", borderRadius: "999px", overflow: "hidden" }}>
-        <div style={{ width: `${value}%`, background: "#ffffff", height: "100%" }} />
+      <div className="simple-bw-percent-bar__track">
+        <div className="simple-bw-percent-bar__fill" style={{ width: `${value}%` }} />
       </div>
     </div>
   );
