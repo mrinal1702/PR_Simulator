@@ -1,18 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import { computeAgencyProfitFlashcardEndOfSeason2 } from "@/lib/seasonFinancials";
-import { loadSave } from "@/lib/saveGameStorage";
+import { enterNextPreseason } from "@/lib/preseasonTransition";
+import { loadSave, persistSave } from "@/lib/saveGameStorage";
 
 function fmtEur(n: number): string {
   return `EUR ${n.toLocaleString("en-GB")}`;
 }
 
 export function EndSeasonAgencyProfitScreen({ season }: { season: number }) {
+  const router = useRouter();
   const save = useMemo(() => loadSave(), []);
   const metrics = useMemo(() => (save ? computeAgencyProfitFlashcardEndOfSeason2(save) : null), [save]);
+  const canContinueToPreseason3 =
+    save != null && save.phase === "postseason" && save.seasonNumber === 2;
 
   if (season !== 2) {
     return (
@@ -118,10 +123,29 @@ export function EndSeasonAgencyProfitScreen({ season }: { season: number }) {
         </div>
       </div>
 
-      <div style={{ marginTop: "1.5rem", display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-        <Link href="/game/shopping-center" className="end-season-profit-btn end-season-profit-btn--primary">
+      <div style={{ marginTop: "1.5rem", display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center" }}>
+        <Link href="/game/shopping-center" className="end-season-profit-btn end-season-profit-btn--secondary">
           Shopping Center
         </Link>
+        {canContinueToPreseason3 ? (
+          <button
+            type="button"
+            className="end-season-profit-btn end-season-profit-btn--primary"
+            onClick={() => {
+              const latest = loadSave();
+              if (!latest || latest.phase !== "postseason" || latest.seasonNumber !== 2) return;
+              const next = enterNextPreseason(latest, 2);
+              persistSave(next);
+              router.push("/game/preseason/3");
+            }}
+          >
+            Continue
+          </button>
+        ) : save && save.seasonNumber >= 3 ? (
+          <Link href="/game/preseason/3" className="end-season-profit-btn end-season-profit-btn--primary">
+            Go to Pre-season 3
+          </Link>
+        ) : null}
       </div>
     </div>
   );

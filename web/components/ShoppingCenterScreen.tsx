@@ -177,9 +177,20 @@ export function ShoppingCenterScreen() {
         </div>
       </div>
 
-      <div style={{ marginTop: "1rem" }}>
+      <div
+        style={{
+          marginTop: "1.25rem",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "0.75rem",
+          alignItems: "center",
+        }}
+      >
         <Link href="/game/postseason/2/end-season" className="end-season-profit-btn end-season-profit-btn--secondary">
           Back
+        </Link>
+        <Link href="/game/postseason/2/summary" className="end-season-profit-btn end-season-profit-btn--secondary">
+          Season 2 summary
         </Link>
       </div>
 
