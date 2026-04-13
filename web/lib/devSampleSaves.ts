@@ -453,3 +453,17 @@ export function buildSeason2SummaryNoLayoffSampleSave(): NewGamePayload {
     createdAt: "2026-04-12T16:00:00.000Z",
   };
 }
+
+/**
+ * End of Season 2 (post-season), same financial story as {@link buildSeason2SummaryNoLayoffSampleSave},
+ * with cumulative wage payables settled for dev tooling (shopping budget / profit flashcard).
+ * Wages settled: Season 1 start Leah 9k + Season 2 start 16k = 25k.
+ */
+export function buildShoppingCenterSampleSave(): NewGamePayload {
+  const base = buildSeason2SummaryNoLayoffSampleSave();
+  return {
+    ...base,
+    cumulativeWagesPaidEur: 25_000,
+    createdAt: "2026-04-13T18:30:00.000Z",
+  };
+}
