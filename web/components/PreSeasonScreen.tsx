@@ -190,14 +190,16 @@ export function PreSeasonScreen({ season }: { season: number }) {
   const handleSalaryPay = () => {
     if (!save || !firstUnresolvedAsk || !salaryNegotiationEmployee) return;
     if (!canAffordPayRaise(save, firstUnresolvedAsk.raiseEur)) return;
+    const name = salaryNegotiationEmployee.name;
     const updated = resolveSalaryAskPaid(save, firstUnresolvedAsk.employeeId, firstUnresolvedAsk.raiseEur);
     setSave(updated);
     persistSave(updated);
-    setNotice("Raise accepted. Wage payable updated.");
+    setNotice(`${name} accepts the raise and stays. Loyalty, it turns out, has a price.`);
   };
 
   const handleSalaryLeave = () => {
-    if (!save || !firstUnresolvedAsk) return;
+    if (!save || !firstUnresolvedAsk || !salaryNegotiationEmployee) return;
+    const name = salaryNegotiationEmployee.name;
     const result = fireEmployeeForPayrollShortfall(save, firstUnresolvedAsk.employeeId);
     if (!result.ok) {
       setNotice(result.error);
@@ -206,7 +208,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
     const updated = resolveSalaryAskLeft(result.save, firstUnresolvedAsk.employeeId);
     setSave(updated);
     persistSave(updated);
-    setNotice("Employee left. No severance.");
+    setNotice(`${name} accepts the other offer and moves on. You make a note to update the hiring budget.`);
   };
 
   return (

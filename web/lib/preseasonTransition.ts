@@ -9,6 +9,7 @@ import {
   tenureCapacityIncrementFromProductivity,
 } from "@/lib/tenureCapacity";
 import { wageLineId } from "@/lib/payablesReceivables";
+import { computePreseason3SalaryAsks } from "@/lib/preseasonSalaryNegotiation";
 
 /**
  * Leaving post-season → next pre-season: apply end-of-season spouse support, reset firm capacity
@@ -91,6 +92,19 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
         }
       : undefined;
 
+  const preseasonSalaryNegotiationV3 =
+    nextSeason === 3
+      ? saveWithoutReveal.preseasonSalaryNegotiationV3 ??
+        (() => {
+          const asks = computePreseason3SalaryAsks({
+            createdAt: saveWithoutReveal.createdAt,
+            playerName: saveWithoutReveal.playerName,
+            employees: employeesWithTenure,
+          });
+          return asks.length > 0 ? { seasonKey: "3" as const, asks, resolved: {} } : undefined;
+        })()
+      : undefined;
+
   if (already) {
     // Idempotent path: spouse grant already applied. Payables may already contain new-hire
     // wage lines from this pre-season — don't overwrite them. Only ensure rollover wages exist
@@ -117,6 +131,7 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
         ),
         firmCapacity: newCapacity,
       },
+      preseasonSalaryNegotiationV3,
     };
   }
 
@@ -142,5 +157,6 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
       ),
       firmCapacity: newCapacity,
     },
+    preseasonSalaryNegotiationV3,
   };
 }

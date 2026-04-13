@@ -3,6 +3,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { ResourceSymbol, type ResourceSymbolId } from "@/components/resourceSymbols";
 import { employeeTotalCapacityContribution, type EmployeeRecord } from "@/lib/tenureCapacity";
+import { inferSkillPct } from "@/lib/employeeSkillDisplay";
 
 const BAND_LABEL_STYLE: Record<0 | 1 | 2 | 3, CSSProperties> = {
   0: { color: "#b91c1c", fontWeight: 600 },
@@ -30,19 +31,6 @@ function skillBandLabel(skillPct: number): string {
   if (skillPct <= 50) return "Capable enough";
   if (skillPct <= 75) return "Sharp";
   return "Elite";
-}
-
-function inferSkillPct(employee: EmployeeRecord): number | null {
-  if (employee.role === "Intern") return null;
-  const tierMax = employee.salary < 40_000 ? 20 : employee.salary < 65_000 ? 40 : 80;
-  const totalSkill =
-    employee.role === "Data Analyst"
-      ? employee.competenceGain
-      : employee.role === "Sales Representative"
-        ? employee.visibilityGain
-        : employee.competenceGain + employee.visibilityGain;
-  if (totalSkill <= 0) return 0;
-  return Math.round((totalSkill / tierMax) * 100);
 }
 
 function EmployeeBand({ label, pct }: { label: string; pct: number }) {

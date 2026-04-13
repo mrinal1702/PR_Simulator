@@ -1,4 +1,5 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import { getEffectiveCompetenceForAgency, getEffectiveVisibilityForAgency } from "@/lib/agencyStatsEffective";
 import {
   competenceScoreForVariance,
   competenceScoreForVarianceSeason2,
@@ -108,8 +109,8 @@ export function settlePreseasonAndEnterSeason(save: NewGamePayload, seasonKey: s
       : save.payrollPaidBySeason;
 
   const seasonNum = Number.parseInt(seasonKey, 10);
-  const vis = save.resources.visibility;
-  const comp = save.resources.competence;
+  const vis = getEffectiveVisibilityForAgency(save);
+  const comp = getEffectiveCompetenceForAgency(save);
   const vScore = seasonNum >= 2 ? visibilityScoreForVarianceSeason2(vis) : visibilityScoreForVariance(vis);
   const cScore = seasonNum >= 2 ? competenceScoreForVarianceSeason2(comp) : competenceScoreForVariance(comp);
 
@@ -128,5 +129,6 @@ export function settlePreseasonAndEnterSeason(save: NewGamePayload, seasonKey: s
       ...(save.seasonEntryScoresBySeason ?? {}),
       [seasonKey]: { vScore, cScore },
     },
+    preseasonSalaryNegotiationV3: undefined,
   };
 }

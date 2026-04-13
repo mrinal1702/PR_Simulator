@@ -124,6 +124,8 @@ After settlement, **`payablesLines` is empty during in-season play** — no wage
 | **Enter post-season** (`SeasonHubScreen` → **Continue to post-season**) | **Rebuild** wage lines for every surviving employee **except interns** (same rule as pre-season: interns have no wage payable line). |
 | **Enter next pre-season** (`enterNextPreseason` after season *Y* post-season) | **Rebuild** wage lines for surviving **non-intern** staff. Idempotent re-entry **merges** any missing rollover wage lines without wiping lines added if the player already hired in that pre-season. |
 
+| **Pre-season 3 salary raise (accept)** | **Increase** employee salary and the matching wage line by 5k/10k/15k (tier); no cash moves until Start season. Accept only if liquidityEur is at least the raise amount. Refuse uses mandatory-fire rules (no severance, no reputation penalty). See web/lib/preseasonSalaryNegotiation.ts. |
+
 So: **post-season *Y*** and **pre-season *Y*+1** both show **upcoming wages** in payables (and severance after a voluntary fire), and **`liquidityEur` / `hasLayoffPressure`** match the player’s expectations (e.g. cash 1k + receivables 13k − payables 15k &lt; 0 → mandatory layoff path in pre-season 2).
 
 ### 5.3 In-season receivables

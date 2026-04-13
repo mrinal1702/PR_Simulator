@@ -22,6 +22,7 @@ import { persistSave } from "@/lib/saveGameStorage";
 import type { PayableLine } from "@/lib/payablesReceivables";
 import type { PreseasonEntryRevealPending } from "@/lib/preseasonEntryReveal";
 import type { ShoppingCenterPurchases } from "@/lib/shoppingCenter";
+import type { PreseasonSalaryNegotiationV3 } from "@/lib/preseasonSalaryNegotiation";
 import {
   BUILD_SPECIALTY_SYMBOLS,
   ResourceSymbol,
@@ -114,6 +115,8 @@ export type NewGamePayload = {
   payablesLines?: PayableLine[];
   /** One-time Shopping Center purchases and their persistent effects. */
   shoppingCenterPurchases?: ShoppingCenterPurchases;
+  /** Pre-season 3 only: salary raise negotiations before Start season. */
+  preseasonSalaryNegotiationV3?: PreseasonSalaryNegotiationV3;
   createdAt: string;
 };
 
