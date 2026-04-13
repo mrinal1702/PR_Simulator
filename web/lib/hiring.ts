@@ -63,6 +63,15 @@ export function getHireCapForSeason(season: number): number {
   return Math.max(2, season + 1);
 }
 
+/**
+ * Agency-wide employee headcount cap by season.
+ * All seasons are currently hard-capped to 5 total employees.
+ * Future office purchase upgrades can raise this cap.
+ */
+export function getAgencyHeadcountCapForSeason(season: number): number {
+  return 5;
+}
+
 export function getSalaryBands(tier: HiringTier): Array<{ index: number; label: string; anchor: number }> {
   if (tier === "intern") return [{ index: 1, label: "10k fixed", anchor: 10 }];
   const cfg = TIER_BANDS[tier];
