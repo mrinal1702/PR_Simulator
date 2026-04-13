@@ -34,6 +34,7 @@ import { PreseasonSalaryNegotiationModal } from "@/components/PreseasonSalaryNeg
 import {
   canAffordPayRaise,
   hasUnresolvedSalaryNegotiationV3,
+  liquidityAfterPayRaiseIfAccepted,
   reconcileSalaryNegotiationWithRoster,
   resolveSalaryAskLeft,
   resolveSalaryAskPaid,
@@ -189,7 +190,7 @@ export function PreSeasonScreen({ season }: { season: number }) {
 
   const handleSalaryPay = () => {
     if (!save || !firstUnresolvedAsk || !salaryNegotiationEmployee) return;
-    if (!canAffordPayRaise(save, firstUnresolvedAsk.raiseEur)) return;
+    if (!canAffordPayRaise(save, firstUnresolvedAsk.employeeId, firstUnresolvedAsk.raiseEur)) return;
     const name = salaryNegotiationEmployee.name;
     const updated = resolveSalaryAskPaid(save, firstUnresolvedAsk.employeeId, firstUnresolvedAsk.raiseEur);
     setSave(updated);
@@ -474,11 +475,17 @@ export function PreSeasonScreen({ season }: { season: number }) {
       firstUnresolvedAsk &&
       salaryNegotiationEmployee ? (
         <PreseasonSalaryNegotiationModal
+          key={firstUnresolvedAsk.employeeId}
           employeeName={salaryNegotiationEmployee.name}
           raiseEur={firstUnresolvedAsk.raiseEur}
           currentSalary={salaryNegotiationEmployee.salary}
           liquidityEur={liquidityEur(save)}
-          canAffordPay={canAffordPayRaise(save, firstUnresolvedAsk.raiseEur)}
+          liquidityAfterAcceptEur={liquidityAfterPayRaiseIfAccepted(
+            save,
+            firstUnresolvedAsk.employeeId,
+            firstUnresolvedAsk.raiseEur
+          )}
+          canAffordPay={canAffordPayRaise(save, firstUnresolvedAsk.employeeId, firstUnresolvedAsk.raiseEur)}
           onPay={handleSalaryPay}
           onLeave={handleSalaryLeave}
         />

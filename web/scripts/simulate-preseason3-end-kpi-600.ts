@@ -522,7 +522,7 @@ function resolveSalaryNegotiationsV3(save: NewGamePayload, mode: Preseason3Mode,
     const ask = v.asks.find((a) => !v.resolved[a.employeeId]);
     if (!ask) break;
 
-    const paidTrial = canAffordPayRaise(next, ask.raiseEur)
+    const paidTrial = canAffordPayRaise(next, ask.employeeId, ask.raiseEur)
       ? resolveSalaryAskPaid(next, ask.employeeId, ask.raiseEur)
       : null;
     const leaveResult = fireEmployeeForPayrollShortfall(next, ask.employeeId);

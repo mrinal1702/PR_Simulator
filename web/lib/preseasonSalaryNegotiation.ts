@@ -1,6 +1,6 @@
 ﻿import type { NewGamePayload } from "@/components/NewGameWizard";
 import type { EmployeeRecord } from "@/lib/tenureCapacity";
-import { liquidityEur, wageLineId } from "@/lib/payablesReceivables";
+import { liquidityEur, wageLineId, type PayableLine } from "@/lib/payablesReceivables";
 import { inferSkillPct } from "@/lib/employeeSkillDisplay";
 
 export type PreseasonSalaryNegotiationV3 = {
@@ -67,8 +67,25 @@ export function computePreseason3SalaryAsks(
   return asks;
 }
 
-export function canAffordPayRaise(save: NewGamePayload, raiseEur: number): boolean {
-  return liquidityEur(save) >= raiseEur;
+/**
+ * Whether accepting this raise keeps liquidity non-negative, using the same payables/employee
+ * updates as a real accept. Sequential PS3 asks must use the current save (after prior accepts / fires).
+ */
+export function canAffordPayRaise(
+  save: NewGamePayload,
+  employeeId: string,
+  raiseEur: number
+): boolean {
+  return liquidityAfterPayRaiseIfAccepted(save, employeeId, raiseEur) >= 0;
+}
+
+/** Liquidity after applying the raise to payables + salary (read-only projection). */
+export function liquidityAfterPayRaiseIfAccepted(
+  save: NewGamePayload,
+  employeeId: string,
+  raiseEur: number
+): number {
+  return liquidityEur(applyPayRaise(save, employeeId, raiseEur));
 }
 
 export function applyPayRaise(
@@ -77,13 +94,23 @@ export function applyPayRaise(
   raiseEur: number
 ): NewGamePayload {
   const wid = wageLineId(employeeId);
-  const lines = (save.payablesLines ?? []).map((l) =>
-    l.id === wid ? { ...l, amount: l.amount + raiseEur } : l
-  );
+  const emp = (save.employees ?? []).find((e) => e.id === employeeId);
+  if (!emp) return save;
+  const newSalary = emp.salary + raiseEur;
+  const lines = save.payablesLines ?? [];
+  const idx = lines.findIndex((l) => l.id === wid);
+  let payablesLines: PayableLine[];
+  if (idx === -1) {
+    payablesLines = [...lines, { id: wid, label: `${emp.name} wage`, amount: newSalary }];
+  } else {
+    payablesLines = lines.map((l) =>
+      l.id === wid ? { ...l, amount: l.amount + raiseEur } : l
+    );
+  }
   const employees = (save.employees ?? []).map((e) =>
-    e.id === employeeId ? { ...e, salary: e.salary + raiseEur } : e
+    e.id === employeeId ? { ...e, salary: newSalary } : e
   );
-  return { ...save, employees, payablesLines: lines };
+  return { ...save, employees, payablesLines };
 }
 
 export function hasUnresolvedSalaryNegotiationV3(save: NewGamePayload): boolean {

@@ -7,6 +7,8 @@ type Props = {
   raiseEur: number;
   currentSalary: number;
   liquidityEur: number;
+  /** Liquidity after applying this raise to payables (same rules as accept). */
+  liquidityAfterAcceptEur: number;
   canAffordPay: boolean;
   onPay: () => void;
   onLeave: () => void;
@@ -22,6 +24,7 @@ export function PreseasonSalaryNegotiationModal({
   raiseEur,
   currentSalary,
   liquidityEur,
+  liquidityAfterAcceptEur,
   canAffordPay,
   onPay,
   onLeave,
@@ -42,7 +45,7 @@ export function PreseasonSalaryNegotiationModal({
         <p className="muted" style={{ margin: "0.65rem 0 0", fontSize: "0.88rem", lineHeight: 1.5 }}>
           New salary would be <strong>EUR {newSalary.toLocaleString("en-GB")}</strong> (wage payable up by {raiseLabel}). Current
           liquidity: EUR {liquidityEur.toLocaleString("en-GB")}. After accepting: EUR{" "}
-          {Math.max(0, liquidityEur - raiseEur).toLocaleString("en-GB")}. Letting them go has no severance or reputation penalty.
+          {liquidityAfterAcceptEur.toLocaleString("en-GB")}. Letting them go has no severance or reputation penalty.
         </p>
         {!canAffordPay ? (
           <p className="muted" style={{ margin: "0.5rem 0 0", fontSize: "0.88rem", color: "#b91c1c" }}>
