@@ -1,4 +1,5 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import { getHireAdjustmentMultipliers } from "@/lib/shoppingCenter";
 import {
   getHiringNamePoolStrings,
   HIRING_NAME_ROWS,
@@ -152,6 +153,8 @@ export function generateCandidates(args: {
   visibility: number;
   /** Full names to skip (payroll, bans, junior cross-band consumption, etc.). */
   excludedNames?: string[];
+  /** When set, applies shopping-center HR multipliers (skills test / reference checks). */
+  save?: NewGamePayload;
 }): Candidate[] {
   const bucketSeed = `${args.seedBase}|s${args.season}|${args.role}|${args.tier}|${args.salary}`;
   // Names: pool is role + seniority only; pick seed excludes salary so anchors do not swap which roster names appear.
@@ -169,8 +172,8 @@ export function generateCandidates(args: {
   );
   return uniqueNames.map((name, idx) => {
     const seed = `${bucketSeed}|c${idx}`;
-    const productivity = resolveProductivity(seed);
-    const skill = resolveSkill({
+    let productivity = resolveProductivity(seed);
+    let skill = resolveSkill({
       seed,
       tier: args.tier,
       salary: args.salary,
@@ -178,6 +181,11 @@ export function generateCandidates(args: {
       visibility: args.visibility,
       role: args.role,
     });
+    if (args.save) {
+      const m = getHireAdjustmentMultipliers(args.save);
+      productivity = Math.min(80, Math.round(productivity * m.productivityMultiplier));
+      skill = Math.round(skill * m.skillMultiplier);
+    }
     const fixedHireBlurb = getHireBlurbForCandidate(args.role, args.tier, name);
     return {
       id: `cand-${hash32(seed)}`,
