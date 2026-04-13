@@ -3,6 +3,7 @@ import { seasonSpouseGrants } from "@/lib/gameEconomy";
 import { METRIC_SCALES, clampToScale } from "@/lib/metricScales";
 import { pickPreseasonEntrySpouseFlavorLine } from "@/lib/preseasonEntrySpouseCopy";
 import type { PreseasonEntryRevealPending } from "@/lib/preseasonEntryReveal";
+import { getSpouseVacationSeasonalBonus } from "@/lib/shoppingCenter";
 import {
   employeeTotalCapacityContribution,
   tenureCapacityIncrementFromProductivity,
@@ -63,7 +64,13 @@ export function enterNextPreseason(save: NewGamePayload, completedPostSeason: nu
   const spouseFlavorLine = !already
     ? pickPreseasonEntrySpouseFlavorLine(saveWithoutReveal.spouseType, nextSeason, spouseDisplayName)
     : null;
-  const g = seasonSpouseGrants(saveWithoutReveal.spouseType);
+  const baseGrant = seasonSpouseGrants(saveWithoutReveal.spouseType);
+  const vacationBonus = getSpouseVacationSeasonalBonus(saveWithoutReveal, nextSeason);
+  const g = {
+    eur: baseGrant.eur + vacationBonus.eur,
+    competence: baseGrant.competence + vacationBonus.competence,
+    visibility: baseGrant.visibility + vacationBonus.visibility,
+  };
   const spouseGrantStats: PreseasonEntryRevealPending["spouseGrantStats"] = !already
     ? { eur: g.eur, competence: g.competence, visibility: g.visibility }
     : null;

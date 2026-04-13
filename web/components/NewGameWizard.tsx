@@ -21,6 +21,7 @@ import type { SeasonLoopState } from "@/lib/seasonClientLoop";
 import { persistSave } from "@/lib/saveGameStorage";
 import type { PayableLine } from "@/lib/payablesReceivables";
 import type { PreseasonEntryRevealPending } from "@/lib/preseasonEntryReveal";
+import type { ShoppingCenterPurchases } from "@/lib/shoppingCenter";
 import {
   BUILD_SPECIALTY_SYMBOLS,
   ResourceSymbol,
@@ -111,6 +112,8 @@ export type NewGamePayload = {
    * Legacy saves omit this; load migrates from employees + EUR refund.
    */
   payablesLines?: PayableLine[];
+  /** One-time Shopping Center purchases and their persistent effects. */
+  shoppingCenterPurchases?: ShoppingCenterPurchases;
   createdAt: string;
 };
 

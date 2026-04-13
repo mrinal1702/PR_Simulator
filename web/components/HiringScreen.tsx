@@ -7,6 +7,7 @@ import { GAME_TITLE } from "@/lib/onboardingContent";
 import {
   banTalentBazaarName,
   capacityGainFromProductivity,
+  getAgencyHeadcountCapForSeason,
   generateCandidates,
   getHireCapForSeason,
   getSalaryBands,
@@ -25,6 +26,7 @@ import { AgencyFinanceBreakdownHost } from "@/components/AgencyFinanceBreakdownH
 import { AgencyFinanceSnapshot } from "@/components/AgencyFinanceSnapshot";
 import { ResourceSymbol } from "@/components/resourceSymbols";
 import type { BreakdownMetric } from "@/lib/metricBreakdown";
+import { getHireAdjustmentMultipliers } from "@/lib/shoppingCenter";
 
 const HIRING_ROLE_OPTIONS: {
   id: HiringRole;
@@ -404,8 +406,12 @@ export function HiringScreen({ season }: { season: number }) {
 
   const seasonKey = String(season);
   const hiredThisSeason = save.hiresBySeason?.[seasonKey] ?? 0;
-  const cap = getHireCapForSeason(season);
-  const capReached = hiredThisSeason >= cap;
+  const preseasonHireCap = getHireCapForSeason(season);
+  const preseasonHireCapReached = hiredThisSeason >= preseasonHireCap;
+  const agencyHeadcountCap = getAgencyHeadcountCapForSeason(season);
+  const employeeCount = save.employees?.length ?? 0;
+  const agencyHeadcountCapReached = employeeCount >= agencyHeadcountCap;
+  const capReached = preseasonHireCapReached || agencyHeadcountCapReached;
   const salaryOptions = useMemo(() => {
     if (mode === "intern") return [];
     return getSalaryBands(tier)
@@ -415,6 +421,7 @@ export function HiringScreen({ season }: { season: number }) {
   const canAffordIntern = liquidityEur(save) >= 10_000;
   const canAffordSelected =
     mode === "intern" ? canAffordIntern : liquidityEur(save) >= salary;
+  const hireAdjustments = getHireAdjustmentMultipliers(save);
 
   useEffect(() => {
     if (mode !== "full_time") return;
@@ -467,12 +474,22 @@ export function HiringScreen({ season }: { season: number }) {
 
   const finalizeHireCandidate = (candidate: Candidate) => {
     if (capReached) return;
+    const currentEmployeeCount = save.employees?.length ?? 0;
+    const currentAgencyHeadcountCap = getAgencyHeadcountCapForSeason(season);
+    if (currentEmployeeCount >= currentAgencyHeadcountCap) {
+      setNotice("Cannot hire: agency headcount cap reached for this season.");
+      return;
+    }
     if (liquidityEur(save) < candidate.salary) {
       setNotice("Cannot hire: cash and receivables would not cover payables plus this wage.");
       return;
     }
-    const productivity = Math.round(candidate.hiddenProductivityPct);
-    const skill = Math.round(candidate.hiddenSkillScore);
+    const productivity = Math.min(
+      100,
+      Math.round(candidate.hiddenProductivityPct * hireAdjustments.productivityMultiplier)
+    );
+    const skillCeiling = tier === "junior" ? 20 : tier === "mid" ? 40 : 80;
+    const skill = Math.min(skillCeiling, Math.round(candidate.hiddenSkillScore * hireAdjustments.skillMultiplier));
     const capGain = capacityGainFromProductivity(productivity);
     let competenceGain = 0;
     let visibilityGain = 0;
@@ -618,7 +635,10 @@ export function HiringScreen({ season }: { season: number }) {
         </p>
         <h1 style={{ margin: 0 }}>Talent Bazaar</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
-          Max hires this pre-season: {cap} · Hired: {hiredThisSeason}
+          Max hires this pre-season: {preseasonHireCap} · Hired: {hiredThisSeason}
+          {Number.isFinite(agencyHeadcountCap)
+            ? ` · Agency headcount cap: ${agencyHeadcountCap} · Current headcount: ${employeeCount}`
+            : ""}
         </p>
       </header>
 
@@ -640,7 +660,8 @@ export function HiringScreen({ season }: { season: number }) {
       </div>
 
       {notice ? <p>{notice}</p> : null}
-      {capReached ? <p>Hire cap reached for this pre-season.</p> : null}
+      {preseasonHireCapReached ? <p>Hire cap reached for this pre-season.</p> : null}
+      {agencyHeadcountCapReached ? <p>Agency headcount cap reached for this season.</p> : null}
 
       {stage === "home" ? (
         <section>
