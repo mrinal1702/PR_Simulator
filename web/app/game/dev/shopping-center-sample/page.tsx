@@ -68,7 +68,10 @@ export default function DevShoppingCenterSamplePage() {
         </p>
       </header>
 
-      <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap", alignItems: "center" }}>
+        <Link href="/game/postseason/2/end-season" className="btn btn-secondary" style={{ textDecoration: "none" }}>
+          ← Back
+        </Link>
         <button type="button" className="btn btn-primary" onClick={loadSample}>
           Load sample and open Shopping Center
         </button>
