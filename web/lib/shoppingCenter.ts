@@ -7,7 +7,9 @@ export type ShoppingItemId =
   | "vacation_solo"
   | "rent_office"
   | "hr_skills_test"
-  | "hr_reference_checks";
+  | "hr_reference_checks"
+  | "tech_overhaul"
+  | "soft_launch_buzz";
 
 export type ShoppingCenterPurchases = {
   vacationWithSpouse?: boolean;
@@ -16,6 +18,10 @@ export type ShoppingCenterPurchases = {
   hrSkillsTest?: boolean;
   hrReferenceChecks?: boolean;
   soloVacationBoostStat?: "competence" | "visibility";
+  /** +10% to agency competence (applied to raw total for scores and display). */
+  techOverhaul?: boolean;
+  /** +5% to agency visibility (applied to raw total for scores and display). */
+  softLaunchBuzz?: boolean;
 };
 
 export const SHOPPING_ITEM_COST_EUR: Record<ShoppingItemId, number> = {
@@ -24,6 +30,8 @@ export const SHOPPING_ITEM_COST_EUR: Record<ShoppingItemId, number> = {
   rent_office: 15_000,
   hr_skills_test: 5_000,
   hr_reference_checks: 5_000,
+  tech_overhaul: 10_000,
+  soft_launch_buzz: 10_000,
 };
 
 export function getShoppingBudgetEur(save: NewGamePayload): {
@@ -43,7 +51,9 @@ export function isShoppingItemPurchased(save: NewGamePayload, itemId: ShoppingIt
   if (itemId === "vacation_solo") return p.vacationSolo === true;
   if (itemId === "rent_office") return p.rentOffice === true;
   if (itemId === "hr_skills_test") return p.hrSkillsTest === true;
-  return p.hrReferenceChecks === true;
+  if (itemId === "hr_reference_checks") return p.hrReferenceChecks === true;
+  if (itemId === "tech_overhaul") return p.techOverhaul === true;
+  return p.softLaunchBuzz === true;
 }
 
 function deterministicSoloVacationBoostStat(save: NewGamePayload): "competence" | "visibility" {
@@ -129,7 +139,19 @@ export function applyShoppingPurchase(save: NewGamePayload, itemId: ShoppingItem
     return { ok: true, save: next };
   }
 
-  p.hrReferenceChecks = true;
+  if (itemId === "hr_reference_checks") {
+    p.hrReferenceChecks = true;
+    next = { ...next, shoppingCenterPurchases: p };
+    return { ok: true, save: next };
+  }
+
+  if (itemId === "tech_overhaul") {
+    p.techOverhaul = true;
+    next = { ...next, shoppingCenterPurchases: p };
+    return { ok: true, save: next };
+  }
+
+  p.softLaunchBuzz = true;
   next = { ...next, shoppingCenterPurchases: p };
   return { ok: true, save: next };
 }
