@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
+import { getEffectiveCompetenceForAgency, getEffectiveVisibilityForAgency } from "@/lib/agencyStatsEffective";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import {
   acceptedRunsWithOutcomes,
@@ -19,6 +20,7 @@ import type { BreakdownMetric } from "@/lib/metricBreakdown";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 import { AgencyFinanceStatsRows } from "@/components/AgencyFinanceStatsRows";
+import { AgencySnapshotCapacityRow, AgencySnapshotMetricRow } from "@/components/AgencySnapshotMetricRow";
 import { EmployeeRosterList } from "@/components/EmployeeRosterList";
 import { MetricBreakdownModalBody } from "@/components/MetricBreakdownModalBody";
 import { ResourceSymbol } from "@/components/resourceSymbols";
@@ -203,6 +205,9 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
     );
   }
 
+  const visibilityForBands = getEffectiveVisibilityForAgency(save);
+  const competenceForBands = getEffectiveCompetenceForAgency(save);
+
   return (
     <div className="shell shell-wide">
       <header style={{ marginBottom: "1.5rem" }}>
@@ -336,7 +341,8 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
               onPayables={() => setBreakdownMetric("payables")}
               onReceivables={() => setBreakdownMetric("receivables")}
             />
-            <MetricRow
+            <AgencySnapshotMetricRow
+              symbolId="reputation"
               label="Reputation"
               value={save.reputation ?? 5}
               bandLabel={getMetricBand("reputation", save.reputation ?? 5).label}
@@ -344,34 +350,28 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
               percent={metricPercent("reputation", save.reputation ?? 5)}
               onBreakdown={() => setBreakdownMetric("reputation")}
             />
-            <MetricRow
+            <AgencySnapshotMetricRow
+              symbolId="visibility"
               label="Visibility"
-              value={save.resources.visibility}
-              bandLabel={getMetricBand("visibility", save.resources.visibility).label}
-              color={getMetricBand("visibility", save.resources.visibility).color}
-              percent={metricPercent("visibility", save.resources.visibility)}
+              value={visibilityForBands}
+              bandLabel={getMetricBand("visibility", visibilityForBands).label}
+              color={getMetricBand("visibility", visibilityForBands).color}
+              percent={metricPercent("visibility", visibilityForBands)}
               onBreakdown={() => setBreakdownMetric("visibility")}
             />
-            <MetricRow
+            <AgencySnapshotMetricRow
+              symbolId="competence"
               label="Competence"
-              value={save.resources.competence}
-              bandLabel={getMetricBand("competence", save.resources.competence).label}
-              color={getMetricBand("competence", save.resources.competence).color}
-              percent={metricPercent("competence", save.resources.competence)}
+              value={competenceForBands}
+              bandLabel={getMetricBand("competence", competenceForBands).label}
+              color={getMetricBand("competence", competenceForBands).color}
+              percent={metricPercent("competence", competenceForBands)}
               onBreakdown={() => setBreakdownMetric("competence")}
             />
-            <p className="muted" style={{ margin: "0.25rem 0 0" }}>
-              Capacity: {save.resources.firmCapacity}
-              {" · "}
-              <button
-                type="button"
-                className="btn btn-secondary"
-                style={{ padding: "0.2rem 0.5rem", fontSize: "0.82rem" }}
-                onClick={() => setBreakdownMetric("firmCapacity")}
-              >
-                Breakdown
-              </button>
-            </p>
+            <AgencySnapshotCapacityRow
+              firmCapacity={save.resources.firmCapacity}
+              onBreakdown={() => setBreakdownMetric("firmCapacity")}
+            />
           </div>
         ) : null}
 
@@ -766,36 +766,3 @@ function postSeasonSeason1ChoiceCostLabel(choice: "reach" | "effectiveness" | "n
   return "No extra cost";
 }
 
-function MetricRow({
-  label,
-  value,
-  bandLabel,
-  color,
-  percent,
-  onBreakdown,
-}: {
-  label: string;
-  value: number;
-  bandLabel: string;
-  color: string;
-  percent: number;
-  onBreakdown: () => void;
-}) {
-  return (
-    <div className="metric-row">
-      <div className="metric-row-top">
-        <strong>{label}</strong>
-        <span className="muted" style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
-          {value} · {bandLabel}
-          <button type="button" className="btn btn-secondary" style={{ padding: "0.15rem 0.45rem", fontSize: "0.78rem" }} onClick={onBreakdown}>
-            Breakdown
-          </button>
-        </span>
-      </div>
-      <div className="metric-track" role="presentation">
-        <div className="metric-fill" style={{ width: `${percent}%`, background: color }} />
-        <div className="metric-marker" style={{ left: `${percent}%` }} aria-hidden />
-      </div>
-    </div>
-  );
-}

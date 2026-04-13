@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import { getEffectiveCompetenceForAgency, getEffectiveVisibilityForAgency } from "@/lib/agencyStatsEffective";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { persistSave, loadSave } from "@/lib/saveGameStorage";
 import { type BreakdownMetric } from "@/lib/metricBreakdown";
@@ -17,6 +18,7 @@ import {
 } from "@/lib/preseasonFocus";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
 import { AgencyFinanceStatsRows } from "@/components/AgencyFinanceStatsRows";
+import { AgencySnapshotCapacityRow, AgencySnapshotMetricRow } from "@/components/AgencySnapshotMetricRow";
 import { EmployeeRosterList } from "@/components/EmployeeRosterList";
 import { MetricBreakdownModalBody } from "@/components/MetricBreakdownModalBody";
 import { ResourceSymbol } from "@/components/resourceSymbols";
@@ -28,6 +30,14 @@ import {
   totalPayables,
 } from "@/lib/payablesReceivables";
 import { PreseasonEntryRevealModal } from "@/components/PreseasonEntryRevealModal";
+import { PreseasonSalaryNegotiationModal } from "@/components/PreseasonSalaryNegotiationModal";
+import {
+  canAffordPayRaise,
+  hasUnresolvedSalaryNegotiationV3,
+  reconcileSalaryNegotiationWithRoster,
+  resolveSalaryAskLeft,
+  resolveSalaryAskPaid,
+} from "@/lib/preseasonSalaryNegotiation";
 
 export function PreSeasonScreen({ season }: { season: number }) {
   const router = useRouter();
@@ -38,6 +48,14 @@ export function PreSeasonScreen({ season }: { season: number }) {
   const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
   const [confirmStartSeason, setConfirmStartSeason] = useState(false);
   const [fireTargetId, setFireTargetId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!save) return;
+    const next = reconcileSalaryNegotiationWithRoster(save);
+    if (next === save) return;
+    setSave(next);
+    persistSave(next);
+  }, [save]);
 
   const title = useMemo(() => `Pre-season ${season}`, [season]);
   const seasonKey = String(season);
@@ -115,6 +133,10 @@ export function PreSeasonScreen({ season }: { season: number }) {
 
   const startSeason = () => {
     if (!save) return;
+    if (season === 3 && hasUnresolvedSalaryNegotiationV3(save)) {
+      setNotice("Resolve pre-season 3 salary requests before starting the season.");
+      return;
+    }
     if (hasLayoffPressure(save)) {
       setNotice("Liquidity is negative (cash + receivables < payables). Resolve layoffs before starting the season.");
       return;
@@ -143,8 +165,49 @@ export function PreSeasonScreen({ season }: { season: number }) {
   const workshopCard = getPreseasonFocusCardCopy(season, "strategy_workshop", save);
   const networkCard = getPreseasonFocusCardCopy(season, "network", save);
 
+  const visibilityForBands = getEffectiveVisibilityForAgency(save);
+  const competenceForBands = getEffectiveCompetenceForAgency(save);
+
   const entryReveal = save.preseasonEntryRevealPending;
   const showEntryRevealModal = entryReveal != null && entryReveal.preseasonSeasonKey === seasonKey;
+
+  const salaryNegotiationBlocked = season === 3 && hasUnresolvedSalaryNegotiationV3(save);
+  const v3 = save.preseasonSalaryNegotiationV3;
+  const firstUnresolvedAsk =
+    v3 && v3.seasonKey === "3"
+      ? v3.asks.find((a) => !v3.resolved[a.employeeId])
+      : undefined;
+  const salaryNegotiationEmployee = firstUnresolvedAsk
+    ? save.employees?.find((e) => e.id === firstUnresolvedAsk.employeeId)
+    : undefined;
+  const showSalaryNegotiationModal =
+    season === 3 &&
+    salaryNegotiationBlocked &&
+    firstUnresolvedAsk != null &&
+    salaryNegotiationEmployee != null &&
+    !showEntryRevealModal;
+
+  const handleSalaryPay = () => {
+    if (!save || !firstUnresolvedAsk || !salaryNegotiationEmployee) return;
+    if (!canAffordPayRaise(save, firstUnresolvedAsk.raiseEur)) return;
+    const updated = resolveSalaryAskPaid(save, firstUnresolvedAsk.employeeId, firstUnresolvedAsk.raiseEur);
+    setSave(updated);
+    persistSave(updated);
+    setNotice("Raise accepted. Wage payable updated.");
+  };
+
+  const handleSalaryLeave = () => {
+    if (!save || !firstUnresolvedAsk) return;
+    const result = fireEmployeeForPayrollShortfall(save, firstUnresolvedAsk.employeeId);
+    if (!result.ok) {
+      setNotice(result.error);
+      return;
+    }
+    const updated = resolveSalaryAskLeft(result.save, firstUnresolvedAsk.employeeId);
+    setSave(updated);
+    persistSave(updated);
+    setNotice("Employee left. No severance.");
+  };
 
   return (
     <div className="shell shell-wide">
@@ -179,6 +242,14 @@ export function PreSeasonScreen({ season }: { season: number }) {
             </p>
           </div>
         ) : null}
+        {salaryNegotiationBlocked && !payrollBlocked ? (
+          <div className="agency-stats-panel" style={{ borderColor: "#ca8a04", marginBottom: "0.85rem" }}>
+            <h3 style={{ marginTop: 0, marginBottom: "0.45rem", color: "#ca8a04" }}>Salary negotiations (pre-season 3)</h3>
+            <p style={{ margin: 0 }}>
+              Resolve each raise request before you can start the season. You can accept (if liquidity allows) or let the employee go with no severance or reputation loss.
+            </p>
+          </div>
+        ) : null}
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
           <button type="button" className="btn btn-secondary" onClick={() => setShowStats((v) => !v)}>
             {showStats ? "Hide agency stats" : "Agency stats"}
@@ -210,7 +281,8 @@ export function PreSeasonScreen({ season }: { season: number }) {
               onReceivables={() => setBreakdownMetric("receivables")}
             />
 
-            <MetricRow
+            <AgencySnapshotMetricRow
+              symbolId="reputation"
               label="Reputation"
               value={save.reputation ?? 5}
               bandLabel={getMetricBand("reputation", save.reputation ?? 5).label}
@@ -218,29 +290,28 @@ export function PreSeasonScreen({ season }: { season: number }) {
               percent={metricPercent("reputation", save.reputation ?? 5)}
               onBreakdown={() => setBreakdownMetric("reputation")}
             />
-            <MetricRow
+            <AgencySnapshotMetricRow
+              symbolId="visibility"
               label="Visibility"
-              value={save.resources.visibility}
-              bandLabel={getMetricBand("visibility", save.resources.visibility).label}
-              color={getMetricBand("visibility", save.resources.visibility).color}
-              percent={metricPercent("visibility", save.resources.visibility)}
+              value={visibilityForBands}
+              bandLabel={getMetricBand("visibility", visibilityForBands).label}
+              color={getMetricBand("visibility", visibilityForBands).color}
+              percent={metricPercent("visibility", visibilityForBands)}
               onBreakdown={() => setBreakdownMetric("visibility")}
             />
-            <MetricRow
+            <AgencySnapshotMetricRow
+              symbolId="competence"
               label="Competence"
-              value={save.resources.competence}
-              bandLabel={getMetricBand("competence", save.resources.competence).label}
-              color={getMetricBand("competence", save.resources.competence).color}
-              percent={metricPercent("competence", save.resources.competence)}
+              value={competenceForBands}
+              bandLabel={getMetricBand("competence", competenceForBands).label}
+              color={getMetricBand("competence", competenceForBands).color}
+              percent={metricPercent("competence", competenceForBands)}
               onBreakdown={() => setBreakdownMetric("competence")}
             />
-            <p className="muted" style={{ margin: "0.25rem 0 0" }}>
-              Capacity: {save.resources.firmCapacity}
-              {" · "}
-              <button type="button" className="btn btn-secondary" style={{ padding: "0.2rem 0.5rem", fontSize: "0.82rem" }} onClick={() => setBreakdownMetric("firmCapacity")}>
-                Breakdown
-              </button>
-            </p>
+            <AgencySnapshotCapacityRow
+              firmCapacity={save.resources.firmCapacity}
+              onBreakdown={() => setBreakdownMetric("firmCapacity")}
+            />
           </div>
         ) : null}
 
@@ -328,11 +399,11 @@ export function PreSeasonScreen({ season }: { season: number }) {
             type="button"
             className="btn btn-secondary"
             onClick={() => setConfirmStartSeason(true)}
-            disabled={payrollBlocked}
+            disabled={payrollBlocked || salaryNegotiationBlocked}
           >
             Start season
           </button>
-          {payrollBlocked ? (
+          {payrollBlocked || salaryNegotiationBlocked ? (
             <span className="btn btn-primary" style={{ opacity: 0.55 }}>
               Talent Bazaar (Hire employees)
             </span>
@@ -393,6 +464,19 @@ export function PreSeasonScreen({ season }: { season: number }) {
           payrollBlocked={payrollBlocked}
           onCancel={() => setFireTargetId(null)}
           onConfirm={confirmFire}
+        />
+      ) : null}
+      {showSalaryNegotiationModal &&
+      firstUnresolvedAsk &&
+      salaryNegotiationEmployee ? (
+        <PreseasonSalaryNegotiationModal
+          employeeName={salaryNegotiationEmployee.name}
+          raiseEur={firstUnresolvedAsk.raiseEur}
+          currentSalary={salaryNegotiationEmployee.salary}
+          liquidityEur={liquidityEur(save)}
+          canAffordPay={canAffordPayRaise(save, firstUnresolvedAsk.raiseEur)}
+          onPay={handleSalaryPay}
+          onLeave={handleSalaryLeave}
         />
       ) : null}
       {showEntryRevealModal && entryReveal ? (
@@ -484,40 +568,6 @@ function FireConfirmModal({
             Confirm fire
           </button>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function MetricRow({
-  label,
-  value,
-  bandLabel,
-  color,
-  percent,
-  onBreakdown,
-}: {
-  label: string;
-  value: number;
-  bandLabel: string;
-  color: string;
-  percent: number;
-  onBreakdown: () => void;
-}) {
-  return (
-    <div className="metric-row">
-      <div className="metric-row-top">
-        <strong>{label}</strong>
-        <span className="muted" style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
-          {value} · {bandLabel}
-          <button type="button" className="btn btn-secondary" style={{ padding: "0.15rem 0.45rem", fontSize: "0.78rem" }} onClick={onBreakdown}>
-            Breakdown
-          </button>
-        </span>
-      </div>
-      <div className="metric-track" role="presentation">
-        <div className="metric-fill" style={{ width: `${percent}%`, background: color }} />
-        <div className="metric-marker" style={{ left: `${percent}%` }} aria-hidden />
       </div>
     </div>
   );

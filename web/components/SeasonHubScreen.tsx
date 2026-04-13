@@ -7,10 +7,12 @@ import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import { getMetricBand, metricPercent } from "@/lib/metricScales";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
+import { getEffectiveCompetenceForAgency, getEffectiveVisibilityForAgency } from "@/lib/agencyStatsEffective";
 import { plannedClientCountForSeason } from "@/lib/clientEconomyMath";
 import { SCENARIO_POOL_EXHAUSTED_MESSAGE } from "@/lib/scenarios";
 import { buildSeasonClients } from "@/lib/seasonClientLoop";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
+import { AgencySnapshotCapacityRow, AgencySnapshotMetricRow } from "@/components/AgencySnapshotMetricRow";
 import { AgencyFinanceBreakdownHost } from "@/components/AgencyFinanceBreakdownHost";
 import { AgencyFinanceSnapshot } from "@/components/AgencyFinanceSnapshot";
 import { EmployeeRosterList } from "@/components/EmployeeRosterList";
@@ -91,6 +93,9 @@ export function SeasonHubScreen({ season }: { season: number }) {
       loop.runs.length === loop.plannedClientCount
   );
 
+  const visibilityForBands = getEffectiveVisibilityForAgency(save);
+  const competenceForBands = getEffectiveCompetenceForAgency(save);
+
   const continueToPostSeason = () => {
     if (!save || !seasonQueueComplete) return;
     // Rebuild wage payables for surviving full-time employees so the post-season hub,
@@ -134,7 +139,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
     }
     const count = plannedClientCountForSeason(
       season,
-      save.resources.visibility,
+      getEffectiveVisibilityForAgency(save),
       `${save.createdAt}|${save.playerName}`,
       save.seasonEntryScoresBySeason?.[seasonKey]?.vScore
     );
@@ -147,8 +152,8 @@ export function SeasonHubScreen({ season }: { season: number }) {
         count,
         {
           reputation: save.reputation ?? 5,
-          visibility: save.resources.visibility,
-          competence: save.resources.competence,
+          visibility: getEffectiveVisibilityForAgency(save),
+          competence: getEffectiveCompetenceForAgency(save),
         },
         save.usedScenarioIds ?? [],
         save.seasonEntryScoresBySeason?.[seasonKey]
@@ -216,30 +221,31 @@ export function SeasonHubScreen({ season }: { season: number }) {
             <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Agency snapshot</h3>
             <AgencyFinanceSnapshot save={save} onBreakdown={setBreakdownMetric} compact />
 
-            <MetricRow
+            <AgencySnapshotMetricRow
+              symbolId="reputation"
               label="Reputation"
               value={save.reputation ?? 5}
               bandLabel={getMetricBand("reputation", save.reputation ?? 5).label}
               color={getMetricBand("reputation", save.reputation ?? 5).color}
               percent={metricPercent("reputation", save.reputation ?? 5)}
             />
-            <MetricRow
+            <AgencySnapshotMetricRow
+              symbolId="visibility"
               label="Visibility"
-              value={save.resources.visibility}
-              bandLabel={getMetricBand("visibility", save.resources.visibility).label}
-              color={getMetricBand("visibility", save.resources.visibility).color}
-              percent={metricPercent("visibility", save.resources.visibility)}
+              value={visibilityForBands}
+              bandLabel={getMetricBand("visibility", visibilityForBands).label}
+              color={getMetricBand("visibility", visibilityForBands).color}
+              percent={metricPercent("visibility", visibilityForBands)}
             />
-            <MetricRow
+            <AgencySnapshotMetricRow
+              symbolId="competence"
               label="Competence"
-              value={save.resources.competence}
-              bandLabel={getMetricBand("competence", save.resources.competence).label}
-              color={getMetricBand("competence", save.resources.competence).color}
-              percent={metricPercent("competence", save.resources.competence)}
+              value={competenceForBands}
+              bandLabel={getMetricBand("competence", competenceForBands).label}
+              color={getMetricBand("competence", competenceForBands).color}
+              percent={metricPercent("competence", competenceForBands)}
             />
-            <p className="muted" style={{ margin: "0.25rem 0 0" }}>
-              Capacity: {save.resources.firmCapacity}
-            </p>
+            <AgencySnapshotCapacityRow firmCapacity={save.resources.firmCapacity} />
           </div>
         ) : null}
 
@@ -326,31 +332,3 @@ export function SeasonHubScreen({ season }: { season: number }) {
   );
 }
 
-function MetricRow({
-  label,
-  value,
-  bandLabel,
-  color,
-  percent,
-}: {
-  label: string;
-  value: number;
-  bandLabel: string;
-  color: string;
-  percent: number;
-}) {
-  return (
-    <div className="metric-row">
-      <div className="metric-row-top">
-        <strong>{label}</strong>
-        <span className="muted">
-          {value} · {bandLabel}
-        </span>
-      </div>
-      <div className="metric-track" role="presentation">
-        <div className="metric-fill" style={{ width: `${percent}%`, background: color }} />
-        <div className="metric-marker" style={{ left: `${percent}%` }} aria-hidden />
-      </div>
-    </div>
-  );
-}
