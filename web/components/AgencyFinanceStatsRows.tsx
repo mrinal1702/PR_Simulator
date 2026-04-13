@@ -29,7 +29,9 @@ export function AgencyFinanceStatsRows({
         }}
       >
         <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-          <ResourceSymbol id="payables" size={17} />
+          <span className="agency-snapshot-stat-symbol" aria-hidden>
+            <ResourceSymbol id="payables" size={17} />
+          </span>
           <strong>Payables</strong>
           <span style={{ color: "#f87171", fontWeight: 600 }}>EUR {p.toLocaleString("en-GB")}</span>
         </span>
@@ -53,7 +55,9 @@ export function AgencyFinanceStatsRows({
         }}
       >
         <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-          <ResourceSymbol id="receivables" size={17} />
+          <span className="agency-snapshot-stat-symbol" aria-hidden>
+            <ResourceSymbol id="receivables" size={17} />
+          </span>
           <strong>Receivables</strong>
           <span style={{ color: "#4ade80", fontWeight: 600 }}>EUR {r.toLocaleString("en-GB")}</span>
         </span>

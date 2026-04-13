@@ -323,7 +323,9 @@ export function PostSeasonHubScreen({ season }: { season: number }) {
             <h3 style={{ marginTop: 0, marginBottom: "0.75rem", fontSize: "1.05rem" }}>Agency snapshot</h3>
             <p className="muted" style={{ marginTop: 0, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.35rem" }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-                <ResourceSymbol id="eur" size={17} />
+                <span className="agency-snapshot-stat-symbol" aria-hidden>
+                  <ResourceSymbol id="eur" size={17} />
+                </span>
                 <strong>Cash</strong>: EUR {save.resources.eur.toLocaleString("en-GB")}
               </span>
               {" · "}

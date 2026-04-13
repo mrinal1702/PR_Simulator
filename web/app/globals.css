@@ -500,6 +500,13 @@ h3 {
     background var(--ui-duration) ease;
 }
 
+/** Expanded agency snapshot: stat icons match resource strip (gold accent). */
+.agency-snapshot-stat-symbol {
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+}
+
 /** Client case: main scenario + client summary panel (subtle ambient pulse) */
 .scenario-client-card {
   animation: ui-scenario-client-card-glow 3.2s ease-in-out infinite;

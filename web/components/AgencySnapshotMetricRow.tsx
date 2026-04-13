@@ -24,7 +24,9 @@ export function AgencySnapshotMetricRow({
     <div className="metric-row">
       <div className="metric-row-top">
         <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
-          <ResourceSymbol id={symbolId} size={17} />
+          <span className="agency-snapshot-stat-symbol" aria-hidden>
+            <ResourceSymbol id={symbolId} size={17} />
+          </span>
           <strong>{label}</strong>
         </span>
         <span
@@ -72,7 +74,9 @@ export function AgencySnapshotCapacityRow({
       }}
     >
       <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-        <ResourceSymbol id="capacity" size={17} />
+        <span className="agency-snapshot-stat-symbol" aria-hidden>
+          <ResourceSymbol id="capacity" size={17} />
+        </span>
         <strong>Capacity</strong>: {firmCapacity}
       </span>
       {onBreakdown ? (
