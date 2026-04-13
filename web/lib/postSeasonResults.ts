@@ -51,6 +51,36 @@ function curvedPostSeasonValue({ metricPercent, min, max }: PostSeasonCurveArgs)
   return midpoint + halfSpan * curved;
 }
 
+/** Min/max reputation delta from effectiveness % (same tanh curve as Season 2 post-season). */
+export type ReputationFromEffectivenessBounds = Readonly<{ min: number; max: number }>;
+
+/** Season 2 post-season and carryovers resolved in hub season ≤2. */
+export const REPUTATION_FROM_EFFECTIVENESS_SEASON2: ReputationFromEffectivenessBounds = {
+  min: -10,
+  max: 40,
+};
+
+/**
+ * Hub season ≥3: wider reputation band for carryover outcomes in ledgers
+ * ({@link collectPostSeasonLedger} via {@link carryoverHubReputationBounds}).
+ * Fresh-campaign post-season boosts on season ≥2 loops use {@link REPUTATION_FROM_EFFECTIVENESS_SEASON2}
+ * via {@link applyPostSeasonChoice}.
+ */
+export const REPUTATION_FROM_EFFECTIVENESS_SEASON3_CARRYOVER: ReputationFromEffectivenessBounds = {
+  min: -50,
+  max: 70,
+};
+
+/**
+ * Reputation curve for a **rolled-over** scenario when the player finishes it in `hubSeason`.
+ * Season 4+ defaults to the Season 3 carryover band until you retune here.
+ */
+export function carryoverHubReputationBounds(hubSeason: number): ReputationFromEffectivenessBounds {
+  if (hubSeason <= 2) return REPUTATION_FROM_EFFECTIVENESS_SEASON2;
+  if (hubSeason === 3) return REPUTATION_FROM_EFFECTIVENESS_SEASON3_CARRYOVER;
+  return REPUTATION_FROM_EFFECTIVENESS_SEASON3_CARRYOVER;
+}
+
 /**
  * Maps firm competence (same normalization as Season 1 solution variance) to an integer boost 1–5%.
  */
@@ -130,12 +160,16 @@ export function collectPostSeasonLedger(save: { seasonLoopBySeason?: Partial<Rec
         });
       }
       if (r.season2CarryoverResolution) {
+        const hubSeason = seasonNum + 1;
         out.push({
-          seasonKey: String(seasonNum + 1),
+          seasonKey: String(hubSeason),
           scenarioTitle: client?.scenarioTitle ?? r.clientId,
           reputationDelta:
             r.season2CarryoverResolution.reputationDelta ??
-            reputationDeltaFromEffectivenessCurve(r.season2CarryoverResolution.messageEffectiveness),
+            reputationDeltaFromEffectivenessCurve(
+              r.season2CarryoverResolution.messageEffectiveness,
+              carryoverHubReputationBounds(hubSeason)
+            ),
           visibilityGain:
             r.season2CarryoverResolution.visibilityGain ??
             visibilityGainFromSatisfactionCurve(r.season2CarryoverResolution.satisfaction),
@@ -276,8 +310,11 @@ export function visibilityGainFromReachAndClientSatisfaction(
   return Math.max(1, Math.min(10, Math.round(1 + (blended / 100) * 9)));
 }
 
-export function reputationDeltaFromEffectivenessCurve(effectivenessPercent: number): number {
-  return Math.round(curvedPostSeasonValue({ metricPercent: effectivenessPercent, min: -10, max: 40 }));
+export function reputationDeltaFromEffectivenessCurve(
+  effectivenessPercent: number,
+  bounds: ReputationFromEffectivenessBounds = REPUTATION_FROM_EFFECTIVENESS_SEASON2
+): number {
+  return Math.round(curvedPostSeasonValue({ metricPercent: effectivenessPercent, min: bounds.min, max: bounds.max }));
 }
 
 export function visibilityGainFromSatisfactionCurve(satisfactionPercent: number): number {

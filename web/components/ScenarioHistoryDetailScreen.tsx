@@ -8,6 +8,7 @@ import {
   buildArc1Text,
   buildArcResolutionText,
   buildPostSeasonArcBlurb,
+  carryoverHubReputationBounds,
   reputationDeltaFromEffectivenessCurve,
   visibilityGainFromSatisfactionCurve,
 } from "@/lib/postSeasonResults";
@@ -130,7 +131,9 @@ export function ScenarioHistoryDetailScreen({ season, clientId }: { season: numb
   const arc1Text = buildArc1Text(rawScenario?.arc_1, s1InitialReach, s1InitialEff);
   const arc2Text = buildPostSeasonArcBlurb(client, s1InitialReach, s1InitialEff);
   const arcResText = buildArcResolutionText(rawScenario?.arc_resolution, s2.messageSpread, s2.messageEffectiveness);
-  const finalRepDelta = reputationDeltaFromEffectivenessCurve(s2.messageEffectiveness);
+  const finalRepDelta =
+    s2.reputationDelta ??
+    reputationDeltaFromEffectivenessCurve(s2.messageEffectiveness, carryoverHubReputationBounds(season));
   const finalVisGain = visibilityGainFromSatisfactionCurve(s2.satisfaction);
 
   return (
@@ -205,7 +208,7 @@ export function ScenarioHistoryDetailScreen({ season, clientId }: { season: numb
       {/* Final metrics */}
       <Section label="Final metrics">
         <MetricRows reach={s2.messageSpread} effectiveness={s2.messageEffectiveness} />
-        {season === 2 ? (
+        {season >= 2 ? (
           <p style={{ margin: "0.55rem 0 0", fontSize: "0.95rem", lineHeight: 1.5 }}>
             {formatClientSatisfactionMood(client.displayName, s2.satisfaction)}
           </p>

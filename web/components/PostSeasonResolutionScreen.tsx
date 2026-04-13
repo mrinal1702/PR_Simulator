@@ -188,7 +188,7 @@ export function PostSeasonResolutionScreen({ season }: { season: number }) {
           </span>
           <ScenarioMetricBar pct={s2.messageEffectiveness} />
         </div>
-        {season === 2 ? (
+        {season >= 2 ? (
           <p style={{ margin: "0.65rem 0 0", fontSize: "0.95rem", lineHeight: 1.5 }}>
             {formatClientSatisfactionMood(client.displayName, s2.satisfaction)}
           </p>
