@@ -2,7 +2,7 @@
 
 This document describes how **cash**, **payables**, **receivables**, and **liquidity** work in the web app. It is the single reference for contributors and agents—there is no separate “legacy payroll” model documented elsewhere.
 
-**Implementation:** `web/lib/payablesReceivables.ts` (math and settlement), `web/lib/employeeActions.ts` (fire), `web/lib/preseasonTransition.ts` (post-season → next pre-season, **rollover wage payables**), `web/components/SeasonHubScreen.tsx` (**rebuild wage payables when entering post-season**), `web/components/PreSeasonScreen.tsx` (start season, layoff UI), `web/components/HiringScreen.tsx` (hire), `web/lib/saveGameStorage.ts` (migrations).
+**Implementation:** `web/lib/payablesReceivables.ts` (math and settlement), `web/lib/employeeActions.ts` (fire), `web/lib/preseasonTransition.ts` (post-season → next pre-season, **rollover wage payables**, **seed pre-season 3 salary asks**), `web/lib/preseasonSalaryNegotiation.ts` (PS3 raise rolls, pay/refuse helpers), `web/components/SeasonHubScreen.tsx` (**rebuild wage payables when entering post-season**), `web/components/PreSeasonScreen.tsx` (start season, layoff UI, PS3 salary modal), `web/components/HiringScreen.tsx` (hire), `web/lib/saveGameStorage.ts` (migrations). Eligibility and productivity/skill thresholds for PS3: `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §6.
 
 ---
 
@@ -19,6 +19,7 @@ The **formulas and settlement path** live in **`web/lib/payablesReceivables.ts`*
 | `seasonLoopBySeason` | Per-season client queue + **runs**. Receivables are **derived** from accepted, non-reject runs and each client’s `budgetSeason2` (see `getReceivableLoopKey`, `sumReceivablesFromLoop`). |
 | `seasonNumber`, `phase` | Determine **which** loop key counts for pending receivables (`getReceivableLoopKey`). |
 | `payrollPaidBySeason` | Set when **Start season** runs for season ≥ 2; used for **route guards** and **season-summary cash-flow narrative** (`computeSeasonCashFlow`), not for computing `liquidityEur`. |
+| `preseasonSalaryNegotiationV3` | **Pre-season 3 only:** pending salary asks and resolutions; cleared on **Start season** (`settlePreseasonAndEnterSeason`). Empty/absent when no asks rolled. |
 
 ### 0.2 Derived values (single implementation)
 
@@ -144,6 +145,8 @@ During **`phase === "season"`**, guaranteed receivables from **accepted** client
 - Adding an employee adds a **wage** payable line (and updates roster/capacity as today).
 - A hire is allowed only if **liquidity after the hire** remains sufficient—practically, the candidate’s salary must be coverable within the liquidity rules enforced in `HiringScreen` (`liquidityEur` vs salary).
 
+**Pre-season 3 salary negotiations** (mid-preseason, not at hire): some employees may request a raise; accepting increases wage payables and salary under the same liquidity rules. See **§5.2** table row and `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §6.
+
 ---
 
 ## 7. Firing and layoffs
@@ -200,8 +203,9 @@ Older saves without `payablesLines` are migrated in `saveGameStorage.ts` (wage l
 |------|---------|
 | Liquidity, receivables, settlement | `web/lib/payablesReceivables.ts` |
 | Fire voluntary / mandatory | `web/lib/employeeActions.ts` |
-| Pre-season UX, **Start season** | `web/components/PreSeasonScreen.tsx` |
+| Pre-season UX, **Start season**, PS3 salary modal | `web/components/PreSeasonScreen.tsx` |
 | Hiring and affordability | `web/components/HiringScreen.tsx` |
+| PS3 raise math / payables updates | `web/lib/preseasonSalaryNegotiation.ts` |
 | Resource strip (P / R / L) | `web/components/AgencyResourceStrip.tsx` |
 | Post-season entry (rebuild wages) | `web/components/SeasonHubScreen.tsx` |
 | Post-season / summary liquidity copy | `PostSeasonHubScreen.tsx`, `SeasonSummaryScreen.tsx` |

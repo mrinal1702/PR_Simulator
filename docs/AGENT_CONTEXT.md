@@ -43,7 +43,7 @@ Omit fields not listed; many are optional for legacy loads.
 - **Identity:** `playerName`, `agencyName`, `gender`, `buildId`, `spouseType`, `spouseName`, `spouseGender`
 - **Loop:** `seasonNumber`, `phase` (`preseason` | `season` | `postseason`)
 - **Resources:** `resources` (`eur`, `competence`, `visibility`, `firmCapacity`), `reputation`, `initialResources`, `initialReputation`
-- **Pre-season:** `activityFocusUsedInPreseason`, `preseasonActionBySeason`, `preseasonFocusCounts`, `preseasonEntrySpouseGrantSeasons`, **`preseasonEntryRevealPending`** (one-shot modal data after `enterNextPreseason`; cleared on dismiss in `PreSeasonScreen`)
+- **Pre-season:** `activityFocusUsedInPreseason`, `preseasonActionBySeason`, `preseasonFocusCounts`, `preseasonEntrySpouseGrantSeasons`, **`preseasonEntryRevealPending`** (one-shot modal data after `enterNextPreseason`; cleared on dismiss in `PreSeasonScreen`), **`preseasonSalaryNegotiationV3`** (pre-season 3 only: salary raise asks; cleared on **Start season** or when all asks resolved — see `AGENCY_FINANCE.md`, `COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §6)
 - **Season:** `seasonLoopBySeason[seasonKey]` → `SeasonLoopState` (queue, runs, `postSeason`, `season2CarryoverResolution`, …)
 - **Finance:** `payablesLines`, `payrollPaidBySeason`, `seasonEntryScoresBySeason`, `rolloverReviewProgressBySeason`, `postSeasonResolutionProgressBySeason` (see `AGENCY_FINANCE.md`, `SEASON2_STRUCTURE.md`)
 
