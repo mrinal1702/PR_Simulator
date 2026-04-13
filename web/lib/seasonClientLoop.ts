@@ -7,7 +7,7 @@ import {
   season2RollClientKindAndTier,
   type ClientKind,
 } from "@/lib/clientEconomyMath";
-import { pickScenarioForClient } from "@/lib/scenarios";
+import { getScenarioById, pickScenarioForClient, type ScenarioRecord } from "@/lib/scenarios";
 import {
   computeSeason1SolutionMetrics,
   computeSeason2SolutionMetrics,
@@ -41,6 +41,11 @@ export type SeasonClient = {
   scenarioId: string;
   scenarioTitle: string;
   scenarioSolutions: ScenarioSolutionLine[];
+  /**
+   * Arc 2 follow-up option copy for rollover execution (titles/descriptions). When set, carryover uses this
+   * instead of {@link scenarioSolutions}. Omitted on older saves; rebuilt from scenario JSON via {@link getScenarioById}.
+   */
+  scenarioRolloverSolutions?: ScenarioSolutionLine[];
   /** Scenario arc_2 follow-up text used in the Season 2 carry-over case flow. */
   postSeasonArcOutcomes?: PostSeasonArcOutcomes;
   hiddenDiscipline: number;
@@ -457,7 +462,7 @@ export function buildCarryoverSolutionOptionsForClient(client: SeasonClient): So
       isRejectOption: false,
     };
   });
-  const merged = mergeScenarioSolutionCopy(client, executable);
+  const merged = mergeScenarioSolutionCopy(client, executable, "carryover");
   return [CARRYOVER_DO_NOTHING_OPTION, ...merged];
 }
 
@@ -467,9 +472,63 @@ export function archetypeIdFromSolutionId(id: SolutionId): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
+/**
+ * Arc 2 option copy for rollover cards. Uses `arc_2.solutions` when present; otherwise maps the first four
+ * `arc_2.options` strings (excluding "do nothing") to archetypes 1–4 in id order, keeping briefs from `solutions`.
+ */
+export function buildScenarioRolloverSolutionLines(scenario: ScenarioRecord): ScenarioSolutionLine[] | undefined {
+  const arc2 = (scenario as { arc_2?: unknown }).arc_2;
+  if (!arc2 || typeof arc2 !== "object") return undefined;
+
+  const sorted = [...scenario.solutions].sort((a, b) => a.solution_archetype_id - b.solution_archetype_id);
+  if (sorted.length !== 4) return undefined;
+
+  const solBlock = arc2 as { solutions?: ScenarioSolutionLine[]; options?: string[] };
+
+  if (Array.isArray(solBlock.solutions) && solBlock.solutions.length >= 4) {
+    const byId = new Map(solBlock.solutions.map((s) => [s.solution_archetype_id, s]));
+    const lines: ScenarioSolutionLine[] = [];
+    for (let id = 1; id <= 4; id += 1) {
+      const row = byId.get(id);
+      const fallback = sorted.find((s) => s.solution_archetype_id === id);
+      if (!fallback) return undefined;
+      if (!row?.solution_name) return undefined;
+      lines.push({
+        solution_archetype_id: id,
+        solution_name: row.solution_name,
+        solution_brief: row.solution_brief ?? fallback.solution_brief,
+      });
+    }
+    return lines;
+  }
+
+  const opts = Array.isArray(solBlock.options)
+    ? solBlock.options.filter((o) => String(o).trim().toLowerCase() !== "do nothing")
+    : [];
+  if (opts.length < 4) return undefined;
+
+  return sorted.map((s, i) => ({
+    solution_archetype_id: s.solution_archetype_id,
+    solution_name: opts[i] ?? s.solution_name,
+    solution_brief: s.solution_brief,
+  }));
+}
+
+function getCarryoverScenarioSolutionLines(client: SeasonClient): ScenarioSolutionLine[] {
+  if (client.scenarioRolloverSolutions?.length) return client.scenarioRolloverSolutions;
+  const row = getScenarioById(client.scenarioId);
+  const fromDb = row ? buildScenarioRolloverSolutionLines(row) : undefined;
+  if (fromDb?.length) return fromDb;
+  return client.scenarioSolutions;
+}
+
 /** Apply creative scenario names/briefs from DB onto priced options (archetype ids 1–4). */
-export function mergeScenarioSolutionCopy(client: SeasonClient, options: SolutionOption[]): SolutionOption[] {
-  const sols = client.scenarioSolutions;
+export function mergeScenarioSolutionCopy(
+  client: SeasonClient,
+  options: SolutionOption[],
+  copySource: "campaign" | "carryover" = "campaign"
+): SolutionOption[] {
+  const sols = copySource === "carryover" ? getCarryoverScenarioSolutionLines(client) : client.scenarioSolutions;
   if (!sols?.length) return options;
   const byId = new Map<number, { name: string; brief: string }>();
   for (const s of sols) {
@@ -607,6 +666,7 @@ export function buildSeasonClients(
             ).high_visibility_high_effectiveness as string | undefined,
           }
         : undefined;
+    const rolloverSols = buildScenarioRolloverSolutionLines(scenario);
     const baseReach = baseReachWeightForMotive(motive);
     const satisfactionReachWeight = rollSatisfactionReachWeight(baseReach, `${seedBase}-satw-${season}-${i}`);
     clients.push({
@@ -625,6 +685,7 @@ export function buildSeasonClients(
         solution_name: s.solution_name,
         solution_brief: s.solution_brief,
       })),
+      ...(rolloverSols ? { scenarioRolloverSolutions: rolloverSols } : {}),
       postSeasonArcOutcomes,
       hiddenDiscipline:
         kind === "corporate" ? 45 + (h % 41) : kind === "small_business" ? 38 + (h % 45) : 30 + (h % 56),
