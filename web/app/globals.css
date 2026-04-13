@@ -308,6 +308,10 @@ h3 {
     animation: none !important;
   }
 
+  .client-case-segment--reveal-enter {
+    animation: none !important;
+  }
+
   .client-case-theater .btn.btn-primary {
     animation: none !important;
   }
@@ -1148,6 +1152,82 @@ h3 {
   background: rgba(8, 24, 48, 0.65);
   color: var(--cc-ice);
   font-size: 0.95rem;
+}
+
+/* Main queue: stepped segments (intro → budget → decisions) */
+.client-case-queue-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.client-case-segment--queue {
+  margin: 0 !important;
+  border: 1px solid rgba(45, 212, 191, 0.42);
+  border-radius: var(--radius-sm);
+  background: rgba(6, 18, 38, 0.92);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
+}
+
+.client-case-segment__continue {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(125, 211, 252, 0.18);
+  display: flex;
+  justify-content: flex-end;
+}
+
+@keyframes client-case-segment-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.client-case-segment--reveal-enter {
+  animation: client-case-segment-reveal 0.55s ease-out both;
+}
+
+.client-case-decision-grid {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.client-case-theater .client-case-segment--decisions-queue .choice-card {
+  border-color: rgba(125, 211, 252, 0.12);
+  background: rgba(4, 14, 32, 0.72);
+}
+
+.client-case-theater .client-case-segment--decisions-queue .choice-card:hover:not(:disabled) {
+  border-color: rgba(45, 212, 191, 0.38);
+}
+
+/* Season 2 rollover: bordered stack (no stepped reveal) */
+.client-case-rollover-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.client-case-segment--rollover {
+  margin: 0 !important;
+  border: 1px solid rgba(125, 211, 252, 0.32);
+  border-radius: var(--radius-sm);
+  background: rgba(6, 22, 44, 0.88);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2) inset;
+}
+
+.client-case-theater .client-case-segment--rollover .choice-card {
+  border-color: rgba(125, 211, 252, 0.12);
+  background: rgba(4, 14, 32, 0.72);
+}
+
+.client-case-theater .client-case-segment--rollover .choice-card:hover:not(:disabled) {
+  border-color: rgba(45, 212, 191, 0.38);
 }
 
 /* End Season 2: light “flashcard” screen (outside main game shell vibe) */

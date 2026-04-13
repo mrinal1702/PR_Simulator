@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
+import { getEffectiveCompetenceForAgency, getEffectiveVisibilityForAgency } from "@/lib/agencyStatsEffective";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import {
   archetypeIdFromSolutionId,
@@ -28,6 +29,15 @@ import {
   highLowLabelsFromThreshold,
 } from "@/lib/seasonCarryover";
 
+function scrollCaseScreenToTop() {
+  if (typeof window === "undefined") return;
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+  });
+}
+
 export function SeasonClientCaseScreen({ season }: { season: number }) {
   const router = useRouter();
   const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
@@ -37,6 +47,8 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
   const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
   const [showCarryoverDetails, setShowCarryoverDetails] = useState(false);
   const [pendingCarryoverSolution, setPendingCarryoverSolution] = useState<SolutionOption | null>(null);
+  /** Main client queue only: stepped reveal (intro → budget → decisions). */
+  const [queueRevealStep, setQueueRevealStep] = useState(0);
 
   const seasonKey = String(season);
   const payrollPaidForSeason = save?.payrollPaidBySeason?.[seasonKey] === true;
@@ -46,6 +58,15 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
     setBlockedByPayroll(true);
     router.replace(`/game/preseason/${season}`);
   }, [save, season, payrollPaidForSeason, router]);
+
+  const loopForQueueKey = save?.seasonLoopBySeason?.[seasonKey];
+  const queueIdx = loopForQueueKey?.currentClientIndex ?? -1;
+  const queueClient = loopForQueueKey?.clientsQueue?.[queueIdx];
+  const queueClientStepKey = queueClient ? `${queueClient.id}-${queueIdx}` : null;
+  useEffect(() => {
+    if (queueClientStepKey == null) return;
+    setQueueRevealStep(0);
+  }, [queueClientStepKey]);
 
   if (blockedByPayroll) {
     return (
@@ -136,6 +157,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       setPendingCarryoverSolution(null);
       setShowCarryoverDetails(false);
       setNotice("Carry-over applied.");
+      scrollCaseScreenToTop();
     };
 
     const confirmCarryoverChoice = () => applyCarryoverChoice(pendingCarryoverSolution);
@@ -161,8 +183,8 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           className="client-case-theater__window"
         >
           <div className="client-case-theater__window-casing" aria-hidden />
-          <div className="client-case-theater__window-inner">
-        <section className="agency-stats-panel client-case-theater__dossier">
+          <div className="client-case-theater__window-inner client-case-rollover-stack">
+        <section className="agency-stats-panel client-case-segment client-case-segment--rollover">
           <h2 style={{ margin: "0 0 0.45rem" }}>
             {currentCarryover.client.scenarioTitle}
           </h2>
@@ -200,18 +222,18 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           ) : null}
         </section>
 
-        <section className="agency-stats-panel client-case-theater__panel" style={{ marginTop: "1rem" }}>
+        <section className="agency-stats-panel client-case-segment client-case-segment--rollover">
           <h3 className="client-case-theater__section-title" style={{ marginTop: 0, marginBottom: "0.35rem" }}>
             So what happened?
           </h3>
           <p style={{ margin: 0, lineHeight: 1.55 }}>{arcText}</p>
         </section>
 
-        <section className="agency-stats-panel client-case-theater__panel" style={{ marginTop: "1rem" }}>
+        <section className="agency-stats-panel client-case-segment client-case-segment--rollover">
           <h3 className="client-case-theater__section-title" style={{ marginTop: 0, marginBottom: "0.5rem" }}>
             What should you do?
           </h3>
-          <div style={{ display: "grid", gap: "0.55rem" }}>
+          <div className="client-case-decision-grid">
             {carryoverSolutionOptions.map((opt) => {
               const affordable = canAffordSolution(opt, liquidForCarryover, save.resources.firmCapacity);
               const forceDoNothingOnly =
@@ -328,6 +350,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
     };
     setSave(updated);
     persistSave(updated);
+    scrollCaseScreenToTop();
   };
 
   const commitSolution = (solution: SolutionOption) => {
@@ -349,8 +372,8 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
     const outcome = resolveClientOutcome({
       seed: `${save.createdAt}-${seasonKey}-${currentClient.id}-${solution.id}`,
       solution,
-      visibility: save.resources.visibility,
-      competence: save.resources.competence,
+      visibility: getEffectiveVisibilityForAgency(save),
+      competence: getEffectiveCompetenceForAgency(save),
       discipline: currentClient.hiddenDiscipline,
       satisfactionReachWeight: getSatisfactionReachWeight(currentClient),
       outcomeScoreSeason: season >= 2 ? 2 : 1,
@@ -424,6 +447,12 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
   }
 
   const liquidForAfford = save.resources.eur + currentClient.budgetSeason1;
+  const clientKindLabel =
+    currentClient.clientKind === "corporate"
+      ? "Corporate"
+      : currentClient.clientKind === "small_business"
+        ? "Small business"
+        : "Individual";
 
   return (
     <>
@@ -448,52 +477,68 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
         >
           <div className="client-case-theater__window-casing" aria-hidden />
           <div className="client-case-theater__window-inner">
-        <div className="agency-stats-panel client-case-theater__dossier">
-          <h2
-            style={{
-              margin: "0 0 0.5rem",
-              fontSize: "clamp(1.05rem, 2.5vw, 1.2rem)",
-              fontWeight: 600,
-              lineHeight: 1.25,
-            }}
-          >
-            {currentClient.scenarioTitle}
-          </h2>
-          <p style={{ margin: "0 0 0.75rem" }}>
-            <strong>{currentClient.displayName}</strong>
-            {" - "}
-            {currentClient.clientKind === "corporate"
-              ? "Corporate"
-              : currentClient.clientKind === "small_business"
-                ? "Small business"
-                : "Individual"}
-          </p>
-          <p className="muted" style={{ marginTop: 0, marginBottom: "1rem" }}>
-            {currentClient.problem}
-          </p>
-          <div className="client-case-budget-block">
-            <p className="client-case-budget-line">
-              <span className="client-case-budget-label client-case-budget-label--this-season">Client fees this season</span>
-              <span className="client-case-budget-amount">
-                EUR {currentClient.budgetSeason1.toLocaleString("en-GB")}
-              </span>
+        <div className="client-case-queue-stack">
+          <div className="agency-stats-panel client-case-segment client-case-segment--queue client-case-segment--intro">
+            <h2
+              style={{
+                margin: "0 0 0.5rem",
+                fontSize: "clamp(1.05rem, 2.5vw, 1.2rem)",
+                fontWeight: 600,
+                lineHeight: 1.25,
+              }}
+            >
+              {currentClient.scenarioTitle}
+            </h2>
+            <p style={{ margin: "0 0 0.5rem" }}>
+              <strong>{currentClient.displayName}</strong>
+              <span className="muted"> — {clientKindLabel}</span>
             </p>
-            <p className="client-case-budget-line">
-              <span className="client-case-budget-label client-case-budget-label--next-season">Client fees next season</span>
-              <span className="client-case-budget-amount">
-                EUR {currentClient.budgetSeason2.toLocaleString("en-GB")}
-              </span>
+            <p className="muted" style={{ marginTop: 0, marginBottom: queueRevealStep === 0 ? "0.85rem" : 0 }}>
+              {currentClient.problem}
             </p>
-            <p className="client-case-budget-line">
-              <span className="client-case-budget-label client-case-budget-label--total">Total client fees</span>
-              <span className="client-case-budget-amount">EUR {currentClient.budgetTotal.toLocaleString("en-GB")}</span>
-            </p>
+            {queueRevealStep === 0 ? (
+              <div className="client-case-segment__continue">
+                <button type="button" className="btn btn-primary" onClick={() => setQueueRevealStep(1)}>
+                  Continue
+                </button>
+              </div>
+            ) : null}
           </div>
 
-          {awaitingChoice ? (
-            <div style={{ marginTop: "0.9rem" }}>
+          {queueRevealStep >= 1 ? (
+            <div className="agency-stats-panel client-case-segment client-case-segment--queue client-case-segment--budget client-case-segment--reveal-enter">
+              <div className="client-case-budget-block">
+                <p className="client-case-budget-line">
+                  <span className="client-case-budget-label client-case-budget-label--this-season">Client fees this season</span>
+                  <span className="client-case-budget-amount">
+                    EUR {currentClient.budgetSeason1.toLocaleString("en-GB")}
+                  </span>
+                </p>
+                <p className="client-case-budget-line">
+                  <span className="client-case-budget-label client-case-budget-label--next-season">Client fees next season</span>
+                  <span className="client-case-budget-amount">
+                    EUR {currentClient.budgetSeason2.toLocaleString("en-GB")}
+                  </span>
+                </p>
+                <p className="client-case-budget-line">
+                  <span className="client-case-budget-label client-case-budget-label--total">Total client fees</span>
+                  <span className="client-case-budget-amount">EUR {currentClient.budgetTotal.toLocaleString("en-GB")}</span>
+                </p>
+              </div>
+              {queueRevealStep === 1 ? (
+                <div className="client-case-segment__continue">
+                  <button type="button" className="btn btn-primary" onClick={() => setQueueRevealStep(2)}>
+                    Continue
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+
+          {queueRevealStep >= 2 && awaitingChoice ? (
+            <div className="agency-stats-panel client-case-segment client-case-segment--queue client-case-segment--decisions client-case-segment--decisions-queue client-case-segment--reveal-enter">
               <h4 style={{ marginTop: 0, marginBottom: "0.5rem" }}>Choose a solution</h4>
-              <div style={{ display: "grid", gap: "0.55rem" }}>
+              <div className="client-case-decision-grid">
                 {solutionOptions.map((option) => {
                   const affordable = canAffordSolution(option, liquidForAfford, save.resources.firmCapacity);
                   const forceRejectOnly =
