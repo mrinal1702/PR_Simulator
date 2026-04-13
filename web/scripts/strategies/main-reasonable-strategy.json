@@ -1,0 +1,26 @@
+{
+  "id": "main-reasonable-strategy",
+  "label": "Main reasonable strategy",
+  "version": 1,
+  "description": "Baseline automation used for reputation and economy simulations: strong Season 1 margin, no post-season boosts, alternating pre-season 2 focus, then Season 2 entry.",
+  "preseason1": {
+    "activity": "Random among network (+10 visibility), workshop (+10 competence), or none per run seed."
+  },
+  "hiring": {
+    "rule": "Fill Season 1 hire cap with random intern/full-time picks (same pattern as other sim scripts)."
+  },
+  "season1": {
+    "clientPlanning": "plannedClientCountForSeason(1, visibility, seed) for slot count; buildSeasonClients for queue.",
+    "solutionChoice": "DFS over all affordable Season-1 solution vectors maximizing total operating profit (sum of budgetSeason1 - costBudget on executed campaigns). If any execution is feasible, at least one campaign must execute."
+  },
+  "postSeason1": {
+    "choicePerClient": "none only (no reach or effectiveness spend)."
+  },
+  "preseason2": {
+    "focus": "Alternate strategy_workshop vs network by run index (even/odd)."
+  },
+  "season2Entry": {
+    "action": "enterNextPreseason after Season 1 post-season, apply pre-season 2 focus, settlePreseasonAndEnterSeason('2')."
+  },
+  "rolloverResolutionNote": "Optional extension: resolve Season 1 follow-ups in queue order with applySeason2CarryoverChoice; see simulate-main-strategy-rollover-metrics.ts for a scripted replay."
+}

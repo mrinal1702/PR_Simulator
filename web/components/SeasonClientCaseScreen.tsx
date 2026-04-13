@@ -110,7 +110,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
     const progress = getSeasonCarryoverProgress(save, season);
     const cc = entries[progress];
     if (!cc) return [];
-    return buildCarryoverSolutionOptionsForClient(cc.client);
+    return buildCarryoverSolutionOptionsForClient(cc.client, season);
   }, [save, season]);
 
   if (!save) {
@@ -130,6 +130,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
   const rolloverEntries = season >= 2 ? getSeasonCarryoverEntries(save, season) : [];
   const rolloverProgress = season >= 2 ? getSeasonCarryoverProgress(save, season) : 0;
   const currentCarryover = rolloverEntries[rolloverProgress] ?? null;
+  const priorSeason = season - 1;
 
   if (season >= 2 && currentCarryover) {
     const shifted = applyBuildOutcomeShift(
@@ -169,9 +170,9 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           <p className="muted" style={{ margin: "0 0 0.25rem" }}>
             <Link href={`/game/season/${season}`}>← Season {season} hub</Link>
           </p>
-          <h1 style={{ margin: 0 }}>Season 1 client follow-up</h1>
+          <h1 style={{ margin: 0 }}>Season {priorSeason} client follow-up</h1>
           <p className="muted" style={{ marginTop: "0.5rem" }}>
-            Scenario {rolloverProgress + 1} of {rolloverEntries.length} (original Season 1 order).
+            Scenario {rolloverProgress + 1} of {rolloverEntries.length} (original Season {priorSeason} order).
           </p>
         </header>
 
@@ -209,11 +210,11 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
           {showCarryoverDetails ? (
             <div style={{ marginTop: "0.85rem", display: "grid", gap: "0.85rem" }}>
               <div>
-                <h4 style={{ margin: "0 0 0.3rem" }}>Season 1 scenario description</h4>
+                <h4 style={{ margin: "0 0 0.3rem" }}>Season {priorSeason} scenario description</h4>
                 <p className="muted" style={{ margin: 0, lineHeight: 1.55 }}>{currentCarryover.client.problem}</p>
               </div>
               <div>
-                <h4 style={{ margin: "0 0 0.3rem" }}>Action taken in Season 1</h4>
+                <h4 style={{ margin: "0 0 0.3rem" }}>Action taken in Season {priorSeason}</h4>
                 <p className="muted" style={{ margin: 0 }}>
                   {currentCarryover.run.solutionTitle ?? "No recorded solution title."}
                 </p>
@@ -376,7 +377,7 @@ export function SeasonClientCaseScreen({ season }: { season: number }) {
       competence: getEffectiveCompetenceForAgency(save),
       discipline: currentClient.hiddenDiscipline,
       satisfactionReachWeight: getSatisfactionReachWeight(currentClient),
-      outcomeScoreSeason: season >= 2 ? 2 : 1,
+      outcomeScoreSeason: season >= 3 ? 3 : season >= 2 ? 2 : 1,
     });
 
     const eurAfter = save.resources.eur + currentClient.budgetSeason1 - solution.costBudget;

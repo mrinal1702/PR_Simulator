@@ -8,14 +8,18 @@
  * - Final values then feed **client satisfaction** and **reputation** deltas.
  *
  * **Season 1** C/V knots match `docs/SCENARIO_SOLUTION_DEVICING_METRICS.md` (empirical
- * Q1/median/Q3, ~80 benchmark, stacked ceilings). **Season 2+** uses benchmark-normalized
- * raw C/V (see `benchmarkSeason2Scores.ts`) before jitter + force.
+ * Q1/median/Q3, ~80 benchmark, stacked ceilings). **Season 2** uses `benchmarkSeason2Scores.ts`.
+ * **Season 3** uses `benchmarkSeason3Scores.ts` (different μ/σ; same force model).
  */
 
 import {
   benchmarkRawCompetenceToScore,
   benchmarkRawVisibilityToScore,
 } from "@/lib/benchmarkSeason2Scores";
+import {
+  benchmarkRawCompetenceToScoreSeason3,
+  benchmarkRawVisibilityToScoreSeason3,
+} from "@/lib/benchmarkSeason3Scores";
 
 /** Reach driver core: 60% visibility + 35% competence (score jitter applied to V/C). */
 const REACH_W_VIS = 0.6;
@@ -118,9 +122,14 @@ export function visibilityScoreForVariance(visibility: number): number {
   return piecewiseLinear(VISIBILITY_SCORE_KNOTS_SEASON1, Math.max(0, visibility));
 }
 
-/** Raw visibility → 0–100 (**Season 2+** benchmark vs Season 2 entry grid). */
+/** Raw visibility → 0–100 (**Season 2** benchmark vs Season 2 entry grid). */
 export function visibilityScoreForVarianceSeason2(visibility: number): number {
   return benchmarkRawVisibilityToScore(visibility);
+}
+
+/** Raw visibility → 0–100 (**Season 3** benchmark only). */
+export function visibilityScoreForVarianceSeason3(visibility: number): number {
+  return benchmarkRawVisibilityToScoreSeason3(visibility);
 }
 
 /** Raw competence → 0–100 for reach + effectiveness variance (**Season 1** knots). */
@@ -128,9 +137,14 @@ export function competenceScoreForVariance(competence: number): number {
   return piecewiseLinear(COMPETENCE_SCORE_KNOTS_SEASON1, Math.max(0, competence));
 }
 
-/** Raw competence → 0–100 (**Season 2+** benchmark vs Season 2 entry grid). */
+/** Raw competence → 0–100 (**Season 2** benchmark vs Season 2 entry grid). */
 export function competenceScoreForVarianceSeason2(competence: number): number {
   return benchmarkRawCompetenceToScore(competence);
+}
+
+/** Raw competence → 0–100 (**Season 3** benchmark only). */
+export function competenceScoreForVarianceSeason3(competence: number): number {
+  return benchmarkRawCompetenceToScoreSeason3(competence);
 }
 
 export function disciplineScoreForVariance(discipline: number): number {
@@ -201,7 +215,7 @@ export function computeSeason1SolutionMetrics(input: SolutionMetricsInput): {
 }
 
 /**
- * Season 2+ campaign outcomes: same force model; benchmark-normalized C/V before jitter.
+ * Season 2 campaign outcomes: same force model; Season 2 benchmark-normalized C/V before jitter.
  */
 export function computeSeason2SolutionMetrics(input: SolutionMetricsInput): {
   reach: number;
@@ -213,17 +227,29 @@ export function computeSeason2SolutionMetrics(input: SolutionMetricsInput): {
 }
 
 /**
- * Reach/effectiveness variance deltas for Season 2 carry-over (benchmark C/V, jitter, discipline)
- * with force span ±10 percentage points each.
+ * Season 3 campaign outcomes: same force model; Season 3 benchmark-normalized C/V before jitter.
  */
-export function computeCarryoverVarianceDeltasSeason2(input: {
-  visibility: number;
-  competence: number;
-  discipline: number;
-  seed: string;
-}): { reachVarianceDelta: number; effectivenessVarianceDelta: number } {
-  const vVisBase = benchmarkRawVisibilityToScore(input.visibility);
-  const vCompBase = benchmarkRawCompetenceToScore(input.competence);
+export function computeSeason3SolutionMetrics(input: SolutionMetricsInput): {
+  reach: number;
+  effectiveness: number;
+} {
+  const vVisBase = benchmarkRawVisibilityToScoreSeason3(input.visibility);
+  const vCompBase = benchmarkRawCompetenceToScoreSeason3(input.competence);
+  return computeSolutionMetricsCore(input, vVisBase, vCompBase);
+}
+
+function computeCarryoverVarianceDeltasWithScoreBases(
+  input: {
+    visibility: number;
+    competence: number;
+    discipline: number;
+    seed: string;
+  },
+  mapVis: (v: number) => number,
+  mapComp: (c: number) => number
+): { reachVarianceDelta: number; effectivenessVarianceDelta: number } {
+  const vVisBase = mapVis(input.visibility);
+  const vCompBase = mapComp(input.competence);
   const vVis = jitterScore(input.seed, "v-score-jitter", vVisBase, V_SCORE_JITTER_MAX);
   const vComp = jitterScore(input.seed, "c-score-jitter", vCompBase, C_SCORE_JITTER_MAX);
   const vDisc = disciplineScoreForVariance(input.discipline);
@@ -241,4 +267,37 @@ export function computeCarryoverVarianceDeltasSeason2(input: {
   );
 
   return { reachVarianceDelta, effectivenessVarianceDelta };
+}
+
+/**
+ * Reach/effectiveness variance deltas for Season 2 carry-over (Season 2 benchmark C/V, jitter, discipline)
+ * with force span ±10 percentage points each.
+ */
+export function computeCarryoverVarianceDeltasSeason2(input: {
+  visibility: number;
+  competence: number;
+  discipline: number;
+  seed: string;
+}): { reachVarianceDelta: number; effectivenessVarianceDelta: number } {
+  return computeCarryoverVarianceDeltasWithScoreBases(
+    input,
+    benchmarkRawVisibilityToScore,
+    benchmarkRawCompetenceToScore
+  );
+}
+
+/**
+ * Same as {@link computeCarryoverVarianceDeltasSeason2} but Season 3 benchmark C/V.
+ */
+export function computeCarryoverVarianceDeltasSeason3(input: {
+  visibility: number;
+  competence: number;
+  discipline: number;
+  seed: string;
+}): { reachVarianceDelta: number; effectivenessVarianceDelta: number } {
+  return computeCarryoverVarianceDeltasWithScoreBases(
+    input,
+    benchmarkRawVisibilityToScoreSeason3,
+    benchmarkRawCompetenceToScoreSeason3
+  );
 }

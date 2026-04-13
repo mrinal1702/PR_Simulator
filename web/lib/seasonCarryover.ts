@@ -1,4 +1,5 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import { getEffectiveCompetenceForAgency, getEffectiveVisibilityForAgency } from "@/lib/agencyStatsEffective";
 import { clampToScale, METRIC_SCALES } from "@/lib/metricScales";
 import {
   reputationDeltaFromEffectivenessCurve,
@@ -15,7 +16,7 @@ import {
   type SolutionOption,
 } from "@/lib/seasonClientLoop";
 import type { BuildId } from "@/lib/gameEconomy";
-import { computeCarryoverVarianceDeltasSeason2 } from "@/lib/solutionOutcomeMath";
+import { computeCarryoverVarianceDeltasSeason2, computeCarryoverVarianceDeltasSeason3 } from "@/lib/solutionOutcomeMath";
 
 export type CarryoverEntry = {
   client: SeasonClient;
@@ -92,6 +93,8 @@ export function computeCarryoverOutcomeAfterChoice(args: {
   discipline: number;
   seed: string;
   satisfactionReachWeight: number;
+  /** Season 2 benchmark (default) vs Season 3 when resolving rollovers in the Season 3+ hub. */
+  carryoverVarianceSeason?: 2 | 3;
 }): { messageSpread: number; messageEffectiveness: number; satisfaction: number } {
   if (args.solutionId === "reject" || args.solutionId === "pending") {
     const messageSpread = clampPercent(args.existingAfterBuildShift.reach - CARRYOVER_DO_NOTHING_DECAY_PCT);
@@ -124,12 +127,16 @@ export function computeCarryoverOutcomeAfterChoice(args: {
     };
   }
 
-  const { reachVarianceDelta, effectivenessVarianceDelta } = computeCarryoverVarianceDeltasSeason2({
+  const varianceInput = {
     visibility: args.visibility,
     competence: args.competence,
     discipline: args.discipline,
     seed: args.seed,
-  });
+  };
+  const { reachVarianceDelta, effectivenessVarianceDelta } =
+    (args.carryoverVarianceSeason ?? 2) === 3
+      ? computeCarryoverVarianceDeltasSeason3(varianceInput)
+      : computeCarryoverVarianceDeltasSeason2(varianceInput);
 
   const changeReach = base.reach + reachVarianceDelta;
   const changeEffectiveness = base.effectiveness + effectivenessVarianceDelta;
@@ -251,11 +258,12 @@ export function applySeason2CarryoverChoice(
   const resolved = computeCarryoverOutcomeAfterChoice({
     existingAfterBuildShift: afterShift,
     solutionId: solution.id,
-    visibility: save.resources.visibility,
-    competence: save.resources.competence,
+    visibility: getEffectiveVisibilityForAgency(save),
+    competence: getEffectiveCompetenceForAgency(save),
     discipline: client.hiddenDiscipline,
     seed,
     satisfactionReachWeight,
+    carryoverVarianceSeason: currentSeason >= 3 ? 3 : 2,
   });
   const seasonCloseGains = carryoverSoftStatGainsFromResolution({
     ...resolved,

@@ -1,0 +1,5455 @@
+{
+  "meta": {
+    "runsPerCombo": 50,
+    "combinations": 12,
+    "totalRuns": 600,
+    "strategyFrameworkRef": "scripts/strategies/test-bot-kpi-framework.json",
+    "checkpoint": "Immediately after settlePreseasonAndEnterSeason('3') (same as clicking through to Season 3 week). No Season 3 clients, carryovers, or post-season.",
+    "notes": [
+      "KPI strategy with per-run weight perturbation (same as main 600 matrix).",
+      "Shopping: all affordable pre-season 3 purchases; then salary asks, focus, hiring, layoffs.",
+      "firmCapacity is resources.firmCapacity at entry to Season 3.",
+      "cashEur is resources.eur after pre-season settlement into Season 3 (receivables collected, payables cleared per settlePreseasonAndEnterSeason)."
+    ]
+  },
+  "aggregated": {
+    "firmCapacity": {
+      "min": 50,
+      "q1": 72,
+      "median": 94,
+      "q3": 122,
+      "max": 262,
+      "mean": 102.38166666666666,
+      "stdDev": 43.13373772994368
+    },
+    "employeeCount": {
+      "min": 0,
+      "q1": 1,
+      "median": 1,
+      "q3": 2,
+      "max": 7,
+      "mean": 1.535,
+      "stdDev": 1.1440170453275553
+    },
+    "cashEur": {
+      "min": 20,
+      "q1": 4856.25,
+      "median": 13935,
+      "q3": 47682.5,
+      "max": 151485,
+      "mean": 33016.66166666667,
+      "stdDev": 40825.953876880776
+    },
+    "liquidityEur": {
+      "min": 20,
+      "q1": 4856.25,
+      "median": 13935,
+      "q3": 47682.5,
+      "max": 151485,
+      "mean": 33016.66166666667,
+      "stdDev": 40825.953876880776
+    }
+  },
+  "rawRuns": [
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 0,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 64480,
+      "liquidityEur": 64480
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 1,
+      "firmCapacity": 69,
+      "employeeCount": 1,
+      "cashEur": 6800,
+      "liquidityEur": 6800
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 2,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 91700,
+      "liquidityEur": 91700
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 3,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 139550,
+      "liquidityEur": 139550
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 4,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 19980,
+      "liquidityEur": 19980
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 5,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 37100,
+      "liquidityEur": 37100
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 6,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 14080,
+      "liquidityEur": 14080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 7,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 35440,
+      "liquidityEur": 35440
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 8,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 10975,
+      "liquidityEur": 10975
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 9,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 134000,
+      "liquidityEur": 134000
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 10,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 35280,
+      "liquidityEur": 35280
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 11,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 34000,
+      "liquidityEur": 34000
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 12,
+      "firmCapacity": 162,
+      "employeeCount": 4,
+      "cashEur": 2850,
+      "liquidityEur": 2850
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 13,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 9100,
+      "liquidityEur": 9100
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 14,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 141700,
+      "liquidityEur": 141700
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 15,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 4975,
+      "liquidityEur": 4975
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 16,
+      "firmCapacity": 91,
+      "employeeCount": 2,
+      "cashEur": 1200,
+      "liquidityEur": 1200
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 17,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 103080,
+      "liquidityEur": 103080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 18,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 57500,
+      "liquidityEur": 57500
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 19,
+      "firmCapacity": 68,
+      "employeeCount": 1,
+      "cashEur": 20975,
+      "liquidityEur": 20975
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 20,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 110875,
+      "liquidityEur": 110875
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 21,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 19980,
+      "liquidityEur": 19980
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 22,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 15875,
+      "liquidityEur": 15875
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 23,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 1400,
+      "liquidityEur": 1400
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 24,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 33100,
+      "liquidityEur": 33100
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 25,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 12700,
+      "liquidityEur": 12700
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 26,
+      "firmCapacity": 141,
+      "employeeCount": 3,
+      "cashEur": 4050,
+      "liquidityEur": 4050
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 27,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 19080,
+      "liquidityEur": 19080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 28,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 67300,
+      "liquidityEur": 67300
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 29,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 3600,
+      "liquidityEur": 3600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 30,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 2480,
+      "liquidityEur": 2480
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 31,
+      "firmCapacity": 86,
+      "employeeCount": 2,
+      "cashEur": 2300,
+      "liquidityEur": 2300
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 32,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 9980,
+      "liquidityEur": 9980
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 33,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 49100,
+      "liquidityEur": 49100
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 34,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 50300,
+      "liquidityEur": 50300
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 35,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 8080,
+      "liquidityEur": 8080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 36,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 38100,
+      "liquidityEur": 38100
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 37,
+      "firmCapacity": 119,
+      "employeeCount": 2,
+      "cashEur": 2175,
+      "liquidityEur": 2175
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 38,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 28080,
+      "liquidityEur": 28080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 39,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 20975,
+      "liquidityEur": 20975
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 40,
+      "firmCapacity": 126,
+      "employeeCount": 2,
+      "cashEur": 10810,
+      "liquidityEur": 10810
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 41,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 3185,
+      "liquidityEur": 3185
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 42,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 24980,
+      "liquidityEur": 24980
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 43,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 23080,
+      "liquidityEur": 23080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 44,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 116080,
+      "liquidityEur": 116080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 45,
+      "firmCapacity": 249,
+      "employeeCount": 6,
+      "cashEur": 1200,
+      "liquidityEur": 1200
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 46,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 104975,
+      "liquidityEur": 104975
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 47,
+      "firmCapacity": 90,
+      "employeeCount": 2,
+      "cashEur": 5980,
+      "liquidityEur": 5980
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 48,
+      "firmCapacity": 120,
+      "employeeCount": 2,
+      "cashEur": 14450,
+      "liquidityEur": 14450
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 49,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 18975,
+      "liquidityEur": 18975
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 0,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 61700,
+      "liquidityEur": 61700
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 1,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 11950,
+      "liquidityEur": 11950
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 2,
+      "firmCapacity": 138,
+      "employeeCount": 3,
+      "cashEur": 2375,
+      "liquidityEur": 2375
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 3,
+      "firmCapacity": 86,
+      "employeeCount": 2,
+      "cashEur": 4200,
+      "liquidityEur": 4200
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 4,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 3670,
+      "liquidityEur": 3670
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 5,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 1900,
+      "liquidityEur": 1900
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 6,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 26875,
+      "liquidityEur": 26875
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 7,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 3375,
+      "liquidityEur": 3375
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 8,
+      "firmCapacity": 230,
+      "employeeCount": 6,
+      "cashEur": 4600,
+      "liquidityEur": 4600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 9,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 26880,
+      "liquidityEur": 26880
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 10,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 99600,
+      "liquidityEur": 99600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 11,
+      "firmCapacity": 154,
+      "employeeCount": 4,
+      "cashEur": 3390,
+      "liquidityEur": 3390
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 12,
+      "firmCapacity": 70,
+      "employeeCount": 1,
+      "cashEur": 2775,
+      "liquidityEur": 2775
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 13,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 49000,
+      "liquidityEur": 49000
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 14,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 36522,
+      "liquidityEur": 36522
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 15,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 35100,
+      "liquidityEur": 35100
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 16,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 87700,
+      "liquidityEur": 87700
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 17,
+      "firmCapacity": 178,
+      "employeeCount": 4,
+      "cashEur": 2700,
+      "liquidityEur": 2700
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 18,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 91675,
+      "liquidityEur": 91675
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 19,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 30980,
+      "liquidityEur": 30980
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 20,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 59080,
+      "liquidityEur": 59080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 21,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 6050,
+      "liquidityEur": 6050
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 22,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 3535,
+      "liquidityEur": 3535
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 23,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 79900,
+      "liquidityEur": 79900
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 24,
+      "firmCapacity": 126,
+      "employeeCount": 2,
+      "cashEur": 14800,
+      "liquidityEur": 14800
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 25,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 112775,
+      "liquidityEur": 112775
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 26,
+      "firmCapacity": 152,
+      "employeeCount": 3,
+      "cashEur": 4750,
+      "liquidityEur": 4750
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 27,
+      "firmCapacity": 107,
+      "employeeCount": 2,
+      "cashEur": 1425,
+      "liquidityEur": 1425
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 28,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 107700,
+      "liquidityEur": 107700
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 29,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 144500,
+      "liquidityEur": 144500
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 30,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 69000,
+      "liquidityEur": 69000
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 31,
+      "firmCapacity": 70,
+      "employeeCount": 1,
+      "cashEur": 46500,
+      "liquidityEur": 46500
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 32,
+      "firmCapacity": 70,
+      "employeeCount": 1,
+      "cashEur": 3375,
+      "liquidityEur": 3375
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 33,
+      "firmCapacity": 216,
+      "employeeCount": 5,
+      "cashEur": 2800,
+      "liquidityEur": 2800
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 34,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 79200,
+      "liquidityEur": 79200
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 35,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 1700,
+      "liquidityEur": 1700
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 36,
+      "firmCapacity": 148,
+      "employeeCount": 3,
+      "cashEur": 7550,
+      "liquidityEur": 7550
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 37,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 89500,
+      "liquidityEur": 89500
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 38,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 12480,
+      "liquidityEur": 12480
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 39,
+      "firmCapacity": 116,
+      "employeeCount": 3,
+      "cashEur": 1875,
+      "liquidityEur": 1875
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 40,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 64000,
+      "liquidityEur": 64000
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 41,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 500,
+      "liquidityEur": 500
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 42,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 110980,
+      "liquidityEur": 110980
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 43,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 145800,
+      "liquidityEur": 145800
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 44,
+      "firmCapacity": 91,
+      "employeeCount": 2,
+      "cashEur": 8670,
+      "liquidityEur": 8670
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 45,
+      "firmCapacity": 138,
+      "employeeCount": 4,
+      "cashEur": 4000,
+      "liquidityEur": 4000
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 46,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 52800,
+      "liquidityEur": 52800
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 47,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 5430,
+      "liquidityEur": 5430
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 48,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 59500,
+      "liquidityEur": 59500
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 49,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 9375,
+      "liquidityEur": 9375
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 0,
+      "firmCapacity": 88,
+      "employeeCount": 1,
+      "cashEur": 40645,
+      "liquidityEur": 40645
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 1,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 1600,
+      "liquidityEur": 1600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 2,
+      "firmCapacity": 186,
+      "employeeCount": 4,
+      "cashEur": 1600,
+      "liquidityEur": 1600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 3,
+      "firmCapacity": 88,
+      "employeeCount": 1,
+      "cashEur": 34475,
+      "liquidityEur": 34475
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 4,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 151485,
+      "liquidityEur": 151485
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 5,
+      "firmCapacity": 90,
+      "employeeCount": 2,
+      "cashEur": 2080,
+      "liquidityEur": 2080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 6,
+      "firmCapacity": 158,
+      "employeeCount": 3,
+      "cashEur": 5540,
+      "liquidityEur": 5540
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 7,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 4800,
+      "liquidityEur": 4800
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 8,
+      "firmCapacity": 103,
+      "employeeCount": 2,
+      "cashEur": 12000,
+      "liquidityEur": 12000
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 9,
+      "firmCapacity": 110,
+      "employeeCount": 2,
+      "cashEur": 3175,
+      "liquidityEur": 3175
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 10,
+      "firmCapacity": 260,
+      "employeeCount": 5,
+      "cashEur": 31600,
+      "liquidityEur": 31600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 11,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 30600,
+      "liquidityEur": 30600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 12,
+      "firmCapacity": 108,
+      "employeeCount": 2,
+      "cashEur": 5360,
+      "liquidityEur": 5360
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 13,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 149200,
+      "liquidityEur": 149200
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 14,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 42300,
+      "liquidityEur": 42300
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 15,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 61935,
+      "liquidityEur": 61935
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 16,
+      "firmCapacity": 126,
+      "employeeCount": 3,
+      "cashEur": 870,
+      "liquidityEur": 870
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 17,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 48500,
+      "liquidityEur": 48500
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 18,
+      "firmCapacity": 84,
+      "employeeCount": 1,
+      "cashEur": 15200,
+      "liquidityEur": 15200
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 19,
+      "firmCapacity": 108,
+      "employeeCount": 2,
+      "cashEur": 4575,
+      "liquidityEur": 4575
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 20,
+      "firmCapacity": 128,
+      "employeeCount": 3,
+      "cashEur": 2270,
+      "liquidityEur": 2270
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 21,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 71200,
+      "liquidityEur": 71200
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 22,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 135100,
+      "liquidityEur": 135100
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 23,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 1185,
+      "liquidityEur": 1185
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 24,
+      "firmCapacity": 234,
+      "employeeCount": 5,
+      "cashEur": 46478,
+      "liquidityEur": 46478
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 25,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 48380,
+      "liquidityEur": 48380
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 26,
+      "firmCapacity": 126,
+      "employeeCount": 2,
+      "cashEur": 6660,
+      "liquidityEur": 6660
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 27,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 8080,
+      "liquidityEur": 8080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 28,
+      "firmCapacity": 168,
+      "employeeCount": 3,
+      "cashEur": 6800,
+      "liquidityEur": 6800
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 29,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 11394,
+      "liquidityEur": 11394
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 30,
+      "firmCapacity": 109,
+      "employeeCount": 2,
+      "cashEur": 5700,
+      "liquidityEur": 5700
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 31,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 875,
+      "liquidityEur": 875
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 32,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 5875,
+      "liquidityEur": 5875
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 33,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 32080,
+      "liquidityEur": 32080
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 34,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 65600,
+      "liquidityEur": 65600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 35,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 14980,
+      "liquidityEur": 14980
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 36,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 6185,
+      "liquidityEur": 6185
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 37,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 1800,
+      "liquidityEur": 1800
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 38,
+      "firmCapacity": 252,
+      "employeeCount": 7,
+      "cashEur": 3700,
+      "liquidityEur": 3700
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 39,
+      "firmCapacity": 249,
+      "employeeCount": 5,
+      "cashEur": 22795,
+      "liquidityEur": 22795
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 40,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 4380,
+      "liquidityEur": 4380
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 41,
+      "firmCapacity": 106,
+      "employeeCount": 2,
+      "cashEur": 3570,
+      "liquidityEur": 3570
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 42,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 50780,
+      "liquidityEur": 50780
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 43,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 2600,
+      "liquidityEur": 2600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 44,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 149085,
+      "liquidityEur": 149085
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 45,
+      "firmCapacity": 237,
+      "employeeCount": 6,
+      "cashEur": 20014,
+      "liquidityEur": 20014
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 46,
+      "firmCapacity": 79,
+      "employeeCount": 1,
+      "cashEur": 2600,
+      "liquidityEur": 2600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 47,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 19000,
+      "liquidityEur": 19000
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 48,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 148800,
+      "liquidityEur": 148800
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 49,
+      "firmCapacity": 108,
+      "employeeCount": 2,
+      "cashEur": 10750,
+      "liquidityEur": 10750
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 0,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 5150,
+      "liquidityEur": 5150
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 1,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 56000,
+      "liquidityEur": 56000
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 2,
+      "firmCapacity": 204,
+      "employeeCount": 4,
+      "cashEur": 7100,
+      "liquidityEur": 7100
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 3,
+      "firmCapacity": 136,
+      "employeeCount": 1,
+      "cashEur": 19514,
+      "liquidityEur": 19514
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 4,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 39520,
+      "liquidityEur": 39520
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 5,
+      "firmCapacity": 121,
+      "employeeCount": 1,
+      "cashEur": 69200,
+      "liquidityEur": 69200
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 6,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 36540,
+      "liquidityEur": 36540
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 7,
+      "firmCapacity": 162,
+      "employeeCount": 3,
+      "cashEur": 4300,
+      "liquidityEur": 4300
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 8,
+      "firmCapacity": 260,
+      "employeeCount": 4,
+      "cashEur": 3414,
+      "liquidityEur": 3414
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 9,
+      "firmCapacity": 138,
+      "employeeCount": 1,
+      "cashEur": 15240,
+      "liquidityEur": 15240
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 10,
+      "firmCapacity": 138,
+      "employeeCount": 1,
+      "cashEur": 3970,
+      "liquidityEur": 3970
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 11,
+      "firmCapacity": 120,
+      "employeeCount": 1,
+      "cashEur": 20740,
+      "liquidityEur": 20740
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 12,
+      "firmCapacity": 138,
+      "employeeCount": 1,
+      "cashEur": 12120,
+      "liquidityEur": 12120
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 13,
+      "firmCapacity": 159,
+      "employeeCount": 2,
+      "cashEur": 5550,
+      "liquidityEur": 5550
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 14,
+      "firmCapacity": 120,
+      "employeeCount": 1,
+      "cashEur": 13120,
+      "liquidityEur": 13120
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 15,
+      "firmCapacity": 245,
+      "employeeCount": 4,
+      "cashEur": 46675,
+      "liquidityEur": 46675
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 16,
+      "firmCapacity": 100,
+      "employeeCount": 0,
+      "cashEur": 70350,
+      "liquidityEur": 70350
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 17,
+      "firmCapacity": 194,
+      "employeeCount": 3,
+      "cashEur": 400,
+      "liquidityEur": 400
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 18,
+      "firmCapacity": 120,
+      "employeeCount": 1,
+      "cashEur": 67520,
+      "liquidityEur": 67520
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 19,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 11200,
+      "liquidityEur": 11200
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 20,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 41200,
+      "liquidityEur": 41200
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 21,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 11100,
+      "liquidityEur": 11100
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 22,
+      "firmCapacity": 188,
+      "employeeCount": 4,
+      "cashEur": 76620,
+      "liquidityEur": 76620
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 23,
+      "firmCapacity": 166,
+      "employeeCount": 3,
+      "cashEur": 2880,
+      "liquidityEur": 2880
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 24,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 36650,
+      "liquidityEur": 36650
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 25,
+      "firmCapacity": 121,
+      "employeeCount": 1,
+      "cashEur": 14850,
+      "liquidityEur": 14850
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 26,
+      "firmCapacity": 138,
+      "employeeCount": 1,
+      "cashEur": 65420,
+      "liquidityEur": 65420
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 27,
+      "firmCapacity": 138,
+      "employeeCount": 1,
+      "cashEur": 15950,
+      "liquidityEur": 15950
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 28,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 7120,
+      "liquidityEur": 7120
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 29,
+      "firmCapacity": 120,
+      "employeeCount": 1,
+      "cashEur": 47450,
+      "liquidityEur": 47450
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 30,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 7380,
+      "liquidityEur": 7380
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 31,
+      "firmCapacity": 100,
+      "employeeCount": 0,
+      "cashEur": 130820,
+      "liquidityEur": 130820
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 32,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 20,
+      "liquidityEur": 20
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 33,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 56480,
+      "liquidityEur": 56480
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 34,
+      "firmCapacity": 158,
+      "employeeCount": 2,
+      "cashEur": 3914,
+      "liquidityEur": 3914
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 35,
+      "firmCapacity": 138,
+      "employeeCount": 1,
+      "cashEur": 9600,
+      "liquidityEur": 9600
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 36,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 3430,
+      "liquidityEur": 3430
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 37,
+      "firmCapacity": 135,
+      "employeeCount": 1,
+      "cashEur": 20650,
+      "liquidityEur": 20650
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 38,
+      "firmCapacity": 160,
+      "employeeCount": 2,
+      "cashEur": 14450,
+      "liquidityEur": 14450
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 39,
+      "firmCapacity": 220,
+      "employeeCount": 4,
+      "cashEur": 420,
+      "liquidityEur": 420
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 40,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 45050,
+      "liquidityEur": 45050
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 41,
+      "firmCapacity": 174,
+      "employeeCount": 3,
+      "cashEur": 3150,
+      "liquidityEur": 3150
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 42,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 33430,
+      "liquidityEur": 33430
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 43,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 43310,
+      "liquidityEur": 43310
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 44,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 3050,
+      "liquidityEur": 3050
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 45,
+      "firmCapacity": 236,
+      "employeeCount": 4,
+      "cashEur": 18400,
+      "liquidityEur": 18400
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 46,
+      "firmCapacity": 214,
+      "employeeCount": 3,
+      "cashEur": 5720,
+      "liquidityEur": 5720
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 47,
+      "firmCapacity": 166,
+      "employeeCount": 3,
+      "cashEur": 8130,
+      "liquidityEur": 8130
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 48,
+      "firmCapacity": 121,
+      "employeeCount": 1,
+      "cashEur": 7320,
+      "liquidityEur": 7320
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 49,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 1200,
+      "liquidityEur": 1200
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 0,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 105480,
+      "liquidityEur": 105480
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 1,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 9385,
+      "liquidityEur": 9385
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 2,
+      "firmCapacity": 116,
+      "employeeCount": 3,
+      "cashEur": 4040,
+      "liquidityEur": 4040
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 3,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 58500,
+      "liquidityEur": 58500
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 4,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 4080,
+      "liquidityEur": 4080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 5,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 7880,
+      "liquidityEur": 7880
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 6,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 20180,
+      "liquidityEur": 20180
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 7,
+      "firmCapacity": 131,
+      "employeeCount": 3,
+      "cashEur": 5800,
+      "liquidityEur": 5800
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 8,
+      "firmCapacity": 115,
+      "employeeCount": 3,
+      "cashEur": 2885,
+      "liquidityEur": 2885
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 9,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 1600,
+      "liquidityEur": 1600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 10,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 4385,
+      "liquidityEur": 4385
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 11,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 6080,
+      "liquidityEur": 6080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 12,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 3185,
+      "liquidityEur": 3185
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 13,
+      "firmCapacity": 144,
+      "employeeCount": 3,
+      "cashEur": 950,
+      "liquidityEur": 950
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 14,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 134685,
+      "liquidityEur": 134685
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 15,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 15260,
+      "liquidityEur": 15260
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 16,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 23040,
+      "liquidityEur": 23040
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 17,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 3050,
+      "liquidityEur": 3050
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 18,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 41345,
+      "liquidityEur": 41345
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 19,
+      "firmCapacity": 68,
+      "employeeCount": 1,
+      "cashEur": 9700,
+      "liquidityEur": 9700
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 20,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 2740,
+      "liquidityEur": 2740
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 21,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 22185,
+      "liquidityEur": 22185
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 22,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 61750,
+      "liquidityEur": 61750
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 23,
+      "firmCapacity": 69,
+      "employeeCount": 1,
+      "cashEur": 20180,
+      "liquidityEur": 20180
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 24,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 1100,
+      "liquidityEur": 1100
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 25,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 7780,
+      "liquidityEur": 7780
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 26,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 9600,
+      "liquidityEur": 9600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 27,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 13900,
+      "liquidityEur": 13900
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 28,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 2580,
+      "liquidityEur": 2580
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 29,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 14640,
+      "liquidityEur": 14640
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 30,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 41145,
+      "liquidityEur": 41145
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 31,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 8780,
+      "liquidityEur": 8780
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 32,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 2885,
+      "liquidityEur": 2885
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 33,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 18480,
+      "liquidityEur": 18480
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 34,
+      "firmCapacity": 145,
+      "employeeCount": 3,
+      "cashEur": 950,
+      "liquidityEur": 950
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 35,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 7885,
+      "liquidityEur": 7885
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 36,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 64385,
+      "liquidityEur": 64385
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 37,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 17050,
+      "liquidityEur": 17050
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 38,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 20185,
+      "liquidityEur": 20185
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 39,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 69385,
+      "liquidityEur": 69385
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 40,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 1660,
+      "liquidityEur": 1660
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 41,
+      "firmCapacity": 117,
+      "employeeCount": 2,
+      "cashEur": 3600,
+      "liquidityEur": 3600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 42,
+      "firmCapacity": 208,
+      "employeeCount": 5,
+      "cashEur": 9120,
+      "liquidityEur": 9120
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 43,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 10500,
+      "liquidityEur": 10500
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 44,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 21480,
+      "liquidityEur": 21480
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 45,
+      "firmCapacity": 116,
+      "employeeCount": 3,
+      "cashEur": 5300,
+      "liquidityEur": 5300
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 46,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 116080,
+      "liquidityEur": 116080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 47,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 104285,
+      "liquidityEur": 104285
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 48,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 17080,
+      "liquidityEur": 17080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 49,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 78780,
+      "liquidityEur": 78780
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 0,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 27080,
+      "liquidityEur": 27080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 1,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 63580,
+      "liquidityEur": 63580
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 2,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 5175,
+      "liquidityEur": 5175
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 3,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 148580,
+      "liquidityEur": 148580
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 4,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 880,
+      "liquidityEur": 880
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 5,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 9860,
+      "liquidityEur": 9860
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 6,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 18200,
+      "liquidityEur": 18200
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 7,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 4000,
+      "liquidityEur": 4000
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 8,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 7365,
+      "liquidityEur": 7365
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 9,
+      "firmCapacity": 138,
+      "employeeCount": 4,
+      "cashEur": 14895,
+      "liquidityEur": 14895
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 10,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 4000,
+      "liquidityEur": 4000
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 11,
+      "firmCapacity": 69,
+      "employeeCount": 1,
+      "cashEur": 12600,
+      "liquidityEur": 12600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 12,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 7600,
+      "liquidityEur": 7600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 13,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 77600,
+      "liquidityEur": 77600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 14,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 880,
+      "liquidityEur": 880
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 15,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 42100,
+      "liquidityEur": 42100
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 16,
+      "firmCapacity": 138,
+      "employeeCount": 4,
+      "cashEur": 4900,
+      "liquidityEur": 4900
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 17,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 16900,
+      "liquidityEur": 16900
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 18,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 13700,
+      "liquidityEur": 13700
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 19,
+      "firmCapacity": 69,
+      "employeeCount": 1,
+      "cashEur": 29185,
+      "liquidityEur": 29185
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 20,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 3280,
+      "liquidityEur": 3280
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 21,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 104080,
+      "liquidityEur": 104080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 22,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 7900,
+      "liquidityEur": 7900
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 23,
+      "firmCapacity": 119,
+      "employeeCount": 2,
+      "cashEur": 2600,
+      "liquidityEur": 2600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 24,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 100,
+      "liquidityEur": 100
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 25,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 127100,
+      "liquidityEur": 127100
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 26,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 118135,
+      "liquidityEur": 118135
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 27,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 18975,
+      "liquidityEur": 18975
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 28,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 27080,
+      "liquidityEur": 27080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 29,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 7879,
+      "liquidityEur": 7879
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 30,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 2600,
+      "liquidityEur": 2600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 31,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 1150,
+      "liquidityEur": 1150
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 32,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 7185,
+      "liquidityEur": 7185
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 33,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 3600,
+      "liquidityEur": 3600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 34,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 22700,
+      "liquidityEur": 22700
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 35,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 87600,
+      "liquidityEur": 87600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 36,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 109080,
+      "liquidityEur": 109080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 37,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 15900,
+      "liquidityEur": 15900
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 38,
+      "firmCapacity": 240,
+      "employeeCount": 6,
+      "cashEur": 2180,
+      "liquidityEur": 2180
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 39,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 81600,
+      "liquidityEur": 81600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 40,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 25600,
+      "liquidityEur": 25600
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 41,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 8185,
+      "liquidityEur": 8185
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 42,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 56985,
+      "liquidityEur": 56985
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 43,
+      "firmCapacity": 70,
+      "employeeCount": 1,
+      "cashEur": 6200,
+      "liquidityEur": 6200
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 44,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 7875,
+      "liquidityEur": 7875
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 45,
+      "firmCapacity": 70,
+      "employeeCount": 1,
+      "cashEur": 41200,
+      "liquidityEur": 41200
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 46,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 13080,
+      "liquidityEur": 13080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 47,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 9080,
+      "liquidityEur": 9080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 48,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 21975,
+      "liquidityEur": 21975
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 49,
+      "firmCapacity": 155,
+      "employeeCount": 3,
+      "cashEur": 4430,
+      "liquidityEur": 4430
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 0,
+      "firmCapacity": 70,
+      "employeeCount": 1,
+      "cashEur": 3160,
+      "liquidityEur": 3160
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 1,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 6700,
+      "liquidityEur": 6700
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 2,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 60485,
+      "liquidityEur": 60485
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 3,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 6285,
+      "liquidityEur": 6285
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 4,
+      "firmCapacity": 174,
+      "employeeCount": 3,
+      "cashEur": 8730,
+      "liquidityEur": 8730
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 5,
+      "firmCapacity": 108,
+      "employeeCount": 2,
+      "cashEur": 7000,
+      "liquidityEur": 7000
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 6,
+      "firmCapacity": 108,
+      "employeeCount": 2,
+      "cashEur": 640,
+      "liquidityEur": 640
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 7,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 150220,
+      "liquidityEur": 150220
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 8,
+      "firmCapacity": 234,
+      "employeeCount": 5,
+      "cashEur": 29140,
+      "liquidityEur": 29140
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 9,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 132385,
+      "liquidityEur": 132385
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 10,
+      "firmCapacity": 138,
+      "employeeCount": 4,
+      "cashEur": 14545,
+      "liquidityEur": 14545
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 11,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 62585,
+      "liquidityEur": 62585
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 12,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 54800,
+      "liquidityEur": 54800
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 13,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 12930,
+      "liquidityEur": 12930
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 14,
+      "firmCapacity": 88,
+      "employeeCount": 2,
+      "cashEur": 5700,
+      "liquidityEur": 5700
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 15,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 7365,
+      "liquidityEur": 7365
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 16,
+      "firmCapacity": 130,
+      "employeeCount": 3,
+      "cashEur": 8100,
+      "liquidityEur": 8100
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 17,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 31800,
+      "liquidityEur": 31800
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 18,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 2200,
+      "liquidityEur": 2200
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 19,
+      "firmCapacity": 84,
+      "employeeCount": 1,
+      "cashEur": 4700,
+      "liquidityEur": 4700
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 20,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 149800,
+      "liquidityEur": 149800
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 21,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 7180,
+      "liquidityEur": 7180
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 22,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 56060,
+      "liquidityEur": 56060
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 23,
+      "firmCapacity": 187,
+      "employeeCount": 4,
+      "cashEur": 500,
+      "liquidityEur": 500
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 24,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 17100,
+      "liquidityEur": 17100
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 25,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 150180,
+      "liquidityEur": 150180
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 26,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 37100,
+      "liquidityEur": 37100
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 27,
+      "firmCapacity": 97,
+      "employeeCount": 2,
+      "cashEur": 5680,
+      "liquidityEur": 5680
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 28,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 14450,
+      "liquidityEur": 14450
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 29,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 128500,
+      "liquidityEur": 128500
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 30,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 585,
+      "liquidityEur": 585
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 31,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 18750,
+      "liquidityEur": 18750
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 32,
+      "firmCapacity": 90,
+      "employeeCount": 2,
+      "cashEur": 24085,
+      "liquidityEur": 24085
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 33,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 42700,
+      "liquidityEur": 42700
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 34,
+      "firmCapacity": 123,
+      "employeeCount": 3,
+      "cashEur": 12940,
+      "liquidityEur": 12940
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 35,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 145185,
+      "liquidityEur": 145185
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 36,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 48700,
+      "liquidityEur": 48700
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 37,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 55700,
+      "liquidityEur": 55700
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 38,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 1870,
+      "liquidityEur": 1870
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 39,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 13080,
+      "liquidityEur": 13080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 40,
+      "firmCapacity": 128,
+      "employeeCount": 3,
+      "cashEur": 5585,
+      "liquidityEur": 5585
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 41,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 3240,
+      "liquidityEur": 3240
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 42,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 124545,
+      "liquidityEur": 124545
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 43,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 134880,
+      "liquidityEur": 134880
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 44,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 3550,
+      "liquidityEur": 3550
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 45,
+      "firmCapacity": 242,
+      "employeeCount": 5,
+      "cashEur": 7380,
+      "liquidityEur": 7380
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 46,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 33700,
+      "liquidityEur": 33700
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 47,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 60880,
+      "liquidityEur": 60880
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 48,
+      "firmCapacity": 108,
+      "employeeCount": 2,
+      "cashEur": 1670,
+      "liquidityEur": 1670
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 49,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 8485,
+      "liquidityEur": 8485
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 0,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 13760,
+      "liquidityEur": 13760
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 1,
+      "firmCapacity": 100,
+      "employeeCount": 0,
+      "cashEur": 110920,
+      "liquidityEur": 110920
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 2,
+      "firmCapacity": 120,
+      "employeeCount": 1,
+      "cashEur": 28150,
+      "liquidityEur": 28150
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 3,
+      "firmCapacity": 141,
+      "employeeCount": 2,
+      "cashEur": 4610,
+      "liquidityEur": 4610
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 4,
+      "firmCapacity": 158,
+      "employeeCount": 2,
+      "cashEur": 480,
+      "liquidityEur": 480
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 5,
+      "firmCapacity": 120,
+      "employeeCount": 1,
+      "cashEur": 15670,
+      "liquidityEur": 15670
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 6,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 250,
+      "liquidityEur": 250
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 7,
+      "firmCapacity": 138,
+      "employeeCount": 1,
+      "cashEur": 13970,
+      "liquidityEur": 13970
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 8,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 80,
+      "liquidityEur": 80
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 9,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 28300,
+      "liquidityEur": 28300
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 10,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 19620,
+      "liquidityEur": 19620
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 11,
+      "firmCapacity": 135,
+      "employeeCount": 1,
+      "cashEur": 1500,
+      "liquidityEur": 1500
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 12,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 10000,
+      "liquidityEur": 10000
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 13,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 8950,
+      "liquidityEur": 8950
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 14,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 6220,
+      "liquidityEur": 6220
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 15,
+      "firmCapacity": 121,
+      "employeeCount": 1,
+      "cashEur": 7590,
+      "liquidityEur": 7590
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 16,
+      "firmCapacity": 138,
+      "employeeCount": 1,
+      "cashEur": 12620,
+      "liquidityEur": 12620
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 17,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 23220,
+      "liquidityEur": 23220
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 18,
+      "firmCapacity": 121,
+      "employeeCount": 1,
+      "cashEur": 16260,
+      "liquidityEur": 16260
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 19,
+      "firmCapacity": 166,
+      "employeeCount": 3,
+      "cashEur": 3960,
+      "liquidityEur": 3960
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 20,
+      "firmCapacity": 120,
+      "employeeCount": 1,
+      "cashEur": 5500,
+      "liquidityEur": 5500
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 21,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 69770,
+      "liquidityEur": 69770
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 22,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 8985,
+      "liquidityEur": 8985
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 23,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 680,
+      "liquidityEur": 680
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 24,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 33020,
+      "liquidityEur": 33020
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 25,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 37920,
+      "liquidityEur": 37920
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 26,
+      "firmCapacity": 212,
+      "employeeCount": 4,
+      "cashEur": 9800,
+      "liquidityEur": 9800
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 27,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 10210,
+      "liquidityEur": 10210
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 28,
+      "firmCapacity": 121,
+      "employeeCount": 1,
+      "cashEur": 20890,
+      "liquidityEur": 20890
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 29,
+      "firmCapacity": 158,
+      "employeeCount": 2,
+      "cashEur": 14380,
+      "liquidityEur": 14380
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 30,
+      "firmCapacity": 100,
+      "employeeCount": 0,
+      "cashEur": 139160,
+      "liquidityEur": 139160
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 31,
+      "firmCapacity": 100,
+      "employeeCount": 0,
+      "cashEur": 104735,
+      "liquidityEur": 104735
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 32,
+      "firmCapacity": 116,
+      "employeeCount": 1,
+      "cashEur": 3580,
+      "liquidityEur": 3580
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 33,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 250,
+      "liquidityEur": 250
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 34,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 4260,
+      "liquidityEur": 4260
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 35,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 93005,
+      "liquidityEur": 93005
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 36,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 150,
+      "liquidityEur": 150
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 37,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 5450,
+      "liquidityEur": 5450
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 38,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 62080,
+      "liquidityEur": 62080
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 39,
+      "firmCapacity": 100,
+      "employeeCount": 0,
+      "cashEur": 117000,
+      "liquidityEur": 117000
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 40,
+      "firmCapacity": 100,
+      "employeeCount": 0,
+      "cashEur": 110630,
+      "liquidityEur": 110630
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 41,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 11760,
+      "liquidityEur": 11760
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 42,
+      "firmCapacity": 121,
+      "employeeCount": 1,
+      "cashEur": 135400,
+      "liquidityEur": 135400
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 43,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 55880,
+      "liquidityEur": 55880
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 44,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 68150,
+      "liquidityEur": 68150
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 45,
+      "firmCapacity": 182,
+      "employeeCount": 3,
+      "cashEur": 8900,
+      "liquidityEur": 8900
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 46,
+      "firmCapacity": 223,
+      "employeeCount": 4,
+      "cashEur": 3500,
+      "liquidityEur": 3500
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 47,
+      "firmCapacity": 135,
+      "employeeCount": 1,
+      "cashEur": 17090,
+      "liquidityEur": 17090
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 48,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 23130,
+      "liquidityEur": 23130
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 49,
+      "firmCapacity": 186,
+      "employeeCount": 2,
+      "cashEur": 3460,
+      "liquidityEur": 3460
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 0,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 93080,
+      "liquidityEur": 93080
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 1,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 28700,
+      "liquidityEur": 28700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 2,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 88080,
+      "liquidityEur": 88080
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 3,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 12680,
+      "liquidityEur": 12680
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 4,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 8700,
+      "liquidityEur": 8700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 5,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 98185,
+      "liquidityEur": 98185
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 6,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 57700,
+      "liquidityEur": 57700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 7,
+      "firmCapacity": 90,
+      "employeeCount": 2,
+      "cashEur": 7520,
+      "liquidityEur": 7520
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 8,
+      "firmCapacity": 138,
+      "employeeCount": 4,
+      "cashEur": 3985,
+      "liquidityEur": 3985
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 9,
+      "firmCapacity": 129,
+      "employeeCount": 3,
+      "cashEur": 8800,
+      "liquidityEur": 8800
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 10,
+      "firmCapacity": 69,
+      "employeeCount": 1,
+      "cashEur": 2375,
+      "liquidityEur": 2375
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 11,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 81060,
+      "liquidityEur": 81060
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 12,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 13985,
+      "liquidityEur": 13985
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 13,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 23000,
+      "liquidityEur": 23000
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 14,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 7080,
+      "liquidityEur": 7080
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 15,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 4714,
+      "liquidityEur": 4714
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 16,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 11900,
+      "liquidityEur": 11900
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 17,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 15080,
+      "liquidityEur": 15080
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 18,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 147985,
+      "liquidityEur": 147985
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 19,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 7500,
+      "liquidityEur": 7500
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 20,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 9180,
+      "liquidityEur": 9180
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 21,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 285,
+      "liquidityEur": 285
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 22,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 2185,
+      "liquidityEur": 2185
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 23,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 150885,
+      "liquidityEur": 150885
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 24,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 148700,
+      "liquidityEur": 148700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 25,
+      "firmCapacity": 97,
+      "employeeCount": 1,
+      "cashEur": 16880,
+      "liquidityEur": 16880
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 26,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 4785,
+      "liquidityEur": 4785
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 27,
+      "firmCapacity": 86,
+      "employeeCount": 1,
+      "cashEur": 25280,
+      "liquidityEur": 25280
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 28,
+      "firmCapacity": 118,
+      "employeeCount": 2,
+      "cashEur": 4700,
+      "liquidityEur": 4700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 29,
+      "firmCapacity": 70,
+      "employeeCount": 1,
+      "cashEur": 59880,
+      "liquidityEur": 59880
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 30,
+      "firmCapacity": 114,
+      "employeeCount": 3,
+      "cashEur": 300,
+      "liquidityEur": 300
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 31,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 90285,
+      "liquidityEur": 90285
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 32,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 46485,
+      "liquidityEur": 46485
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 33,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 139700,
+      "liquidityEur": 139700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 34,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 6620,
+      "liquidityEur": 6620
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 35,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 2080,
+      "liquidityEur": 2080
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 36,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 6700,
+      "liquidityEur": 6700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 37,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 59045,
+      "liquidityEur": 59045
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 38,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 59780,
+      "liquidityEur": 59780
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 39,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 56100,
+      "liquidityEur": 56100
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 40,
+      "firmCapacity": 70,
+      "employeeCount": 1,
+      "cashEur": 73380,
+      "liquidityEur": 73380
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 41,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 12180,
+      "liquidityEur": 12180
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 42,
+      "firmCapacity": 167,
+      "employeeCount": 4,
+      "cashEur": 8170,
+      "liquidityEur": 8170
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 43,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 52985,
+      "liquidityEur": 52985
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 44,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 67640,
+      "liquidityEur": 67640
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 45,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 4120,
+      "liquidityEur": 4120
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 46,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 11470,
+      "liquidityEur": 11470
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 47,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 6700,
+      "liquidityEur": 6700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 48,
+      "firmCapacity": 212,
+      "employeeCount": 4,
+      "cashEur": 4480,
+      "liquidityEur": 4480
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 49,
+      "firmCapacity": 158,
+      "employeeCount": 3,
+      "cashEur": 5670,
+      "liquidityEur": 5670
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 0,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 3980,
+      "liquidityEur": 3980
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 1,
+      "firmCapacity": 168,
+      "employeeCount": 3,
+      "cashEur": 4180,
+      "liquidityEur": 4180
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 2,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 14200,
+      "liquidityEur": 14200
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 3,
+      "firmCapacity": 120,
+      "employeeCount": 2,
+      "cashEur": 2800,
+      "liquidityEur": 2800
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 4,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 60000,
+      "liquidityEur": 60000
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 5,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 380,
+      "liquidityEur": 380
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 6,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 2600,
+      "liquidityEur": 2600
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 7,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 4875,
+      "liquidityEur": 4875
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 8,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 36700,
+      "liquidityEur": 36700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 9,
+      "firmCapacity": 70,
+      "employeeCount": 1,
+      "cashEur": 130,
+      "liquidityEur": 130
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 10,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 6525,
+      "liquidityEur": 6525
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 11,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 11470,
+      "liquidityEur": 11470
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 12,
+      "firmCapacity": 98,
+      "employeeCount": 1,
+      "cashEur": 8965,
+      "liquidityEur": 8965
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 13,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 12185,
+      "liquidityEur": 12185
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 14,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 2870,
+      "liquidityEur": 2870
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 15,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 650,
+      "liquidityEur": 650
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 16,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 48500,
+      "liquidityEur": 48500
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 17,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 86250,
+      "liquidityEur": 86250
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 18,
+      "firmCapacity": 211,
+      "employeeCount": 6,
+      "cashEur": 620,
+      "liquidityEur": 620
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 19,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 22075,
+      "liquidityEur": 22075
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 20,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 3155,
+      "liquidityEur": 3155
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 21,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 7170,
+      "liquidityEur": 7170
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 22,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 2000,
+      "liquidityEur": 2000
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 23,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 38100,
+      "liquidityEur": 38100
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 24,
+      "firmCapacity": 136,
+      "employeeCount": 4,
+      "cashEur": 10685,
+      "liquidityEur": 10685
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 25,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 45775,
+      "liquidityEur": 45775
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 26,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 92185,
+      "liquidityEur": 92185
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 27,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 109135,
+      "liquidityEur": 109135
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 28,
+      "firmCapacity": 86,
+      "employeeCount": 1,
+      "cashEur": 760,
+      "liquidityEur": 760
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 29,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 11775,
+      "liquidityEur": 11775
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 30,
+      "firmCapacity": 212,
+      "employeeCount": 4,
+      "cashEur": 5800,
+      "liquidityEur": 5800
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 31,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 52300,
+      "liquidityEur": 52300
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 32,
+      "firmCapacity": 86,
+      "employeeCount": 1,
+      "cashEur": 26410,
+      "liquidityEur": 26410
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 33,
+      "firmCapacity": 235,
+      "employeeCount": 6,
+      "cashEur": 17620,
+      "liquidityEur": 17620
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 34,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 69100,
+      "liquidityEur": 69100
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 35,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 145985,
+      "liquidityEur": 145985
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 36,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 64060,
+      "liquidityEur": 64060
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 37,
+      "firmCapacity": 86,
+      "employeeCount": 1,
+      "cashEur": 45500,
+      "liquidityEur": 45500
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 38,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 20900,
+      "liquidityEur": 20900
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 39,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 147150,
+      "liquidityEur": 147150
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 40,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 700,
+      "liquidityEur": 700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 41,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 5600,
+      "liquidityEur": 5600
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 42,
+      "firmCapacity": 50,
+      "employeeCount": 0,
+      "cashEur": 148950,
+      "liquidityEur": 148950
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 43,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 70600,
+      "liquidityEur": 70600
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 44,
+      "firmCapacity": 86,
+      "employeeCount": 1,
+      "cashEur": 4880,
+      "liquidityEur": 4880
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 45,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 22860,
+      "liquidityEur": 22860
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 46,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 13420,
+      "liquidityEur": 13420
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 47,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 94385,
+      "liquidityEur": 94385
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 48,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 6400,
+      "liquidityEur": 6400
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 49,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 115100,
+      "liquidityEur": 115100
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 0,
+      "firmCapacity": 71,
+      "employeeCount": 1,
+      "cashEur": 146180,
+      "liquidityEur": 146180
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 1,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 4885,
+      "liquidityEur": 4885
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 2,
+      "firmCapacity": 110,
+      "employeeCount": 2,
+      "cashEur": 2500,
+      "liquidityEur": 2500
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 3,
+      "firmCapacity": 222,
+      "employeeCount": 4,
+      "cashEur": 8970,
+      "liquidityEur": 8970
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 4,
+      "firmCapacity": 94,
+      "employeeCount": 1,
+      "cashEur": 13700,
+      "liquidityEur": 13700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 5,
+      "firmCapacity": 93,
+      "employeeCount": 2,
+      "cashEur": 70100,
+      "liquidityEur": 70100
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 6,
+      "firmCapacity": 68,
+      "employeeCount": 1,
+      "cashEur": 7650,
+      "liquidityEur": 7650
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 7,
+      "firmCapacity": 181,
+      "employeeCount": 5,
+      "cashEur": 18080,
+      "liquidityEur": 18080
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 8,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 39780,
+      "liquidityEur": 39780
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 9,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 25460,
+      "liquidityEur": 25460
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 10,
+      "firmCapacity": 244,
+      "employeeCount": 6,
+      "cashEur": 6664,
+      "liquidityEur": 6664
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 11,
+      "firmCapacity": 146,
+      "employeeCount": 3,
+      "cashEur": 380,
+      "liquidityEur": 380
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 12,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 138880,
+      "liquidityEur": 138880
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 13,
+      "firmCapacity": 97,
+      "employeeCount": 1,
+      "cashEur": 17800,
+      "liquidityEur": 17800
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 14,
+      "firmCapacity": 109,
+      "employeeCount": 2,
+      "cashEur": 3514,
+      "liquidityEur": 3514
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 15,
+      "firmCapacity": 94,
+      "employeeCount": 1,
+      "cashEur": 6800,
+      "liquidityEur": 6800
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 16,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 31800,
+      "liquidityEur": 31800
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 17,
+      "firmCapacity": 90,
+      "employeeCount": 2,
+      "cashEur": 29500,
+      "liquidityEur": 29500
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 18,
+      "firmCapacity": 70,
+      "employeeCount": 1,
+      "cashEur": 144480,
+      "liquidityEur": 144480
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 19,
+      "firmCapacity": 113,
+      "employeeCount": 3,
+      "cashEur": 25100,
+      "liquidityEur": 25100
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 20,
+      "firmCapacity": 260,
+      "employeeCount": 5,
+      "cashEur": 8550,
+      "liquidityEur": 8550
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 21,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 6520,
+      "liquidityEur": 6520
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 22,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 28385,
+      "liquidityEur": 28385
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 23,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 137885,
+      "liquidityEur": 137885
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 24,
+      "firmCapacity": 110,
+      "employeeCount": 2,
+      "cashEur": 725,
+      "liquidityEur": 725
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 25,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 146185,
+      "liquidityEur": 146185
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 26,
+      "firmCapacity": 96,
+      "employeeCount": 1,
+      "cashEur": 24700,
+      "liquidityEur": 24700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 27,
+      "firmCapacity": 117,
+      "employeeCount": 2,
+      "cashEur": 9020,
+      "liquidityEur": 9020
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 28,
+      "firmCapacity": 110,
+      "employeeCount": 2,
+      "cashEur": 5014,
+      "liquidityEur": 5014
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 29,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 82400,
+      "liquidityEur": 82400
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 30,
+      "firmCapacity": 66,
+      "employeeCount": 1,
+      "cashEur": 4370,
+      "liquidityEur": 4370
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 31,
+      "firmCapacity": 93,
+      "employeeCount": 1,
+      "cashEur": 9500,
+      "liquidityEur": 9500
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 32,
+      "firmCapacity": 110,
+      "employeeCount": 2,
+      "cashEur": 4975,
+      "liquidityEur": 4975
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 33,
+      "firmCapacity": 88,
+      "employeeCount": 1,
+      "cashEur": 62780,
+      "liquidityEur": 62780
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 34,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 65285,
+      "liquidityEur": 65285
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 35,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 28385,
+      "liquidityEur": 28385
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 36,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 150900,
+      "liquidityEur": 150900
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 37,
+      "firmCapacity": 88,
+      "employeeCount": 1,
+      "cashEur": 4750,
+      "liquidityEur": 4750
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 38,
+      "firmCapacity": 68,
+      "employeeCount": 1,
+      "cashEur": 1920,
+      "liquidityEur": 1920
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 39,
+      "firmCapacity": 118,
+      "employeeCount": 2,
+      "cashEur": 7480,
+      "liquidityEur": 7480
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 40,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 151345,
+      "liquidityEur": 151345
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 41,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 63080,
+      "liquidityEur": 63080
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 42,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 22985,
+      "liquidityEur": 22985
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 43,
+      "firmCapacity": 88,
+      "employeeCount": 1,
+      "cashEur": 30950,
+      "liquidityEur": 30950
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 44,
+      "firmCapacity": 92,
+      "employeeCount": 2,
+      "cashEur": 70285,
+      "liquidityEur": 70285
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 45,
+      "firmCapacity": 94,
+      "employeeCount": 2,
+      "cashEur": 43985,
+      "liquidityEur": 43985
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 46,
+      "firmCapacity": 90,
+      "employeeCount": 2,
+      "cashEur": 28385,
+      "liquidityEur": 28385
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 47,
+      "firmCapacity": 72,
+      "employeeCount": 1,
+      "cashEur": 11420,
+      "liquidityEur": 11420
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 48,
+      "firmCapacity": 142,
+      "employeeCount": 3,
+      "cashEur": 14285,
+      "liquidityEur": 14285
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 49,
+      "firmCapacity": 94,
+      "employeeCount": 1,
+      "cashEur": 2070,
+      "liquidityEur": 2070
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 0,
+      "firmCapacity": 142,
+      "employeeCount": 2,
+      "cashEur": 14650,
+      "liquidityEur": 14650
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 1,
+      "firmCapacity": 136,
+      "employeeCount": 1,
+      "cashEur": 57550,
+      "liquidityEur": 57550
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 2,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 114330,
+      "liquidityEur": 114330
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 3,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 15055,
+      "liquidityEur": 15055
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 4,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 35360,
+      "liquidityEur": 35360
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 5,
+      "firmCapacity": 196,
+      "employeeCount": 3,
+      "cashEur": 1700,
+      "liquidityEur": 1700
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 6,
+      "firmCapacity": 143,
+      "employeeCount": 2,
+      "cashEur": 1970,
+      "liquidityEur": 1970
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 7,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 3470,
+      "liquidityEur": 3470
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 8,
+      "firmCapacity": 134,
+      "employeeCount": 1,
+      "cashEur": 41800,
+      "liquidityEur": 41800
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 9,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 148670,
+      "liquidityEur": 148670
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 10,
+      "firmCapacity": 100,
+      "employeeCount": 0,
+      "cashEur": 64000,
+      "liquidityEur": 64000
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 11,
+      "firmCapacity": 142,
+      "employeeCount": 2,
+      "cashEur": 32960,
+      "liquidityEur": 32960
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 12,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 108920,
+      "liquidityEur": 108920
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 13,
+      "firmCapacity": 262,
+      "employeeCount": 4,
+      "cashEur": 9860,
+      "liquidityEur": 9860
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 14,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 137200,
+      "liquidityEur": 137200
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 15,
+      "firmCapacity": 138,
+      "employeeCount": 1,
+      "cashEur": 6400,
+      "liquidityEur": 6400
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 16,
+      "firmCapacity": 142,
+      "employeeCount": 2,
+      "cashEur": 6360,
+      "liquidityEur": 6360
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 17,
+      "firmCapacity": 148,
+      "employeeCount": 1,
+      "cashEur": 8964,
+      "liquidityEur": 8964
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 18,
+      "firmCapacity": 143,
+      "employeeCount": 2,
+      "cashEur": 13220,
+      "liquidityEur": 13220
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 19,
+      "firmCapacity": 142,
+      "employeeCount": 2,
+      "cashEur": 31794,
+      "liquidityEur": 31794
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 20,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 16080,
+      "liquidityEur": 16080
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 21,
+      "firmCapacity": 119,
+      "employeeCount": 1,
+      "cashEur": 10314,
+      "liquidityEur": 10314
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 22,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 800,
+      "liquidityEur": 800
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 23,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 26340,
+      "liquidityEur": 26340
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 24,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 1800,
+      "liquidityEur": 1800
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 25,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 14070,
+      "liquidityEur": 14070
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 26,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 14580,
+      "liquidityEur": 14580
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 27,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 2850,
+      "liquidityEur": 2850
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 28,
+      "firmCapacity": 140,
+      "employeeCount": 2,
+      "cashEur": 37520,
+      "liquidityEur": 37520
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 29,
+      "firmCapacity": 119,
+      "employeeCount": 1,
+      "cashEur": 103970,
+      "liquidityEur": 103970
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 30,
+      "firmCapacity": 138,
+      "employeeCount": 1,
+      "cashEur": 52820,
+      "liquidityEur": 52820
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 31,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 36500,
+      "liquidityEur": 36500
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 32,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 3120,
+      "liquidityEur": 3120
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 33,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 7520,
+      "liquidityEur": 7520
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 34,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 7560,
+      "liquidityEur": 7560
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 35,
+      "firmCapacity": 166,
+      "employeeCount": 2,
+      "cashEur": 9460,
+      "liquidityEur": 9460
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 36,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 1600,
+      "liquidityEur": 1600
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 37,
+      "firmCapacity": 143,
+      "employeeCount": 2,
+      "cashEur": 29930,
+      "liquidityEur": 29930
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 38,
+      "firmCapacity": 163,
+      "employeeCount": 3,
+      "cashEur": 140,
+      "liquidityEur": 140
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 39,
+      "firmCapacity": 139,
+      "employeeCount": 1,
+      "cashEur": 3880,
+      "liquidityEur": 3880
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 40,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 9500,
+      "liquidityEur": 9500
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 41,
+      "firmCapacity": 135,
+      "employeeCount": 1,
+      "cashEur": 106420,
+      "liquidityEur": 106420
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 42,
+      "firmCapacity": 210,
+      "employeeCount": 4,
+      "cashEur": 4585,
+      "liquidityEur": 4585
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 43,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 12250,
+      "liquidityEur": 12250
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 44,
+      "firmCapacity": 144,
+      "employeeCount": 2,
+      "cashEur": 29060,
+      "liquidityEur": 29060
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 45,
+      "firmCapacity": 116,
+      "employeeCount": 1,
+      "cashEur": 12500,
+      "liquidityEur": 12500
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 46,
+      "firmCapacity": 120,
+      "employeeCount": 1,
+      "cashEur": 27200,
+      "liquidityEur": 27200
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 47,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 61460,
+      "liquidityEur": 61460
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 48,
+      "firmCapacity": 119,
+      "employeeCount": 1,
+      "cashEur": 147620,
+      "liquidityEur": 147620
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 49,
+      "firmCapacity": 122,
+      "employeeCount": 1,
+      "cashEur": 3050,
+      "liquidityEur": 3050
+    }
+  ]
+}

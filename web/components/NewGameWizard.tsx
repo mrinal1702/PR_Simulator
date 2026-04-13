@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
@@ -80,9 +80,9 @@ export type NewGamePayload = {
   postSeasonActiveCasesViewedBySeason?: Partial<Record<string, boolean>>;
   /**
    * Frozen at “Go to season” after pre-season (before any in-season client resolution).
-   * Season ≥2 uses Season 2 C/V knot normalization; Season 1 uses Season 1 knots.
+   * Season 1: Season 1 C/V knots. Season 2: Season 2 benchmarks. Season ≥3: Season 3 benchmarks + optional rScore.
    */
-  seasonEntryScoresBySeason?: Partial<Record<string, { vScore: number; cScore: number }>>;
+  seasonEntryScoresBySeason?: Partial<Record<string, { vScore: number; cScore: number; rScore?: number }>>;
   /** `scenario_id` values already assigned to a client this playthrough (no repeats). */
   usedScenarioIds?: string[];
   /**

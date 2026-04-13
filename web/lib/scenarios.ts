@@ -1,4 +1,4 @@
-import type { ClientKind } from "@/lib/clientEconomyMath";
+import type { ClientBudgetTier, ClientKind } from "@/lib/clientEconomyMath";
 
 import scenarioMeta from "../data/scenario_database.json";
 import scenariosCorporate from "../data/scenarios_corporate.json";
@@ -26,10 +26,11 @@ function mapClientKindToDbType(kind: ClientKind): string {
   return "Corporate";
 }
 
-function tierMatchesBudgetTier(tier: 1 | 2, budgetTier: string): boolean {
+function tierMatchesBudgetTier(tier: ClientBudgetTier, budgetTier: string): boolean {
   const b = budgetTier.toLowerCase();
   if (tier === 1) return b.includes("very low") || b.includes("low");
-  return b.includes("mid") || b.includes("high") || b.includes("low");
+  if (tier === 2) return b.includes("mid") || b.includes("high") || b.includes("low");
+  return b.includes("mid") || b.includes("high");
 }
 
 function hashPickIndex(seed: string, modulo: number): number {
@@ -40,6 +41,21 @@ function hashPickIndex(seed: string, modulo: number): number {
   }
   return Math.abs(h) % modulo;
 }
+
+/**
+ * Failsafe: if every scenario is exhausted, try pools in this order (individual tier 1 → SMB tier 1 →
+ * corporate tier 1 → repeat at tier 2, then tier 3).
+ */
+const SCENARIO_FAILOVER_ORDER: { kind: ClientKind; tier: ClientBudgetTier }[] = (() => {
+  const order: { kind: ClientKind; tier: ClientBudgetTier }[] = [];
+  const kinds: ClientKind[] = ["individual", "small_business", "corporate"];
+  for (const tier of [1, 2, 3] as const) {
+    for (const kind of kinds) {
+      order.push({ kind, tier });
+    }
+  }
+  return order;
+})();
 
 /** Thrown when every scenario in the DB is already in `excludeIds` (cannot satisfy uniqueness). */
 export const SCENARIO_POOL_EXHAUSTED_MESSAGE =
@@ -57,7 +73,7 @@ export function getScenarioById(scenarioId: string): ScenarioRecord | undefined 
  */
 export function pickScenarioForClient(
   kind: ClientKind,
-  budgetTier: 1 | 2,
+  budgetTier: ClientBudgetTier,
   seed: string,
   excludeIds: ReadonlySet<string>
 ): ScenarioRecord {
@@ -74,6 +90,20 @@ export function pickScenarioForClient(
   }
   if (candidates.length === 0) {
     candidates = allUnused;
+  }
+  if (candidates.length === 0) {
+    for (const { kind: fk, tier: ft } of SCENARIO_FAILOVER_ORDER) {
+      const c = scenarioDatabase.scenarios.filter(
+        (s) =>
+          s.client_type === mapClientKindToDbType(fk) &&
+          tierMatchesBudgetTier(ft, s.budget_tier) &&
+          !excludeIds.has(s.scenario_id)
+      );
+      if (c.length > 0) {
+        candidates = c;
+        break;
+      }
+    }
   }
   if (candidates.length === 0) {
     throw new Error(SCENARIO_POOL_EXHAUSTED_MESSAGE);

@@ -11,10 +11,19 @@ import {
   reputationZScore,
   SEASON2_BENCHMARK_VISIBILITY_STD,
 } from "@/lib/benchmarkSeason2Scores";
+import {
+  SEASON3_BENCHMARK_VISIBILITY_MEAN,
+  SEASON3_BENCHMARK_VISIBILITY_STD,
+  benchmarkRawCompetenceToScoreSeason3,
+  benchmarkRawVisibilityToScoreSeason3,
+} from "@/lib/benchmarkSeason3Scores";
 import { METRIC_SCALES } from "@/lib/metricScales";
-import { visibilityScoreForVarianceSeason2 } from "@/lib/solutionOutcomeMath";
+import { visibilityScoreForVarianceSeason2, visibilityScoreForVarianceSeason3 } from "@/lib/solutionOutcomeMath";
 
 export type ClientKind = "individual" | "small_business" | "corporate";
+
+/** Budget contract tier (1–3). Seasons 1–2 only roll 1–2; tier 3 unlocks from season 3+. */
+export type ClientBudgetTier = 1 | 2 | 3;
 
 /** Canonical reputation range (see `metricScales.ts` / README). */
 export const REPUTATION_MIN = METRIC_SCALES.reputation.min;
@@ -31,6 +40,9 @@ export const EARLY_GAME_MAX_BUDGET_TIER = 2 as const;
  * Keeps early game mostly tier 1; tier 2 reachable with strong vis/rep.
  */
 export const BUDGET_TIER2_SCORE_THRESHOLD = 0.52;
+
+/** Season 3+: tier 3 vs tier 2 on the same combined score. Tunable. */
+export const BUDGET_TIER3_SCORE_THRESHOLD = 0.7;
 
 /** Small deterministic jitter amplitude (±) applied to tier score from seed. */
 export const BUDGET_TIER_SCORE_JITTER = 0.06;
@@ -147,15 +159,15 @@ export function maxBudgetTierForSeason(season: number): number {
 }
 
 /**
- * Budget tier for early seasons (1–2): only 1 or 2. Hard-capped; no tier 3+ here.
- * Later seasons: extend mapping when higher tiers unlock.
+ * Budget tier: seasons 1–2 only 1 or 2 (hard-capped). Season 3+: 1–3 from combined score vs
+ * {@link BUDGET_TIER2_SCORE_THRESHOLD} / {@link BUDGET_TIER3_SCORE_THRESHOLD}.
  */
 export function computeBudgetTierDeterministic(
   seed: string,
   season: number,
   visibility: number,
   reputation: number
-): 1 | 2 {
+): ClientBudgetTier {
   const cap = maxBudgetTierForSeason(season);
   if (cap <= 1) return 1;
 
@@ -164,26 +176,33 @@ export function computeBudgetTierDeterministic(
     s += (hash01(`${seed}|tier`) - 0.5) * 2 * BUDGET_TIER_SCORE_JITTER;
     s = clamp01(s);
     const tier: 1 | 2 = s >= BUDGET_TIER2_SCORE_THRESHOLD ? 2 : 1;
-    return Math.min(tier, cap) as 1 | 2;
+    return Math.min(tier, cap) as ClientBudgetTier;
   }
 
-  // Placeholder until tiers 3–7 are wired.
+  let s = budgetTierScore(visibility, reputation);
+  s += (hash01(`${seed}|tier`) - 0.5) * 2 * BUDGET_TIER_SCORE_JITTER;
+  s = clamp01(s);
+  if (cap >= 3 && s >= BUDGET_TIER3_SCORE_THRESHOLD) return 3;
+  if (cap >= 2 && s >= BUDGET_TIER2_SCORE_THRESHOLD) return 2;
   return 1;
 }
 
 /** Min/max total contract (EUR, whole thousands in practice) per type and tier. */
-export const CLIENT_BUDGET_TIER_RANGES: Record<ClientKind, Record<1 | 2, { min: number; max: number }>> = {
+export const CLIENT_BUDGET_TIER_RANGES: Record<ClientKind, Record<ClientBudgetTier, { min: number; max: number }>> = {
   individual: {
     1: { min: 43_000, max: 47_000 },
     2: { min: 60_000, max: 70_000 },
+    3: { min: 75_000, max: 85_000 },
   },
   small_business: {
     1: { min: 42_000, max: 46_000 },
     2: { min: 64_000, max: 74_000 },
+    3: { min: 85_000, max: 95_000 },
   },
   corporate: {
     1: { min: 60_000, max: 66_000 },
     2: { min: 70_000, max: 80_000 },
+    3: { min: 100_000, max: 110_000 },
   },
 };
 
@@ -193,11 +212,23 @@ export const SEASON2_TIER1_INDIVIDUAL_BUDGET_BOOST_EUR = 5_000;
 /** Second corporate slot: rep at/above this keeps a meaningful second corporate chance. */
 export const SEASON2_CORPORATE_ELITE_REP_THRESHOLD = 7;
 
+/** Second slot: P(second corporate tier 1) when first client was corporate tier 1. */
+export const SEASON2_P_SECOND_CORPORATE_TIER1_AFTER_FIRST_CORP_T1 = 0.09;
+
+/** Scales P(corporate tier 2 | corporate); capped so tier-2 corporate stays rare. */
+export const SEASON_CORPORATE_TIER2_BASE = 0.035;
+
+/**
+ * Season 3: corporate tier 2 only if standardized reputation z (Season 2 benchmark) ≥ this.
+ * Tier 2 corporate is only rolled on client slot 0.
+ */
+export const SEASON3_CORPORATE_TIER2_MIN_REP_Z = 1.65;
+
 /**
  * Within-tier total budget: visibility only (no reputation).
  * Uses asymptotic visibility so there is no visibility ceiling in the formula.
  */
-export function rollClientBudgetTotalInTier(kind: ClientKind, tier: 1 | 2, visibility: number): number {
+export function rollClientBudgetTotalInTier(kind: ClientKind, tier: ClientBudgetTier, visibility: number): number {
   const { min, max } = CLIENT_BUDGET_TIER_RANGES[kind][tier];
   const t = visibilityInfluence(visibility);
   const raw = min + (max - min) * t;
@@ -249,50 +280,182 @@ function season2DownweightTier2IfPriorTier2(priorTier2: boolean, pTier2: number)
   return pTier2 * 0.32;
 }
 
+/**
+ * P(corporate tier 2 | rolled corporate). At most one tier-2 corporate per season (`hadCorporateTier2BeforeSlot`).
+ * Season 3: tier 2 only on **first client slot** and only for **high** reputation (z ≥ {@link SEASON3_CORPORATE_TIER2_MIN_REP_Z}).
+ */
+function rollCorporateBudgetTier(
+  seedBase: string,
+  slotIndex: number,
+  zR: number,
+  hadCorporateTier2BeforeSlot: boolean,
+  season: 2 | 3
+): 1 | 2 {
+  if (hadCorporateTier2BeforeSlot) return 1;
+  if (season === 3) {
+    if (slotIndex !== 0) return 1;
+    if (zR < SEASON3_CORPORATE_TIER2_MIN_REP_Z) return 1;
+    const headroom = logistic(2.5 * (zR - SEASON3_CORPORATE_TIER2_MIN_REP_Z));
+    const pT2 = Math.min(0.055, SEASON_CORPORATE_TIER2_BASE * headroom);
+    const u = hash01(`${seedBase}|corpT2|${slotIndex}`);
+    return u < pT2 ? 2 : 1;
+  }
+  const pT2 = Math.min(0.06, SEASON_CORPORATE_TIER2_BASE * (1 + logistic(2 * (zR - 0.1))));
+  const u = hash01(`${seedBase}|corpT2|${slotIndex}`);
+  return u < pT2 ? 2 : 1;
+}
+
+function rollNonCorporateTierForSeasonSlot(
+  season: 2 | 3,
+  seedBase: string,
+  kind: "individual" | "small_business",
+  rBlend: number,
+  vNorm: number,
+  cNorm: number,
+  hadTier2BeforeSlot: boolean,
+  slotIndex: number,
+  visibility: number,
+  reputation: number
+): ClientBudgetTier {
+  if (season === 2) {
+    let pTier = season2Tier2ProbabilityNonCorporate(kind, rBlend, vNorm, cNorm, seedBase, slotIndex);
+    pTier = season2DownweightTier2IfPriorTier2(hadTier2BeforeSlot, pTier);
+    const uTier = hash01(`${seedBase}|s2|tier|${slotIndex}`);
+    return uTier < pTier ? 2 : 1;
+  }
+  let tier = computeBudgetTierDeterministic(`${seedBase}|s3|t|${slotIndex}`, 3, visibility, reputation);
+  if (hadTier2BeforeSlot && tier >= 2) {
+    const u = hash01(`${seedBase}|s3|twd|${slotIndex}`);
+    if (u < 0.68) tier = 1;
+  }
+  return tier;
+}
+
+export type SeasonSlotClientRollArgs = {
+  seedBase: string;
+  reputation: number;
+  visibility: number;
+  entryVScore: number;
+  entryCScore: number;
+  slotIndex: number;
+  plannedClientCount: number;
+  hadCorporateBeforeSlot: boolean;
+  hadCorporateTier2BeforeSlot: boolean;
+  hadTier2BeforeSlot: boolean;
+  /** For slot index ≥ 1: whether the first client was corporate tier 1. */
+  firstClientWasCorporateTier1: boolean | undefined;
+  season: 2 | 3;
+};
+
+/**
+ * Season 2 / 3 shared slot logic: third client (3-slot season) is individual tier 1; at most one corporate
+ * tier 2 per season. Season 3: that tier-2 corporate can only appear on **slot 0** and only at high
+ * reputation ({@link SEASON3_CORPORATE_TIER2_MIN_REP_Z}). Season 2 keeps tier-2 corporate on any corporate roll
+ * until one is used. Slot 2 after first corporate tier 1 has a small chance of a second corporate tier 1,
+ * otherwise normal corporate vs SMB vs individual.
+ */
+export function rollSeasonSlotClientKindAndTier(args: SeasonSlotClientRollArgs): {
+  kind: ClientKind;
+  tier: ClientBudgetTier;
+} {
+  const {
+    seedBase,
+    reputation,
+    visibility,
+    entryVScore,
+    entryCScore,
+    slotIndex,
+    plannedClientCount,
+    hadCorporateBeforeSlot,
+    hadCorporateTier2BeforeSlot,
+    hadTier2BeforeSlot,
+    firstClientWasCorporateTier1,
+    season,
+  } = args;
+
+  const zR = reputationZScore(reputation);
+  const vNorm = Math.max(0, Math.min(1, entryVScore / 100));
+  const cNorm = Math.max(0, Math.min(1, entryCScore / 100));
+  const rBlend = reputationBlend01(reputation);
+  const sx = season === 2 ? "s2" : "s3";
+
+  if (plannedClientCount === 3 && slotIndex === 2) {
+    return { kind: "individual", tier: 1 };
+  }
+
+  if (slotIndex === 1 && firstClientWasCorporateTier1 === true) {
+    const uSecond = hash01(`${seedBase}|${sx}|corp2nd|${slotIndex}`);
+    if (uSecond < SEASON2_P_SECOND_CORPORATE_TIER1_AFTER_FIRST_CORP_T1) {
+      return { kind: "corporate", tier: 1 };
+    }
+    const pSmb = season2ProbabilitySmallBusinessGivenNotCorporate(rBlend, vNorm);
+    const uSmb = hash01(`${seedBase}|${sx}|smb|${slotIndex}`);
+    const kind: ClientKind = uSmb < pSmb ? "small_business" : "individual";
+    const tier = rollNonCorporateTierForSeasonSlot(
+      season,
+      seedBase,
+      kind,
+      rBlend,
+      vNorm,
+      cNorm,
+      hadTier2BeforeSlot,
+      slotIndex,
+      visibility,
+      reputation
+    );
+    return { kind, tier };
+  }
+
+  let pCorp = season2BaseCorporateProbability(zR);
+  pCorp = season2AdjustCorporateAfterPrior(pCorp, reputation, hadCorporateBeforeSlot);
+
+  const uKind = hash01(`${seedBase}|${sx}|kind|${slotIndex}`);
+  if (uKind < pCorp) {
+    const ct = rollCorporateBudgetTier(seedBase, slotIndex, zR, hadCorporateTier2BeforeSlot, season);
+    return { kind: "corporate", tier: ct };
+  }
+
+  const pSmb = season2ProbabilitySmallBusinessGivenNotCorporate(rBlend, vNorm);
+  const uSmb = hash01(`${seedBase}|${sx}|smb|${slotIndex}`);
+  const kind: ClientKind = uSmb < pSmb ? "small_business" : "individual";
+  const tier = rollNonCorporateTierForSeasonSlot(
+    season,
+    seedBase,
+    kind,
+    rBlend,
+    vNorm,
+    cNorm,
+    hadTier2BeforeSlot,
+    slotIndex,
+    visibility,
+    reputation
+  );
+  return { kind, tier };
+}
+
 export type Season2ClientRollArgs = {
   seedBase: string;
   reputation: number;
+  visibility: number;
   entryVScore: number;
   entryCScore: number;
   slotIndex: number;
   plannedClientCount: number;
   hadCorporateBeforeSlot: boolean;
   hadTier2BeforeSlot: boolean;
+  hadCorporateTier2BeforeSlot: boolean;
+  firstClientWasCorporateTier1: boolean | undefined;
 };
 
-/**
- * Season 2 client type + budget tier: logistic corporate odds, SMB vs individual, tier 2 for non-corporate,
- * slot 3 forced individual tier 1, no corporate tier 2.
- */
+export type Season3ClientRollArgs = Season2ClientRollArgs;
+
 export function season2RollClientKindAndTier(args: Season2ClientRollArgs): { kind: ClientKind; tier: 1 | 2 } {
-  const { seedBase, reputation, entryVScore, entryCScore, slotIndex, plannedClientCount } = args;
-  const zR = reputationZScore(reputation);
-  const vNorm = Math.max(0, Math.min(1, entryVScore / 100));
-  const cNorm = Math.max(0, Math.min(1, entryCScore / 100));
-  const rBlend = reputationBlend01(reputation);
+  const r = rollSeasonSlotClientKindAndTier({ ...args, season: 2 });
+  return { kind: r.kind, tier: r.tier as 1 | 2 };
+}
 
-  if (plannedClientCount === 3 && slotIndex === 2) {
-    return { kind: "individual", tier: 1 };
-  }
-
-  let pCorp = season2BaseCorporateProbability(zR);
-  pCorp = season2AdjustCorporateAfterPrior(pCorp, reputation, args.hadCorporateBeforeSlot);
-
-  const uKind = hash01(`${seedBase}|s2|kind|${slotIndex}`);
-  if (uKind < pCorp) {
-    return { kind: "corporate", tier: 1 };
-  }
-
-  const pSmb = season2ProbabilitySmallBusinessGivenNotCorporate(rBlend, vNorm);
-  const uSmb = hash01(`${seedBase}|s2|smb|${slotIndex}`);
-  const kind: ClientKind = uSmb < pSmb ? "small_business" : "individual";
-
-  let pTier = season2Tier2ProbabilityNonCorporate(kind, rBlend, vNorm, cNorm, seedBase, slotIndex);
-  pTier = season2DownweightTier2IfPriorTier2(args.hadTier2BeforeSlot, pTier);
-
-  const uTier = hash01(`${seedBase}|s2|tier|${slotIndex}`);
-  const tier: 1 | 2 = uTier < pTier ? 2 : 1;
-  return { kind, tier };
+export function season3RollClientKindAndTier(args: Season3ClientRollArgs): { kind: ClientKind; tier: ClientBudgetTier } {
+  return rollSeasonSlotClientKindAndTier({ ...args, season: 3 });
 }
 
 /**
@@ -300,7 +463,7 @@ export function season2RollClientKindAndTier(args: Season2ClientRollArgs): { kin
  */
 export function rollSeason2ClientBudget(
   kind: ClientKind,
-  tier: 1 | 2,
+  tier: ClientBudgetTier,
   seed: string,
   slotIndex: number,
   entryVScore: number
@@ -317,6 +480,22 @@ export function rollSeason2ClientBudget(
   return total;
 }
 
+/** Season 3 slot budgets: same shape as Season 2 roll; no tier-1 individual boost. */
+export function rollSeason3ClientBudget(
+  kind: ClientKind,
+  tier: ClientBudgetTier,
+  seed: string,
+  slotIndex: number,
+  entryVScore: number
+): number {
+  const { min, max } = CLIENT_BUDGET_TIER_RANGES[kind][tier];
+  const vNorm = Math.max(0, Math.min(1, entryVScore / 100));
+  const u = hash01(`${seed}|s3|bud|${slotIndex}`);
+  const frac = clamp01(0.72 * vNorm + 0.28 * u);
+  let total = min + frac * (max - min);
+  return Math.round(total / 1000) * 1000;
+}
+
 /**
  * Resolve entry V/C scores for Season 2 rolls when `seasonEntryScoresBySeason` is missing.
  */
@@ -330,13 +509,32 @@ export function season2EntryScoresFromRawStats(visibility: number, competence: n
   };
 }
 
+/** Season 3 entry V/C when `seasonEntryScoresBySeason` is missing (same z→score shape; Season 3 μ/σ). */
+export function season3EntryScoresFromRawStats(visibility: number, competence: number): {
+  vScore: number;
+  cScore: number;
+} {
+  return {
+    vScore: benchmarkRawVisibilityToScoreSeason3(visibility),
+    cScore: benchmarkRawCompetenceToScoreSeason3(competence),
+  };
+}
+
 /**
  * Reference distribution for Season 2+ V_score (third-client probability).
- * Proxies from `cv-season2-entry-grid.json` `gridAll1200`: median raw vis 88 → P50 score; Q3 raw 108 → P75 score
+ * Proxies from prior grid calibration (median raw vis 88 → P50 score; Q3 raw 108 → P75 score)
  * under benchmark normalization (μ=81, σ = {@link SEASON2_BENCHMARK_VISIBILITY_STD}).
  */
 export const SEASON2_REFERENCE_V_SCORE_P50 = 50 + (10 * (88 - 81)) / SEASON2_BENCHMARK_VISIBILITY_STD;
 export const SEASON2_REFERENCE_V_SCORE_P75 = 50 + (10 * (108 - 81)) / SEASON2_BENCHMARK_VISIBILITY_STD;
+
+/**
+ * Same raw visibility anchors as Season 2 (88 / 108), mapped through Season 3 V_score benchmark only.
+ */
+export const SEASON3_REFERENCE_V_SCORE_P50 =
+  50 + (10 * (88 - SEASON3_BENCHMARK_VISIBILITY_MEAN)) / SEASON3_BENCHMARK_VISIBILITY_STD;
+export const SEASON3_REFERENCE_V_SCORE_P75 =
+  50 + (10 * (108 - SEASON3_BENCHMARK_VISIBILITY_MEAN)) / SEASON3_BENCHMARK_VISIBILITY_STD;
 
 /** Mid-game visibility anchor (~60): target ~30% chance of a third client in season 1. */
 const SEASON1_P3_VIS_MID = 60;
@@ -376,12 +574,19 @@ export function season2PlusThirdClientProbabilityFromVScore(vScore: number): num
   return 0.25;
 }
 
+/** Season 3 entry V_score bands for third-client probability (same breakpoints as Season 2; different refs). */
+export function season3PlusThirdClientProbabilityFromVScore(vScore: number): number {
+  if (vScore >= SEASON3_REFERENCE_V_SCORE_P75) return 0.8;
+  if (vScore >= SEASON3_REFERENCE_V_SCORE_P50) return 0.5;
+  return 0.25;
+}
+
 /**
  * How many clients appear in a season.
  * Season 1: 2 or 3; third slot is probabilistic from **raw visibility** (see {@link season1ThirdClientProbability}).
- * Season 2+: always 2 or 3; third slot is probabilistic from **entry V_score** vs reference curve (see
- * {@link season2PlusThirdClientProbabilityFromVScore}). Pass `entryVScore` from {@link seasonEntryScoresBySeason}
- * when available; otherwise pass `undefined` to derive from current visibility (Season 2 knots).
+ * Season 2: third slot from **entry V_score** vs Season 2 reference curve.
+ * Season 3+: same probability shape vs **Season 3** V_score reference curve.
+ * Pass `entryVScore` from {@link seasonEntryScoresBySeason} when available.
  */
 export function plannedClientCountForSeason(
   season: number,
@@ -394,11 +599,20 @@ export function plannedClientCountForSeason(
     const u = hash01(`${seed}|season1|slots`);
     return u < p3 ? 3 : 2;
   }
+  if (season === 2) {
+    const v =
+      entryVScore !== undefined && Number.isFinite(entryVScore)
+        ? entryVScore
+        : visibilityScoreForVarianceSeason2(visibility);
+    const p3 = season2PlusThirdClientProbabilityFromVScore(v);
+    const u = hash01(`${seed}|s${season}|slots`);
+    return u < p3 ? 3 : 2;
+  }
   const v =
     entryVScore !== undefined && Number.isFinite(entryVScore)
       ? entryVScore
-      : visibilityScoreForVarianceSeason2(visibility);
-  const p3 = season2PlusThirdClientProbabilityFromVScore(v);
+      : visibilityScoreForVarianceSeason3(visibility);
+  const p3 = season3PlusThirdClientProbabilityFromVScore(v);
   const u = hash01(`${seed}|s${season}|slots`);
   return u < p3 ? 3 : 2;
 }

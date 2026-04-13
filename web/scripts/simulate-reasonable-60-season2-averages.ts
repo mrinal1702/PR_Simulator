@@ -1,27 +1,18 @@
 /**
- * Runs a two-season simulation matrix for every build/spouse combination.
+ * 60-game benchmark using a reasonable multi-KPI strategy:
+ * - 3 builds x 4 spouses x 5 runs each = 60
+ * - Plays through end of Season 2 post-season
+ * - Stops before entering pre-season 3 ("shopping center")
  *
- * Matrix:
- * - 3 builds
- * - 4 spouses
- * - 20 runs per combination
- *
- * Strategy policy:
- * - Uses the baseline KPI framework in `strategies/test-bot-kpi-framework.json`
- * - Applies a small per-run weight perturbation to one KPI
- * - Plays two full seasons, including:
- *   - pre-season focus
- *   - hiring
- *   - mandatory layoffs if liquidity goes negative
- *   - season client selection
- *   - post-season choices
- *   - season 2 carryover resolution
- *
- * Output:
- * - writes JSON to `scripts/results/two-season-build-spouse-kpi-matrix.json`
+ * Reports overall averages for:
+ * - operating profit (end of Season 2 flashcard definition)
+ * - profit margin %
+ * - reputation gain vs start
+ * - average solution reach/effectiveness/satisfaction
+ * - plus a few supporting KPIs
  *
  * Run:
- * npx tsx --tsconfig tsconfig.json scripts/simulate-build-spouse-kpi-matrix.ts
+ * npx tsx --tsconfig tsconfig.json scripts/simulate-reasonable-60-season2-averages.ts
  */
 
 import fs from "node:fs";
@@ -32,6 +23,7 @@ import type { NewGamePayload } from "../components/NewGameWizard";
 import { auditAgencyCoreStatTallies } from "../lib/agencyStatAudit";
 import { fireEmployeeForPayrollShortfall } from "../lib/employeeActions";
 import { plannedClientCountForSeason } from "../lib/clientEconomyMath";
+import { computeAgencyProfitFlashcardEndOfSeason2 } from "../lib/seasonFinancials";
 import {
   applySpouseAtStart,
   STARTING_BUILD_STATS,
@@ -105,60 +97,39 @@ type FinalRunMetrics = {
   build: BuildId;
   spouse: SpouseType;
   runIndex: number;
+  operatingProfitEur: number;
+  profitMarginPct: number;
+  reputationGain: number;
+  avgSolutionReach: number;
+  avgSolutionEffectiveness: number;
+  avgSolutionSatisfaction: number;
+  resolvedOutcomesCount: number;
   rawCompetence: number;
   rawVisibility: number;
   reputation: number;
-  clientSatisfaction: number;
   cashEur: number;
   liquidityEur: number;
 };
 
-type ComboReport = {
-  build: BuildId;
-  spouse: SpouseType;
-  runs: number;
-  rawCompetence: MetricSummary;
-  rawVisibility: MetricSummary;
-  reputation: MetricSummary;
-  clientSatisfaction: MetricSummary;
-  cashEur: MetricSummary;
-  liquidityEur: MetricSummary;
-};
-
-const RUNS_PER_COMBO = 20;
+const RUNS_PER_COMBO = 5;
 const BUILDS: BuildId[] = ["velvet_rolodex", "summa_cum_basement", "portfolio_pivot"];
 const SPOUSES: SpouseType[] = ["supportive", "influential", "rich", "none"];
 const FOCUS_OPTIONS: PreseasonFocusId[] = ["strategy_workshop", "network"];
-const RESULTS_FILE = "two-season-build-spouse-kpi-matrix.json";
+const RESULTS_FILE = "reasonable-60-season2-averages.json";
 
 function main() {
   const framework = loadKpiFramework();
-  const reports: ComboReport[] = [];
   const allFinals: FinalRunMetrics[] = [];
 
   for (const build of BUILDS) {
     for (const spouse of SPOUSES) {
-      const finals: FinalRunMetrics[] = [];
       for (let runIndex = 0; runIndex < RUNS_PER_COMBO; runIndex += 1) {
         const seedLabel = `${build}|${spouse}|${runIndex}`;
         const variant = buildVariantWeights(framework.baseline, framework.boostMin, framework.boostMax, seedLabel);
         const finalSave = runFullTwoSeasonSimulation(build, spouse, runIndex, variant.weights);
         const metrics = collectFinalMetrics(finalSave, build, spouse, runIndex);
-        finals.push(metrics);
         allFinals.push(metrics);
       }
-
-      reports.push({
-        build,
-        spouse,
-        runs: finals.length,
-        rawCompetence: summarize(finals.map((m) => m.rawCompetence)),
-        rawVisibility: summarize(finals.map((m) => m.rawVisibility)),
-        reputation: summarize(finals.map((m) => m.reputation)),
-        clientSatisfaction: summarize(finals.map((m) => m.clientSatisfaction)),
-        cashEur: summarize(finals.map((m) => m.cashEur)),
-        liquidityEur: summarize(finals.map((m) => m.liquidityEur)),
-      });
     }
   }
 
@@ -167,21 +138,25 @@ function main() {
       runsPerCombo: RUNS_PER_COMBO,
       combinations: BUILDS.length * SPOUSES.length,
       totalRuns: RUNS_PER_COMBO * BUILDS.length * SPOUSES.length,
-      seasonsCompletedPerRun: 2,
       strategyFrameworkRef: "scripts/strategies/test-bot-kpi-framework.json",
+      checkpoint: "End of Season 2 post-season; before entering pre-season 3",
       notes: [
-        "Per run, one KPI is slightly boosted and the remaining KPIs are reduced proportionally so total weight stays at 1.0.",
-        "Client satisfaction is reported as the cumulative mean across all completed client interactions by the end of Season 2, including Season 1 outcomes, Season 2 carryover resolutions, and Season 2 fresh-scenario outcomes.",
-        "Raw competence, raw visibility, and reputation are the final agency values after Season 2 post-season completion.",
-        "Cash EUR and liquidity EUR are measured on the final Season 2 post-season save state before entering pre-season 3.",
+        "Reasonable strategy with per-run small KPI perturbation.",
+        "Averages include all 60 runs combined.",
+        "Solution metrics aggregate accepted fresh outcomes (S1+S2) plus resolved Season 2 carryovers.",
       ],
     },
-    byCombination: reports,
-    overall: {
+    averagesOverall: {
+      operatingProfitEur: summarize(allFinals.map((m) => m.operatingProfitEur)),
+      profitMarginPct: summarize(allFinals.map((m) => m.profitMarginPct)),
+      reputationGain: summarize(allFinals.map((m) => m.reputationGain)),
+      avgSolutionReach: summarize(allFinals.map((m) => m.avgSolutionReach)),
+      avgSolutionEffectiveness: summarize(allFinals.map((m) => m.avgSolutionEffectiveness)),
+      avgSolutionSatisfaction: summarize(allFinals.map((m) => m.avgSolutionSatisfaction)),
+      resolvedOutcomesCount: summarize(allFinals.map((m) => m.resolvedOutcomesCount)),
       rawCompetence: summarize(allFinals.map((m) => m.rawCompetence)),
       rawVisibility: summarize(allFinals.map((m) => m.rawVisibility)),
       reputation: summarize(allFinals.map((m) => m.reputation)),
-      clientSatisfaction: summarize(allFinals.map((m) => m.clientSatisfaction)),
       cashEur: summarize(allFinals.map((m) => m.cashEur)),
       liquidityEur: summarize(allFinals.map((m) => m.liquidityEur)),
     },
@@ -193,14 +168,16 @@ function main() {
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`, "utf8");
 
-  console.log(`Saved ${reports.length} combination reports to ${outPath}`);
-  for (const report of reports) {
-    console.log(`${report.build} / ${report.spouse} (${report.runs} runs)`);
-    console.log(`  competence mean=${report.rawCompetence.mean.toFixed(2)} median=${report.rawCompetence.median.toFixed(2)}`);
-    console.log(`  visibility mean=${report.rawVisibility.mean.toFixed(2)} median=${report.rawVisibility.median.toFixed(2)}`);
-    console.log(`  reputation mean=${report.reputation.mean.toFixed(2)} median=${report.reputation.median.toFixed(2)}`);
-    console.log(`  satisfaction mean=${report.clientSatisfaction.mean.toFixed(2)} median=${report.clientSatisfaction.median.toFixed(2)}`);
-  }
+  const overall = output.averagesOverall;
+  console.log(`Saved 60-run report to ${outPath}`);
+  console.log("");
+  console.log(`Games played: ${allFinals.length}`);
+  console.log(`Average operating profit EUR: ${overall.operatingProfitEur.mean.toFixed(2)}`);
+  console.log(`Average profit margin %: ${overall.profitMarginPct.mean.toFixed(2)}`);
+  console.log(`Average reputation gain: ${overall.reputationGain.mean.toFixed(2)}`);
+  console.log(`Average solution reach: ${overall.avgSolutionReach.mean.toFixed(2)}`);
+  console.log(`Average solution effectiveness: ${overall.avgSolutionEffectiveness.mean.toFixed(2)}`);
+  console.log(`Average solution satisfaction: ${overall.avgSolutionSatisfaction.mean.toFixed(2)}`);
 }
 
 function loadKpiFramework(): { baseline: KpiWeights; boostMin: number; boostMax: number } {
@@ -432,7 +409,7 @@ function chooseBestHireOption(
   const liquidity = liquidityEur(save);
   const excludedNames = new Set<string>([
     ...(save.talentBazaarBannedNames ?? []),
-    ...((save.employees ?? []).map((employee) => employee.name)),
+    ...(save.employees ?? []).map((employee) => employee.name),
   ]);
 
   let bestSave: NewGamePayload | null = null;
@@ -448,7 +425,6 @@ function chooseBestHireOption(
       reputation: save.reputation ?? STARTING_REPUTATION,
       visibility: save.resources.visibility,
       excludedNames: [...excludedNames],
-      save,
     });
     for (const candidate of candidates) {
       const trial = finalizeHire(save, String(season), "intern", "campaign_manager", "intern", 10_000, candidate);
@@ -470,19 +446,10 @@ function chooseBestHireOption(
       reputation: save.reputation ?? STARTING_REPUTATION,
       visibility: save.resources.visibility,
       excludedNames: [...excludedNames],
-      save,
     });
 
     for (const candidate of candidates) {
-      const trial = finalizeHire(
-        save,
-        String(season),
-        "full_time",
-        option.role,
-        option.tier,
-        option.salary,
-        candidate
-      );
+      const trial = finalizeHire(save, String(season), "full_time", option.role, option.tier, option.salary, candidate);
       const delta = stateScore(trial, weights) - currentScore;
       if (delta > bestDelta) {
         bestDelta = delta;
@@ -691,12 +658,7 @@ function chooseBestSeasonPlan(
 
     for (const option of executableByClient[index]!) {
       if (!canAffordSolution(option, liquid, cap)) continue;
-      dfs(
-        index + 1,
-        eur + client.budgetSeason1 - option.costBudget,
-        cap - option.costCapacity,
-        [...picks, option]
-      );
+      dfs(index + 1, eur + client.budgetSeason1 - option.costBudget, cap - option.costCapacity, [...picks, option]);
     }
   };
 
@@ -956,33 +918,64 @@ function collectFinalMetrics(
   spouse: SpouseType,
   runIndex: number
 ): FinalRunMetrics {
+  const profit = computeAgencyProfitFlashcardEndOfSeason2(save);
+  const interactions = collectInteractionAverages(save);
   return {
     build,
     spouse,
     runIndex,
+    operatingProfitEur: profit.profit,
+    profitMarginPct: profit.profitMarginPct ?? 0,
+    reputationGain: (save.reputation ?? STARTING_REPUTATION) - STARTING_REPUTATION,
+    avgSolutionReach: interactions.avgReach,
+    avgSolutionEffectiveness: interactions.avgEffectiveness,
+    avgSolutionSatisfaction: interactions.avgSatisfaction,
+    resolvedOutcomesCount: interactions.count,
     rawCompetence: save.resources.competence,
     rawVisibility: save.resources.visibility,
     reputation: save.reputation ?? STARTING_REPUTATION,
-    clientSatisfaction: cumulativeAverageSatisfaction(save),
     cashEur: save.resources.eur,
     liquidityEur: liquidityEur(save),
   };
 }
 
-function cumulativeAverageSatisfaction(save: NewGamePayload): number {
-  const values: number[] = [];
+function collectInteractionAverages(save: NewGamePayload): {
+  count: number;
+  avgReach: number;
+  avgEffectiveness: number;
+  avgSatisfaction: number;
+} {
+  let count = 0;
+  let reach = 0;
+  let effectiveness = 0;
+  let satisfaction = 0;
+
   for (const loop of Object.values(save.seasonLoopBySeason ?? {})) {
     for (const run of loop?.runs ?? []) {
       if (run.accepted && run.solutionId !== "reject" && run.outcome) {
-        values.push(run.outcome.satisfaction);
+        count += 1;
+        reach += run.outcome.messageSpread;
+        effectiveness += run.outcome.messageEffectiveness;
+        satisfaction += run.outcome.satisfaction;
       }
       if (run.season2CarryoverResolution) {
-        values.push(run.season2CarryoverResolution.satisfaction);
+        count += 1;
+        reach += run.season2CarryoverResolution.messageSpread;
+        effectiveness += run.season2CarryoverResolution.messageEffectiveness;
+        satisfaction += run.season2CarryoverResolution.satisfaction;
       }
     }
   }
-  if (values.length === 0) return 0;
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
+
+  if (count === 0) {
+    return { count: 0, avgReach: 0, avgEffectiveness: 0, avgSatisfaction: 0 };
+  }
+  return {
+    count,
+    avgReach: reach / count,
+    avgEffectiveness: effectiveness / count,
+    avgSatisfaction: satisfaction / count,
+  };
 }
 
 function clientInteractionScore(
@@ -1068,8 +1061,7 @@ function maxExecutionsPossible(
 function summarize(values: number[]): MetricSummary {
   const sorted = [...values].sort((a, b) => a - b);
   const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
-  const variance =
-    values.length <= 1 ? 0 : values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / values.length;
+  const variance = values.length <= 1 ? 0 : values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / values.length;
   return {
     min: sorted[0]!,
     q1: percentile(sorted, 0.25),

@@ -1,10 +1,14 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { getEffectiveCompetenceForAgency, getEffectiveVisibilityForAgency } from "@/lib/agencyStatsEffective";
+import { benchmarkRawReputationToScoreSeason3 } from "@/lib/benchmarkSeason3Scores";
+import { clampToScale, METRIC_SCALES } from "@/lib/metricScales";
 import {
   competenceScoreForVariance,
   competenceScoreForVarianceSeason2,
+  competenceScoreForVarianceSeason3,
   visibilityScoreForVariance,
   visibilityScoreForVarianceSeason2,
+  visibilityScoreForVarianceSeason3,
 } from "@/lib/solutionOutcomeMath";
 
 /** Accrued obligations (wages, severance, future line items). Amounts are positive numbers. */
@@ -111,8 +115,23 @@ export function settlePreseasonAndEnterSeason(save: NewGamePayload, seasonKey: s
   const seasonNum = Number.parseInt(seasonKey, 10);
   const vis = getEffectiveVisibilityForAgency(save);
   const comp = getEffectiveCompetenceForAgency(save);
-  const vScore = seasonNum >= 2 ? visibilityScoreForVarianceSeason2(vis) : visibilityScoreForVariance(vis);
-  const cScore = seasonNum >= 2 ? competenceScoreForVarianceSeason2(comp) : competenceScoreForVariance(comp);
+  const vScore =
+    seasonNum >= 3
+      ? visibilityScoreForVarianceSeason3(vis)
+      : seasonNum === 2
+        ? visibilityScoreForVarianceSeason2(vis)
+        : visibilityScoreForVariance(vis);
+  const cScore =
+    seasonNum >= 3
+      ? competenceScoreForVarianceSeason3(comp)
+      : seasonNum === 2
+        ? competenceScoreForVarianceSeason2(comp)
+        : competenceScoreForVariance(comp);
+  const repRaw = clampToScale(save.reputation ?? 5, METRIC_SCALES.reputation);
+  const entryScores =
+    seasonNum >= 3
+      ? { vScore, cScore, rScore: benchmarkRawReputationToScoreSeason3(repRaw) }
+      : { vScore, cScore };
 
   return {
     ...save,
@@ -127,7 +146,7 @@ export function settlePreseasonAndEnterSeason(save: NewGamePayload, seasonKey: s
     payrollPaidBySeason,
     seasonEntryScoresBySeason: {
       ...(save.seasonEntryScoresBySeason ?? {}),
-      [seasonKey]: { vScore, cScore },
+      [seasonKey]: entryScores,
     },
     preseasonSalaryNegotiationV3: undefined,
   };

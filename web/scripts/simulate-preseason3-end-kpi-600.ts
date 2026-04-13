@@ -1,27 +1,15 @@
 /**
- * Runs a two-season simulation matrix for every build/spouse combination.
+ * 600 KPI games + 2 stat-max specials. Bot uses every player affordance we model:
+ * pre-season focus + hiring each year, shopping center (all affordable purchases in pre-season 3),
+ * salary negotiations, Season 1–3 campaigns + post-season choices, carryover resolutions.
  *
- * Matrix:
- * - 3 builds
- * - 4 spouses
- * - 20 runs per combination
+ * Checkpoint: end of Season 3 post-season (before pre-season 4).
  *
- * Strategy policy:
- * - Uses the baseline KPI framework in `strategies/test-bot-kpi-framework.json`
- * - Applies a small per-run weight perturbation to one KPI
- * - Plays two full seasons, including:
- *   - pre-season focus
- *   - hiring
- *   - mandatory layoffs if liquidity goes negative
- *   - season client selection
- *   - post-season choices
- *   - season 2 carryover resolution
+ * Run (full Season 3 + post-season):
+ * npx tsx --tsconfig tsconfig.json scripts/simulate-preseason3-end-kpi-600.ts
  *
- * Output:
- * - writes JSON to `scripts/results/two-season-build-spouse-kpi-matrix.json`
- *
- * Run:
- * npx tsx --tsconfig tsconfig.json scripts/simulate-build-spouse-kpi-matrix.ts
+ * Run (Season 3 entry only — after "Go to season" / settlePreseasonAndEnterSeason('3'), no Season 3 clients):
+ * npx tsx --tsconfig tsconfig.json scripts/simulate-preseason3-end-kpi-600.ts --preseason3-entry-capacity
  */
 
 import fs from "node:fs";
@@ -51,11 +39,26 @@ import {
   type HiringTier,
 } from "../lib/hiring";
 import { METRIC_SCALES, clampToScale } from "../lib/metricScales";
+import {
+  getEffectiveCompetenceForAgency,
+  getEffectiveVisibilityForAgency,
+} from "../lib/agencyStatsEffective";
+import {
+  applyShoppingPurchase,
+  type ShoppingItemId,
+} from "../lib/shoppingCenter";
 import { settlePreseasonAndEnterSeason, liquidityEur, wageLineId, type PayableLine } from "../lib/payablesReceivables";
 import { applyPostSeasonChoice } from "../lib/postSeasonResults";
 import { getPreseasonFocusDeltaForSeason, type PreseasonFocusId } from "../lib/preseasonFocus";
 import { enterNextPreseason } from "../lib/preseasonTransition";
 import { computeSeasonCashFlow } from "../lib/seasonFinancials";
+import {
+  canAffordPayRaise,
+  hasUnresolvedSalaryNegotiationV3,
+  reconcileSalaryNegotiationWithRoster,
+  resolveSalaryAskLeft,
+  resolveSalaryAskPaid,
+} from "../lib/preseasonSalaryNegotiation";
 import {
   applySeasonCloseCarryoverStatGains,
   applySeason2CarryoverChoice,
@@ -101,89 +104,154 @@ type MetricSummary = {
   stdDev: number;
 };
 
+type Preseason3Mode = "kpi" | "maxVisibility" | "maxCompetence";
+
 type FinalRunMetrics = {
   build: BuildId;
   spouse: SpouseType;
   runIndex: number;
+  mode: Preseason3Mode;
+  /** Stored agency stats (resources). */
   rawCompetence: number;
   rawVisibility: number;
+  /** Same as in-game scoring: Tech Overhaul / Soft Launch Buzz multipliers when purchased. */
+  effectiveCompetence: number;
+  effectiveVisibility: number;
   reputation: number;
-  clientSatisfaction: number;
-  cashEur: number;
-  liquidityEur: number;
+  shoppingCenterPurchases: NewGamePayload["shoppingCenterPurchases"];
 };
 
-type ComboReport = {
-  build: BuildId;
-  spouse: SpouseType;
-  runs: number;
-  rawCompetence: MetricSummary;
-  rawVisibility: MetricSummary;
-  reputation: MetricSummary;
-  clientSatisfaction: MetricSummary;
-  cashEur: MetricSummary;
-  liquidityEur: MetricSummary;
-};
-
-const RUNS_PER_COMBO = 20;
+const RUNS_PER_COMBO = 50;
 const BUILDS: BuildId[] = ["velvet_rolodex", "summa_cum_basement", "portfolio_pivot"];
 const SPOUSES: SpouseType[] = ["supportive", "influential", "rich", "none"];
 const FOCUS_OPTIONS: PreseasonFocusId[] = ["strategy_workshop", "network"];
-const RESULTS_FILE = "two-season-build-spouse-kpi-matrix.json";
+const RESULTS_FILE = "season3-postseason-kpi-600-plus-specials.json";
+const SPECIAL_BUILD: BuildId = "portfolio_pivot";
+const SPECIAL_SPOUSE: SpouseType = "supportive";
 
-function main() {
+type CapacityEntryRun = {
+  build: BuildId;
+  spouse: SpouseType;
+  runIndex: number;
+  firmCapacity: number;
+  employeeCount: number;
+};
+
+const ENTRY_CAPACITY_RESULTS_FILE = "preseason3-entry-capacity-kpi-600.json";
+
+function mainPreseason3EntryCapacity() {
   const framework = loadKpiFramework();
-  const reports: ComboReport[] = [];
-  const allFinals: FinalRunMetrics[] = [];
+  const rows: CapacityEntryRun[] = [];
 
   for (const build of BUILDS) {
     for (const spouse of SPOUSES) {
-      const finals: FinalRunMetrics[] = [];
       for (let runIndex = 0; runIndex < RUNS_PER_COMBO; runIndex += 1) {
         const seedLabel = `${build}|${spouse}|${runIndex}`;
         const variant = buildVariantWeights(framework.baseline, framework.boostMin, framework.boostMax, seedLabel);
-        const finalSave = runFullTwoSeasonSimulation(build, spouse, runIndex, variant.weights);
-        const metrics = collectFinalMetrics(finalSave, build, spouse, runIndex);
-        finals.push(metrics);
-        allFinals.push(metrics);
+        const save = runThroughPreseason3EntryOnly(build, spouse, runIndex, variant.weights, "kpi");
+        rows.push({
+          build,
+          spouse,
+          runIndex,
+          firmCapacity: save.resources.firmCapacity,
+          employeeCount: save.employees?.length ?? 0,
+        });
       }
-
-      reports.push({
-        build,
-        spouse,
-        runs: finals.length,
-        rawCompetence: summarize(finals.map((m) => m.rawCompetence)),
-        rawVisibility: summarize(finals.map((m) => m.rawVisibility)),
-        reputation: summarize(finals.map((m) => m.reputation)),
-        clientSatisfaction: summarize(finals.map((m) => m.clientSatisfaction)),
-        cashEur: summarize(finals.map((m) => m.cashEur)),
-        liquidityEur: summarize(finals.map((m) => m.liquidityEur)),
-      });
     }
   }
+
+  const capacities = rows.map((r) => r.firmCapacity);
+  const headcounts = rows.map((r) => r.employeeCount);
 
   const output = {
     meta: {
       runsPerCombo: RUNS_PER_COMBO,
       combinations: BUILDS.length * SPOUSES.length,
-      totalRuns: RUNS_PER_COMBO * BUILDS.length * SPOUSES.length,
-      seasonsCompletedPerRun: 2,
+      totalRuns: rows.length,
       strategyFrameworkRef: "scripts/strategies/test-bot-kpi-framework.json",
+      checkpoint:
+        "Immediately after settlePreseasonAndEnterSeason('3') (same as clicking through to Season 3 week). No Season 3 clients, carryovers, or post-season.",
       notes: [
-        "Per run, one KPI is slightly boosted and the remaining KPIs are reduced proportionally so total weight stays at 1.0.",
-        "Client satisfaction is reported as the cumulative mean across all completed client interactions by the end of Season 2, including Season 1 outcomes, Season 2 carryover resolutions, and Season 2 fresh-scenario outcomes.",
-        "Raw competence, raw visibility, and reputation are the final agency values after Season 2 post-season completion.",
-        "Cash EUR and liquidity EUR are measured on the final Season 2 post-season save state before entering pre-season 3.",
+        "KPI strategy with per-run weight perturbation (same as main 600 matrix).",
+        "Shopping: all affordable pre-season 3 purchases; then salary asks, focus, hiring, layoffs.",
+        "firmCapacity is resources.firmCapacity at entry to Season 3.",
       ],
     },
-    byCombination: reports,
-    overall: {
+    aggregated: {
+      firmCapacity: summarize(capacities),
+      employeeCount: summarize(headcounts),
+    },
+    rawRuns: rows,
+  };
+
+  const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+  const outPath = path.join(scriptDir, "results", ENTRY_CAPACITY_RESULTS_FILE);
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  fs.writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+
+  console.log(`Saved pre-Season-3-entry capacity report to ${outPath}`);
+  console.log(`Runs: ${rows.length}`);
+  const fc = output.aggregated.firmCapacity;
+  const ec = output.aggregated.employeeCount;
+  console.log("");
+  console.log("firmCapacity (aggregated):");
+  console.log(
+    `  min=${fc.min} q1=${fc.q1.toFixed(2)} median=${fc.median.toFixed(2)} q3=${fc.q3.toFixed(2)} max=${fc.max} mean=${fc.mean.toFixed(2)} stdDev=${fc.stdDev.toFixed(2)}`
+  );
+  console.log("");
+  console.log("employeeCount (roster size at same checkpoint, for context):");
+  console.log(
+    `  min=${ec.min} q1=${ec.q1.toFixed(2)} median=${ec.median.toFixed(2)} q3=${ec.q3.toFixed(2)} max=${ec.max} mean=${ec.mean.toFixed(2)} stdDev=${ec.stdDev.toFixed(2)}`
+  );
+}
+
+function main() {
+  const framework = loadKpiFramework();
+  const allFinals: FinalRunMetrics[] = [];
+
+  for (const build of BUILDS) {
+    for (const spouse of SPOUSES) {
+      for (let runIndex = 0; runIndex < RUNS_PER_COMBO; runIndex += 1) {
+        const seedLabel = `${build}|${spouse}|${runIndex}`;
+        const variant = buildVariantWeights(framework.baseline, framework.boostMin, framework.boostMax, seedLabel);
+        const finalSave = runThroughSeason3PostseasonEnd(build, spouse, runIndex, variant.weights, "kpi");
+        allFinals.push(collectFinalMetrics(finalSave, build, spouse, runIndex, "kpi"));
+      }
+    }
+  }
+
+  const maxVisSave = runThroughSeason3PostseasonEnd(SPECIAL_BUILD, SPECIAL_SPOUSE, 9000, framework.baseline, "maxVisibility");
+  allFinals.push(collectFinalMetrics(maxVisSave, SPECIAL_BUILD, SPECIAL_SPOUSE, 9000, "maxVisibility"));
+
+  const maxCompSave = runThroughSeason3PostseasonEnd(SPECIAL_BUILD, SPECIAL_SPOUSE, 9001, framework.baseline, "maxCompetence");
+  allFinals.push(collectFinalMetrics(maxCompSave, SPECIAL_BUILD, SPECIAL_SPOUSE, 9001, "maxCompetence"));
+
+  const output = {
+    meta: {
+      runsPerCombo: RUNS_PER_COMBO,
+      combinations: BUILDS.length * SPOUSES.length,
+      kpiGames: RUNS_PER_COMBO * BUILDS.length * SPOUSES.length,
+      specialStatMaxGames: 2,
+      totalSampleSize: allFinals.length,
+      strategyFrameworkRef: "scripts/strategies/test-bot-kpi-framework.json",
+      checkpoint:
+        "End of Season 3 post-season (phase=postseason, seasonNumber=3). Shopping: all affordable items each run in pre-season 3 (HR, vacation, rent, tech, buzz).",
+      specialRunsNote:
+        "Two additional runs (max visibility / max competence) use baseline KPI weights for Seasons 1–2, then greedy pre-season 3 focus + hiring + salary resolution for that stat.",
+    },
+    distributionsIncludingSpecials: {
       rawCompetence: summarize(allFinals.map((m) => m.rawCompetence)),
       rawVisibility: summarize(allFinals.map((m) => m.rawVisibility)),
+      effectiveCompetence: summarize(allFinals.map((m) => m.effectiveCompetence)),
+      effectiveVisibility: summarize(allFinals.map((m) => m.effectiveVisibility)),
       reputation: summarize(allFinals.map((m) => m.reputation)),
-      clientSatisfaction: summarize(allFinals.map((m) => m.clientSatisfaction)),
-      cashEur: summarize(allFinals.map((m) => m.cashEur)),
-      liquidityEur: summarize(allFinals.map((m) => m.liquidityEur)),
+    },
+    distributionsKpi600Only: {
+      rawCompetence: summarize(allFinals.filter((m) => m.mode === "kpi").map((m) => m.rawCompetence)),
+      rawVisibility: summarize(allFinals.filter((m) => m.mode === "kpi").map((m) => m.rawVisibility)),
+      effectiveCompetence: summarize(allFinals.filter((m) => m.mode === "kpi").map((m) => m.effectiveCompetence)),
+      effectiveVisibility: summarize(allFinals.filter((m) => m.mode === "kpi").map((m) => m.effectiveVisibility)),
+      reputation: summarize(allFinals.filter((m) => m.mode === "kpi").map((m) => m.reputation)),
     },
     rawRuns: allFinals,
   };
@@ -193,13 +261,22 @@ function main() {
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, `${JSON.stringify(output, null, 2)}\n`, "utf8");
 
-  console.log(`Saved ${reports.length} combination reports to ${outPath}`);
-  for (const report of reports) {
-    console.log(`${report.build} / ${report.spouse} (${report.runs} runs)`);
-    console.log(`  competence mean=${report.rawCompetence.mean.toFixed(2)} median=${report.rawCompetence.median.toFixed(2)}`);
-    console.log(`  visibility mean=${report.rawVisibility.mean.toFixed(2)} median=${report.rawVisibility.median.toFixed(2)}`);
-    console.log(`  reputation mean=${report.reputation.mean.toFixed(2)} median=${report.reputation.median.toFixed(2)}`);
-    console.log(`  satisfaction mean=${report.clientSatisfaction.mean.toFixed(2)} median=${report.clientSatisfaction.median.toFixed(2)}`);
+  const d = output.distributionsIncludingSpecials;
+  console.log(`Saved report to ${outPath}`);
+  console.log(`Sample size (600 KPI + 2 specials): ${allFinals.length}`);
+  console.log("");
+  console.log("Including 600 KPI + 2 stat-max games — raw + effective competence/visibility, reputation:");
+  for (const label of [
+    "rawCompetence",
+    "rawVisibility",
+    "effectiveCompetence",
+    "effectiveVisibility",
+    "reputation",
+  ] as const) {
+    const s = d[label];
+    console.log(
+      `  ${label}: mean=${s.mean.toFixed(2)} sd=${s.stdDev.toFixed(2)} median=${s.median.toFixed(2)} q25=${s.q1.toFixed(2)} q75=${s.q3.toFixed(2)} min=${s.min} max=${s.max}`
+    );
   }
 }
 
@@ -289,6 +366,316 @@ function runFullTwoSeasonSimulation(
   validateFinalSeason2Save(save, seedBase);
 
   return save;
+}
+
+/** Purchase order: HR upgrades before pre-season 3 hiring; then personal vacation; then agency upgrades. */
+function shoppingItemsForSave(save: NewGamePayload): ShoppingItemId[] {
+  const items: ShoppingItemId[] = [
+    "hr_skills_test",
+    "hr_reference_checks",
+    save.spouseType === "none" ? "vacation_solo" : "vacation_with_spouse",
+    "rent_office",
+    "tech_overhaul",
+    "soft_launch_buzz",
+  ];
+  return items;
+}
+
+/** Buy every shopping item the save can afford, repeating until a full pass makes no purchase. */
+function applyAllShoppingPurchases(save: NewGamePayload): NewGamePayload {
+  let next = save;
+  let progress = true;
+  while (progress) {
+    progress = false;
+    for (const id of shoppingItemsForSave(next)) {
+      const res = applyShoppingPurchase(next, id);
+      if (res.ok) {
+        next = res.save;
+        progress = true;
+      }
+    }
+  }
+  return next;
+}
+
+/**
+ * Pre-season 3 complete, then the same transition as the UI "start season" / enter Season 3 week.
+ * Stops with phase=season, seasonNumber=3 — no carryover resolution, no Season 3 client queue execution.
+ */
+function runThroughPreseason3EntryOnly(
+  build: BuildId,
+  spouse: SpouseType,
+  runIndex: number,
+  weights: KpiWeights,
+  mode: Preseason3Mode
+): NewGamePayload {
+  let save = runFullTwoSeasonSimulation(build, spouse, runIndex, weights);
+  save = enterNextPreseason(save, 2);
+  const createdAt = save.createdAt ?? new Date().toISOString();
+  const seedBase = `${createdAt}|${build}|${spouse}|${runIndex}`;
+
+  save = applyAllShoppingPurchases(save);
+  save = resolveSalaryNegotiationsV3(save, mode, weights);
+  save = playPreseason3(save, mode, weights, `${seedBase}|pre3`);
+
+  return settlePreseasonAndEnterSeason(save, "3");
+}
+
+function runThroughSeason3PostseasonEnd(
+  build: BuildId,
+  spouse: SpouseType,
+  runIndex: number,
+  weights: KpiWeights,
+  mode: Preseason3Mode
+): NewGamePayload {
+  let save = runFullTwoSeasonSimulation(build, spouse, runIndex, weights);
+  save = enterNextPreseason(save, 2);
+  const createdAt = save.createdAt ?? new Date().toISOString();
+  const seedBase = `${createdAt}|${build}|${spouse}|${runIndex}`;
+
+  save = applyAllShoppingPurchases(save);
+  save = resolveSalaryNegotiationsV3(save, mode, weights);
+  save = playPreseason3(save, mode, weights, `${seedBase}|pre3`);
+
+  save = settlePreseasonAndEnterSeason(save, "3");
+  save = resolveSeason3Carryovers(save, weights, `${seedBase}|carryS3`);
+  save = playSeason(save, 3, weights, `${seedBase}|s3`);
+  save = applySeasonCloseCarryoverStatGains({ ...save, phase: "postseason", seasonNumber: 3 }, 3);
+  save = playPostSeasonResults(save, 3, weights);
+  save = markSeason3ResolutionReviewComplete(save);
+  validateSeason3Cash(save, seedBase);
+
+  return save;
+}
+
+function validateSeason3Cash(save: NewGamePayload, seedBase: string): void {
+  const cashFlow = computeSeasonCashFlow(save, "3");
+  if (Math.abs(cashFlow.reconciliationGap) > 1) {
+    throw new Error(
+      `Season 3 cash reconciliation gap exceeded tolerance for ${seedBase}: ${cashFlow.reconciliationGap.toFixed(2)}`
+    );
+  }
+}
+
+function resolveSeason3Carryovers(save: NewGamePayload, weights: KpiWeights, seedBase: string): NewGamePayload {
+  let next = save;
+  const entries = getSeasonCarryoverEntries(next, 3);
+
+  for (let index = 0; index < entries.length; index += 1) {
+    const entry = entries[index]!;
+    const options = buildCarryoverSolutionOptionsForClient(entry.client, 3);
+    let bestSave: NewGamePayload | null = null;
+    let bestScore = -Infinity;
+
+    for (const option of options) {
+      const trial = applySeason2CarryoverChoice(
+        structuredClone(next),
+        3,
+        entry.client.id,
+        option,
+        `${seedBase}|${entry.client.id}|${option.id}|${index}`
+      );
+      if (!trial) continue;
+
+      const resolution = trial.seasonLoopBySeason?.["2"]?.runs.find((run) => run.clientId === entry.client.id)
+        ?.season2CarryoverResolution;
+      if (!resolution) continue;
+
+      const score =
+        stateScore(trial, weights) -
+        stateScore(next, weights) +
+        clientInteractionScore(
+          resolution.satisfaction,
+          resolution.messageSpread,
+          resolution.messageEffectiveness,
+          weights
+        );
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestSave = trial;
+      }
+    }
+
+    if (bestSave) next = bestSave;
+  }
+
+  return next;
+}
+
+function markSeason3ResolutionReviewComplete(save: NewGamePayload): NewGamePayload {
+  const count = getPostSeasonResolutionEntries(save, 3).length;
+  return {
+    ...save,
+    postSeasonResolutionProgressBySeason: {
+      ...(save.postSeasonResolutionProgressBySeason ?? {}),
+      ["3"]: count,
+    },
+  };
+}
+
+function resolveSalaryNegotiationsV3(save: NewGamePayload, mode: Preseason3Mode, weights: KpiWeights): NewGamePayload {
+  let next = reconcileSalaryNegotiationWithRoster(save);
+  while (hasUnresolvedSalaryNegotiationV3(next)) {
+    const v = next.preseasonSalaryNegotiationV3;
+    if (!v || v.seasonKey !== "3") break;
+    const ask = v.asks.find((a) => !v.resolved[a.employeeId]);
+    if (!ask) break;
+
+    const paidTrial = canAffordPayRaise(next, ask.raiseEur)
+      ? resolveSalaryAskPaid(next, ask.employeeId, ask.raiseEur)
+      : null;
+    const leaveResult = fireEmployeeForPayrollShortfall(next, ask.employeeId);
+    const leftTrial =
+      leaveResult.ok ? resolveSalaryAskLeft(leaveResult.save, ask.employeeId) : null;
+
+    if (paidTrial && leftTrial) {
+      if (mode === "kpi") {
+        const sPaid = stateScore(paidTrial, weights);
+        const sLeft = stateScore(leftTrial, weights);
+        next = sPaid >= sLeft ? paidTrial : leftTrial;
+      } else if (mode === "maxVisibility") {
+        next =
+          paidTrial.resources.visibility >= leftTrial.resources.visibility ? paidTrial : leftTrial;
+      } else {
+        next =
+          paidTrial.resources.competence >= leftTrial.resources.competence ? paidTrial : leftTrial;
+      }
+    } else if (paidTrial) {
+      next = paidTrial;
+    } else if (leftTrial) {
+      next = leftTrial;
+    } else {
+      break;
+    }
+  }
+  return next;
+}
+
+function playPreseason3(
+  save: NewGamePayload,
+  mode: Preseason3Mode,
+  weights: KpiWeights,
+  seedBase: string
+): NewGamePayload {
+  if (mode === "kpi") {
+    let next = chooseBestPreseasonFocus(save, 3, weights);
+    next = applyBestHiring(next, 3, weights, `${seedBase}|hire`);
+    next = resolveMandatoryLayoffs(next, weights);
+    return next;
+  }
+  if (mode === "maxVisibility") {
+    let next = applyPreseasonFocus(save, 3, "network");
+    next = applyBestHiringMaxStat(next, 3, "visibility", `${seedBase}|hire`);
+    next = resolveMandatoryLayoffsMaxStat(next, "visibility");
+    return next;
+  }
+  let next = applyPreseasonFocus(save, 3, "strategy_workshop");
+  next = applyBestHiringMaxStat(next, 3, "competence", `${seedBase}|hire`);
+  next = resolveMandatoryLayoffsMaxStat(next, "competence");
+  return next;
+}
+
+function applyBestHiringMaxStat(
+  save: NewGamePayload,
+  season: number,
+  stat: "visibility" | "competence",
+  seedBase: string
+): NewGamePayload {
+  let next = save;
+  const seasonKey = String(season);
+  const cap = getHireCapForSeason(season);
+
+  while ((next.hiresBySeason?.[seasonKey] ?? 0) < cap) {
+    const liquidity = liquidityEur(next);
+    const excludedNames = new Set<string>([
+      ...(next.talentBazaarBannedNames ?? []),
+      ...(next.employees ?? []).map((employee) => employee.name),
+    ]);
+
+    let bestSave: NewGamePayload | null = null;
+    let bestDelta = -Infinity;
+
+    if (liquidity >= 10_000) {
+      const candidates = generateCandidates({
+        seedBase: `${seedBase}|s${season}|intern`,
+        season,
+        role: "campaign_manager",
+        tier: "intern",
+        salary: 10_000,
+        reputation: next.reputation ?? STARTING_REPUTATION,
+        visibility: next.resources.visibility,
+        excludedNames: [...excludedNames],
+        save: next,
+      });
+      for (const candidate of candidates) {
+        const trial = finalizeHire(next, seasonKey, "intern", "campaign_manager", "intern", 10_000, candidate);
+        const delta =
+          stat === "visibility"
+            ? trial.resources.visibility - next.resources.visibility
+            : trial.resources.competence - next.resources.competence;
+        if (delta > bestDelta) {
+          bestDelta = delta;
+          bestSave = trial;
+        }
+      }
+    }
+
+    for (const option of listAffordableFullTimeByLiquidity(liquidity)) {
+      const candidates = generateCandidates({
+        seedBase: `${seedBase}|s${season}|${option.role}|${option.tier}|${option.salary}`,
+        season,
+        role: option.role,
+        tier: option.tier,
+        salary: option.salary,
+        reputation: next.reputation ?? STARTING_REPUTATION,
+        visibility: next.resources.visibility,
+        excludedNames: [...excludedNames],
+        save: next,
+      });
+      for (const candidate of candidates) {
+        const trial = finalizeHire(next, seasonKey, "full_time", option.role, option.tier, option.salary, candidate);
+        const delta =
+          stat === "visibility"
+            ? trial.resources.visibility - next.resources.visibility
+            : trial.resources.competence - next.resources.competence;
+        if (delta > bestDelta) {
+          bestDelta = delta;
+          bestSave = trial;
+        }
+      }
+    }
+
+    if (!bestSave || bestDelta <= 0) break;
+    next = bestSave;
+  }
+
+  return next;
+}
+
+function resolveMandatoryLayoffsMaxStat(
+  save: NewGamePayload,
+  stat: "visibility" | "competence"
+): NewGamePayload {
+  let next = save;
+  let guard = 0;
+  while (liquidityEur(next) < 0 && (next.employees?.length ?? 0) > 0 && guard < 25) {
+    guard += 1;
+    let bestSave: NewGamePayload | null = null;
+    let bestLoss = Infinity;
+    for (const employee of next.employees ?? []) {
+      const result = fireEmployeeForPayrollShortfall(next, employee.id);
+      if (!result.ok) continue;
+      const loss = stat === "visibility" ? employee.visibilityGain : employee.competenceGain;
+      if (loss < bestLoss) {
+        bestLoss = loss;
+        bestSave = result.save;
+      }
+    }
+    if (!bestSave) break;
+    next = bestSave;
+  }
+  return next;
 }
 
 function validateFinalSeason2Save(save: NewGamePayload, seedBase: string): void {
@@ -432,7 +819,7 @@ function chooseBestHireOption(
   const liquidity = liquidityEur(save);
   const excludedNames = new Set<string>([
     ...(save.talentBazaarBannedNames ?? []),
-    ...((save.employees ?? []).map((employee) => employee.name)),
+    ...(save.employees ?? []).map((employee) => employee.name),
   ]);
 
   let bestSave: NewGamePayload | null = null;
@@ -474,15 +861,7 @@ function chooseBestHireOption(
     });
 
     for (const candidate of candidates) {
-      const trial = finalizeHire(
-        save,
-        String(season),
-        "full_time",
-        option.role,
-        option.tier,
-        option.salary,
-        candidate
-      );
+      const trial = finalizeHire(save, String(season), "full_time", option.role, option.tier, option.salary, candidate);
       const delta = stateScore(trial, weights) - currentScore;
       if (delta > bestDelta) {
         bestDelta = delta;
@@ -691,12 +1070,7 @@ function chooseBestSeasonPlan(
 
     for (const option of executableByClient[index]!) {
       if (!canAffordSolution(option, liquid, cap)) continue;
-      dfs(
-        index + 1,
-        eur + client.budgetSeason1 - option.costBudget,
-        cap - option.costCapacity,
-        [...picks, option]
-      );
+      dfs(index + 1, eur + client.budgetSeason1 - option.costBudget, cap - option.costCapacity, [...picks, option]);
     }
   };
 
@@ -954,35 +1328,21 @@ function collectFinalMetrics(
   save: NewGamePayload,
   build: BuildId,
   spouse: SpouseType,
-  runIndex: number
+  runIndex: number,
+  mode: Preseason3Mode
 ): FinalRunMetrics {
   return {
     build,
     spouse,
     runIndex,
+    mode,
     rawCompetence: save.resources.competence,
     rawVisibility: save.resources.visibility,
+    effectiveCompetence: getEffectiveCompetenceForAgency(save),
+    effectiveVisibility: getEffectiveVisibilityForAgency(save),
     reputation: save.reputation ?? STARTING_REPUTATION,
-    clientSatisfaction: cumulativeAverageSatisfaction(save),
-    cashEur: save.resources.eur,
-    liquidityEur: liquidityEur(save),
+    shoppingCenterPurchases: save.shoppingCenterPurchases,
   };
-}
-
-function cumulativeAverageSatisfaction(save: NewGamePayload): number {
-  const values: number[] = [];
-  for (const loop of Object.values(save.seasonLoopBySeason ?? {})) {
-    for (const run of loop?.runs ?? []) {
-      if (run.accepted && run.solutionId !== "reject" && run.outcome) {
-        values.push(run.outcome.satisfaction);
-      }
-      if (run.season2CarryoverResolution) {
-        values.push(run.season2CarryoverResolution.satisfaction);
-      }
-    }
-  }
-  if (values.length === 0) return 0;
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
 function clientInteractionScore(
@@ -1068,8 +1428,7 @@ function maxExecutionsPossible(
 function summarize(values: number[]): MetricSummary {
   const sorted = [...values].sort((a, b) => a - b);
   const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
-  const variance =
-    values.length <= 1 ? 0 : values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / values.length;
+  const variance = values.length <= 1 ? 0 : values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / values.length;
   return {
     min: sorted[0]!,
     q1: percentile(sorted, 0.25),
@@ -1112,4 +1471,8 @@ function mulberry32(seed: number) {
   };
 }
 
-main();
+if (typeof process !== "undefined" && process.argv.includes("--preseason3-entry-capacity")) {
+  mainPreseason3EntryCapacity();
+} else {
+  main();
+}

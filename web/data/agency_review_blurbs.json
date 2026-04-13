@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "description": "Star rating review lines (0.5–5 in half-star steps) by client kind. Used for agency reputation / reviews UI. Individual lines use {agency} placeholder for the player's agency name. Client kinds align with ClientKind in web/lib/clientEconomyMath.ts (individual, small_business, corporate).",
+  "satisfaction_band_note": "Star tier is derived from satisfaction percentage bands (e.g. 0–10% → 0.5⭐, …, 91–100% → 5⭐) at integration time.",
+  "blurbs": {
+    "0.5": {
+      "individual": "{agency} somehow made things worse. Impressive, honestly.",
+      "small_business": "Paid them. Regret it. Situation deteriorated.",
+      "corporate": "Engagement failed to deliver any measurable improvement."
+    },
+    "1": {
+      "individual": "{agency} turned a bad situation into a public spectacle. Avoid.",
+      "small_business": "Little to no value delivered. Would not recommend.",
+      "corporate": "Outcomes fell significantly below expectations."
+    },
+    "1.5": {
+      "individual": "They tried. I wish they hadn’t.",
+      "small_business": "Some effort shown, but results were disappointing.",
+      "corporate": "Limited impact despite adequate resources."
+    },
+    "2": {
+      "individual": "Not a disaster, just… not good.",
+      "small_business": "Outcome was underwhelming. Expected better.",
+      "corporate": "Execution lacked consistency and effectiveness."
+    },
+    "2.5": {
+      "individual": "It helped a bit. I’m still explaining things to people.",
+      "small_business": "Some improvement, but not enough to justify the spend.",
+      "corporate": "Partial recovery achieved, though gaps remain."
+    },
+    "3": {
+      "individual": "It worked… I guess. People have mostly moved on.",
+      "small_business": "Decent outcome. Did the job, nothing more.",
+      "corporate": "Satisfactory outcome aligned with baseline expectations."
+    },
+    "3.5": {
+      "individual": "Actually helped quite a bit. I’m not mad about it.",
+      "small_business": "Good recovery overall. Would consider working with them again.",
+      "corporate": "Strong performance with clear improvement in perception."
+    },
+    "4": {
+      "individual": "They really turned it around. I look good again.",
+      "small_business": "Very solid execution. Noticeable positive impact.",
+      "corporate": "Highly effective engagement with measurable gains."
+    },
+    "4.5": {
+      "individual": "Honestly? They saved me. I owe them one.",
+      "small_business": "Excellent results. Exceeded expectations in key areas.",
+      "corporate": "Outstanding delivery with significant reputational recovery."
+    },
+    "5": {
+      "individual": "Absolute magic. I look better than before the mess.",
+      "small_business": "Exceptional outcome. Would recommend without hesitation.",
+      "corporate": "Best-in-class execution. A benchmark engagement."
+    }
+  }
+}

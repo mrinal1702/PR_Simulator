@@ -2,18 +2,23 @@ import {
   computeBudgetTierDeterministic,
   rollClientBudgetTotalInTier,
   rollSeason2ClientBudget,
+  rollSeason3ClientBudget,
   sampleClientKindDeterministic,
   season2EntryScoresFromRawStats,
+  season3EntryScoresFromRawStats,
   season2RollClientKindAndTier,
+  season3RollClientKindAndTier,
+  type ClientBudgetTier,
   type ClientKind,
 } from "@/lib/clientEconomyMath";
 import { getScenarioById, pickScenarioForClient, type ScenarioRecord } from "@/lib/scenarios";
 import {
   computeSeason1SolutionMetrics,
   computeSeason2SolutionMetrics,
+  computeSeason3SolutionMetrics,
 } from "@/lib/solutionOutcomeMath";
 
-export type { ClientKind };
+export type { ClientBudgetTier, ClientKind };
 export type ClientPreferenceMotive = "spread_first" | "effectiveness_first" | "balanced";
 
 export type ScenarioSolutionLine = {
@@ -33,7 +38,7 @@ export type SeasonClient = {
   id: string;
   displayName: string;
   clientKind: ClientKind;
-  budgetTier?: 1 | 2;
+  budgetTier?: ClientBudgetTier;
   problem: string;
   budgetTotal: number;
   budgetSeason1: number;
@@ -84,7 +89,7 @@ export type ArchetypeBasePct = {
 /**
  * Pre-variance base profile per archetype (0–100% each).
  * Final scores use 40% this + 60% variance (`computeSeason1SolutionMetrics` for Season 1,
- * `computeSeason2SolutionMetrics` for Season 2+ via `resolveClientOutcome`).
+ * `computeSeason2SolutionMetrics` / `computeSeason3SolutionMetrics` for Season 2 / 3+ via `resolveClientOutcome`).
  * Uniform random archetype → E[reach] = E[effectiveness] = 50 before variance.
  *
  * | Archetype           | Role                          |
@@ -174,8 +179,10 @@ export type SeasonLoopState = {
 /**
  * Costs are derived from this season’s allocated budget (`budgetSeason1`) and client type.
  * **Season 1:** worst 10%/30 cap, high-effectiveness 30%/45, high-reach 40%/35, best 50%/50 (legacy shares).
- * **Season 2+:** see {@link buildSolutionOptionsSeason2Plus} — EUR = % of `budgetSeason1` (current tranche only);
- * capacities are baselines × {@link SOLUTION_COST_SCALE}.capacity. Subject to change as player capacity grows.
+ * **Season 2:** see {@link buildSolutionOptionsSeason2Plus} — EUR + capacity as today.
+ * **Season 3+:** fresh EUR = tranche × archetype % × kind × tier ({@link SEASON3_FRESH_EUR_FRAC_OF_TRANCHE}), then
+ * {@link finalizeSeason3EurCosts} enforces ordering and a hard cap of {@link SEASON3_MAX_TRANCHE_SOLUTION_EUR} of tranche;
+ * rollover EUR uses {@link SEASON3_ROLLOVER_EUR_FRAC_OF_TRANCHE} with the same cap; capacity uses μ-based rules.
  */
 const SOLUTION_COST_SCALE: Record<ClientKind, { budget: number; capacity: number }> = {
   individual: { budget: 1, capacity: 1 },
@@ -231,8 +238,168 @@ export const SEASON2_PLUS_SOLUTION_PRICING: Record<
   },
 };
 
+/**
+ * Season 3+ capacity pricing: costs scale from {@link SEASON3_CAPACITY_COST_MU} (round-tunable “average capacity”).
+ * {@link SEASON3_CAPACITY_COST_SIGMA} is reserved for UI / future affordability gates.
+ */
+export const SEASON3_CAPACITY_COST_MU = 100;
+export const SEASON3_CAPACITY_COST_SIGMA = 43.13;
+
+/**
+ * No Season 3+ executable option may charge more than this share of the client’s **current** tranche
+ * ({@link SeasonClient.budgetSeason1}). Keeps every choice strictly “within budget” vs the tranche ceiling.
+ */
+export const SEASON3_MAX_TRANCHE_SOLUTION_EUR = 0.9;
+
+/** Per extra budget tier beyond 3, multiply fresh capacity by this increment on top of the tier-3 factor. */
+export const SEASON3_EXTRA_TIER_CAPACITY_DELTA = 0.08;
+
+/**
+ * Rollover (Season 3+): capacity as a fraction of μ — minimal < high reach < high effectiveness < best;
+ * kept low vs in-season so two “best” rollovers + one in-season “best” at μ≈100 matches average-firm stress test.
+ */
+export const SEASON3_ROLLOVER_CAPACITY_FRAC_OF_MU: Record<Exclude<SolutionId, "reject" | "pending">, number> = {
+  solution_1: 0.05,
+  solution_3: 0.065,
+  solution_2: 0.08,
+  solution_4: 0.15,
+};
+
+/**
+ * Fresh Season 3+ campaign: archetype fractions apply after kind × budget-tier multipliers (same EUR rules as Season 2+).
+ */
+export const SEASON3_FRESH_CAPACITY_ARCHETYPE_FRAC: Record<Exclude<SolutionId, "reject" | "pending">, number> = {
+  solution_1: 0.1,
+  /** High reach (budget-heavy): lower capacity cost than HE. */
+  solution_3: 0.182,
+  /** High effectiveness (capacity-heavy): higher capacity cost than HR — mirrors EUR ladder spacing in the middle. */
+  solution_2: 0.268,
+  solution_4: 0.4,
+};
+
+/**
+ * Base archetype shares of tranche **before** {@link SEASON3_EUR_KIND_MULT} × {@link season3BudgetTierEurMultiplier}.
+ * Archetype order: sol1 &lt; sol2 &lt; sol3 &lt; sol4 (minimal &lt; HE &lt; HR &lt; best). Tuned so corporate solution 4
+ * lands ~50% / ~70% of tranche (tier 1 vs 2) at reference multipliers; final EUR is clamped by
+ * {@link SEASON3_MAX_TRANCHE_SOLUTION_EUR}. HE vs HR fractions are spaced so capacity deltas track EUR deltas in the same ballpark.
+ */
+export const SEASON3_FRESH_EUR_FRAC_OF_TRANCHE: Record<Exclude<SolutionId, "reject" | "pending">, number> = {
+  solution_1: 0.12,
+  solution_2: 0.2,
+  solution_3: 0.32,
+  solution_4: 0.536,
+};
+
+/**
+ * Season 3+ rollover: same kind × tier shape as fresh, but smaller fractions of the rolled-forward tranche
+ * ({@link SeasonClient.budgetSeason1} on the carryover client).
+ */
+export const SEASON3_ROLLOVER_EUR_FRAC_OF_TRANCHE: Record<Exclude<SolutionId, "reject" | "pending">, number> = {
+  solution_1: 0.07,
+  solution_2: 0.116,
+  solution_3: 0.186,
+  solution_4: 0.311,
+};
+
+/** Client-kind EUR multiplier (mild vs tier): individual lowest, corporate highest. */
+export const SEASON3_EUR_KIND_MULT: Record<ClientKind, number> = {
+  individual: 1,
+  small_business: 1.03,
+  corporate: 1.06,
+};
+
+/** Per extra budget tier beyond 3, multiply EUR tier factor by this increment (same spirit as capacity). */
+export const SEASON3_EXTRA_TIER_EUR_DELTA = 0.07;
+
+function season3BudgetTierCapacityMultiplier(tier: ClientBudgetTier | undefined): number {
+  const t = tier ?? 2;
+  if (t <= 1) return 0.9;
+  if (t === 2) return 1;
+  if (t === 3) return 1.14;
+  return 1.14 + (t - 3) * SEASON3_EXTRA_TIER_CAPACITY_DELTA;
+}
+
+/**
+ * Budget-tier EUR multiplier: stronger than {@link SEASON3_EUR_KIND_MULT} so tier drives profitability more than kind.
+ * Tier 2 / tier 1 ratio ≈ 1.4 so corporate solution-4 lands ~70% vs ~50% of tranche at fixed archetype fractions.
+ */
+function season3BudgetTierEurMultiplier(tier: ClientBudgetTier | undefined): number {
+  const t = tier ?? 2;
+  if (t <= 1) return 0.88;
+  if (t === 2) return 1.232;
+  if (t === 3) return 1.38;
+  return 1.38 + (t - 3) * SEASON3_EXTRA_TIER_EUR_DELTA;
+}
+
+function season3SolutionEurFromTranche(
+  tranche: number,
+  defId: Exclude<SolutionId, "reject" | "pending">,
+  kind: ClientKind,
+  tier: ClientBudgetTier | undefined,
+  fracTable: Record<Exclude<SolutionId, "reject" | "pending">, number>
+): number {
+  const b = Math.max(0, tranche);
+  const kappa = SEASON3_EUR_KIND_MULT[kind];
+  const theta = season3BudgetTierEurMultiplier(tier);
+  const f = fracTable[defId];
+  return Math.round(b * f * kappa * theta);
+}
+
+/** After rounding, enforce sol1 &lt; sol2 &lt; sol3 &lt; sol4 in EUR (minimal, HE, HR, best order). */
+function enforceStrictIncreasingEurBySolutionOrder(eur: readonly [number, number, number, number]): [number, number, number, number] {
+  const out: [number, number, number, number] = [eur[0], eur[1], eur[2], eur[3]];
+  for (let i = 1; i < 4; i += 1) {
+    if (out[i]! <= out[i - 1]!) out[i] = out[i - 1]! + 1;
+  }
+  return out;
+}
+
+/**
+ * Caps Season 3+ EUR costs at {@link SEASON3_MAX_TRANCHE_SOLUTION_EUR} × tranche, then restores strict
+ * sol1 &lt; … &lt; sol4 ordering (may compress lower tiers when the cap is tight).
+ */
+export function finalizeSeason3EurCosts(
+  rawRounded: readonly [number, number, number, number],
+  trancheB: number
+): [number, number, number, number] {
+  const maxSpend = Math.floor(SEASON3_MAX_TRANCHE_SOLUTION_EUR * Math.max(0, trancheB));
+  if (maxSpend <= 0) return [0, 0, 0, 0];
+
+  let e = enforceStrictIncreasingEurBySolutionOrder(rawRounded);
+  for (let pass = 0; pass < 6; pass += 1) {
+    for (let i = 0; i < 4; i += 1) {
+      if (e[i]! > maxSpend) e[i] = maxSpend;
+    }
+    e = enforceStrictIncreasingEurBySolutionOrder(e);
+    let ok = e[3]! <= maxSpend;
+    for (let i = 1; i < 4; i += 1) {
+      if (e[i]! <= e[i - 1]!) ok = false;
+    }
+    if (ok) break;
+  }
+  for (let i = 3; i >= 0; i -= 1) {
+    e[i] = Math.min(e[i]!, maxSpend);
+    if (i < 3 && e[i]! >= e[i + 1]!) e[i] = Math.max(0, e[i + 1]! - 1);
+  }
+  return enforceStrictIncreasingEurBySolutionOrder(e);
+}
+
+function season3FreshSolutionCapacityForDefId(client: SeasonClient, defId: Exclude<SolutionId, "reject" | "pending">): number {
+  const mu = SEASON3_CAPACITY_COST_MU;
+  const kappa = SOLUTION_COST_SCALE[client.clientKind].capacity;
+  const theta = season3BudgetTierCapacityMultiplier(client.budgetTier);
+  const alpha = SEASON3_FRESH_CAPACITY_ARCHETYPE_FRAC[defId];
+  return Math.max(1, Math.round(mu * kappa * theta * alpha));
+}
+
+function season3RolloverSolutionCapacityForDefId(defId: Exclude<SolutionId, "reject" | "pending">): number {
+  const mu = SEASON3_CAPACITY_COST_MU;
+  const frac = SEASON3_ROLLOVER_CAPACITY_FRAC_OF_MU[defId];
+  return Math.max(1, Math.round(mu * frac));
+}
+
 type ExecutableSolutionDef = {
-  id: Exclude<SolutionId, "reject">;
+  id: Exclude<SolutionId, "reject" | "pending">;
   archetype: Exclude<SolutionArchetype, "reject">;
   title: string;
   description: string;
@@ -398,8 +565,89 @@ export function buildSolutionOptionsSeason2Plus(client: SeasonClient): SolutionO
   return [...executable, REJECT_OPTION];
 }
 
+/**
+ * Season 3+ main-campaign pricing: EUR = % of {@link SeasonClient.budgetSeason1} × kind × tier × archetype
+ * ({@link SEASON3_FRESH_EUR_FRAC_OF_TRANCHE}, {@link SEASON3_EUR_KIND_MULT}); capacity from μ-based system.
+ */
+export function buildSolutionOptionsSeason3Plus(client: SeasonClient): SolutionOption[] {
+  const b1 = Math.max(0, client.budgetSeason1);
+
+  const defFor = (archetype: ExecutableSolutionDef["archetype"]): ExecutableSolutionDef =>
+    EXECUTABLE_SOLUTION_DEFS.find((d) => d.archetype === archetype)!;
+
+  const minimalDef = defFor("minimal");
+  const heDef = defFor("high_effectiveness");
+  const hrDef = defFor("high_reach");
+  const bestDef = defFor("best");
+
+  const rawEur = [
+    season3SolutionEurFromTranche(b1, minimalDef.id, client.clientKind, client.budgetTier, SEASON3_FRESH_EUR_FRAC_OF_TRANCHE),
+    season3SolutionEurFromTranche(b1, heDef.id, client.clientKind, client.budgetTier, SEASON3_FRESH_EUR_FRAC_OF_TRANCHE),
+    season3SolutionEurFromTranche(b1, hrDef.id, client.clientKind, client.budgetTier, SEASON3_FRESH_EUR_FRAC_OF_TRANCHE),
+    season3SolutionEurFromTranche(b1, bestDef.id, client.clientKind, client.budgetTier, SEASON3_FRESH_EUR_FRAC_OF_TRANCHE),
+  ] as const;
+  const [minEur, heEur, hrEur, bestEur] = finalizeSeason3EurCosts(rawEur, b1);
+
+  const minCap = season3FreshSolutionCapacityForDefId(client, minimalDef.id);
+  const heCap = season3FreshSolutionCapacityForDefId(client, heDef.id);
+  const hrCap = season3FreshSolutionCapacityForDefId(client, hrDef.id);
+  const bestCap = season3FreshSolutionCapacityForDefId(client, bestDef.id);
+
+  const executable: SolutionOption[] = [
+    {
+      id: minimalDef.id,
+      archetype: minimalDef.archetype,
+      title: minimalDef.title,
+      description: minimalDef.description,
+      costBudget: minEur,
+      costCapacity: minCap,
+      baseSpread: minimalDef.baseSpread,
+      baseEffectiveness: minimalDef.baseEffectiveness,
+      isRejectOption: false,
+    },
+    {
+      id: heDef.id,
+      archetype: heDef.archetype,
+      title: heDef.title,
+      description: heDef.description,
+      costBudget: heEur,
+      costCapacity: heCap,
+      baseSpread: heDef.baseSpread,
+      baseEffectiveness: heDef.baseEffectiveness,
+      isRejectOption: false,
+    },
+    {
+      id: hrDef.id,
+      archetype: hrDef.archetype,
+      title: hrDef.title,
+      description: hrDef.description,
+      costBudget: hrEur,
+      costCapacity: hrCap,
+      baseSpread: hrDef.baseSpread,
+      baseEffectiveness: hrDef.baseEffectiveness,
+      isRejectOption: false,
+    },
+    {
+      id: bestDef.id,
+      archetype: bestDef.archetype,
+      title: bestDef.title,
+      description: bestDef.description,
+      costBudget: bestEur,
+      costCapacity: bestCap,
+      baseSpread: bestDef.baseSpread,
+      baseEffectiveness: bestDef.baseEffectiveness,
+      isRejectOption: false,
+    },
+  ];
+
+  return [...executable, REJECT_OPTION];
+}
+
 export function buildSolutionOptionsForClient(client: SeasonClient): SolutionOption[] {
   const season = parseSeasonNumberFromClientId(client.id);
+  if (season !== undefined && season >= 3) {
+    return buildSolutionOptionsSeason3Plus(client);
+  }
   if (season !== undefined && season >= 2) {
     return buildSolutionOptionsSeason2Plus(client);
   }
@@ -446,17 +694,60 @@ const CARRYOVER_DO_NOTHING_OPTION: SolutionOption = {
     "Take no new campaign action. Reach and effectiveness each decay by 5 percentage points from the values shown above.",
 };
 
-/** Priced options for Season 2 rollover UI / execution (scenario copy merged from client). */
-export function buildCarryoverSolutionOptionsForClient(client: SeasonClient): SolutionOption[] {
+/**
+ * Priced options for rollover UI / execution (scenario copy merged from client).
+ * Season 2: fixed EUR + capacity. Season 3+: EUR = % of rolled-forward tranche ({@link SeasonClient.budgetSeason1})
+ * × kind × tier × archetype ({@link SEASON3_ROLLOVER_EUR_FRAC_OF_TRANCHE}); capacity = μ × archetype fraction.
+ */
+export function buildCarryoverSolutionOptionsForClient(
+  client: SeasonClient,
+  /** Hub season where the player resolves this rollover (e.g. 3 when clearing Season 2 follow-ups in Season 3). */
+  carryoverResolutionSeason = 2
+): SolutionOption[] {
+  const useS3Plus = carryoverResolutionSeason >= 3;
+
+  const defFor = (archetype: ExecutableSolutionDef["archetype"]): ExecutableSolutionDef =>
+    EXECUTABLE_SOLUTION_DEFS.find((d) => d.archetype === archetype)!;
+  const minimalDef = defFor("minimal");
+  const heDef = defFor("high_effectiveness");
+  const hrDef = defFor("high_reach");
+  const bestDef = defFor("best");
+
+  if (useS3Plus) {
+    const b1 = Math.max(0, client.budgetSeason1);
+    const rawEur = [
+      season3SolutionEurFromTranche(b1, minimalDef.id, client.clientKind, client.budgetTier, SEASON3_ROLLOVER_EUR_FRAC_OF_TRANCHE),
+      season3SolutionEurFromTranche(b1, heDef.id, client.clientKind, client.budgetTier, SEASON3_ROLLOVER_EUR_FRAC_OF_TRANCHE),
+      season3SolutionEurFromTranche(b1, hrDef.id, client.clientKind, client.budgetTier, SEASON3_ROLLOVER_EUR_FRAC_OF_TRANCHE),
+      season3SolutionEurFromTranche(b1, bestDef.id, client.clientKind, client.budgetTier, SEASON3_ROLLOVER_EUR_FRAC_OF_TRANCHE),
+    ] as const;
+    const [e1, e2, e3, e4] = finalizeSeason3EurCosts(rawEur, b1);
+    const defsOrdered = [minimalDef, heDef, hrDef, bestDef] as const;
+    const eurs = [e1, e2, e3, e4] as const;
+    const executable: SolutionOption[] = defsOrdered.map((def, i) => ({
+      id: def.id,
+      archetype: def.archetype,
+      title: def.title,
+      description: def.description,
+      costBudget: eurs[i]!,
+      costCapacity: season3RolloverSolutionCapacityForDefId(def.id),
+      baseSpread: def.baseSpread,
+      baseEffectiveness: def.baseEffectiveness,
+      isRejectOption: false,
+    }));
+    const merged = mergeScenarioSolutionCopy(client, executable, "carryover");
+    return [CARRYOVER_DO_NOTHING_OPTION, ...merged];
+  }
+
   const executable: SolutionOption[] = EXECUTABLE_SOLUTION_DEFS.map((def) => {
-    const { eur, capacity } = CARRYOVER_SOLUTION_FIXED_COSTS[def.id as keyof typeof CARRYOVER_SOLUTION_FIXED_COSTS];
+    const fixed = CARRYOVER_SOLUTION_FIXED_COSTS[def.id as keyof typeof CARRYOVER_SOLUTION_FIXED_COSTS];
     return {
       id: def.id,
       archetype: def.archetype,
       title: def.title,
       description: def.description,
-      costBudget: eur,
-      costCapacity: capacity,
+      costBudget: fixed.eur,
+      costCapacity: fixed.capacity,
       baseSpread: def.baseSpread,
       baseEffectiveness: def.baseEffectiveness,
       isRejectOption: false,
@@ -599,45 +890,78 @@ export function buildSeasonClients(
 
   const rep = agency.reputation;
   const competence = agency.competence ?? 0;
+  const entryFallback =
+    season >= 3
+      ? season3EntryScoresFromRawStats(agency.visibility, competence)
+      : season2EntryScoresFromRawStats(agency.visibility, competence);
   const entryV =
     seasonEntryScores?.vScore !== undefined && Number.isFinite(seasonEntryScores.vScore)
       ? seasonEntryScores.vScore
-      : season2EntryScoresFromRawStats(agency.visibility, competence).vScore;
+      : entryFallback.vScore;
   const entryC =
     seasonEntryScores?.cScore !== undefined && Number.isFinite(seasonEntryScores.cScore)
       ? seasonEntryScores.cScore
-      : season2EntryScoresFromRawStats(agency.visibility, competence).cScore;
+      : entryFallback.cScore;
 
   let hadCorporate = false;
+  let hadCorporateTier2 = false;
   let hadTier2 = false;
+  let firstClientWasCorporateTier1: boolean | undefined;
 
   for (let i = 0; i < count; i += 1) {
     const h = hashNumber(`${seedBase}-season-${season}-client-${i}`);
     const kindSeed = `${seedBase}|s${season}|c${i}|${rep}|${agency.visibility}`;
     let kind: ClientKind;
-    let tier: 1 | 2;
+    let tier: ClientBudgetTier;
     let total: number;
 
     if (season === 2) {
       const roll = season2RollClientKindAndTier({
         seedBase: kindSeed,
         reputation: rep,
+        visibility: agency.visibility,
         entryVScore: entryV,
         entryCScore: entryC,
         slotIndex: i,
         plannedClientCount: count,
         hadCorporateBeforeSlot: hadCorporate,
         hadTier2BeforeSlot: hadTier2,
+        hadCorporateTier2BeforeSlot: hadCorporateTier2,
+        firstClientWasCorporateTier1: i === 0 ? undefined : firstClientWasCorporateTier1,
       });
       kind = roll.kind;
       tier = roll.tier;
       total = rollSeason2ClientBudget(kind, tier, kindSeed, i, entryV);
       if (kind === "corporate") hadCorporate = true;
-      if (tier === 2) hadTier2 = true;
+      if (kind === "corporate" && tier === 2) hadCorporateTier2 = true;
+      if (tier >= 2) hadTier2 = true;
+    } else if (season >= 3) {
+      const roll = season3RollClientKindAndTier({
+        seedBase: kindSeed,
+        reputation: rep,
+        visibility: agency.visibility,
+        entryVScore: entryV,
+        entryCScore: entryC,
+        slotIndex: i,
+        plannedClientCount: count,
+        hadCorporateBeforeSlot: hadCorporate,
+        hadTier2BeforeSlot: hadTier2,
+        hadCorporateTier2BeforeSlot: hadCorporateTier2,
+        firstClientWasCorporateTier1: i === 0 ? undefined : firstClientWasCorporateTier1,
+      });
+      kind = roll.kind;
+      tier = roll.tier;
+      total = rollSeason3ClientBudget(kind, tier, kindSeed, i, entryV);
+      if (kind === "corporate") hadCorporate = true;
+      if (kind === "corporate" && tier === 2) hadCorporateTier2 = true;
+      if (tier >= 2) hadTier2 = true;
     } else {
       kind = sampleClientKindDeterministic(kindSeed, rep, agency.visibility, season);
       tier = computeBudgetTierDeterministic(`${kindSeed}|tier`, season, agency.visibility, rep);
       total = rollClientBudgetTotalInTier(kind, tier, agency.visibility);
+    }
+    if (i === 0) {
+      firstClientWasCorporateTier1 = kind === "corporate" && tier === 1;
     }
     const motive: ClientPreferenceMotive =
       kind === "corporate"
@@ -724,10 +1048,10 @@ export function resolveClientOutcome(args: {
   /** Weight on reach in satisfaction (0–1); effectiveness uses `1 − this`. Set at client creation with jitter around motive baseline. */
   satisfactionReachWeight: number;
   /**
-   * Which C/V knot tables to use for the additive-force model. Season 1 keeps legacy
-   * normalization; Season 2+ uses median-recalibrated knots.
+   * Which C/V normalization to use for the additive-force model. Season 1: legacy knots;
+   * Season 2: Season 2 benchmarks; Season 3: Season 3 benchmarks.
    */
-  outcomeScoreSeason?: 1 | 2;
+  outcomeScoreSeason?: 1 | 2 | 3;
 }): ClientOutcome {
   const metricsInput = {
     baseReach: args.solution.baseSpread,
@@ -737,10 +1061,13 @@ export function resolveClientOutcome(args: {
     discipline: args.discipline,
     seed: args.seed,
   };
+  const os = args.outcomeScoreSeason ?? 1;
   const { reach: messageSpread, effectiveness: messageEffectiveness } =
-    (args.outcomeScoreSeason ?? 1) === 2
-      ? computeSeason2SolutionMetrics(metricsInput)
-      : computeSeason1SolutionMetrics(metricsInput);
+    os === 3
+      ? computeSeason3SolutionMetrics(metricsInput)
+      : os === 2
+        ? computeSeason2SolutionMetrics(metricsInput)
+        : computeSeason1SolutionMetrics(metricsInput);
 
   const satisfaction = computeSatisfactionFromWeights(
     messageSpread,

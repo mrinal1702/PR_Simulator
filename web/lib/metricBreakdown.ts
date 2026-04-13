@@ -1,4 +1,8 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import {
+  getSoftLaunchVisibilityBonus,
+  getTechOverhaulCompetenceBonus,
+} from "@/lib/agencyStatsEffective";
 import type { BuildStats } from "@/lib/gameEconomy";
 import { seasonSpouseGrants } from "@/lib/gameEconomy";
 import { computePreseasonFocusTotals, getPreseasonFocusDeltaForSeason } from "@/lib/preseasonFocus";
@@ -33,6 +37,22 @@ export type BreakdownLine = {
   value: number;
   kind?: BreakdownLineKind;
 };
+
+function appendShoppingAgencyStatBonuses(
+  metric: BreakdownMetric,
+  save: NewGamePayload,
+  lines: BreakdownLine[]
+): BreakdownLine[] {
+  if (metric === "competence") {
+    const b = getTechOverhaulCompetenceBonus(save);
+    if (b !== 0) return [...lines, { label: "Tech Overhaul (+10%)", value: b }];
+  }
+  if (metric === "visibility") {
+    const b = getSoftLaunchVisibilityBonus(save);
+    if (b !== 0) return [...lines, { label: "Soft Launch Buzz (+5%)", value: b }];
+  }
+  return lines;
+}
 
 /** Net EUR and capacity from client work for a season (executed solutions only). Uses each client’s Season 1 tranche as the in-season liquid for that campaign. */
 export function computeSeasonLedger(
@@ -323,7 +343,11 @@ function buildSimplifiedPreseasonBreakdown(metric: BreakdownMetric, save: NewGam
   if (metric === "eur") {
     return linesByMetric.eur;
   }
-  return linesByMetric[metric].filter((l, idx) => idx === 0 || l.value !== 0);
+  return appendShoppingAgencyStatBonuses(
+    metric,
+    save,
+    linesByMetric[metric].filter((l, idx) => idx === 0 || l.value !== 0)
+  );
 }
 
 export function metricBreakdownModalTitle(metric: BreakdownMetric): string {
@@ -356,11 +380,11 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
   }
 
   if (useSimplifiedPreseasonLedger(save)) {
-    return buildSimplifiedPreseasonBreakdown(metric, save);
+    return appendShoppingAgencyStatBonuses(metric, save, buildSimplifiedPreseasonBreakdown(metric, save));
   }
 
   if (save.seasonNumber >= 2 && (metric === "visibility" || metric === "reputation")) {
-    return buildSeasonAwareSoftStatBreakdown(metric, save);
+    return appendShoppingAgencyStatBonuses(metric, save, buildSeasonAwareSoftStatBreakdown(metric, save));
   }
 
   const employees = save.employees ?? [];
@@ -434,7 +458,11 @@ export function buildMetricBreakdown(metric: BreakdownMetric, save: NewGamePaylo
     }
   }
 
-  return linesByMetric[metric].filter((l, idx) => idx === 0 || l.value !== 0);
+  return appendShoppingAgencyStatBonuses(
+    metric,
+    save,
+    linesByMetric[metric].filter((l, idx) => idx === 0 || l.value !== 0)
+  );
 }
 
 function estimateBaseResources(save: NewGamePayload): BuildStats {

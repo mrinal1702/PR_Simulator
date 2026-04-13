@@ -1,6 +1,7 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { canAfford } from "@/lib/budgetGuard";
 import { clampToScale, METRIC_SCALES } from "@/lib/metricScales";
+import { CLIENT_BUDGET_TIER_RANGES } from "@/lib/clientEconomyMath";
 import {
   computeSatisfactionFromWeights,
   getSatisfactionReachWeight,
@@ -8,6 +9,7 @@ import {
   type SeasonClientRun,
   type SeasonLoopState,
 } from "@/lib/seasonClientLoop";
+import { getEffectiveCompetenceForAgency } from "@/lib/agencyStatsEffective";
 import { competenceScoreForVariance } from "@/lib/solutionOutcomeMath";
 
 export const POST_SEASON_REACH_BOOST_COST_EUR = 5000;
@@ -57,9 +59,13 @@ export function postSeasonBoostPointsFromCompetence(competence: number): number 
   return Math.max(1, Math.min(5, Math.round(1 + (s / 100) * 4)));
 }
 
-export function getClientBudgetTier(client: SeasonClient): 1 | 2 {
-  if (client.budgetTier === 1 || client.budgetTier === 2) return client.budgetTier;
-  return client.budgetTotal >= 60000 ? 2 : 1;
+export function getClientBudgetTier(client: SeasonClient): 1 | 2 | 3 {
+  if (client.budgetTier === 1 || client.budgetTier === 2 || client.budgetTier === 3) return client.budgetTier;
+  const r = CLIENT_BUDGET_TIER_RANGES[client.clientKind];
+  const t = client.budgetTotal;
+  if (t >= r[3].min) return 3;
+  if (t >= r[2].min) return 2;
+  return 1;
 }
 
 export function postSeasonSeason2BoostPointsFromCScore(cScore: number, seed: string): number {
@@ -70,13 +76,15 @@ export function postSeasonSeason2BoostPointsFromCScore(cScore: number, seed: str
 }
 
 export function getSeason2ReachBoostCostEur(client: SeasonClient): number {
-  return getClientBudgetTier(client) === 2
+  const tier = getClientBudgetTier(client);
+  return tier >= 2
     ? POST_SEASON_SEASON2_REACH_BOOST_COST_EUR_TIER2
     : POST_SEASON_SEASON2_REACH_BOOST_COST_EUR_TIER1;
 }
 
 export function getSeason2EffectivenessBoostCostCapacity(client: SeasonClient): number {
-  return getClientBudgetTier(client) === 2
+  const tier = getClientBudgetTier(client);
+  return tier >= 2
     ? POST_SEASON_SEASON2_EFFECTIVENESS_BOOST_COST_CAPACITY_TIER2
     : POST_SEASON_SEASON2_EFFECTIVENESS_BOOST_COST_CAPACITY_TIER1;
 }
@@ -303,7 +311,7 @@ export function applyPostSeasonChoice(
   const boost =
     seasonNum >= 2
       ? postSeasonSeason2BoostPointsFromCScore(cScore ?? 50, boostSeed)
-      : postSeasonBoostPointsFromCompetence(save.resources.competence);
+      : postSeasonBoostPointsFromCompetence(getEffectiveCompetenceForAgency(save));
   let eur = save.resources.eur;
   let cap = save.resources.firmCapacity;
   let newReach = run.outcome.messageSpread;

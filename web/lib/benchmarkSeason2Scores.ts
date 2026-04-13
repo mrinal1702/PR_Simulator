@@ -1,17 +1,16 @@
 /**
  * Season 2+ benchmark normalization for raw visibility and competence.
- * Reference: `web/scripts/results/cv-season2-entry-grid.json` (`gridAll1200`); means nudged down
- * from AI-grid averages to give human players leeway (σ kept from the grid).
+ * μ/σ were calibrated from a large scripted grid run; tweak here if you re-run a new calibration.
  */
 
-/** μ for raw visibility at Season 2 entry (leeway vs AI grid avg ~87.4). */
+/** μ for raw visibility at Season 2 entry (leeway vs prior grid average). */
 export const SEASON2_BENCHMARK_VISIBILITY_MEAN = 81;
-/** σ from grid `gridAll1200.rawVisibility.stdDev` (re-exported for Season 2 V_score quantiles). */
+/** σ for raw visibility (Season 2 entry distribution). */
 export const SEASON2_BENCHMARK_VISIBILITY_STD = 30.519854182245947;
 
 /** μ for raw competence at Season 2 entry (leeway vs AI grid avg ~86.65). */
 export const SEASON2_BENCHMARK_COMPETENCE_MEAN = 81;
-/** σ from grid `gridAll1200.rawCompetence.stdDev`. */
+/** σ for raw competence (Season 2 entry distribution). */
 export const SEASON2_BENCHMARK_COMPETENCE_STD = 30.736628483871677;
 
 function clamp01(x: number): number {

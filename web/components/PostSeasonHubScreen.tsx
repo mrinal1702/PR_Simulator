@@ -24,6 +24,7 @@ import { AgencySnapshotCapacityRow, AgencySnapshotMetricRow } from "@/components
 import { EmployeeRosterList } from "@/components/EmployeeRosterList";
 import { MetricBreakdownModalBody } from "@/components/MetricBreakdownModalBody";
 import { ResourceSymbol } from "@/components/resourceSymbols";
+import type { ClientBudgetTier } from "@/lib/clientEconomyMath";
 import { getScenarioById } from "@/lib/scenarios";
 import {
   getPendingReceivablesEur,
@@ -747,7 +748,7 @@ function postSeasonChoiceLabel(choice: "reach" | "effectiveness" | "none"): stri
 
 function postSeasonChoiceCostLabel(
   choice: "reach" | "effectiveness" | "none",
-  client: { budgetSeason1: number; budgetSeason2: number; budgetTier?: 1 | 2; scenarioTitle: string } & Parameters<typeof getSeason2ReachBoostCostEur>[0]
+  client: { budgetSeason1: number; budgetSeason2: number; budgetTier?: ClientBudgetTier; scenarioTitle: string } & Parameters<typeof getSeason2ReachBoostCostEur>[0]
 ): string {
   if (choice === "reach") {
     return `EUR ${getSeason2ReachBoostCostEur(client).toLocaleString("en-GB")}`;

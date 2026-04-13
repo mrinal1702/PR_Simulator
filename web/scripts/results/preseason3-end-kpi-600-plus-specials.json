@@ -1,0 +1,5490 @@
+{
+  "meta": {
+    "runsPerCombo": 50,
+    "combinations": 12,
+    "kpiGames": 600,
+    "specialStatMaxGames": 2,
+    "totalSampleSize": 602,
+    "strategyFrameworkRef": "scripts/strategies/test-bot-kpi-framework.json",
+    "checkpoint": "End of pre-season 3 (phase=preseason, seasonNumber=3); before settlePreseasonAndEnterSeason('3')",
+    "specialRunsNote": "Two additional runs (max visibility / max competence) use baseline KPI weights for Seasons 1–2, then greedy pre-season 3 focus + hiring + salary resolution for that stat."
+  },
+  "distributionsIncludingSpecials": {
+    "rawCompetence": {
+      "min": 22,
+      "q1": 80,
+      "median": 130,
+      "q3": 180,
+      "max": 322,
+      "mean": 134.19767441860466,
+      "stdDev": 60.004533006287446
+    },
+    "rawVisibility": {
+      "min": 43,
+      "q1": 99.25,
+      "median": 133.5,
+      "q3": 184.75,
+      "max": 372,
+      "mean": 148.03488372093022,
+      "stdDev": 67.44837163551216
+    },
+    "reputation": {
+      "min": -53,
+      "q1": 25,
+      "median": 40,
+      "q3": 69,
+      "max": 168,
+      "mean": 48.714285714285715,
+      "stdDev": 38.68152737467812
+    }
+  },
+  "distributionsKpi600Only": {
+    "rawCompetence": {
+      "min": 22,
+      "q1": 80,
+      "median": 130,
+      "q3": 180,
+      "max": 322,
+      "mean": 134.20166666666665,
+      "stdDev": 60.089746745088675
+    },
+    "rawVisibility": {
+      "min": 43,
+      "q1": 99,
+      "median": 133,
+      "q3": 185,
+      "max": 372,
+      "mean": 148.03166666666667,
+      "stdDev": 67.55867077749696
+    },
+    "reputation": {
+      "min": -53,
+      "q1": 25,
+      "median": 40,
+      "q3": 69,
+      "max": 168,
+      "mean": 48.705,
+      "stdDev": 38.735272147402476
+    }
+  },
+  "rawRuns": [
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 195,
+      "reputation": 31
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 163,
+      "reputation": 32
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 119,
+      "reputation": 70
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 206,
+      "rawVisibility": 128,
+      "reputation": 33
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 189,
+      "rawVisibility": 132,
+      "reputation": 35
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 145,
+      "rawVisibility": 114,
+      "reputation": 34
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 206,
+      "rawVisibility": 112,
+      "reputation": 37
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 111,
+      "reputation": 34
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 291,
+      "reputation": 28
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 156,
+      "rawVisibility": 113,
+      "reputation": 30
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 190,
+      "rawVisibility": 115,
+      "reputation": 34
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 210,
+      "rawVisibility": 114,
+      "reputation": 29
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 219,
+      "rawVisibility": 146,
+      "reputation": 118
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 204,
+      "rawVisibility": 140,
+      "reputation": 49
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 194,
+      "reputation": 36
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 236,
+      "rawVisibility": 112,
+      "reputation": 37
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 307,
+      "reputation": 22
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 112,
+      "reputation": 33
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 205,
+      "reputation": 41
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 278,
+      "reputation": 35
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 111,
+      "reputation": 35
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 112,
+      "reputation": 38
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 112,
+      "reputation": 37
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 195,
+      "rawVisibility": 117,
+      "reputation": 75
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 186,
+      "rawVisibility": 134,
+      "reputation": 27
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 244,
+      "reputation": 32
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 133,
+      "rawVisibility": 221,
+      "reputation": 111
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 112,
+      "reputation": 37
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 194,
+      "reputation": 30
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 245,
+      "reputation": 33
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 210,
+      "rawVisibility": 123,
+      "reputation": 40
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 171,
+      "rawVisibility": 229,
+      "reputation": 29
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 250,
+      "rawVisibility": 112,
+      "reputation": 41
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 138,
+      "reputation": 45
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 258,
+      "reputation": 32
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 264,
+      "rawVisibility": 111,
+      "reputation": 39
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 224,
+      "rawVisibility": 154,
+      "reputation": 36
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 226,
+      "rawVisibility": 142,
+      "reputation": 74
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 111,
+      "reputation": 38
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 139,
+      "rawVisibility": 172,
+      "reputation": 27
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 235,
+      "reputation": 107
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 207,
+      "rawVisibility": 112,
+      "reputation": 39
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 111,
+      "reputation": 35
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 188,
+      "rawVisibility": 132,
+      "reputation": 38
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 135,
+      "rawVisibility": 115,
+      "reputation": 36
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 186,
+      "reputation": 21
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 111,
+      "reputation": 32
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 277,
+      "reputation": 30
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 299,
+      "reputation": 47
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "supportive",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 180,
+      "reputation": 37
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 129,
+      "rawVisibility": 220,
+      "reputation": 26
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 184,
+      "reputation": 58
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 314,
+      "reputation": 16
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 372,
+      "reputation": 5
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 329,
+      "reputation": 22
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 372,
+      "reputation": 12
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 171,
+      "reputation": 17
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 306,
+      "reputation": 20
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 101,
+      "rawVisibility": 235,
+      "reputation": -33
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 231,
+      "reputation": 24
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 171,
+      "reputation": 25
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 96,
+      "rawVisibility": 209,
+      "reputation": 57
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 313,
+      "reputation": 23
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 267,
+      "reputation": 9
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 317,
+      "reputation": 21
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 236,
+      "reputation": 20
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 185,
+      "reputation": 18
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 267,
+      "reputation": -30
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 170,
+      "reputation": 11
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 172,
+      "reputation": 30
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 203,
+      "reputation": 11
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 150,
+      "rawVisibility": 177,
+      "reputation": 22
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 149,
+      "rawVisibility": 185,
+      "reputation": 27
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 181,
+      "reputation": 22
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 262,
+      "reputation": 83
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 180,
+      "reputation": 28
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 77,
+      "rawVisibility": 232,
+      "reputation": 42
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 321,
+      "reputation": -1
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 171,
+      "reputation": 6
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 101,
+      "rawVisibility": 172,
+      "reputation": 17
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 184,
+      "reputation": 20
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 184,
+      "reputation": 13
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 224,
+      "reputation": 22
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 93,
+      "rawVisibility": 272,
+      "reputation": -36
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 127,
+      "rawVisibility": 204,
+      "reputation": 22
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 190,
+      "rawVisibility": 223,
+      "reputation": 6
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 326,
+      "reputation": 74
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 183,
+      "reputation": 27
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 296,
+      "reputation": 20
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 346,
+      "reputation": 24
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 183,
+      "reputation": 25
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 121,
+      "rawVisibility": 204,
+      "reputation": 24
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 169,
+      "reputation": 25
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 202,
+      "reputation": 12
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 340,
+      "reputation": 14
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 186,
+      "reputation": 30
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 79,
+      "rawVisibility": 231,
+      "reputation": 14
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 251,
+      "reputation": 25
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 189,
+      "reputation": 26
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "influential",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 184,
+      "rawVisibility": 185,
+      "reputation": 18
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 127,
+      "rawVisibility": 206,
+      "reputation": 61
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 186,
+      "rawVisibility": 149,
+      "reputation": 22
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 110,
+      "rawVisibility": 213,
+      "reputation": 3
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 199,
+      "reputation": 18
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 170,
+      "reputation": 21
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 187,
+      "reputation": 18
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 170,
+      "rawVisibility": 141,
+      "reputation": 53
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 177,
+      "reputation": 22
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 305,
+      "reputation": 10
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 283,
+      "reputation": 10
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 138,
+      "reputation": 30
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 110,
+      "rawVisibility": 151,
+      "reputation": 6
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 156,
+      "rawVisibility": 121,
+      "reputation": 77
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 137,
+      "rawVisibility": 119,
+      "reputation": 15
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 230,
+      "rawVisibility": 111,
+      "reputation": 16
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 168,
+      "rawVisibility": 159,
+      "reputation": 25
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 308,
+      "reputation": 43
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 257,
+      "reputation": 26
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 83,
+      "rawVisibility": 236,
+      "reputation": 46
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 66,
+      "rawVisibility": 252,
+      "reputation": 44
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 302,
+      "reputation": 11
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 150,
+      "rawVisibility": 108,
+      "reputation": 19
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 126,
+      "rawVisibility": 143,
+      "reputation": 23
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 190,
+      "rawVisibility": 148,
+      "reputation": 21
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 191,
+      "rawVisibility": 133,
+      "reputation": 73
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 143,
+      "rawVisibility": 108,
+      "reputation": 26
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 137,
+      "rawVisibility": 206,
+      "reputation": 58
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 255,
+      "reputation": 24
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 76,
+      "rawVisibility": 270,
+      "reputation": 17
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 222,
+      "rawVisibility": 96,
+      "reputation": 13
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 118,
+      "rawVisibility": 159,
+      "reputation": 49
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 230,
+      "rawVisibility": 108,
+      "reputation": 28
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 179,
+      "reputation": 19
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 81,
+      "rawVisibility": 188,
+      "reputation": 12
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 264,
+      "reputation": 15
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 180,
+      "reputation": 25
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 220,
+      "rawVisibility": 108,
+      "reputation": 15
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 136,
+      "rawVisibility": 111,
+      "reputation": 26
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 219,
+      "rawVisibility": 158,
+      "reputation": 48
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 125,
+      "rawVisibility": 134,
+      "reputation": 30
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 186,
+      "reputation": 21
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 330,
+      "reputation": 47
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 138,
+      "rawVisibility": 109,
+      "reputation": 18
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 128,
+      "rawVisibility": 128,
+      "reputation": 74
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 109,
+      "reputation": 28
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 94,
+      "rawVisibility": 153,
+      "reputation": -25
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 253,
+      "reputation": 47
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 178,
+      "rawVisibility": 150,
+      "reputation": 21
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 124,
+      "rawVisibility": 108,
+      "reputation": 26
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "rich",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 132,
+      "rawVisibility": 127,
+      "reputation": 72
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 150,
+      "rawVisibility": 148,
+      "reputation": 48
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 119,
+      "rawVisibility": 168,
+      "reputation": 31
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 222,
+      "reputation": 25
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 50,
+      "rawVisibility": 259,
+      "reputation": 24
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 260,
+      "reputation": -9
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 144,
+      "rawVisibility": 105,
+      "reputation": 1
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 176,
+      "rawVisibility": 201,
+      "reputation": 91
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 171,
+      "rawVisibility": 157,
+      "reputation": 5
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 154,
+      "reputation": -40
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 272,
+      "reputation": 98
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 118,
+      "rawVisibility": 134,
+      "reputation": 58
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 152,
+      "reputation": 101
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 146,
+      "rawVisibility": 122,
+      "reputation": 47
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 324,
+      "reputation": 104
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 139,
+      "rawVisibility": 142,
+      "reputation": 16
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 179,
+      "reputation": 55
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 160,
+      "reputation": 13
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 183,
+      "reputation": -46
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 149,
+      "rawVisibility": 102,
+      "reputation": -1
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 238,
+      "reputation": 35
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 204,
+      "reputation": 2
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 120,
+      "reputation": 6
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 88,
+      "rawVisibility": 147,
+      "reputation": -5
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 131,
+      "rawVisibility": 161,
+      "reputation": 64
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 184,
+      "rawVisibility": 187,
+      "reputation": 102
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 287,
+      "reputation": 108
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 99,
+      "rawVisibility": 104,
+      "reputation": -31
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 101,
+      "rawVisibility": 126,
+      "reputation": 60
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 126,
+      "rawVisibility": 144,
+      "reputation": -30
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 236,
+      "reputation": 97
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 212,
+      "rawVisibility": 148,
+      "reputation": 49
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 73,
+      "rawVisibility": 145,
+      "reputation": 94
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 144,
+      "rawVisibility": 92,
+      "reputation": -27
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 132,
+      "rawVisibility": 151,
+      "reputation": 46
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 264,
+      "reputation": -53
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 126,
+      "rawVisibility": 137,
+      "reputation": 5
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 147,
+      "reputation": 96
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 277,
+      "reputation": 53
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 169,
+      "rawVisibility": 180,
+      "reputation": 144
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 76,
+      "rawVisibility": 152,
+      "reputation": 11
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 184,
+      "rawVisibility": 206,
+      "reputation": 125
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 30,
+      "rawVisibility": 312,
+      "reputation": 56
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 223,
+      "reputation": 51
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 256,
+      "reputation": 86
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 70,
+      "rawVisibility": 204,
+      "reputation": 67
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 88,
+      "rawVisibility": 213,
+      "reputation": 37
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 91,
+      "rawVisibility": 163,
+      "reputation": -30
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 229,
+      "rawVisibility": 144,
+      "reputation": 89
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 124,
+      "rawVisibility": 168,
+      "reputation": 83
+    },
+    {
+      "build": "velvet_rolodex",
+      "spouse": "none",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 153,
+      "rawVisibility": 131,
+      "reputation": 52
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 63,
+      "reputation": 53
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 260,
+      "reputation": 36
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 222,
+      "rawVisibility": 136,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 260,
+      "rawVisibility": 87,
+      "reputation": 59
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 178,
+      "reputation": 42
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 62,
+      "reputation": 48
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 130,
+      "reputation": 55
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 231,
+      "rawVisibility": 83,
+      "reputation": 89
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 190,
+      "rawVisibility": 123,
+      "reputation": 34
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 240,
+      "rawVisibility": 82,
+      "reputation": 49
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 281,
+      "rawVisibility": 61,
+      "reputation": 45
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 182,
+      "reputation": 45
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 300,
+      "rawVisibility": 63,
+      "reputation": 51
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 202,
+      "rawVisibility": 97,
+      "reputation": 92
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 146,
+      "reputation": 52
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 63,
+      "reputation": 45
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 132,
+      "reputation": 45
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 153,
+      "reputation": 83
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 322,
+      "rawVisibility": 61,
+      "reputation": 50
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 195,
+      "reputation": 85
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 259,
+      "rawVisibility": 72,
+      "reputation": 53
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 226,
+      "rawVisibility": 81,
+      "reputation": 44
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 76,
+      "reputation": 89
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 63,
+      "reputation": 55
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 135,
+      "reputation": 54
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 102,
+      "reputation": 49
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 72,
+      "reputation": 88
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 180,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 217,
+      "rawVisibility": 104,
+      "reputation": 37
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 72,
+      "reputation": 53
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 320,
+      "rawVisibility": 57,
+      "reputation": 52
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 259,
+      "rawVisibility": 62,
+      "reputation": 49
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 62,
+      "reputation": 50
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 258,
+      "rawVisibility": 61,
+      "reputation": 45
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 227,
+      "rawVisibility": 91,
+      "reputation": 86
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 133,
+      "reputation": 49
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 71,
+      "reputation": 50
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 76,
+      "reputation": 86
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 221,
+      "reputation": 44
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 116,
+      "reputation": 47
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 188,
+      "reputation": 51
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 213,
+      "rawVisibility": 109,
+      "reputation": 84
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 164,
+      "rawVisibility": 137,
+      "reputation": 79
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 171,
+      "reputation": 49
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 61,
+      "reputation": 49
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 304,
+      "rawVisibility": 83,
+      "reputation": 51
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 150,
+      "rawVisibility": 102,
+      "reputation": 47
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 63,
+      "reputation": 52
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 141,
+      "reputation": 51
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "supportive",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 63,
+      "reputation": 53
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 121,
+      "reputation": 42
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 177,
+      "reputation": 35
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 217,
+      "rawVisibility": 141,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 199,
+      "rawVisibility": 122,
+      "reputation": 32
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 246,
+      "reputation": 42
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 228,
+      "rawVisibility": 118,
+      "reputation": 21
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 128,
+      "reputation": 40
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 323,
+      "reputation": 32
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 129,
+      "reputation": 43
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 178,
+      "rawVisibility": 149,
+      "reputation": 77
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 264,
+      "reputation": 37
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 254,
+      "reputation": 40
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 134,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 135,
+      "reputation": 50
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 186,
+      "rawVisibility": 134,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 230,
+      "rawVisibility": 164,
+      "reputation": 36
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 305,
+      "reputation": 29
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 121,
+      "reputation": 37
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 288,
+      "reputation": 27
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 205,
+      "rawVisibility": 162,
+      "reputation": 44
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 197,
+      "rawVisibility": 122,
+      "reputation": 43
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 160,
+      "reputation": 34
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 128,
+      "reputation": 83
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 154,
+      "rawVisibility": 165,
+      "reputation": 85
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 260,
+      "reputation": 45
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 136,
+      "rawVisibility": 123,
+      "reputation": 38
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 122,
+      "reputation": 44
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 122,
+      "reputation": 43
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 122,
+      "reputation": 42
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 270,
+      "rawVisibility": 118,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 287,
+      "reputation": 37
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 133,
+      "reputation": 81
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 221,
+      "rawVisibility": 161,
+      "reputation": 43
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 197,
+      "rawVisibility": 121,
+      "reputation": 44
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 200,
+      "rawVisibility": 124,
+      "reputation": 78
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 123,
+      "reputation": 43
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 123,
+      "reputation": 42
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 130,
+      "reputation": 79
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 125,
+      "rawVisibility": 247,
+      "reputation": 16
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 120,
+      "reputation": 35
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 200,
+      "rawVisibility": 137,
+      "reputation": 42
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 231,
+      "rawVisibility": 142,
+      "reputation": 43
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 135,
+      "reputation": 42
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 193,
+      "rawVisibility": 122,
+      "reputation": 44
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 232,
+      "rawVisibility": 174,
+      "reputation": 80
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 133,
+      "rawVisibility": 124,
+      "reputation": 35
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 222,
+      "rawVisibility": 142,
+      "reputation": 43
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 244,
+      "rawVisibility": 120,
+      "reputation": 36
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 142,
+      "reputation": 45
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "influential",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 148,
+      "rawVisibility": 149,
+      "reputation": 85
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 186,
+      "rawVisibility": 75,
+      "reputation": 90
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 160,
+      "rawVisibility": 98,
+      "reputation": 35
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 163,
+      "reputation": 36
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 238,
+      "rawVisibility": 99,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 131,
+      "rawVisibility": 141,
+      "reputation": 94
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 224,
+      "reputation": 30
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 241,
+      "reputation": 36
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 168,
+      "rawVisibility": 103,
+      "reputation": 31
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 211,
+      "rawVisibility": 103,
+      "reputation": 68
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 136,
+      "rawVisibility": 75,
+      "reputation": 46
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 238,
+      "rawVisibility": 108,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 131,
+      "reputation": 38
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 238,
+      "rawVisibility": 111,
+      "reputation": 39
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 200,
+      "rawVisibility": 74,
+      "reputation": 86
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 150,
+      "rawVisibility": 83,
+      "reputation": 35
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 121,
+      "reputation": 38
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 277,
+      "reputation": 67
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 245,
+      "rawVisibility": 79,
+      "reputation": 38
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 181,
+      "rawVisibility": 74,
+      "reputation": 90
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 186,
+      "rawVisibility": 70,
+      "reputation": 85
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 85,
+      "reputation": 81
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 218,
+      "rawVisibility": 100,
+      "reputation": 40
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 192,
+      "rawVisibility": 68,
+      "reputation": 46
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 152,
+      "rawVisibility": 180,
+      "reputation": 71
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 210,
+      "reputation": 34
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 141,
+      "reputation": 46
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 150,
+      "rawVisibility": 110,
+      "reputation": 29
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 243,
+      "rawVisibility": 85,
+      "reputation": 55
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 128,
+      "rawVisibility": 136,
+      "reputation": 84
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 125,
+      "rawVisibility": 69,
+      "reputation": 39
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 162,
+      "rawVisibility": 80,
+      "reputation": 43
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 188,
+      "rawVisibility": 82,
+      "reputation": 125
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 193,
+      "rawVisibility": 63,
+      "reputation": 38
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 238,
+      "rawVisibility": 113,
+      "reputation": 42
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 271,
+      "reputation": 34
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 167,
+      "rawVisibility": 80,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 142,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 177,
+      "rawVisibility": 79,
+      "reputation": 37
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 179,
+      "rawVisibility": 71,
+      "reputation": 85
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 250,
+      "reputation": 36
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 217,
+      "rawVisibility": 119,
+      "reputation": 50
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 161,
+      "rawVisibility": 81,
+      "reputation": 42
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 173,
+      "rawVisibility": 101,
+      "reputation": 31
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 59,
+      "reputation": 38
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 184,
+      "reputation": 116
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 123,
+      "rawVisibility": 135,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 152,
+      "reputation": 40
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 209,
+      "reputation": 49
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 170,
+      "rawVisibility": 75,
+      "reputation": 88
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "rich",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 280,
+      "rawVisibility": 60,
+      "reputation": 41
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 172,
+      "rawVisibility": 60,
+      "reputation": 64
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 96,
+      "reputation": 104
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 236,
+      "reputation": 161
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 251,
+      "reputation": 125
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 248,
+      "reputation": 73
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 197,
+      "rawVisibility": 62,
+      "reputation": 91
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 199,
+      "rawVisibility": 129,
+      "reputation": 162
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 189,
+      "rawVisibility": 110,
+      "reputation": 168
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 164,
+      "rawVisibility": 90,
+      "reputation": 59
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 70,
+      "reputation": 87
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 200,
+      "rawVisibility": 75,
+      "reputation": 130
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 160,
+      "rawVisibility": 109,
+      "reputation": 167
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 260,
+      "rawVisibility": 107,
+      "reputation": 163
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 250,
+      "reputation": 113
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 188,
+      "reputation": 118
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 169,
+      "rawVisibility": 94,
+      "reputation": 139
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 164,
+      "reputation": 108
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 126,
+      "reputation": 165
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 96,
+      "reputation": 147
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 160,
+      "rawVisibility": 202,
+      "reputation": 123
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 98,
+      "reputation": 126
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 261,
+      "reputation": 119
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 280,
+      "rawVisibility": 46,
+      "reputation": 44
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 240,
+      "rawVisibility": 131,
+      "reputation": 101
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 133,
+      "rawVisibility": 94,
+      "reputation": 124
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 166,
+      "reputation": 45
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 201,
+      "reputation": 127
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 200,
+      "rawVisibility": 106,
+      "reputation": 165
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 171,
+      "reputation": 98
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 246,
+      "reputation": 72
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 170,
+      "reputation": 121
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 101,
+      "reputation": 127
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 251,
+      "reputation": 125
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 160,
+      "rawVisibility": 140,
+      "reputation": 161
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 236,
+      "rawVisibility": 98,
+      "reputation": 122
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 184,
+      "rawVisibility": 96,
+      "reputation": 84
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 150,
+      "rawVisibility": 109,
+      "reputation": 104
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 119,
+      "reputation": 122
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 236,
+      "rawVisibility": 135,
+      "reputation": 125
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 107,
+      "reputation": 161
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 99,
+      "reputation": 125
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 107,
+      "reputation": 126
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 217,
+      "rawVisibility": 59,
+      "reputation": 84
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 129,
+      "reputation": 105
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 184,
+      "reputation": 66
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 252,
+      "reputation": 149
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 138,
+      "rawVisibility": 94,
+      "reputation": 39
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 80,
+      "rawVisibility": 253,
+      "reputation": 117
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 169,
+      "reputation": 125
+    },
+    {
+      "build": "summa_cum_basement",
+      "spouse": "none",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 198,
+      "rawVisibility": 77,
+      "reputation": 107
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 179,
+      "rawVisibility": 71,
+      "reputation": 34
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 83,
+      "reputation": 37
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 202,
+      "rawVisibility": 51,
+      "reputation": 35
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 47,
+      "reputation": 5
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 189,
+      "rawVisibility": 81,
+      "reputation": 11
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 176,
+      "rawVisibility": 72,
+      "reputation": 37
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 238,
+      "rawVisibility": 102,
+      "reputation": 36
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 238,
+      "rawVisibility": 76,
+      "reputation": 9
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 140,
+      "rawVisibility": 114,
+      "reputation": 34
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 82,
+      "rawVisibility": 240,
+      "reputation": 64
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 82,
+      "rawVisibility": 204,
+      "reputation": 34
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 65,
+      "reputation": -11
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 152,
+      "rawVisibility": 82,
+      "reputation": 39
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 173,
+      "rawVisibility": 60,
+      "reputation": 25
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 197,
+      "rawVisibility": 52,
+      "reputation": 39
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 82,
+      "rawVisibility": 182,
+      "reputation": -23
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 141,
+      "reputation": 76
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 55,
+      "reputation": 43
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 178,
+      "rawVisibility": 69,
+      "reputation": 33
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 60,
+      "reputation": 23
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 194,
+      "rawVisibility": 50,
+      "reputation": 27
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 179,
+      "rawVisibility": 73,
+      "reputation": 36
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 205,
+      "rawVisibility": 84,
+      "reputation": 41
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 174,
+      "rawVisibility": 52,
+      "reputation": 34
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 127,
+      "reputation": 36
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 217,
+      "rawVisibility": 68,
+      "reputation": 15
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 182,
+      "rawVisibility": 73,
+      "reputation": 39
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 143,
+      "reputation": 31
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 224,
+      "rawVisibility": 60,
+      "reputation": 44
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 82,
+      "rawVisibility": 176,
+      "reputation": 29
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 239,
+      "rawVisibility": 54,
+      "reputation": 27
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 168,
+      "rawVisibility": 73,
+      "reputation": 39
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 73,
+      "reputation": 37
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 202,
+      "rawVisibility": 64,
+      "reputation": 41
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 162,
+      "rawVisibility": 65,
+      "reputation": 12
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 233,
+      "rawVisibility": 93,
+      "reputation": 34
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 82,
+      "rawVisibility": 234,
+      "reputation": 29
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 80,
+      "reputation": 38
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 213,
+      "reputation": 33
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 242,
+      "rawVisibility": 96,
+      "reputation": 68
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 136,
+      "rawVisibility": 110,
+      "reputation": 22
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 82,
+      "rawVisibility": 212,
+      "reputation": 32
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 160,
+      "rawVisibility": 87,
+      "reputation": 116
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 189,
+      "rawVisibility": 52,
+      "reputation": 37
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 282,
+      "rawVisibility": 59,
+      "reputation": 37
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 195,
+      "rawVisibility": 68,
+      "reputation": 30
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 82,
+      "rawVisibility": 169,
+      "reputation": 27
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 138,
+      "reputation": 70
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 172,
+      "rawVisibility": 88,
+      "reputation": 98
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 144,
+      "rawVisibility": 95,
+      "reputation": 80
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 200,
+      "rawVisibility": 109,
+      "reputation": 20
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 137,
+      "rawVisibility": 164,
+      "reputation": 16
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 119,
+      "rawVisibility": 139,
+      "reputation": 24
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 190,
+      "reputation": 3
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 182,
+      "rawVisibility": 149,
+      "reputation": 27
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 172,
+      "reputation": 29
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 131,
+      "rawVisibility": 142,
+      "reputation": 31
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 22,
+      "rawVisibility": 308,
+      "reputation": 11
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 218,
+      "rawVisibility": 109,
+      "reputation": 12
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 118,
+      "rawVisibility": 145,
+      "reputation": 73
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 158,
+      "reputation": 25
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 109,
+      "rawVisibility": 132,
+      "reputation": 40
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 123,
+      "rawVisibility": 114,
+      "reputation": 60
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 134,
+      "rawVisibility": 113,
+      "reputation": 29
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 138,
+      "rawVisibility": 125,
+      "reputation": 76
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 197,
+      "reputation": 69
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 134,
+      "reputation": 26
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 125,
+      "reputation": 77
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 74,
+      "rawVisibility": 194,
+      "reputation": -49
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 128,
+      "rawVisibility": 108,
+      "reputation": 20
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 114,
+      "reputation": 35
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 201,
+      "reputation": 64
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 103,
+      "reputation": 13
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 196,
+      "reputation": 27
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 76,
+      "rawVisibility": 229,
+      "reputation": 25
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 222,
+      "rawVisibility": 120,
+      "reputation": 27
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 119,
+      "rawVisibility": 128,
+      "reputation": 21
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 111,
+      "rawVisibility": 128,
+      "reputation": 20
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 142,
+      "rawVisibility": 126,
+      "reputation": 80
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 221,
+      "reputation": 15
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 58,
+      "rawVisibility": 183,
+      "reputation": 6
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 130,
+      "rawVisibility": 109,
+      "reputation": 25
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 162,
+      "rawVisibility": 136,
+      "reputation": 63
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 127,
+      "rawVisibility": 129,
+      "reputation": -40
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 127,
+      "rawVisibility": 121,
+      "reputation": 30
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 187,
+      "reputation": 25
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 214,
+      "rawVisibility": 111,
+      "reputation": 24
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 191,
+      "reputation": 49
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 135,
+      "reputation": -29
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 138,
+      "reputation": 58
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 198,
+      "reputation": 24
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 216,
+      "rawVisibility": 130,
+      "reputation": -4
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 117,
+      "rawVisibility": 136,
+      "reputation": 65
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 264,
+      "reputation": 26
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 142,
+      "rawVisibility": 127,
+      "reputation": 76
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 218,
+      "rawVisibility": 97,
+      "reputation": 23
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 126,
+      "rawVisibility": 124,
+      "reputation": 18
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 176,
+      "reputation": 22
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 142,
+      "rawVisibility": 119,
+      "reputation": -6
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "influential",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 139,
+      "reputation": 7
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 141,
+      "rawVisibility": 67,
+      "reputation": 25
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 182,
+      "rawVisibility": 92,
+      "reputation": 18
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 132,
+      "rawVisibility": 130,
+      "reputation": 18
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 78,
+      "rawVisibility": 119,
+      "reputation": 65
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 159,
+      "rawVisibility": 94,
+      "reputation": 70
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 208,
+      "rawVisibility": 48,
+      "reputation": 26
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 102,
+      "rawVisibility": 121,
+      "reputation": 63
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 156,
+      "rawVisibility": 150,
+      "reputation": 37
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 152,
+      "rawVisibility": 57,
+      "reputation": 20
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 128,
+      "reputation": 26
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 90,
+      "rawVisibility": 84,
+      "reputation": -9
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 137,
+      "rawVisibility": 118,
+      "reputation": 113
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 115,
+      "rawVisibility": 75,
+      "reputation": 28
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 22,
+      "rawVisibility": 225,
+      "reputation": -8
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 56,
+      "rawVisibility": 176,
+      "reputation": -43
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 154,
+      "rawVisibility": 77,
+      "reputation": 56
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 212,
+      "rawVisibility": 56,
+      "reputation": 24
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 222,
+      "rawVisibility": 60,
+      "reputation": 27
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 133,
+      "reputation": 22
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 144,
+      "rawVisibility": 88,
+      "reputation": 9
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 118,
+      "rawVisibility": 68,
+      "reputation": 77
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 141,
+      "rawVisibility": 49,
+      "reputation": 58
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 180,
+      "rawVisibility": 97,
+      "reputation": 22
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 135,
+      "rawVisibility": 66,
+      "reputation": 28
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 168,
+      "rawVisibility": 67,
+      "reputation": 90
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 172,
+      "rawVisibility": 89,
+      "reputation": 28
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 161,
+      "reputation": 1
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 188,
+      "rawVisibility": 74,
+      "reputation": 69
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 65,
+      "rawVisibility": 166,
+      "reputation": -3
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 209,
+      "reputation": 17
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 141,
+      "rawVisibility": 47,
+      "reputation": 59
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 129,
+      "rawVisibility": 69,
+      "reputation": 71
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 138,
+      "reputation": 20
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 133,
+      "reputation": 13
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 274,
+      "reputation": 19
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 182,
+      "rawVisibility": 98,
+      "reputation": 21
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 121,
+      "rawVisibility": 126,
+      "reputation": 27
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 97,
+      "reputation": 63
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 142,
+      "rawVisibility": 65,
+      "reputation": 67
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 109,
+      "rawVisibility": 139,
+      "reputation": 43
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 98,
+      "reputation": 21
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 237,
+      "rawVisibility": 108,
+      "reputation": 25
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 208,
+      "reputation": 25
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 74,
+      "rawVisibility": 115,
+      "reputation": 64
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 218,
+      "rawVisibility": 48,
+      "reputation": 26
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 22,
+      "rawVisibility": 250,
+      "reputation": 21
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 85,
+      "reputation": 21
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 98,
+      "rawVisibility": 134,
+      "reputation": 81
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 190,
+      "rawVisibility": 62,
+      "reputation": 56
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "rich",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 115,
+      "rawVisibility": 89,
+      "reputation": 54
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 0,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 241,
+      "reputation": 81
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 1,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 177,
+      "reputation": 93
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 2,
+      "mode": "kpi",
+      "rawCompetence": 120,
+      "rawVisibility": 94,
+      "reputation": 93
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 3,
+      "mode": "kpi",
+      "rawCompetence": 164,
+      "rawVisibility": 90,
+      "reputation": 120
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 4,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 213,
+      "reputation": 69
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 5,
+      "mode": "kpi",
+      "rawCompetence": 99,
+      "rawVisibility": 52,
+      "reputation": 46
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 6,
+      "mode": "kpi",
+      "rawCompetence": 133,
+      "rawVisibility": 89,
+      "reputation": 119
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 7,
+      "mode": "kpi",
+      "rawCompetence": 134,
+      "rawVisibility": 84,
+      "reputation": 114
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 8,
+      "mode": "kpi",
+      "rawCompetence": 142,
+      "rawVisibility": 43,
+      "reputation": 18
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 9,
+      "mode": "kpi",
+      "rawCompetence": 124,
+      "rawVisibility": 152,
+      "reputation": 83
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 10,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 120,
+      "reputation": 156
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 11,
+      "mode": "kpi",
+      "rawCompetence": 134,
+      "rawVisibility": 81,
+      "reputation": 99
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 12,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 146,
+      "reputation": 96
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 13,
+      "mode": "kpi",
+      "rawCompetence": 104,
+      "rawVisibility": 83,
+      "reputation": 82
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 14,
+      "mode": "kpi",
+      "rawCompetence": 142,
+      "rawVisibility": 91,
+      "reputation": 83
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 15,
+      "mode": "kpi",
+      "rawCompetence": 105,
+      "rawVisibility": 53,
+      "reputation": -24
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 16,
+      "mode": "kpi",
+      "rawCompetence": 142,
+      "rawVisibility": 47,
+      "reputation": 86
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 17,
+      "mode": "kpi",
+      "rawCompetence": 22,
+      "rawVisibility": 184,
+      "reputation": 75
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 18,
+      "mode": "kpi",
+      "rawCompetence": 142,
+      "rawVisibility": 84,
+      "reputation": 130
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 19,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 216,
+      "reputation": 134
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 20,
+      "mode": "kpi",
+      "rawCompetence": 161,
+      "rawVisibility": 104,
+      "reputation": 54
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 21,
+      "mode": "kpi",
+      "rawCompetence": 22,
+      "rawVisibility": 179,
+      "reputation": -11
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 22,
+      "mode": "kpi",
+      "rawCompetence": 182,
+      "rawVisibility": 126,
+      "reputation": 100
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 23,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 104,
+      "reputation": 98
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 24,
+      "mode": "kpi",
+      "rawCompetence": 142,
+      "rawVisibility": 116,
+      "reputation": 79
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 25,
+      "mode": "kpi",
+      "rawCompetence": 22,
+      "rawVisibility": 260,
+      "reputation": 125
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 26,
+      "mode": "kpi",
+      "rawCompetence": 142,
+      "rawVisibility": 46,
+      "reputation": 29
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 27,
+      "mode": "kpi",
+      "rawCompetence": 158,
+      "rawVisibility": 119,
+      "reputation": 57
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 28,
+      "mode": "kpi",
+      "rawCompetence": 122,
+      "rawVisibility": 102,
+      "reputation": 7
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 29,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 158,
+      "reputation": 124
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 30,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 159,
+      "reputation": 123
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 31,
+      "mode": "kpi",
+      "rawCompetence": 296,
+      "rawVisibility": 79,
+      "reputation": 48
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 32,
+      "mode": "kpi",
+      "rawCompetence": 22,
+      "rawVisibility": 176,
+      "reputation": 35
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 33,
+      "mode": "kpi",
+      "rawCompetence": 106,
+      "rawVisibility": 106,
+      "reputation": 90
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 34,
+      "mode": "kpi",
+      "rawCompetence": 112,
+      "rawVisibility": 92,
+      "reputation": 162
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 35,
+      "mode": "kpi",
+      "rawCompetence": 22,
+      "rawVisibility": 250,
+      "reputation": 63
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 36,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 150,
+      "reputation": 132
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 37,
+      "mode": "kpi",
+      "rawCompetence": 121,
+      "rawVisibility": 145,
+      "reputation": 49
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 38,
+      "mode": "kpi",
+      "rawCompetence": 22,
+      "rawVisibility": 265,
+      "reputation": 91
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 39,
+      "mode": "kpi",
+      "rawCompetence": 126,
+      "rawVisibility": 87,
+      "reputation": 131
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 40,
+      "mode": "kpi",
+      "rawCompetence": 182,
+      "rawVisibility": 124,
+      "reputation": 106
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 41,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 110,
+      "reputation": -48
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 42,
+      "mode": "kpi",
+      "rawCompetence": 136,
+      "rawVisibility": 103,
+      "reputation": 27
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 43,
+      "mode": "kpi",
+      "rawCompetence": 152,
+      "rawVisibility": 111,
+      "reputation": 155
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 44,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 200,
+      "reputation": 50
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 45,
+      "mode": "kpi",
+      "rawCompetence": 40,
+      "rawVisibility": 239,
+      "reputation": 146
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 46,
+      "mode": "kpi",
+      "rawCompetence": 68,
+      "rawVisibility": 92,
+      "reputation": 118
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 47,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 138,
+      "reputation": 95
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 48,
+      "mode": "kpi",
+      "rawCompetence": 148,
+      "rawVisibility": 65,
+      "reputation": 5
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "none",
+      "runIndex": 49,
+      "mode": "kpi",
+      "rawCompetence": 62,
+      "rawVisibility": 179,
+      "reputation": 139
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 9000,
+      "mode": "maxVisibility",
+      "rawCompetence": 110,
+      "rawVisibility": 158,
+      "reputation": 36
+    },
+    {
+      "build": "portfolio_pivot",
+      "spouse": "supportive",
+      "runIndex": 9001,
+      "mode": "maxCompetence",
+      "rawCompetence": 156,
+      "rawVisibility": 140,
+      "reputation": 67
+    }
+  ]
+}

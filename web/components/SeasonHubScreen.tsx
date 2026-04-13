@@ -258,7 +258,9 @@ export function SeasonHubScreen({ season }: { season: number }) {
 
         {showRolloverGate ? (
           <div className="agency-stats-panel" style={{ marginTop: "1rem" }}>
-            <h3 style={{ marginTop: 0, marginBottom: "0.35rem", fontSize: "1.05rem" }}>Season 1 client follow-ups</h3>
+            <h3 style={{ marginTop: 0, marginBottom: "0.35rem", fontSize: "1.05rem" }}>
+              Season {season - 1} client follow-ups
+            </h3>
             <p className="muted" style={{ margin: 0 }}>
               Complete these first before rolling new Season {season} clients.
             </p>
@@ -267,7 +269,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
             </p>
             <div style={{ marginTop: "0.85rem" }}>
               <Link href={`/game/season/${season}/client`} className="btn btn-primary" style={{ textDecoration: "none" }}>
-                Tackle Season 1 clients
+                Tackle Season {season - 1} clients
               </Link>
             </div>
           </div>
@@ -280,7 +282,7 @@ export function SeasonHubScreen({ season }: { season: number }) {
               className="btn btn-primary"
               onClick={startSeasonClientRoll}
               disabled={!rolloverComplete}
-              title={!rolloverComplete ? "Finish Season 1 client follow-ups first." : undefined}
+              title={!rolloverComplete ? `Finish Season ${season - 1} client follow-ups first.` : undefined}
             >
               Roll season clients
             </button>
