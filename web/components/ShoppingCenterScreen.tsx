@@ -77,14 +77,14 @@ export function ShoppingCenterScreen() {
     {
       id: "hr_skills_test",
       title: "HR - Skills Test",
-      blurb: "Future hires get +15% skill, and hiring labels reflect the improved score.",
+      blurb: "Future hires are likely to be more skilled.",
       cost: SHOPPING_ITEM_COST_EUR.hr_skills_test,
       available: true,
     },
     {
       id: "hr_reference_checks",
       title: "HR - Reference Checks",
-      blurb: "Future hires get +15% productivity, and hiring labels reflect the improved score.",
+      blurb: "Future hires are likely to be more productive.",
       cost: SHOPPING_ITEM_COST_EUR.hr_reference_checks,
       available: true,
     },
