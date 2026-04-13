@@ -562,11 +562,17 @@ h3 {
   justify-content: center;
   padding: 1rem;
   z-index: 1000;
+  /* Tall dialogs (e.g. full-time hiring report) must stay scrollable; otherwise OK sits below the fold on a fixed overlay. */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   transition: background var(--ui-duration) ease, opacity var(--ui-duration) ease;
 }
 
 .game-modal {
   width: min(560px, 100%);
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
   background: linear-gradient(160deg, #1b2531 0%, #141c26 100%);
   border: 1px solid rgba(240, 180, 41, 0.45);
   border-radius: var(--radius);

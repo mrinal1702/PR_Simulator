@@ -448,6 +448,7 @@ export function HiringScreen({ season }: { season: number }) {
       reputation: save.reputation ?? 5,
       visibility: getEffectiveVisibilityForAgency(save),
       excludedNames: excluded,
+      save,
     });
     let saveAfterPool = save;
     if (selectionTier === "junior" && next.length > 0) {
@@ -609,8 +610,9 @@ export function HiringScreen({ season }: { season: number }) {
 
   const confirmHire = () => {
     if (!pendingCandidate) return;
-    finalizeHireCandidate(pendingCandidate);
+    const hired = pendingCandidate;
     setPendingCandidate(null);
+    finalizeHireCandidate(hired);
   };
 
   if (salaryNegotiationLocked) {
