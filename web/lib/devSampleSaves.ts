@@ -1,5 +1,6 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { applySpouseAtStart, STARTING_BUILD_STATS, STARTING_REPUTATION } from "@/lib/gameEconomy";
+import type { SeasonClientRun } from "@/lib/seasonClientLoop";
 
 export function buildSeason1SummarySampleSave(): NewGamePayload {
   const initialResources = applySpouseAtStart(STARTING_BUILD_STATS.velvet_rolodex, "supportive");
@@ -451,6 +452,34 @@ export function buildSeason2SummaryNoLayoffSampleSave(): NewGamePayload {
       { id: "wage-emp-analyst", label: "Owen Price wage", amount: 7000 },
     ],
     createdAt: "2026-04-12T16:00:00.000Z",
+  };
+}
+
+/**
+ * Season 2 post-season **in progress**: one rollover resolution recap left, first fresh campaign
+ * post-season boost already chosen, second fresh campaign still waiting (reach / effectiveness / none).
+ */
+export function buildSeason2PostseasonMidFlowSampleSave(): NewGamePayload {
+  const base = buildSeason2SummaryNoLayoffSampleSave();
+  const loop = base.seasonLoopBySeason?.["2"];
+  if (!loop) return base;
+
+  const runs: SeasonClientRun[] = loop.runs.map((r) => {
+    if (r.clientId === "s2-c2") {
+      const { postSeason: _ps, ...rest } = r;
+      return rest;
+    }
+    return r;
+  });
+
+  return {
+    ...base,
+    postSeasonResolutionProgressBySeason: { "2": 1 },
+    seasonLoopBySeason: {
+      ...base.seasonLoopBySeason,
+      "2": { ...loop, runs },
+    },
+    createdAt: "2026-04-15T12:00:00.000Z",
   };
 }
 

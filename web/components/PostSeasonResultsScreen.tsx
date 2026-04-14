@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import {
@@ -35,6 +35,8 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [breakdownMetric, setBreakdownMetric] = useState<BreakdownMetric | null>(null);
+  const [blurbExpanded, setBlurbExpanded] = useState(false);
+  const prevScenarioClientIdRef = useRef<string | null>(null);
 
   const seasonKey = String(season);
   const loop = save?.seasonLoopBySeason?.[seasonKey];
@@ -51,6 +53,20 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
   const currentRun = !done && nextIdx < total ? accepted[nextIdx] : null;
   const currentClient = currentRun ? loop?.clientsQueue.find((c) => c.id === currentRun.clientId) : null;
 
+  useEffect(() => {
+    setBlurbExpanded(false);
+  }, [currentClient?.id]);
+
+  useEffect(() => {
+    const id = currentClient?.id;
+    if (!id) return;
+    const prev = prevScenarioClientIdRef.current;
+    if (prev !== null && prev !== id && total > 1) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+    prevScenarioClientIdRef.current = id;
+  }, [currentClient?.id, total]);
+
   const commitChoice = (choice: "reach" | "effectiveness" | "none") => {
     if (!save || !loop || !currentRun || busy) return;
     setBusy(true);
@@ -63,13 +79,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
     }
     const ok = persistSave(next);
     setSave(next);
-    const updatedRun = next.seasonLoopBySeason?.[seasonKey]?.runs.find((r) => r.clientId === currentRun.clientId);
-    const ps = updatedRun?.postSeason;
-    const rewardLine =
-      ps != null
-        ? `Reputation ${(ps.reputationDelta ?? 0) >= 0 ? "+" : ""}${ps.reputationDelta ?? 0} · Visibility +${ps.visibilityGain ?? 0}`
-        : "";
-    setNotice([rewardLine, ok ? "" : "Saved locally may have failed."].filter(Boolean).join(" · "));
+    setNotice(ok ? "" : "Saved locally may have failed.");
     setBusy(false);
   };
 
@@ -225,6 +235,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
     reach,
     effectiveness
   );
+  const clientKindLabel = currentClient.clientKind.replace(/_/g, " ");
   const affordReach = season2Flow
     ? canAffordSeason2ReachBoost(save.resources.eur, currentClient)
     : canAffordReachBoost(save.resources.eur);
@@ -248,7 +259,7 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
             Post-season {season}
           </Link>
         </p>
-        <h1 style={{ margin: 0 }}>{season2Flow ? "Scenario review" : "Campaign results"}</h1>
+        <h1 style={{ margin: 0 }}>Scenario review</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
           Scenario {completed + 1} of {total}
         </p>
@@ -270,21 +281,50 @@ export function PostSeasonResultsScreen({ season }: { season: number }) {
       </section>
 
       <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
-        <h2 style={{ marginTop: 0, fontSize: "1.15rem", fontFamily: "var(--font-display)" }}>{currentClient.scenarioTitle}</h2>
-        <p className="muted" style={{ marginTop: 0 }}>
-          {currentClient.displayName} · {currentClient.problem}
+        <p
+          className="muted"
+          style={{ margin: "0 0 0.2rem", fontSize: "0.82rem", textTransform: "uppercase", letterSpacing: "0.06em" }}
+        >
+          {clientKindLabel}
         </p>
-        <p style={{ margin: "0.75rem 0 0" }}>
-          <strong>Message reach:</strong> {reach}% · <strong>Message effectiveness:</strong> {effectiveness}%
-        </p>
-        <p style={{ margin: "0.75rem 0 0", lineHeight: 1.55 }}>
-          {arc1Text}
+        <h2 style={{ margin: "0 0 0.2rem", fontSize: "1.15rem", fontFamily: "var(--font-display)" }}>{currentClient.scenarioTitle}</h2>
+        <p className="muted" style={{ margin: "0 0 0.65rem", fontSize: "0.9rem" }}>{currentClient.displayName}</p>
+
+        {!blurbExpanded ? (
+          <p className="muted" style={{ margin: "0 0 0.5rem", fontSize: "0.88rem", lineHeight: 1.45 }}>
+            {currentClient.problem.length > 160 ? `${currentClient.problem.slice(0, 160)}…` : currentClient.problem}
+          </p>
+        ) : (
+          <p style={{ margin: "0 0 0.5rem", fontSize: "0.92rem", lineHeight: 1.55 }}>{currentClient.problem}</p>
+        )}
+        <button
+          type="button"
+          className="btn btn-secondary"
+          style={{ padding: "0.3rem 0.6rem", fontSize: "0.82rem" }}
+          onClick={() => setBlurbExpanded((v) => !v)}
+        >
+          {blurbExpanded ? "Show less" : "Show more"}
+        </button>
+      </section>
+
+      <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
+        <p className="scenario-campaign-results-kicker">Your in-season choice</p>
+        <p style={{ margin: "0.35rem 0 0", fontSize: "0.96rem", lineHeight: 1.5 }}>
+          <strong>{currentRun.solutionTitle ?? currentRun.solutionId}</strong>
         </p>
       </section>
 
+      <section className="agency-stats-panel" style={{ marginBottom: "1rem" }}>
+        <p className="scenario-campaign-results-kicker">So what happened?</p>
+        <p className="muted" style={{ margin: "0.35rem 0 0.5rem", fontSize: "0.88rem", lineHeight: 1.45 }}>
+          <strong>Message reach:</strong> {reach}% · <strong>Message effectiveness:</strong> {effectiveness}%
+        </p>
+        <p style={{ margin: 0, lineHeight: 1.55, fontSize: "0.95rem" }}>{arc1Text}</p>
+      </section>
+
       <section className="agency-stats-panel">
-        <h3 style={{ marginTop: 0, fontSize: "1.05rem" }}>Optional boost</h3>
-        <p className="muted" style={{ marginTop: 0, fontSize: "0.92rem" }}>
+        <p className="scenario-campaign-results-kicker">Optional boost</p>
+        <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.92rem" }}>
           {season2Flow
             ? `Pick one: increase reach or increase effectiveness. You can only choose one per scenario. Each increase is based on your Season ${season} competence score, up to 5%, with a small roll. This is a tier ${budgetTier} client.`
             : "Pick one: increase reach or increase effectiveness. You can only choose one per scenario. Each increase is based on firm competence, up to 5%."}
