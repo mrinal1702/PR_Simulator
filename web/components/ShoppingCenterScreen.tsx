@@ -94,7 +94,10 @@ export function ShoppingCenterScreen() {
     save.spouseGender === "male" ? "he" : save.spouseGender === "female" ? "she" : "they";
   const agencyName = save.agencyName.trim() || "Your agency";
   const spouseName = save.spouseName?.trim() || "Your spouse";
-  const shoppingOpen = save.phase === "preseason" && save.seasonNumber === 3;
+  /** After Season 2 post-season (profit / shopping step) through Pre-season 3. */
+  const shoppingOpen =
+    (save.phase === "postseason" && save.seasonNumber === 2) ||
+    (save.phase === "preseason" && save.seasonNumber === 3);
 
   const personalItems: ShoppingItemDef[] = [
     save.spouseType === "none"
@@ -135,7 +138,7 @@ export function ShoppingCenterScreen() {
     {
       id: "rent_office",
       title: "Rent Office",
-      blurb: `${agencyName} gets a door, a desk, and a little more credibility.`,
+      blurb: `${agencyName} gets a real address: permanently +10 firm reputation and your agency roster cap rises from 5 to 7.`,
       cost: SHOPPING_ITEM_COST_EUR.rent_office,
       available: true,
     },
@@ -214,7 +217,7 @@ export function ShoppingCenterScreen() {
         ) : null}
         {!shoppingOpen ? (
           <p className="end-season-profit-sub" style={{ marginTop: "0.5rem", marginBottom: 0 }}>
-            Shopping Center purchases unlock in Pre-season 3.
+            Shopping Center purchases open after Season 2 post-season and stay available through Pre-season 3.
           </p>
         ) : null}
       </div>
