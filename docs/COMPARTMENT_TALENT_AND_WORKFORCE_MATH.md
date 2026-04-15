@@ -7,6 +7,7 @@ Use for all hiring, employee quality, capacity contribution, tenure growth, and 
 ## Scope
 
 - Candidate generation and deterministic Talent Bazaar rolls
+- How **agency reputation** and **effective competence / visibility** (including shopping-center multipliers on raw resources) feed **hire quality** via season-keyed `hiringAttractChannels` in `benchmarkHiringAttract.ts` (see §3)
 - Hidden employee productivity and hidden skill calculations
 - Salary anchors, season hire caps, and candidate slot counts
 - Capacity at hire plus tenure-based annual growth
@@ -21,6 +22,8 @@ Use for all hiring, employee quality, capacity contribution, tenure growth, and 
 
 - `docs/AGENCY_FINANCE.md` (payables/liquidity interactions)
 - `docs/AGENT_CONTEXT.md` (save shape pointers)
+- `docs/COMPARTMENT_RANDOMNESS_AND_NORMALIZATION.md` (Season 1 score knots reused for hiring attract in season 1)
+- `docs/COMPARTMENT_AGENCY_STATS_AND_BOOSTS.md` (how stat changes flow into hiring and client rolls)
 
 ---
 
@@ -212,6 +215,7 @@ Defined in `web/lib/shoppingCenter.ts`:
 Current documentation note:
 
 - multipliers are defined via `getHireAdjustmentMultipliers(save)` and should be explicitly traced in hiring execution paths whenever talent math changes.
+- **Tech Overhaul** / **Soft Launch Buzz** change **effective** competence/visibility (`agencyStatsEffective.ts`); `HiringScreen` feeds those into `generateCandidates`, so they also shift **`hiringAttractChannels`** (hire skill) before the HR multipliers apply to the rolled skill number.
 
 ---
 
@@ -230,7 +234,7 @@ Current documentation note:
 
 - Workforce stat gains alter both campaign outcome quality and Season 2+ entry score snapshots.
 - Wage and severance lines flow into settlement/liquidity and can trigger route-level layoff pressure.
-- Hiring quality is influenced by reputation/visibility, so post-season stat changes feed back into hiring.
+- Hiring quality is influenced by **reputation** and **effective** competence/visibility (`hiringAttractChannels` / `benchmarkHiringAttract.ts` by season), so post-season stat changes and shopping-center stat items feed back into the next Talent Bazaar.
 - Shopping center hiring multipliers must be tracked with both workforce and economy compartments.
 - Pre-season 3 salary asks change wage payables and liquidity; coordinate with `docs/AGENCY_FINANCE.md` and `preseasonSalaryNegotiation.ts`.
 - Use `docs/SYSTEM_SYNERGY_MAP.md` for multi-compartment edits.

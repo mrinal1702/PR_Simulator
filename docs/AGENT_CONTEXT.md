@@ -57,6 +57,7 @@ Omit fields not listed; many are optional for legacy loads.
 | Spouse seasonal amounts + line rotation copy | `web/lib/gameEconomy.ts`, `web/lib/preseasonEntrySpouseCopy.ts` |
 | Post-season boosts & ledger | `web/lib/postSeasonResults.ts` |
 | Outcomes (S1 knots vs S2+ benchmark C/V) | `web/lib/solutionOutcomeMath.ts`, `benchmarkSeason2Scores.ts`, `resolveClientOutcome` in `seasonClientLoop.ts` |
+| Talent Bazaar hire skill (rep + effective V/C, season-keyed attract) | `web/lib/hiring.ts`, `web/lib/benchmarkHiringAttract.ts`; UI: `HiringScreen.tsx` |
 | Payables, receivables, liquidity, season start settlement | `web/lib/payablesReceivables.ts` |
 | Season 2 carry-over in-season | `web/lib/seasonCarryover.ts`; rollover **player copy** in `SeasonClientCaseScreen` (“So what happened?”, “What should you do?”, coloured reach/effect boost or decay) |
 | Metric breakdown lines | `web/lib/metricBreakdown.ts` |

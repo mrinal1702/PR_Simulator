@@ -7,6 +7,7 @@ Use for deterministic seed contracts, score normalization, clamp behavior, and t
 ## Scope
 
 - Hash/seed deterministic rolls across hiring, clients, outcomes, and scenario picking
+- **Hiring attract** inputs: season-keyed normalization of reputation and agency competence/visibility for hidden hire skill (`benchmarkHiringAttract.ts`; Season 1 reuses Season 1 V/C knots from `solutionOutcomeMath.ts`; Season 2 uses `benchmarkSeason2Scores.ts`; season ≥ 3 uses **blended** S2+S3 μ/σ — see `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §3)
 - Season 1 vs Season 2+ score normalization paths
 - Clamp and threshold behavior for stats and outcomes
 - Frozen season-entry scores versus live mutable resources
@@ -25,6 +26,8 @@ Use for deterministic seed contracts, score normalization, clamp behavior, and t
 
 - `web/lib/metricScales.ts`
 - `web/lib/benchmarkSeason2Scores.ts`
+- `web/lib/benchmarkSeason3Scores.ts` (constants averaged into hiring attract for season ≥ 3)
+- `web/lib/benchmarkHiringAttract.ts` (hiring-only rep / V / C normalization by season)
 - `web/lib/solutionOutcomeMath.ts`
 - `web/lib/clientEconomyMath.ts`
 - `web/lib/hiring.ts`
@@ -40,7 +43,7 @@ Use for deterministic seed contracts, score normalization, clamp behavior, and t
 |---|---|---|---|
 | Scenario selection | caller-provided seed, hashed index | `scenarios.ts` `hashPickIndex` | deterministic candidate pick |
 | Hiring productivity | `{bucketSeed}|c{idx}` + `|prod` | `hiring.ts` | `0..80` productivity |
-| Hiring skill variance | `{bucketSeed}|c{idx}` + `|skill` | `hiring.ts` | deterministic skill variation |
+| Hiring skill variance | `{bucketSeed}|c{idx}` + `|skill` | `hiring.ts` | deterministic skill variation (after **attract** from live rep + effective V/C via `benchmarkHiringAttract.ts` for the pre-season **season** number) |
 | Hiring split tilt | `seed|split` | `hiring.ts` | competence/visibility split tilt |
 | Client slots per season | `...|season1|slots` or `...|s{season}|slots` | `clientEconomyMath.ts` | 2 vs 3 clients |
 | S2 kind/tier/budget | `...|s2|kind|i`, `...|s2|tier|i`, `...|s2|bud|i` | `clientEconomyMath.ts` | deterministic S2 client roll |
@@ -180,6 +183,9 @@ Live mutable during season:
 - If you touch normalization constants in `benchmarkSeason2Scores.ts`, update:
   - constants table in this doc
   - references in `SEASON2_STRUCTURE.md`
+- If you touch **`benchmarkHiringAttract.ts`** blended μ/σ or season branches, update:
+  - hiring seed registry notes (attract path) in this doc
+  - `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §3
 - If you touch seed strings, update seed registry and call out reproducibility impact.
 - If you touch thresholds (50, 35/67, jitter caps), update branch mapping notes.
 
@@ -188,3 +194,4 @@ Live mutable during season:
 ## Last updated for
 
 - Deterministic seed contracts and normalization formulas documentation pass.
+- Hiring attract normalization (`benchmarkHiringAttract.ts`) and seed table note.

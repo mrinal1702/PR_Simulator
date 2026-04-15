@@ -48,7 +48,7 @@ Use for all agency money logic and season financial mechanics.
 
 ## Cross-system synergies
 
-- Hiring and layoffs directly reshape payables, liquidity, and season-start payroll pressure.
+- Hiring and layoffs directly reshape payables, liquidity, and season-start payroll pressure; hire **skill** quality follows agency stats per `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §3 (`benchmarkHiringAttract`).
 - PS3 salary accept/refuse flows update wage payables and roster stats; same liquidity rules as hiring (`liquidityEur`).
 - Settlement at season start writes frozen entry scores used by Season 2+ roll and outcome systems.
 - Campaign and carry-over spending reduce the same EUR/capacity pools used by post-season boosts.
@@ -68,3 +68,4 @@ Use for all agency money logic and season financial mechanics.
 ## Last updated for
 
 - Pre-season 3 salary negotiation economy hooks and code anchors.
+- Cross-synergy: hiring skill quality vs `benchmarkHiringAttract` (talent §3).

@@ -2,7 +2,7 @@
 
 This document describes how **cash**, **payables**, **receivables**, and **liquidity** work in the web app. It is the single reference for contributors and agents—there is no separate “legacy payroll” model documented elsewhere.
 
-**Implementation:** `web/lib/payablesReceivables.ts` (math and settlement), `web/lib/employeeActions.ts` (fire), `web/lib/preseasonTransition.ts` (post-season → next pre-season, **rollover wage payables**, **seed pre-season 3 salary asks**), `web/lib/preseasonSalaryNegotiation.ts` (PS3 raise rolls, pay/refuse helpers), `web/components/SeasonHubScreen.tsx` (**rebuild wage payables when entering post-season**), `web/components/PreSeasonScreen.tsx` (start season, layoff UI, PS3 salary modal), `web/components/HiringScreen.tsx` (hire), `web/lib/saveGameStorage.ts` (migrations). Eligibility and productivity/skill thresholds for PS3: `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §6.
+**Implementation:** `web/lib/payablesReceivables.ts` (math and settlement), `web/lib/employeeActions.ts` (fire), `web/lib/preseasonTransition.ts` (post-season → next pre-season, **rollover wage payables**, **seed pre-season 3 salary asks**), `web/lib/preseasonSalaryNegotiation.ts` (PS3 raise rolls, pay/refuse helpers), `web/components/SeasonHubScreen.tsx` (**rebuild wage payables when entering post-season**), `web/components/PreSeasonScreen.tsx` (start season, layoff UI, PS3 salary modal), `web/components/HiringScreen.tsx` (hire), `web/lib/hiring.ts` + `web/lib/benchmarkHiringAttract.ts` (candidate **skill** vs agency stats; see `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §3), `web/lib/saveGameStorage.ts` (migrations). Eligibility and productivity/skill thresholds for PS3: `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §6.
 
 ---
 
@@ -144,6 +144,7 @@ During **`phase === "season"`**, guaranteed receivables from **accepted** client
 - Hiring **does not** deduct a full annual salary from cash up front.
 - Adding an employee adds a **wage** payable line (and updates roster/capacity as today).
 - A hire is allowed only if **liquidity after the hire** remains sufficient—practically, the candidate’s salary must be coverable within the liquidity rules enforced in `HiringScreen` (`liquidityEur` vs salary).
+- **Employee quality (hidden skill at hire)** is separate from liquidity: it scales with **reputation** and **effective** competence/visibility for that pre-season’s **season number**, via `hiringAttractChannels` (`benchmarkHiringAttract.ts`) and role-specific mixing in `resolveSkill` (`hiring.ts`). Full detail: `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §3.
 
 **Pre-season 3 salary negotiations** (mid-preseason, not at hire): some employees may request a raise; accepting increases wage payables and salary under the same liquidity rules. See **§5.2** table row and `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §6.
 
@@ -204,7 +205,7 @@ Older saves without `payablesLines` are migrated in `saveGameStorage.ts` (wage l
 | Liquidity, receivables, settlement | `web/lib/payablesReceivables.ts` |
 | Fire voluntary / mandatory | `web/lib/employeeActions.ts` |
 | Pre-season UX, **Start season**, PS3 salary modal | `web/components/PreSeasonScreen.tsx` |
-| Hiring and affordability | `web/components/HiringScreen.tsx` |
+| Hiring and affordability | `web/components/HiringScreen.tsx`, `web/lib/hiring.ts`, `web/lib/benchmarkHiringAttract.ts` |
 | PS3 raise math / payables updates | `web/lib/preseasonSalaryNegotiation.ts` |
 | Resource strip (P / R / L) | `web/components/AgencyResourceStrip.tsx` |
 | Post-season entry (rebuild wages) | `web/components/SeasonHubScreen.tsx` |

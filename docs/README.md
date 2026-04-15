@@ -10,7 +10,7 @@
 | [COMPARTMENT_SCORING_AND_OUTCOMES.md](./COMPARTMENT_SCORING_AND_OUTCOMES.md) | Systems | Outcome compartment: V/C scoring and season-specific resolution |
 | [COMPARTMENT_CLIENT_ROLLS_AND_BUDGETS.md](./COMPARTMENT_CLIENT_ROLLS_AND_BUDGETS.md) | Systems | Client count/type/budget roll logic and carry-over interactions |
 | [COMPARTMENT_AGENCY_STATS_AND_BOOSTS.md](./COMPARTMENT_AGENCY_STATS_AND_BOOSTS.md) | Systems | Resource/reputation update and boost application compartment |
-| [COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md](./COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md) | Systems | Hiring, skill/productivity rolls, roster skill %, tenure capacity, layoffs, pre-season 3 salary asks |
+| [COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md](./COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md) | Systems | Hiring, season-keyed attract (agency stats → hire skill), skill/productivity rolls, roster skill %, tenure capacity, layoffs, pre-season 3 salary asks |
 | [COMPARTMENT_SCENARIO_ARCHITECTURE.md](./COMPARTMENT_SCENARIO_ARCHITECTURE.md) | Systems & content | Scenario schema, runtime selection, arc mapping and constraints |
 | [COMPARTMENT_RANDOMNESS_AND_NORMALIZATION.md](./COMPARTMENT_RANDOMNESS_AND_NORMALIZATION.md) | Systems | Seed determinism, normalization transforms, clamps and thresholds |
 | [**../README.md**](../README.md) | Design & product | Game vision, resources, consistency rule, short build snapshot |

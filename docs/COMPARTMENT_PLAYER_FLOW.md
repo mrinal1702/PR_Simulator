@@ -11,6 +11,7 @@ Use for anything related to progression between screens and phases.
 - Season transition behavior (including entry reveal)
 - **Pre-season 3** salary negotiation modal and gating (Start season / Talent Bazaar until resolved)
 - Shopping center access and placement in flow
+- **Talent Bazaar** (`HiringScreen`): candidate **skill** rolls use live **reputation** and **effective** competence/visibility for the current pre-season **season** (see `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §3)
 
 ---
 
@@ -19,6 +20,7 @@ Use for anything related to progression between screens and phases.
 - `docs/AGENT_CONTEXT.md` (routes and save highlights)
 - `README.md` (high-level game loop)
 - `docs/POST_SEASON.md` (post-season behavior)
+- `docs/COMPARTMENT_TALENT_AND_WORKFORCE_MATH.md` §3 (hire quality vs agency stats)
 
 ---
 
@@ -28,6 +30,7 @@ Use for anything related to progression between screens and phases.
 - `web/lib/preseasonTransition.ts` (post-season to next pre-season transition)
 - `web/app/game/preseason/**`
 - `web/components/PreSeasonScreen.tsx`, `web/components/PreseasonSalaryNegotiationModal.tsx` (PS3 salary flow)
+- `web/components/HiringScreen.tsx` (Talent Bazaar; effective V/C + rep into `generateCandidates` / `benchmarkHiringAttract`)
 - `web/app/game/season/**`
 - `web/app/game/postseason/**`
 - `web/lib/shoppingCenter.ts`
@@ -67,3 +70,4 @@ Transition correctness depends on `seasonNumber` + `phase` consistency.
 ## Last updated for
 
 - Pre-season 3 salary negotiation UI gating and code anchors.
+- Hiring screen: agency stats → hire skill (pointer to talent §3).

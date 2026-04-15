@@ -76,7 +76,7 @@ Script: `web/scripts/save-stats-visibility-competence.ts` (re-run to refresh num
 
 ## Ceilings (pre-season + up to 2 hires, “best of 3” candidates)
 
-Under **current** hiring rules (`web/lib/hiring.ts`), **not** typical playthroughs — useful as **upper bounds** when calibrating “best case” solution outcomes:
+Under **current** hiring rules (`web/lib/hiring.ts` + `web/lib/benchmarkHiringAttract.ts` for agency-stat normalization by season), **not** typical playthroughs — useful as **upper bounds** when calibrating “best case” solution outcomes (re-run scripted max checks if attract μ/σ or role weights change):
 
 | Metric | Approx. max observed | Notes |
 |--------|----------------------|--------|
