@@ -143,6 +143,10 @@ export function settlePreseasonAndEnterSeason(save: NewGamePayload, seasonKey: s
     },
     payablesLines: [],
     cumulativeWagesPaidEur: (save.cumulativeWagesPaidEur ?? 0) + wagesSettledNow,
+    payrollWagesSettledEurBySeason: {
+      ...(save.payrollWagesSettledEurBySeason ?? {}),
+      [seasonKey]: wagesSettledNow,
+    },
     payrollPaidBySeason,
     seasonEntryScoresBySeason: {
       ...(save.seasonEntryScoresBySeason ?? {}),

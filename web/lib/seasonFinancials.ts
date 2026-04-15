@@ -29,6 +29,12 @@ type SeasonCampaignCosts = {
   total: number;
 };
 
+/**
+ * Cash revenue **recognized in this season** for the summary operating block:
+ * - **Season 1:** first-tranche fees (`budgetSeason1`) from clients accepted in this season’s loop.
+ * - **Season 2+:** same fresh fees for this `seasonKey`, plus prior-season follow-up tranches (`budgetSeason2`
+ *   on the previous season’s accepted clients) that cash-settle when this season begins.
+ */
 function computeRecognizedSeasonRevenue(save: NewGamePayload, seasonKey: string): SeasonRecognizedRevenue {
   const seasonNum = Number(seasonKey);
   const freshLoop = save.seasonLoopBySeason?.[seasonKey];
@@ -49,6 +55,7 @@ function computeRecognizedSeasonRevenue(save: NewGamePayload, seasonKey: string)
   };
 }
 
+/** In-season solution EUR: this season’s fresh runs plus prior-season rollover resolutions executed this season. */
 function computeSeasonCampaignCosts(save: NewGamePayload, seasonKey: string): SeasonCampaignCosts {
   const seasonNum = Number(seasonKey);
   const freshLoop = save.seasonLoopBySeason?.[seasonKey];
@@ -118,6 +125,8 @@ function initialEndowmentEur(save: NewGamePayload): number {
 /**
  * Cash flow for the season summary: opening → wages → net operating cash (matches operating summary) → closing.
  * Season 1 opening is explicit starting wealth (endowment + spouse). Season 2+ opening is cash before payroll at season start when payroll is modelled, else cash at in-season start.
+ * **Wages** prefer {@link NewGamePayload.payrollWagesSettledEurBySeason} (set when entering the season) so interns and
+ * other staff remain correct on the summary after interns leave the roster.
  */
 export function computeSeasonCashFlow(save: NewGamePayload, seasonKey: string): SeasonCashFlow {
   const bridge = computeSeasonCashBridge(save, seasonKey);
@@ -129,15 +138,25 @@ export function computeSeasonCashFlow(save: NewGamePayload, seasonKey: string): 
   let wagesPaid: number;
   let severancePaid = 0;
 
+  const storedWages = save.payrollWagesSettledEurBySeason?.[seasonKey];
+
   if (seasonNum === 1) {
     openingCash = initialEndowmentEur(save);
-    wagesPaid = (save.employees ?? [])
-      .filter((e) => e.seasonHired === 1 && e.role !== "Intern")
-      .reduce((s, e) => s + e.salary, 0);
+    wagesPaid =
+      storedWages !== undefined
+        ? storedWages
+        : (save.employees ?? [])
+            .filter((e) => e.seasonHired === 1)
+            .reduce((s, e) => s + e.salary, 0);
   } else {
     const payrollPaid = save.payrollPaidBySeason?.[seasonKey] === true;
     const activeEmployees = (save.employees ?? []).filter((e) => e.seasonHired <= seasonNum);
-    wagesPaid = payrollPaid ? activeEmployees.reduce((s, e) => s + e.salary, 0) : 0;
+    wagesPaid =
+      storedWages !== undefined
+        ? storedWages
+        : payrollPaid
+          ? activeEmployees.reduce((s, e) => s + e.salary, 0)
+          : 0;
     severancePaid = payrollPaid ? (save.seasonCashAdjustmentsBySeason?.[seasonKey]?.severancePaid ?? 0) : 0;
 
     openingCash = payrollPaid

@@ -96,6 +96,11 @@ export type NewGamePayload = {
   cumulativeWagesPaidEur?: number;
   /** Whether payroll for a given season key has already been paid before entering that season hub. */
   payrollPaidBySeason?: Partial<Record<string, boolean>>;
+  /**
+   * EUR of `wage-*` payables cleared when entering that season (`settlePreseasonAndEnterSeason`), including interns.
+   * Used for season summaries after interns may have left the roster.
+   */
+  payrollWagesSettledEurBySeason?: Partial<Record<string, number>>;
   /** Voluntary layoffs taken in a given season number (string key), max 1 per season. */
   voluntaryLayoffsBySeason?: Partial<Record<string, number>>;
   /** Cash-flow-only deductions settled when entering a season (e.g. voluntary-layoff severance). */

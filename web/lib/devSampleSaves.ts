@@ -1,6 +1,6 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { applySpouseAtStart, STARTING_BUILD_STATS, STARTING_REPUTATION } from "@/lib/gameEconomy";
-import type { SeasonClientRun } from "@/lib/seasonClientLoop";
+import type { SeasonClientRun, SeasonLoopState } from "@/lib/seasonClientLoop";
 
 export function buildSeason1SummarySampleSave(): NewGamePayload {
   const initialResources = applySpouseAtStart(STARTING_BUILD_STATS.velvet_rolodex, "supportive");
@@ -480,6 +480,171 @@ export function buildSeason2PostseasonMidFlowSampleSave(): NewGamePayload {
       "2": { ...loop, runs },
     },
     createdAt: "2026-04-15T12:00:00.000Z",
+  };
+}
+
+/**
+ * End of Season 3 post-season with summary unlocked: Seasons 1–2 as in {@link buildSeason2SummaryNoLayoffSampleSave},
+ * Season 2 runs carry `season2CarryoverResolution` (resolved in Season 3), Season 3 fresh clients fully post-seasoned.
+ */
+export function buildSeason3PostseasonSummarySampleSave(): NewGamePayload {
+  const base = buildSeason2SummaryNoLayoffSampleSave();
+  const loop2 = base.seasonLoopBySeason?.["2"];
+  if (!loop2) {
+    return { ...base, seasonNumber: 3, phase: "postseason" as const };
+  }
+
+  const runs2: SeasonClientRun[] = loop2.runs.map((r) =>
+    r.clientId === "s2-c1"
+      ? {
+          ...r,
+          season2CarryoverResolution: {
+            messageSpread: 74,
+            messageEffectiveness: 66,
+            satisfaction: 72,
+            solutionId: "solution_3",
+            costBudget: 8500,
+            costCapacity: 11,
+            reputationDelta: 5,
+            visibilityGain: 10,
+          },
+        }
+      : {
+          ...r,
+          season2CarryoverResolution: {
+            messageSpread: 68,
+            messageEffectiveness: 79,
+            satisfaction: 77,
+            solutionId: "solution_4",
+            costBudget: 9500,
+            costCapacity: 13,
+            reputationDelta: 8,
+            visibilityGain: 14,
+          },
+        }
+  );
+
+  const s3Arc = {
+    low_visibility_low_effectiveness: "The story stays niche and the critics keep the upper hand.",
+    low_visibility_high_effectiveness: "The right stakeholders hear a credible version, even if reach stays modest.",
+    high_visibility_low_effectiveness: "Visibility spikes, but the narrative still feels thin to many viewers.",
+    high_visibility_high_effectiveness: "The arc lands with both reach and believability intact.",
+  } as const;
+
+  const loop3: SeasonLoopState = {
+    plannedClientCount: 2,
+    currentClientIndex: 2,
+    clientsQueue: [
+      {
+        id: "s3-c1",
+        displayName: "Riven Labs",
+        clientKind: "corporate",
+        budgetTier: 2,
+        problem:
+          "A whistleblower dropped partial financials on a forum thread, and every finance influencer is guessing margins before your client can file anything official.",
+        budgetTotal: 95000,
+        budgetSeason1: 62000,
+        budgetSeason2: 33000,
+        scenarioId: "debug-s3-fresh-1",
+        scenarioTitle: "Season Three Ledger Leak",
+        scenarioSolutions: [],
+        hiddenDiscipline: 55,
+        hiddenPreferenceMotive: "balanced",
+        satisfactionReachWeight: 0.45,
+        postSeasonArcOutcomes: { ...s3Arc },
+      },
+      {
+        id: "s3-c2",
+        displayName: "Juno Media",
+        clientKind: "small_business",
+        budgetTier: 3,
+        problem:
+          "A micro-influencer roster accidentally went public with rate cards and DMs that made pay-for-play look blatant, and smaller creators are already screenshotting.",
+        budgetTotal: 78000,
+        budgetSeason1: 52000,
+        budgetSeason2: 26000,
+        scenarioId: "debug-s3-fresh-2",
+        scenarioTitle: "Micro-Influencer Meltdown",
+        scenarioSolutions: [],
+        hiddenDiscipline: 48,
+        hiddenPreferenceMotive: "spread_first",
+        satisfactionReachWeight: 0.62,
+        postSeasonArcOutcomes: { ...s3Arc },
+      },
+    ],
+    runs: [
+      {
+        clientId: "s3-c1",
+        accepted: true,
+        solutionId: "solution_2",
+        costBudget: 18000,
+        costCapacity: 20,
+        solutionTitle: "Controlled disclosure narrative",
+        outcome: { messageSpread: 69, messageEffectiveness: 71, satisfaction: 73 },
+        postSeason: {
+          choice: "none",
+          boostPointsApplied: 0,
+          reachPercent: 69,
+          effectivenessPercent: 71,
+          reputationDelta: 4,
+          visibilityGain: 11,
+        },
+      },
+      {
+        clientId: "s3-c2",
+        accepted: true,
+        solutionId: "solution_4",
+        costBudget: 22000,
+        costCapacity: 22,
+        solutionTitle: "Full reset playbook",
+        outcome: { messageSpread: 58, messageEffectiveness: 82, satisfaction: 78 },
+        postSeason: {
+          choice: "effectiveness",
+          boostPointsApplied: 3,
+          reachPercent: 58,
+          effectivenessPercent: 85,
+          reputationDelta: 6,
+          visibilityGain: 13,
+        },
+      },
+    ],
+    lastOutcome: { messageSpread: 58, messageEffectiveness: 85, satisfaction: 79 },
+  };
+
+  return {
+    ...base,
+    seasonNumber: 3,
+    phase: "postseason",
+    reputation: 48,
+    resources: {
+      ...base.resources,
+      eur: 88_000,
+      competence: 76,
+      visibility: 142,
+      firmCapacity: 44,
+    },
+    activityFocusUsedInPreseason: true,
+    preseasonActionBySeason: { ...base.preseasonActionBySeason, "3": "network" },
+    preseasonFocusCounts: { strategy_workshop: 1, network: 2 },
+    seasonLoopBySeason: {
+      ...base.seasonLoopBySeason,
+      "2": { ...loop2, runs: runs2 },
+      "3": loop3,
+    },
+    rolloverReviewProgressBySeason: { "2": 2, "3": 2 },
+    postSeasonResolutionProgressBySeason: { "2": 2, "3": 2 },
+    seasonEntryScoresBySeason: {
+      ...base.seasonEntryScoresBySeason,
+      "3": { vScore: 68, cScore: 60, rScore: 55 },
+    },
+    usedScenarioIds: [
+      ...(base.usedScenarioIds ?? []),
+      "debug-s3-fresh-1",
+      "debug-s3-fresh-2",
+    ],
+    payrollPaidBySeason: { "2": true, "3": true },
+    preseasonEntrySpouseGrantSeasons: ["2", "3"],
+    createdAt: "2026-04-16T10:00:00.000Z",
   };
 }
 
