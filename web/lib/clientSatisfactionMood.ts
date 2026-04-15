@@ -1,6 +1,6 @@
 /**
  * Player-facing mood line from a 0–100 client satisfaction score (weighted reach + effectiveness).
- * Copy is tuned for Season 2 post-season rollover resolution screens.
+ * Used on Season 2+ rollover resolution/history screens and on the Season 3+ post-season client reviews digest.
  */
 export function formatClientSatisfactionMood(clientDisplayName: string, satisfactionPercent: number): string {
   const s = Math.max(0, Math.min(100, Math.round(Number(satisfactionPercent) || 0)));

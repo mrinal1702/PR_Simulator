@@ -152,6 +152,10 @@ export function AgencyProfitFlashcardScreen({ throughSeason }: { throughSeason: 
             onClick={() => {
               const latest = loadSave();
               if (!latest || latest.phase !== "postseason" || latest.seasonNumber !== throughSeason) return;
+              if (throughSeason >= 3) {
+                router.push(`/game/postseason/${throughSeason}/client-reviews`);
+                return;
+              }
               const next = enterNextPreseason(latest, throughSeason);
               persistSave(next);
               router.push(nextPreseasonPath);

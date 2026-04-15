@@ -8,7 +8,6 @@ import {
   buildArc1Text,
   buildArcResolutionText,
   buildPostSeasonArcBlurb,
-  carryoverHubReputationBounds,
   reputationDeltaFromEffectivenessCurve,
   visibilityGainFromSatisfactionCurve,
 } from "@/lib/postSeasonResults";
@@ -131,9 +130,7 @@ export function ScenarioHistoryDetailScreen({ season, clientId }: { season: numb
   const arc1Text = buildArc1Text(rawScenario?.arc_1, s1InitialReach, s1InitialEff);
   const arc2Text = buildPostSeasonArcBlurb(client, s1InitialReach, s1InitialEff);
   const arcResText = buildArcResolutionText(rawScenario?.arc_resolution, s2.messageSpread, s2.messageEffectiveness);
-  const finalRepDelta =
-    s2.reputationDelta ??
-    reputationDeltaFromEffectivenessCurve(s2.messageEffectiveness, carryoverHubReputationBounds(season));
+  const finalRepDelta = reputationDeltaFromEffectivenessCurve(s2.messageEffectiveness);
   const finalVisGain = visibilityGainFromSatisfactionCurve(s2.satisfaction);
 
   return (
