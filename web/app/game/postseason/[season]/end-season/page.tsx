@@ -1,11 +1,6 @@
-import { EndSeasonAgencyProfitScreen } from "@/components/EndSeasonAgencyProfitScreen";
+import { redirect } from "next/navigation";
 
-export default async function EndSeasonPage({
-  params,
-}: {
-  params: Promise<{ season: string }>;
-}) {
+export default async function EndSeasonPage({ params }: { params: Promise<{ season: string }> }) {
   const { season } = await params;
-  const seasonNumber = Number.isFinite(Number(season)) ? Number(season) : 1;
-  return <EndSeasonAgencyProfitScreen season={seasonNumber} />;
+  redirect(`/game/postseason/${season}/agency-profit`);
 }

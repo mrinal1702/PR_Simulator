@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
@@ -9,7 +8,6 @@ import {
   acceptedRunsWithOutcomes,
   postSeasonNextRunIndex,
 } from "@/lib/postSeasonResults";
-import { enterNextPreseason } from "@/lib/preseasonTransition";
 import {
   computeSeasonCashBridge,
   computeSeasonCashFlow,
@@ -23,7 +21,7 @@ import {
   liquidityEur,
   totalPayables,
 } from "@/lib/payablesReceivables";
-import { loadSave, persistSave } from "@/lib/saveGameStorage";
+import { loadSave } from "@/lib/saveGameStorage";
 import { isPostSeasonResolutionComplete } from "@/lib/seasonCarryover";
 import { ResourceSymbol } from "@/components/resourceSymbols";
 
@@ -110,12 +108,10 @@ function AccountingRow({
 }
 
 export function SeasonSummaryScreen({ season }: { season: number }) {
-  const router = useRouter();
-  const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
+  const [save] = useState<NewGamePayload | null>(() => loadSave());
   const [expandedScenario, setExpandedScenario] = useState<Record<string, boolean>>({});
   const [showFinancials, setShowFinancials] = useState(false);
   const [showScenarios, setShowScenarios] = useState(false);
-  const [confirmAdvanceOpen, setConfirmAdvanceOpen] = useState(false);
 
   const seasonKey = String(season);
   const loop = save?.seasonLoopBySeason?.[seasonKey];
@@ -152,16 +148,6 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
   }, [loop]);
 
   const averages = useMemo(() => computeSeasonScenarioAverages(loop), [loop]);
-  const nextPreseasonNum = Math.min(season + 1, 7);
-
-  const enterNextSeason = () => {
-    if (!save) return;
-    if (!summaryUnlocked) return;
-    const next = enterNextPreseason(save, season);
-    persistSave(next);
-    setSave(next);
-    router.push(`/game/preseason/${nextPreseasonNum}`);
-  };
 
   if (!save) {
     return (
@@ -500,33 +486,21 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
         <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none" }}>
           Back to post-season
         </Link>
-        {season === 2 ? (
-          <Link
-            href={summaryUnlocked ? `/game/postseason/${season}/end-season` : "#"}
-            className={summaryUnlocked ? "btn btn-next-hint" : "btn btn-secondary"}
-            aria-disabled={!summaryUnlocked}
-            style={{
-              textDecoration: "none",
-              opacity: summaryUnlocked ? 1 : 0.55,
-              pointerEvents: summaryUnlocked ? "auto" : "none",
-            }}
-            onClick={(e) => {
-              if (!summaryUnlocked) e.preventDefault();
-            }}
-          >
-            End Season
-          </Link>
-        ) : (
-          <button
-            type="button"
-            className={summaryUnlocked ? "btn btn-next-hint" : "btn btn-secondary"}
-            onClick={() => summaryUnlocked && setConfirmAdvanceOpen(true)}
-            disabled={!summaryUnlocked}
-            style={{ opacity: summaryUnlocked ? 1 : 0.55 }}
-          >
-            Enter pre-season {nextPreseasonNum}
-          </button>
-        )}
+        <Link
+          href={summaryUnlocked ? `/game/postseason/${season}/agency-profit` : "#"}
+          className={summaryUnlocked ? "btn btn-next-hint" : "btn btn-secondary"}
+          aria-disabled={!summaryUnlocked}
+          style={{
+            textDecoration: "none",
+            opacity: summaryUnlocked ? 1 : 0.55,
+            pointerEvents: summaryUnlocked ? "auto" : "none",
+          }}
+          onClick={(e) => {
+            if (!summaryUnlocked) e.preventDefault();
+          }}
+        >
+          Review agency result
+        </Link>
         {!summaryUnlocked ? (
           <p className="muted" style={{ margin: 0, fontSize: "0.86rem" }}>
             Complete post-season results first, then continue.
@@ -534,33 +508,6 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
         ) : null}
       </div>
 
-      {confirmAdvanceOpen && season !== 2 ? (
-        <div className="game-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="advance-season-title">
-          <div className="game-modal">
-            <h2 id="advance-season-title" style={{ marginTop: 0 }}>
-              Are you sure?
-            </h2>
-            <p style={{ margin: "0.5rem 0 0", lineHeight: 1.55 }}>
-              You will leave this summary and continue to <strong>pre-season {nextPreseasonNum}</strong>. This season will be marked complete.
-            </p>
-            <div style={{ marginTop: "1rem", display: "flex", flexWrap: "wrap", gap: "0.65rem", justifyContent: "flex-end" }}>
-              <button type="button" className="btn btn-secondary" onClick={() => setConfirmAdvanceOpen(false)}>
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="btn btn-next-hint"
-                onClick={() => {
-                  setConfirmAdvanceOpen(false);
-                  enterNextSeason();
-                }}
-              >
-                Continue
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }

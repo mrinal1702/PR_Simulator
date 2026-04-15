@@ -23,7 +23,10 @@ import type { NewGamePayload } from "../components/NewGameWizard";
 import { auditAgencyCoreStatTallies } from "../lib/agencyStatAudit";
 import { fireEmployeeForPayrollShortfall } from "../lib/employeeActions";
 import { plannedClientCountForSeason } from "../lib/clientEconomyMath";
-import { computeAgencyProfitFlashcardEndOfSeason2 } from "../lib/seasonFinancials";
+import {
+  computeAgencyProfitFlashcardCumulativeThroughSeason,
+  computeAgencyProfitFlashcardEndOfSeason2,
+} from "../lib/seasonFinancials";
 import {
   applySpouseAtStart,
   STARTING_BUILD_STATS,
@@ -921,6 +924,16 @@ function collectFinalMetrics(
   runIndex: number
 ): FinalRunMetrics {
   const profit = computeAgencyProfitFlashcardEndOfSeason2(save);
+  const profitViaCumulative = computeAgencyProfitFlashcardCumulativeThroughSeason(save, 2);
+  if (
+    profit.revenue !== profitViaCumulative.revenue ||
+    profit.campaignSpending !== profitViaCumulative.campaignSpending ||
+    profit.wages !== profitViaCumulative.wages ||
+    profit.profit !== profitViaCumulative.profit ||
+    profit.profitMarginPct !== profitViaCumulative.profitMarginPct
+  ) {
+    throw new Error("computeAgencyProfitFlashcardEndOfSeason2 must match cumulativeThroughSeason(save, 2)");
+  }
   const interactions = collectInteractionAverages(save);
   return {
     build,

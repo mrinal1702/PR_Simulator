@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { GAME_TITLE } from "@/lib/onboardingContent";
 import { getPendingReceivablesEur, totalPayables } from "@/lib/payablesReceivables";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
@@ -67,7 +68,15 @@ function ShoppingItemCard(props: {
   );
 }
 
-export function ShoppingCenterScreen() {
+function parseReturnSeason(raw: string | null): number {
+  if (raw == null || raw === "") return 2;
+  const n = Number.parseInt(raw, 10);
+  return Number.isFinite(n) && n >= 1 ? n : 2;
+}
+
+function ShoppingCenterScreenInner() {
+  const searchParams = useSearchParams();
+  const returnSeason = parseReturnSeason(searchParams.get("returnSeason"));
   const [save, setSave] = useState(() => loadSave());
   const [notice, setNotice] = useState("");
   const [pendingPurchase, setPendingPurchase] = useState<ShoppingItemId | null>(null);
@@ -94,10 +103,10 @@ export function ShoppingCenterScreen() {
     save.spouseGender === "male" ? "he" : save.spouseGender === "female" ? "she" : "they";
   const agencyName = save.agencyName.trim() || "Your agency";
   const spouseName = save.spouseName?.trim() || "Your spouse";
-  /** After Season 2 post-season (profit / shopping step) through Pre-season 3. */
+  /** During post-season `returnSeason` or the following pre-season (same window as legacy Season 2 when returnSeason is 2). */
   const shoppingOpen =
-    (save.phase === "postseason" && save.seasonNumber === 2) ||
-    (save.phase === "preseason" && save.seasonNumber === 3);
+    (save.phase === "postseason" && save.seasonNumber === returnSeason) ||
+    (save.phase === "preseason" && save.seasonNumber === returnSeason + 1);
 
   const personalItems: ShoppingItemDef[] = [
     save.spouseType === "none"
@@ -195,7 +204,7 @@ export function ShoppingCenterScreen() {
       <p className="end-season-profit-muted" style={{ marginBottom: "1.25rem" }}>
         <Link href="/">← {GAME_TITLE}</Link>
         {" · "}
-        <Link href="/game/postseason/2/end-season">End Season</Link>
+        <Link href={`/game/postseason/${returnSeason}/agency-profit`}>Agency result</Link>
       </p>
 
       <div className="end-season-profit-card">
@@ -205,9 +214,9 @@ export function ShoppingCenterScreen() {
         </h1>
         <p className="shopping-center-budget-hero">{fmtEur(numbers.budget)}</p>
         <p className="end-season-profit-sub">
-          This is the lower of your Season 2 ending cash ({fmtEur(numbers.cash)}) and Season 2 ending liquidity (
-          {fmtEur(numbers.liquidity)}). Liquidity counts guaranteed receivables ({fmtEur(receivables)}) and subtracts
-          payables ({fmtEur(payables)}).
+          This is the lower of your Season {returnSeason} ending cash ({fmtEur(numbers.cash)}) and Season {returnSeason}{" "}
+          ending liquidity ({fmtEur(numbers.liquidity)}). Liquidity counts guaranteed receivables ({fmtEur(receivables)}) and
+          subtracts payables ({fmtEur(payables)}).
         </p>
 
         {notice ? (
@@ -217,7 +226,8 @@ export function ShoppingCenterScreen() {
         ) : null}
         {!shoppingOpen ? (
           <p className="end-season-profit-sub" style={{ marginTop: "0.5rem", marginBottom: 0 }}>
-            Shopping Center purchases open after Season 2 post-season and stay available through Pre-season 3.
+            Shopping Center purchases open during Season {returnSeason} post-season and stay available through Pre-season{" "}
+            {returnSeason + 1}.
           </p>
         ) : null}
       </div>
@@ -301,11 +311,17 @@ export function ShoppingCenterScreen() {
           alignItems: "center",
         }}
       >
-        <Link href="/game/postseason/2/end-season" className="end-season-profit-btn end-season-profit-btn--secondary">
-          Back to End Season
+        <Link
+          href={`/game/postseason/${returnSeason}/agency-profit`}
+          className="end-season-profit-btn end-season-profit-btn--secondary"
+        >
+          Back to agency result
         </Link>
-        <Link href="/game/postseason/2/summary" className="end-season-profit-btn end-season-profit-btn--secondary">
-          Season 2 summary
+        <Link
+          href={`/game/postseason/${returnSeason}/summary`}
+          className="end-season-profit-btn end-season-profit-btn--secondary"
+        >
+          Season {returnSeason} summary
         </Link>
       </div>
 
@@ -328,5 +344,24 @@ export function ShoppingCenterScreen() {
         </div>
       ) : null}
     </div>
+  );
+}
+
+function ShoppingCenterFallback() {
+  return (
+    <div className="end-season-profit-shell">
+      <p className="end-season-profit-muted">
+        <Link href="/">← {GAME_TITLE}</Link>
+      </p>
+      <p className="end-season-profit-muted">Loading…</p>
+    </div>
+  );
+}
+
+export function ShoppingCenterScreen() {
+  return (
+    <Suspense fallback={<ShoppingCenterFallback />}>
+      <ShoppingCenterScreenInner />
+    </Suspense>
   );
 }
