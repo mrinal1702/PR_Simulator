@@ -605,6 +605,7 @@ function applyBestHiringMaxStat(
         salary: 10_000,
         reputation: next.reputation ?? STARTING_REPUTATION,
         visibility: next.resources.visibility,
+        competence: next.resources.competence,
         excludedNames: [...excludedNames],
         save: next,
       });
@@ -630,6 +631,7 @@ function applyBestHiringMaxStat(
         salary: option.salary,
         reputation: next.reputation ?? STARTING_REPUTATION,
         visibility: next.resources.visibility,
+        competence: next.resources.competence,
         excludedNames: [...excludedNames],
         save: next,
       });
@@ -834,6 +836,7 @@ function chooseBestHireOption(
       salary: 10_000,
       reputation: save.reputation ?? STARTING_REPUTATION,
       visibility: save.resources.visibility,
+      competence: save.resources.competence,
       excludedNames: [...excludedNames],
       save,
     });
@@ -856,6 +859,7 @@ function chooseBestHireOption(
       salary: option.salary,
       reputation: save.reputation ?? STARTING_REPUTATION,
       visibility: save.resources.visibility,
+      competence: save.resources.competence,
       excludedNames: [...excludedNames],
       save,
     });

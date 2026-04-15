@@ -27,14 +27,14 @@ This file is the cross-system glue.
 |---|---|---|
 | Build/spouse/new-game choices | Starting stats, early economy headroom, first-season strategy space | `web/lib/gameEconomy.ts`, `web/components/NewGameWizard.tsx` |
 | Pre-season focus choice | Competence/visibility totals -> Season entry V/C scores -> client roll quality and outcomes | `web/lib/preseasonFocus.ts`, `web/lib/payablesReceivables.ts`, `web/lib/clientEconomyMath.ts` |
-| Hiring outcomes (skill/productivity) | Competence/visibility/capacity changes + wage payables -> liquidity pressure and layoff risk | `web/lib/hiring.ts`, `web/lib/payablesReceivables.ts`, `web/lib/employeeActions.ts` |
+| Hiring outcomes (skill/productivity) | Competence/visibility/capacity changes + wage payables -> liquidity pressure and layoff risk; hiring attract uses same season philosophy as benchmarks (`benchmarkHiringAttract` blends S2+S3 μ/σ for season ≥ 3) | `web/lib/hiring.ts`, `web/lib/benchmarkHiringAttract.ts`, `web/lib/benchmarkSeason2Scores.ts`, `web/lib/benchmarkSeason3Scores.ts`, `web/lib/payablesReceivables.ts`, `web/lib/employeeActions.ts` |
 | Pre-season 3 salary negotiations | Wage payable + salary bumps or mandatory fire; blocks season hub until resolved; liquidity + shopping EUR | `web/lib/preseasonSalaryNegotiation.ts`, `web/lib/preseasonTransition.ts`, `web/lib/payablesReceivables.ts`, `web/components/PreSeasonScreen.tsx`, `web/components/HiringScreen.tsx` |
 | Shopping center purchases | Immediate EUR changes, seasonal spouse bonus, hiring multipliers, downstream stat growth | `web/lib/shoppingCenter.ts`, `web/lib/preseasonTransition.ts` |
 | Season-start settlement | Receivables/payables settlement + payroll flags + frozen entry V/C snapshot for season logic | `web/lib/payablesReceivables.ts` |
 | Client roll pipeline | Client count/type/tier/budgets -> scenario selection -> campaign option costs | `web/lib/clientEconomyMath.ts`, `web/lib/seasonClientLoop.ts`, `web/lib/scenarios.ts` |
 | Scenario architecture | Creative copy overlays fixed archetypes; arc text drives post-season narrative mapping | `web/lib/scenarios.ts`, `web/lib/seasonClientLoop.ts`, `web/lib/postSeasonResults.ts` |
 | Campaign choices and outcomes | EUR/capacity spend + reach/effectiveness/satisfaction -> post-season deltas and carry-over state | `web/lib/seasonClientLoop.ts`, `web/lib/solutionOutcomeMath.ts`, `web/lib/postSeasonResults.ts`, `web/lib/seasonCarryover.ts` |
-| Post-season and carry-over resolution | Reputation/visibility updates and resource spend -> next season rolls and hiring quality | `web/lib/postSeasonResults.ts`, `web/lib/seasonCarryover.ts`, `web/lib/clientEconomyMath.ts`, `web/lib/hiring.ts` |
+| Post-season and carry-over resolution | Reputation/visibility updates and resource spend -> next season rolls and hiring quality (hiring reads live effective V/C + rep via `benchmarkHiringAttract`) | `web/lib/postSeasonResults.ts`, `web/lib/seasonCarryover.ts`, `web/lib/clientEconomyMath.ts`, `web/lib/hiring.ts`, `web/lib/benchmarkHiringAttract.ts` |
 | Metric scales/clamps | Bounds and labels for reputation/visibility/competence across all systems | `web/lib/metricScales.ts` |
 
 ---
@@ -85,3 +85,4 @@ Use this minimum sequence:
 ## Last updated for
 
 - Pre-season 3 salary negotiation dependency chain and layoff/payroll synergy note.
+- Hiring attract normalization (`benchmarkHiringAttract.ts`) and dependency chain updates.

@@ -125,6 +125,7 @@ export function randomProfileForBuild(rng: () => number, seedBase: string, build
         salary: 10_000,
         reputation: REP_START,
         visibility: stats.visibility,
+        competence: stats.competence,
       });
     } else {
       cands = generateCandidates({
@@ -135,6 +136,7 @@ export function randomProfileForBuild(rng: () => number, seedBase: string, build
         salary: ch.salary,
         reputation: REP_START,
         visibility: stats.visibility,
+        competence: stats.competence,
       });
     }
     const pick = cands[Math.floor(rng() * 3)]!;
@@ -181,6 +183,7 @@ export function randomProfileForBuildWithSpouseActivity(
         salary: 10_000,
         reputation: REP_START,
         visibility: stats.visibility,
+        competence: stats.competence,
       });
     } else {
       cands = generateCandidates({
@@ -191,6 +194,7 @@ export function randomProfileForBuildWithSpouseActivity(
         salary: ch.salary,
         reputation: REP_START,
         visibility: stats.visibility,
+        competence: stats.competence,
       });
     }
     const pick = cands[Math.floor(rng() * 3)]!;
@@ -235,6 +239,7 @@ function randomProfile(rng: () => number, seedBase: string): AgencyStats {
         salary: 10_000,
         reputation: REP_START,
         visibility: stats.visibility,
+        competence: stats.competence,
       });
     } else {
       cands = generateCandidates({
@@ -245,6 +250,7 @@ function randomProfile(rng: () => number, seedBase: string): AgencyStats {
         salary: ch.salary,
         reputation: REP_START,
         visibility: stats.visibility,
+        competence: stats.competence,
       });
     }
     const pick = cands[Math.floor(rng() * 3)]!;

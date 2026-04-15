@@ -447,6 +447,7 @@ function chooseBestHireOption(
       salary: 10_000,
       reputation: save.reputation ?? STARTING_REPUTATION,
       visibility: save.resources.visibility,
+      competence: save.resources.competence,
       excludedNames: [...excludedNames],
       save,
     });
@@ -469,6 +470,7 @@ function chooseBestHireOption(
       salary: option.salary,
       reputation: save.reputation ?? STARTING_REPUTATION,
       visibility: save.resources.visibility,
+      competence: save.resources.competence,
       excludedNames: [...excludedNames],
       save,
     });

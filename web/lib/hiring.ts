@@ -1,4 +1,5 @@
 import type { NewGamePayload } from "@/components/NewGameWizard";
+import { hiringAttractChannels } from "@/lib/benchmarkHiringAttract";
 import { getHireAdjustmentMultipliers } from "@/lib/shoppingCenter";
 import {
   getHiringNamePoolStrings,
@@ -65,12 +66,15 @@ export function getHireCapForSeason(season: number): number {
 }
 
 /**
- * Agency-wide employee headcount cap by season.
- * All seasons are currently hard-capped to 5 total employees.
- * Future office purchase upgrades can raise this cap.
+ * Agency-wide roster cap (interns + full-time). Default 5; Shopping Center **Rent office** raises it to 7.
+ * Legacy saves may still have `upgradeOffice` on `shoppingCenterPurchases` (removed item); treat like rent.
  */
-export function getAgencyHeadcountCapForSeason(season: number): number {
-  return 5;
+export function getAgencyHeadcountCap(save: Pick<NewGamePayload, "shoppingCenterPurchases">): number {
+  const p = save.shoppingCenterPurchases;
+  if (!p) return 5;
+  if (p.rentOffice === true) return 7;
+  const legacy = p as { upgradeOffice?: boolean };
+  return legacy.upgradeOffice === true ? 7 : 5;
 }
 
 export function getSalaryBands(tier: HiringTier): Array<{ index: number; label: string; anchor: number }> {
@@ -151,6 +155,11 @@ export function generateCandidates(args: {
   salary: number;
   reputation: number;
   visibility: number;
+  /**
+   * Effective agency competence (e.g. `getEffectiveCompetenceForAgency(save)`).
+   * When omitted, falls back to `visibility` for scripts that only track one stat.
+   */
+  competence?: number;
   /** Full names to skip (payroll, bans, junior cross-band consumption, etc.). */
   excludedNames?: string[];
   /** When set, applies shopping-center HR multipliers (skills test / reference checks). */
@@ -170,6 +179,7 @@ export function generateCandidates(args: {
     uniqueNames.length,
     `${bucketSeed}|descriptions`
   );
+  const competenceForAttract = args.competence ?? args.visibility;
   return uniqueNames.map((name, idx) => {
     const seed = `${bucketSeed}|c${idx}`;
     let productivity = resolveProductivity(seed);
@@ -179,6 +189,8 @@ export function generateCandidates(args: {
       salary: args.salary,
       reputation: args.reputation,
       visibility: args.visibility,
+      competence: competenceForAttract,
+      season: args.season,
       role: args.role,
     });
     if (args.save) {
@@ -232,6 +244,8 @@ function resolveSkill(args: {
   salary: number;
   reputation: number;
   visibility: number;
+  competence: number;
+  season: number;
   role: HiringRole;
 }): number {
   if (args.tier === "intern") return 6;
@@ -240,15 +254,20 @@ function resolveSkill(args: {
   const bandIndex = Math.max(1, cfg.anchors.findIndex((a) => a === anchorK) + 1);
   const progress = (bandIndex - 1) / Math.max(1, cfg.anchors.length - 1);
   const base = cfg.minSkill + (cfg.maxSkill - cfg.minSkill) * progress;
-  const repN = Math.max(0, Math.min(1, args.reputation / 100));
-  const visN = Math.max(0, Math.min(1, args.visibility / 300));
+  const { rep01, vis01, comp01 } = hiringAttractChannels({
+    season: args.season,
+    reputation: args.reputation,
+    visibility: args.visibility,
+    competence: args.competence,
+  });
+  /** Reputation-forward for analysts; visibility-forward for sales; mixed for campaign leads. */
   const weighted =
     args.role === "data_analyst"
-      ? repN * 0.65 + visN * 0.35
+      ? rep01 * 0.55 + comp01 * 0.35 + vis01 * 0.1
       : args.role === "sales_representative"
-      ? repN * 0.35 + visN * 0.65
-      : repN * 0.5 + visN * 0.5;
-  const attract = Math.sqrt(weighted);
+        ? rep01 * 0.35 + comp01 * 0.1 + vis01 * 0.55
+        : rep01 * 0.45 + comp01 * 0.1 + vis01 * 0.45;
+  const attract = Math.sqrt(Math.max(0, weighted));
   const variance = (rand01(`${args.seed}|skill`) - 0.5) * 0.18;
   const finalSkill = base * (0.92 + attract * 0.14 + variance);
   const rounded = Math.round(finalSkill);

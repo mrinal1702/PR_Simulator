@@ -27,6 +27,7 @@ Use for all hiring, employee quality, capacity contribution, tenure growth, and 
 ## Code anchors
 
 - `web/lib/hiring.ts`
+- `web/lib/benchmarkHiringAttract.ts` (season-keyed hiring attract: S1 knots / S2 benchmarks / blended S2+S3 μ,σ for season ≥ 3)
 - `web/lib/tenureCapacity.ts`
 - `web/lib/employeeActions.ts`
 - `web/lib/shoppingCenter.ts`
@@ -107,19 +108,24 @@ Name exclusion set is built from:
 
 ### Hidden skill score
 
-`resolveSkill(...)` combines:
+`resolveSkill(...)` (in `web/lib/hiring.ts`) combines:
 
 1. **Salary anchor progress in tier band** -> base skill in tier min/max
-2. **Attract factor** from rep/visibility by role:
-   - data analyst: `0.65*rep + 0.35*vis`
-   - sales representative: `0.35*rep + 0.65*vis`
-   - campaign manager: `0.5*rep + 0.5*vis`
-3. **Nonlinear attract transform**: `sqrt(weighted)`
-4. **Random variance**: `(rand - 0.5) * 0.18`
+2. **Normalized agency channels** from `web/lib/benchmarkHiringAttract.ts` `hiringAttractChannels({ season, reputation, visibility, competence })` → `rep01`, `vis01`, `comp01` each in `[0, 1]`:
+   - **Season 1:** visibility/competence use Season 1 variance knots (`visibilityScoreForVariance` / `competenceScoreForVariance` in `solutionOutcomeMath.ts`); reputation uses a legacy clamp (`rep/100`, capped).
+   - **Season 2:** same V/C z→score maps as Season 2 client/entry benchmarks (`benchmarkSeason2Scores.ts`); reputation uses `reputationBlend01`.
+   - **Season ≥ 3 (and forward until a new calibration):** μ and σ for raw visibility, competence, and reputation are the **arithmetic mean** of the Season 2 and Season 3 benchmark constants (so hiring is not tied to an S2 grid that ignores shopping upgrades alone, nor an S3 grid that assumes post-hire inflation alone). Same z→score shape as entry scores: `50 + 10*z`, clamped to 0–100, then divided by 100.
+3. **Role blend** on those channels (then `sqrt` for a mild compress):
+   - data analyst: `0.55*rep01 + 0.35*comp01 + 0.10*vis01`
+   - sales representative: `0.35*rep01 + 0.10*comp01 + 0.55*vis01`
+   - campaign manager: `0.45*rep01 + 0.10*comp01 + 0.45*vis01`
+4. **Random variance**: `(rand - 0.5) * 0.18` (deterministic from hire seed)
 5. **Multiplier**: `base * (0.92 + attract*0.14 + variance)`
 6. **Tier clamps**:
    - juniors clamp by band-specific min/max (`JUNIOR_BAND_SKILL_RANGES`)
    - other tiers clamp to tier min/max
+
+`generateCandidates` takes **effective** competence and visibility from the hire screen (`getEffectiveCompetenceForAgency` / `getEffectiveVisibilityForAgency`) so shopping-center stat multipliers affect the talent pool like the rest of the economy.
 
 ### Skill split into stat channels
 
@@ -199,6 +205,7 @@ Total employee capacity contribution:
 
 Defined in `web/lib/shoppingCenter.ts`:
 
+- `rentOffice` (Shopping item **Rent office**) -> on purchase: **+10 firm reputation** (clamped) and **`getAgencyHeadcountCap`** roster cap **7** instead of default **5** (`web/lib/hiring.ts`).
 - `hrSkillsTest` -> `skillMultiplier: 1.15`
 - `hrReferenceChecks` -> `productivityMultiplier: 1.15`
 
@@ -232,9 +239,9 @@ Current documentation note:
 
 ## Change checklist (for this compartment)
 
-- If you touch `hiring.ts`, update:
+- If you touch `hiring.ts` or `benchmarkHiringAttract.ts`, update:
   - salary/skill tables
-  - role attract weighting notes
+  - role attract weighting notes and season-branch normalization (§3)
   - seed shape notes
 - If you touch `tenureCapacity.ts`, update tenure formula examples
 - If you touch `employeeActions.ts`, update layoff effects matrix
@@ -246,4 +253,4 @@ Current documentation note:
 
 ## Last updated for
 
-- Pre-season 3 salary negotiations, `employeeSkillDisplay` / roster skill %, and code anchor refresh.
+- Hiring attract: `benchmarkHiringAttract` (season-keyed normalization; blended S2+S3 μ/σ for season ≥ 3), role-specific rep/vis/comp blends, effective V/C from hire screen.

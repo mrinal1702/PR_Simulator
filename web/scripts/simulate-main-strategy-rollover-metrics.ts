@@ -153,6 +153,7 @@ function runHiringRandom(save: NewGamePayload, rng: () => number, seedBase: stri
         salary: 10_000,
         reputation: s.reputation ?? REP_START,
         visibility: s.resources.visibility,
+        competence: s.resources.competence,
       });
       const ci = cands[Math.floor(rng() * Math.max(1, cands.length))];
       if (!ci) break;
@@ -168,6 +169,7 @@ function runHiringRandom(save: NewGamePayload, rng: () => number, seedBase: stri
         salary: pick.salary,
         reputation: s.reputation ?? REP_START,
         visibility: s.resources.visibility,
+        competence: s.resources.competence,
       });
       const cf = cands[Math.floor(rng() * Math.max(1, cands.length))];
       if (!cf) break;

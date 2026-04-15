@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
-import { getEffectiveVisibilityForAgency } from "@/lib/agencyStatsEffective";
 import {
   banTalentBazaarName,
   capacityGainFromProductivity,
   generateCandidates,
+  getAgencyHeadcountCap,
   getHireCapForSeason,
   getSalaryBands,
   getTalentBazaarExcludedNames,
@@ -20,6 +20,7 @@ import {
   type HiringTier,
 } from "@/lib/hiring";
 import { loadSave, persistSave } from "@/lib/saveGameStorage";
+import { getEffectiveCompetenceForAgency, getEffectiveVisibilityForAgency } from "@/lib/agencyStatsEffective";
 import { liquidityEur, wageLineId } from "@/lib/payablesReceivables";
 import { hasUnresolvedSalaryNegotiationV3 } from "@/lib/preseasonSalaryNegotiation";
 import { AgencyResourceStrip } from "@/components/AgencyResourceStrip";
@@ -408,6 +409,9 @@ export function HiringScreen({ season }: { season: number }) {
   const hiredThisSeason = save.hiresBySeason?.[seasonKey] ?? 0;
   const cap = getHireCapForSeason(season);
   const capReached = hiredThisSeason >= cap;
+  const rosterCount = save.employees?.length ?? 0;
+  const rosterCap = getAgencyHeadcountCap(save);
+  const rosterAtCap = rosterCount >= rosterCap;
   const salaryOptions = useMemo(() => {
     if (mode === "intern") return [];
     return getSalaryBands(tier)
@@ -429,7 +433,7 @@ export function HiringScreen({ season }: { season: number }) {
   const salaryNegotiationLocked = season === 3 && hasUnresolvedSalaryNegotiationV3(save);
 
   const findEmployees = () => {
-    if (capReached) return;
+    if (capReached || rosterAtCap) return;
     if (mode === "full_time" && !role) return;
     if (!canAffordSelected) {
       setNotice("Insufficient budget for this hire.");
@@ -447,6 +451,7 @@ export function HiringScreen({ season }: { season: number }) {
       salary: selectedSalary,
       reputation: save.reputation ?? 5,
       visibility: getEffectiveVisibilityForAgency(save),
+      competence: getEffectiveCompetenceForAgency(save),
       excludedNames: excluded,
       save,
     });
@@ -471,7 +476,7 @@ export function HiringScreen({ season }: { season: number }) {
   };
 
   const finalizeHireCandidate = (candidate: Candidate) => {
-    if (capReached) return;
+    if (capReached || rosterAtCap) return;
     if (liquidityEur(save) < candidate.salary) {
       setNotice("Cannot hire: cash and receivables would not cover payables plus this wage.");
       return;
@@ -641,7 +646,7 @@ export function HiringScreen({ season }: { season: number }) {
         </p>
         <h1 style={{ margin: 0 }}>Talent Bazaar</h1>
         <p className="muted" style={{ marginTop: "0.5rem" }}>
-          Max hires this pre-season: {cap} · Hired: {hiredThisSeason}
+          Max hires this pre-season: {cap} · Hired: {hiredThisSeason} · Agency roster: {rosterCount}/{rosterCap}
         </p>
       </header>
 
@@ -664,6 +669,7 @@ export function HiringScreen({ season }: { season: number }) {
 
       {notice ? <p>{notice}</p> : null}
       {capReached ? <p>Hire cap reached for this pre-season.</p> : null}
+      {rosterAtCap && !capReached ? <p>Agency roster is at capacity ({rosterCap} employees).</p> : null}
 
       {stage === "home" ? (
         <section>
@@ -764,6 +770,7 @@ export function HiringScreen({ season }: { season: number }) {
                 className="btn btn-primary"
                 disabled={
                   capReached ||
+                  rosterAtCap ||
                   !canAffordSelected ||
                   (mode === "full_time" && (!role || salaryOptions.length === 0))
                 }
@@ -801,7 +808,13 @@ export function HiringScreen({ season }: { season: number }) {
                   {mode === "intern" ? "Intern" : `${roleLabel(c.role)} · ${tier}`} · EUR {c.salary.toLocaleString("en-GB")}
                 </p>
                 <p style={{ margin: 0 }}>{c.description}</p>
-                <button type="button" className="btn btn-primary" style={{ marginTop: "0.75rem" }} onClick={() => openHireWarning(c)}>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  style={{ marginTop: "0.75rem" }}
+                  disabled={capReached || rosterAtCap}
+                  onClick={() => openHireWarning(c)}
+                >
                   Hire
                 </button>
               </div>

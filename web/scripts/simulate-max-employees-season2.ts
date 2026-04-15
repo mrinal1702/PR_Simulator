@@ -224,6 +224,7 @@ function runHiring(
         salary: 10_000,
         reputation: next.reputation ?? STARTING_REPUTATION,
         visibility: next.resources.visibility,
+        competence: next.resources.competence,
       });
       const candidate = candidates[Math.floor(rng() * Math.max(1, candidates.length))];
       if (!candidate) break;
@@ -239,6 +240,7 @@ function runHiring(
       salary: pick.salary,
       reputation: next.reputation ?? STARTING_REPUTATION,
       visibility: next.resources.visibility,
+      competence: next.resources.competence,
     });
     const candidate = candidates[Math.floor(rng() * Math.max(1, candidates.length))];
     if (!candidate) break;
