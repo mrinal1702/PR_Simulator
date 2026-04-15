@@ -38,6 +38,22 @@ export function AgencyProfitFlashcardScreen({ throughSeason }: { throughSeason: 
     );
   }
 
+  if (throughSeason < 2) {
+    return (
+      <div className="end-season-profit-shell">
+        <p className="end-season-profit-muted">
+          <Link href="/">← {GAME_TITLE}</Link>
+        </p>
+        <p className="end-season-profit-muted">
+          Agency profit percentage is available after Season 2 onward.
+        </p>
+        <Link href={`/game/postseason/${throughSeason}/summary`} className="end-season-profit-btn end-season-profit-btn--secondary">
+          Back to summary
+        </Link>
+      </div>
+    );
+  }
+
   if (save.phase !== "postseason" || save.seasonNumber !== throughSeason) {
     return (
       <div className="end-season-profit-shell">

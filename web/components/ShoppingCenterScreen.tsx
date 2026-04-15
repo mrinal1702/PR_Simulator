@@ -71,7 +71,7 @@ function ShoppingItemCard(props: {
 function parseReturnSeason(raw: string | null): number {
   if (raw == null || raw === "") return 2;
   const n = Number.parseInt(raw, 10);
-  return Number.isFinite(n) && n >= 1 ? n : 2;
+  return Number.isFinite(n) && n >= 2 ? n : 2;
 }
 
 function ShoppingCenterScreenInner() {

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { NewGamePayload } from "@/components/NewGameWizard";
 import { GAME_TITLE } from "@/lib/onboardingContent";
@@ -8,6 +9,7 @@ import {
   acceptedRunsWithOutcomes,
   postSeasonNextRunIndex,
 } from "@/lib/postSeasonResults";
+import { enterNextPreseason } from "@/lib/preseasonTransition";
 import {
   computeSeasonCashBridge,
   computeSeasonCashFlow,
@@ -21,7 +23,7 @@ import {
   liquidityEur,
   totalPayables,
 } from "@/lib/payablesReceivables";
-import { loadSave } from "@/lib/saveGameStorage";
+import { loadSave, persistSave } from "@/lib/saveGameStorage";
 import { isPostSeasonResolutionComplete } from "@/lib/seasonCarryover";
 import { ResourceSymbol } from "@/components/resourceSymbols";
 
@@ -108,7 +110,8 @@ function AccountingRow({
 }
 
 export function SeasonSummaryScreen({ season }: { season: number }) {
-  const [save] = useState<NewGamePayload | null>(() => loadSave());
+  const router = useRouter();
+  const [save, setSave] = useState<NewGamePayload | null>(() => loadSave());
   const [expandedScenario, setExpandedScenario] = useState<Record<string, boolean>>({});
   const [showFinancials, setShowFinancials] = useState(false);
   const [showScenarios, setShowScenarios] = useState(false);
@@ -148,6 +151,7 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
   }, [loop]);
 
   const averages = useMemo(() => computeSeasonScenarioAverages(loop), [loop]);
+  const nextPreseasonNum = Math.min(season + 1, 7);
 
   if (!save) {
     return (
@@ -486,21 +490,39 @@ export function SeasonSummaryScreen({ season }: { season: number }) {
         <Link href={`/game/postseason/${season}`} className="btn btn-primary" style={{ textDecoration: "none" }}>
           Back to post-season
         </Link>
-        <Link
-          href={summaryUnlocked ? `/game/postseason/${season}/agency-profit` : "#"}
-          className={summaryUnlocked ? "btn btn-next-hint" : "btn btn-secondary"}
-          aria-disabled={!summaryUnlocked}
-          style={{
-            textDecoration: "none",
-            opacity: summaryUnlocked ? 1 : 0.55,
-            pointerEvents: summaryUnlocked ? "auto" : "none",
-          }}
-          onClick={(e) => {
-            if (!summaryUnlocked) e.preventDefault();
-          }}
-        >
-          Review agency result
-        </Link>
+        {season >= 2 ? (
+          <Link
+            href={summaryUnlocked ? `/game/postseason/${season}/agency-profit` : "#"}
+            className={summaryUnlocked ? "btn btn-next-hint" : "btn btn-secondary"}
+            aria-disabled={!summaryUnlocked}
+            style={{
+              textDecoration: "none",
+              opacity: summaryUnlocked ? 1 : 0.55,
+              pointerEvents: summaryUnlocked ? "auto" : "none",
+            }}
+            onClick={(e) => {
+              if (!summaryUnlocked) e.preventDefault();
+            }}
+          >
+            Review agency result
+          </Link>
+        ) : (
+          <button
+            type="button"
+            className={summaryUnlocked ? "btn btn-next-hint" : "btn btn-secondary"}
+            disabled={!summaryUnlocked}
+            style={{ opacity: summaryUnlocked ? 1 : 0.55 }}
+            onClick={() => {
+              if (!summaryUnlocked || !save) return;
+              const next = enterNextPreseason(save, season);
+              persistSave(next);
+              setSave(next);
+              router.push(`/game/preseason/${nextPreseasonNum}`);
+            }}
+          >
+            Enter pre-season {nextPreseasonNum}
+          </button>
+        )}
         {!summaryUnlocked ? (
           <p className="muted" style={{ margin: 0, fontSize: "0.86rem" }}>
             Complete post-season results first, then continue.
